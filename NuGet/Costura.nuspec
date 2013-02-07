@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Costura.Fody</id>
+    <version>$version$</version>
+    <title>Costura.Fody</title>
+    <authors>Simon Cropp</authors>
+    <owners>Simon Cropp</owners>
+    <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
+    <projectUrl>http://github.com/Fody/Costura</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Fody add-in for embedding references as resources.</description>
+    <summary />
+    <language>en-AU</language>
+    <tags>ILMerge, ILWeaving, Embed, Resource, Fody, Cecil</tags>
+  </metadata>
+</package>
