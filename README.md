@@ -4,9 +4,9 @@ Embeds dependencies as resources.
 
 [Introduction to Fody](http://github.com/Fody/Fody/wiki/SampleUsage)
 
-## Nuget package http://nuget.org/packages/Costura.Fody 
+## Nuget package
 
-What it actually does to your assembly
+Avaliable here http://nuget.org/packages/Costura.Fody 
 
 # How it works
 
