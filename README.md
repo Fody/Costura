@@ -98,7 +98,7 @@ Can not be defiend with `IncludeAssemblies`.
 
 Can take two forms. 
 
-As an element
+As an element with items delimetered by a newline.
 
     <Costura>
         <ExcludeAssemblies>
@@ -107,7 +107,7 @@ As an element
         </ExcludeAssemblies>
     </Costura>
     
-Or as a attribute
+Or as a attribute with items delimetered by a pipe `|`.
 
     <Costura ExcludeAssemblies='Foo|Bar'/>
     
@@ -122,7 +122,7 @@ Can not be defiend with `ExcludeAssemblies`.
 
 Can take two forms. 
 
-As an element
+As an element with items delimetered by a newline.
 
     <Costura>
         <IncludeAssemblies>
@@ -131,6 +131,6 @@ As an element
         </IncludeAssemblies>
     </Costura>
     
-Or as a attribute
+Or as a attribute with items delimetered by a pipe `|`.
 
     <Costura IncludeAssemblies='Foo|Bar'/>
