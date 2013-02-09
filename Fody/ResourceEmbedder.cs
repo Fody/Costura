@@ -63,19 +63,6 @@ public partial class ModuleWeaver : IDisposable
         }
     }
 
-    public void ProcessNativeResources()
-    {
-        string moduleName = ModuleDefinition.Name.Replace(".dll", "");
-
-        foreach (var res in ModuleDefinition.Resources)
-        {
-            if (!res.Name.StartsWith(moduleName + ".costura", StringComparison.InvariantCultureIgnoreCase))
-                continue;
-
-            res.Name = res.Name.Substring(moduleName.Length + 1).ToLowerInvariant();
-        }
-    }
-
     IEnumerable<string> GetFilteredReferences(IEnumerable<string> onlyBinaries)
     {
         if (IncludeAssemblies.Any())
