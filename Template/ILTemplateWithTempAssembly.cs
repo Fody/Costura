@@ -10,8 +10,6 @@ static class ILTemplateWithTempAssembly
     [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
     public static extern bool MoveFileEx(string lpExistingFileName, string lpNewFileName, int dwFlags);
 
-    //public const int MOVEFILE_DELAY_UNTIL_REBOOT = 0x4;
-
     private static string tempBasePath;
 
     public static void Attach()
@@ -27,7 +25,6 @@ static class ILTemplateWithTempAssembly
 
         PreloadUnmanagedLibraries();
     }
-
 
     public static Assembly ResolveAssembly(object sender, ResolveEventArgs args)
     {
@@ -94,7 +91,7 @@ static class ILTemplateWithTempAssembly
                 Directory.Delete(tempBasePath, true);
             }
             catch
-            {}
+            { }
         }
         Directory.CreateDirectory(tempBasePath);
         MoveFileEx(tempBasePath, null, 0x4);
@@ -168,15 +165,13 @@ static class ILTemplateWithTempAssembly
 
         foreach (var lib in executingAssembly.GetManifestResourceNames())
         {
-            if (!lib.StartsWith("costura" + bittyness) || !lib.EndsWith(".dll"))
+            if (!lib.StartsWith("costura" + bittyness))
                 continue;
 
-            var prefix = lib.Substring(0, lib.Length - 4);
-
-            var assemblyTempFilePath = Path.Combine(tempBasePath, string.Concat(prefix.Substring(10), ".dll"));
+            var assemblyTempFilePath = Path.Combine(tempBasePath, lib.Substring(10));
 
             if (!File.Exists(assemblyTempFilePath))
-                using (var assemblyStream = GetAssemblyStream(executingAssembly, prefix))
+                using (var assemblyStream = executingAssembly.GetManifestResourceStream(lib))
                 {
                     if (assemblyStream == null)
                     {

@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 
-internal static class ILTemplate
+static class ILTemplate
 {
     [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
     public static extern bool MoveFileEx(string lpExistingFileName, string lpNewFileName, int dwFlags);
@@ -159,15 +158,13 @@ internal static class ILTemplate
 
         foreach (var lib in executingAssembly.GetManifestResourceNames())
         {
-            if (!lib.StartsWith("costura" + bittyness) || !lib.EndsWith(".dll"))
+            if (!lib.StartsWith("costura" + bittyness))
                 continue;
 
-            var prefix = Path.GetFileNameWithoutExtension(lib);
-
-            var assemblyTempFilePath = Path.Combine(tempBasePath, string.Concat(prefix.Substring(10), ".dll"));
+            var assemblyTempFilePath = Path.Combine(tempBasePath, lib.Substring(10));
 
             if (!File.Exists(assemblyTempFilePath))
-                using (var assemblyStream = GetAssemblyStream(executingAssembly, prefix))
+                using (var assemblyStream = executingAssembly.GetManifestResourceStream(lib))
                 {
                     if (assemblyStream == null)
                     {
