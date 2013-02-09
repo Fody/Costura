@@ -38,9 +38,9 @@ static class ILTemplate
         var prefix = string.Concat("costura.", name);
         var executingAssembly = Assembly.GetExecutingAssembly();
 
-        var libInfo = executingAssembly.GetManifestResourceInfo(String.Concat("costura32.", name, ".dll"));
-        if (libInfo == null)
-            libInfo = executingAssembly.GetManifestResourceInfo(String.Concat("costura64.", name, ".dll"));
+        var bittyness = IntPtr.Size == 8 ? "64" : "32";
+
+        var libInfo = executingAssembly.GetManifestResourceInfo(String.Concat("costura", bittyness, ".", name, ".dll"));
         if (libInfo != null)
         {
             // Ok, mixed mode assemblies cannot be loaded through Assembly.Load.
