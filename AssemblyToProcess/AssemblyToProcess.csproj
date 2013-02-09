@@ -67,7 +67,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <EmbeddedResource Include="..\Debug\AssemblyToReferenceNative.dll">
+    <EmbeddedResource Include="..\$(Configuration)\AssemblyToReferenceNative.dll">
       <Link>costura32\AssemblyToReferenceNative.dll</Link>
     </EmbeddedResource>
   </ItemGroup>
