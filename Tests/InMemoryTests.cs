@@ -36,10 +36,12 @@ public class InMemoryTests
             {
                 ModuleDefinition = moduleDefinition,
                 AssemblyResolver = new MockAssemblyResolver(),
+                Unmanaged32Assemblies = new List<string> { "AssemblyToReferenceMixed" },
                 ReferenceCopyLocalPaths = new List<string>
                     {
                         Path.Combine(directoryName, "AssemblyToReference.dll"),
                         Path.Combine(directoryName, "AssemblyToReferencePreEmbed.dll"),
+                        Path.Combine(directoryName, "AssemblyToReferenceMixed.dll"),
                     }
             };
 
@@ -86,6 +88,20 @@ public class InMemoryTests
     {
         var instance1 = assembly.GetInstance("ClassToTest");
         Assert.AreEqual("Hello", instance1.NativeFoo());
+    }
+
+    [Test]
+    public void Mixed()
+    {
+        var instance1 = assembly.GetInstance("ClassToTest");
+        Assert.AreEqual("Hello", instance1.MixedFoo());
+    }
+
+    [Test]
+    public void MixedPInvoke()
+    {
+        var instance1 = assembly.GetInstance("ClassToTest");
+        Assert.AreEqual("Hello", instance1.MixedFooPInvoke());
     }
 
 

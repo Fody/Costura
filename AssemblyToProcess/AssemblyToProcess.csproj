@@ -52,6 +52,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AssemblyToReferenceMixed\AssemblyToReferenceMixed.vcxproj">
+      <Project>{378ddf3e-44a4-48cf-be34-f55792ae561c}</Project>
+      <Name>AssemblyToReferenceMixed</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AssemblyToReferencePreEmbed\AssemblyToReferencePreEmbed.csproj">
       <Project>{E46EF81A-044A-43EF-82BD-F583BC4C045A}</Project>
       <Name>AssemblyToReferencePreEmbed</Name>

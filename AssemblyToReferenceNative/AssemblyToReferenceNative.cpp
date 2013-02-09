@@ -6,7 +6,7 @@
 
 
 // This is an example of an exported function.
-ASSEMBLYTOREFERENCENATIVE_API char* SayHello()
+ASSEMBLYTOREFERENCENATIVE_API char* SayHelloFromNative()
 {
 	return "Hello";
 }

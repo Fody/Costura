@@ -89,6 +89,20 @@ public class TempFileTests
     }
 
     [Test]
+    public void Mixed()
+    {
+        var instance1 = assembly.GetInstance("ClassToTest");
+        Assert.AreEqual("Hello", instance1.MixedFoo());
+    }
+
+    [Test]
+    public void MixedPInvoke()
+    {
+        var instance1 = assembly.GetInstance("ClassToTest");
+        Assert.AreEqual("Hello", instance1.MixedFooPInvoke());
+    }
+
+    [Test]
     public void EnsureOnly1RefToMscorLib()
     {
         var moduleDefinition = ModuleDefinition.ReadModule(assembly.CodeBase.Remove(0, 8));

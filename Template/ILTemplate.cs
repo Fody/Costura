@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -37,6 +38,21 @@ internal static class ILTemplate
 
         var prefix = string.Concat("costura.", name);
         var executingAssembly = Assembly.GetExecutingAssembly();
+
+        var libInfo = executingAssembly.GetManifestResourceInfo(String.Concat("costura32.", name, ".dll"));
+        if (libInfo == null)
+            libInfo = executingAssembly.GetManifestResourceInfo(String.Concat("costura64.", name, ".dll"));
+        if (libInfo != null)
+        {
+            // Ok, mixed mode assemblies cannot be loaded through Assembly.Load.
+            // See http://stackoverflow.com/questions/2945080/ and http://connect.microsoft.com/VisualStudio/feedback/details/97801/
+            // But, since it's an unmanaged library we've already dumped it to disk to preload it into the process.
+            // So, we'll just load it from there.
+
+            var assemblyTempFilePath = Path.Combine(tempBasePath, String.Concat(name, ".dll"));
+
+            return Assembly.LoadFile(assemblyTempFilePath);
+        }
 
         byte[] assemblyData;
         using (var assemblyStream = GetAssemblyStream(executingAssembly, prefix))
@@ -146,7 +162,7 @@ internal static class ILTemplate
             if (!lib.StartsWith("costura" + bittyness) || !lib.EndsWith(".dll"))
                 continue;
 
-            var prefix = lib.Substring(0, lib.Length - 4);
+            var prefix = Path.GetFileNameWithoutExtension(lib);
 
             var assemblyTempFilePath = Path.Combine(tempBasePath, string.Concat(prefix.Substring(10), ".dll"));
 

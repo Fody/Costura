@@ -32,25 +32,20 @@ public partial class ModuleWeaver : IDisposable
             }
         }
 
-        foreach (var dependency in onlyBinaries.Intersect(Unmanaged32Assemblies))
+        foreach (var dependency in onlyBinaries)
         {
-            var fullPath = Path.GetFullPath(dependency);
-            Embedd("costura32.", fullPath);
-            if (!IncludeDebugSymbols)
-            {
-                continue;
-            }
-            var pdbFullPath = Path.ChangeExtension(fullPath, "pdb");
-            if (File.Exists(pdbFullPath))
-            {
-                Embedd("costura32.", pdbFullPath);
-            }
-        }
+            var prefix = "";
 
-        foreach (var dependency in onlyBinaries.Intersect(Unmanaged64Assemblies))
-        {
+            if (Unmanaged32Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(dependency)))
+                prefix = "costura32.";
+            if (Unmanaged64Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(dependency)))
+                prefix = "costura64.";
+
+            if (String.IsNullOrEmpty(prefix))
+                continue;
+
             var fullPath = Path.GetFullPath(dependency);
-            Embedd("costura64.", fullPath);
+            Embedd(prefix, fullPath);
             if (!IncludeDebugSymbols)
             {
                 continue;
@@ -58,7 +53,7 @@ public partial class ModuleWeaver : IDisposable
             var pdbFullPath = Path.ChangeExtension(fullPath, "pdb");
             if (File.Exists(pdbFullPath))
             {
-                Embedd("costura64.", pdbFullPath);
+                Embedd(prefix, pdbFullPath);
             }
         }
     }
@@ -69,7 +64,9 @@ public partial class ModuleWeaver : IDisposable
         {
             foreach (var file in onlyBinaries)
             {
-                if (IncludeAssemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)))
+                if (IncludeAssemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)) &&
+                    !Unmanaged32Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)) &&
+                    !Unmanaged64Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)))
                 {
                     yield return file;
                 }
@@ -80,7 +77,9 @@ public partial class ModuleWeaver : IDisposable
         {
             foreach (var file in onlyBinaries.Except(Unmanaged32Assemblies).Except(Unmanaged64Assemblies))
             {
-                if (ExcludeAssemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)))
+                if (ExcludeAssemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)) ||
+                    Unmanaged32Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)) ||
+                    Unmanaged64Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)))
                 {
                     continue;
                 }
@@ -90,7 +89,11 @@ public partial class ModuleWeaver : IDisposable
         }
         foreach (var file in onlyBinaries)
         {
-            yield return file;
+            if (!Unmanaged32Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)) &&
+                !Unmanaged64Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)))
+            {
+                yield return file;
+            }
         }
     }
 

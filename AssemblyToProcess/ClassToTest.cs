@@ -16,11 +16,23 @@ public class ClassToTest
     }
 
     [DllImport("AssemblyToReferenceNative")]
-    private static extern string SayHello();
+    private static extern string SayHelloFromNative();
 
     public string NativeFoo()
     {
-        return SayHello();
+        return SayHelloFromNative();
+    }
+
+    [DllImport("AssemblyToReferenceMixed")]
+    private static extern string SayHelloFromMixed();
+
+    public string MixedFooPInvoke()
+    {
+        return SayHelloFromMixed();
+    }
+
+    public string MixedFoo()
+    {
+        return ClassToReferenceMixed.Foo();
     }
 }
-
