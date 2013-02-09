@@ -38,9 +38,9 @@ static class ILTemplateWithTempAssembly
             return existingAssembly;
         }
 
-        var prefix = string.Concat("costura.", name);
+        var prefix = "costura.";
 
-        var assemblyTempFilePath = Path.Combine(tempBasePath, string.Concat(prefix, ".dll"));
+        var assemblyTempFilePath = Path.Combine(tempBasePath, string.Concat(name, ".dll"));
         if (File.Exists(assemblyTempFilePath))
         {
             return Assembly.LoadFile(assemblyTempFilePath);
@@ -48,21 +48,21 @@ static class ILTemplateWithTempAssembly
 
         var executingAssembly = Assembly.GetExecutingAssembly();
 
-        var libInfo = executingAssembly.GetManifestResourceInfo(String.Concat(prefix, ".dll"));
+        var libInfo = executingAssembly.GetManifestResourceInfo(String.Concat(prefix, name, ".dll"));
         if (libInfo == null)
         {
-            prefix = string.Concat("costura32.", name);
-            libInfo = executingAssembly.GetManifestResourceInfo(String.Concat(prefix, ".dll"));
+            prefix = "costura32.";
+            libInfo = executingAssembly.GetManifestResourceInfo(String.Concat(prefix, name, ".dll"));
         }
         if (libInfo == null)
         {
-            prefix = string.Concat("costura64.", name);
-            libInfo = executingAssembly.GetManifestResourceInfo(String.Concat(prefix, ".dll"));
+            prefix = "costura64.";
+            libInfo = executingAssembly.GetManifestResourceInfo(String.Concat(prefix, name, ".dll"));
         }
         if (libInfo == null)
             return null;
 
-        using (var assemblyStream = GetAssemblyStream(executingAssembly, prefix))
+        using (var assemblyStream = GetAssemblyStream(executingAssembly, String.Concat(prefix, name)))
         {
             if (assemblyStream == null)
             {
@@ -72,12 +72,12 @@ static class ILTemplateWithTempAssembly
             File.WriteAllBytes(assemblyTempFilePath, assemblyData);
         }
 
-        using (var pdbStream = GetDebugStream(executingAssembly, prefix))
+        using (var pdbStream = GetDebugStream(executingAssembly, String.Concat(prefix, name)))
         {
             if (pdbStream != null)
             {
                 var pdbData = ReadStream(pdbStream);
-                var pdbTempFilePath = Path.Combine(tempBasePath, string.Concat(prefix, ".pdb"));
+                var pdbTempFilePath = Path.Combine(tempBasePath, string.Concat(name, ".pdb"));
                 var assemblyPdbTempFilePath = Path.Combine(tempBasePath, pdbTempFilePath);
                 File.WriteAllBytes(assemblyPdbTempFilePath, pdbData);
             }
