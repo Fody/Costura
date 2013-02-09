@@ -1,4 +1,6 @@
-﻿public class ClassToTest
+﻿using System.Runtime.InteropServices;
+
+public class ClassToTest
 {
     public string Foo()
     {
@@ -11,6 +13,14 @@
     public void ThrowException()
     {
         ClassToReference.ThrowException();
+    }
+
+    [DllImport("AssemblyToReferenceNative")]
+    private static extern string SayHello();
+
+    public string NativeFoo()
+    {
+        return SayHello();
     }
 }
 

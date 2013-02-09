@@ -24,6 +24,8 @@ static class ILTemplateWithTempAssembly
         var prefixPath = Path.Combine(Path.GetTempPath(), "Costura");
         tempBasePath = Path.Combine(prefixPath, md5Hash);
         CreateDirectory();
+
+        PreloadUnmanagedLibraries();
     }
 
 
@@ -139,5 +141,39 @@ static class ILTemplateWithTempAssembly
             }
         }
         return null;
+    }
+
+    [DllImport("kernel32.dll")]
+    private static extern IntPtr LoadLibrary(string dllToLoad);
+
+    private static void PreloadUnmanagedLibraries()
+    {
+        // Preload correct library
+        var bittyness = IntPtr.Size == 8 ? "64" : "32";
+
+        var executingAssembly = Assembly.GetExecutingAssembly();
+
+        foreach (var lib in executingAssembly.GetManifestResourceNames())
+        {
+            if (!lib.StartsWith("costura" + bittyness) || !lib.EndsWith(".dll"))
+                continue;
+
+            var prefix = lib.Substring(0, lib.Length - 4);
+
+            var assemblyTempFilePath = Path.Combine(tempBasePath, string.Concat(prefix.Substring(10), ".dll"));
+
+            if (!File.Exists(assemblyTempFilePath))
+                using (var assemblyStream = GetAssemblyStream(executingAssembly, prefix))
+                {
+                    if (assemblyStream == null)
+                    {
+                        continue;
+                    }
+                    var assemblyData = ReadStream(assemblyStream);
+                    File.WriteAllBytes(assemblyTempFilePath, assemblyData);
+                }
+
+            LoadLibrary(assemblyTempFilePath);
+        }
     }
 }

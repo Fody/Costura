@@ -14,10 +14,13 @@ public partial class ModuleWeaver : IDisposable
         {
             throw new WeavingException("ReferenceCopyLocalPaths is required you may need to update to the latest version of Fody.");
         }
-        foreach (var dependency in GetFilteredReferences())
+
+        var onlyBinaries = ReferenceCopyLocalPaths.Where(x => x.EndsWith(".dll") || x.EndsWith(".exe"));
+
+        foreach (var dependency in GetFilteredReferences(onlyBinaries))
         {
             var fullPath = Path.GetFullPath(dependency);
-            Embedd(fullPath);
+            Embedd("costura.", fullPath);
             if (!IncludeDebugSymbols)
             {
                 continue;
@@ -25,14 +28,56 @@ public partial class ModuleWeaver : IDisposable
             var pdbFullPath = Path.ChangeExtension(fullPath, "pdb");
             if (File.Exists(pdbFullPath))
             {
-                Embedd(pdbFullPath);
+                Embedd("costura.", pdbFullPath);
+            }
+        }
+
+        foreach (var dependency in onlyBinaries.Intersect(Unmanaged32Assemblies))
+        {
+            var fullPath = Path.GetFullPath(dependency);
+            Embedd("costura32.", fullPath);
+            if (!IncludeDebugSymbols)
+            {
+                continue;
+            }
+            var pdbFullPath = Path.ChangeExtension(fullPath, "pdb");
+            if (File.Exists(pdbFullPath))
+            {
+                Embedd("costura32.", pdbFullPath);
+            }
+        }
+
+        foreach (var dependency in onlyBinaries.Intersect(Unmanaged64Assemblies))
+        {
+            var fullPath = Path.GetFullPath(dependency);
+            Embedd("costura64.", fullPath);
+            if (!IncludeDebugSymbols)
+            {
+                continue;
+            }
+            var pdbFullPath = Path.ChangeExtension(fullPath, "pdb");
+            if (File.Exists(pdbFullPath))
+            {
+                Embedd("costura64.", pdbFullPath);
             }
         }
     }
 
-    IEnumerable<string> GetFilteredReferences()
+    public void ProcessNativeResources()
     {
-        var onlyBinaries = ReferenceCopyLocalPaths.Where(x => x.EndsWith(".dll") || x.EndsWith(".exe"));
+        string moduleName = ModuleDefinition.Name.Replace(".dll", "");
+
+        foreach (var res in ModuleDefinition.Resources)
+        {
+            if (!res.Name.StartsWith(moduleName + ".costura", StringComparison.InvariantCultureIgnoreCase))
+                continue;
+
+            res.Name = res.Name.Substring(moduleName.Length + 1).ToLowerInvariant();
+        }
+    }
+
+    IEnumerable<string> GetFilteredReferences(IEnumerable<string> onlyBinaries)
+    {
         if (IncludeAssemblies.Any())
         {
             foreach (var file in onlyBinaries)
@@ -46,7 +91,7 @@ public partial class ModuleWeaver : IDisposable
         }
         if (ExcludeAssemblies.Any())
         {
-            foreach (var file in onlyBinaries)
+            foreach (var file in onlyBinaries.Except(Unmanaged32Assemblies).Except(Unmanaged64Assemblies))
             {
                 if (ExcludeAssemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)))
                 {
@@ -62,9 +107,9 @@ public partial class ModuleWeaver : IDisposable
         }
     }
 
-    void Embedd(string fullPath)
+    void Embedd(string prefix, string fullPath)
     {
-        var resourceName = "costura." + Path.GetFileName(fullPath).ToLowerInvariant();
+        var resourceName = prefix + Path.GetFileName(fullPath).ToLowerInvariant();
         if (ModuleDefinition.Resources.Any(x => x.Name == resourceName))
         {
             LogInfo(string.Format("\tSkipping '{0}' because it is already embedded", fullPath));

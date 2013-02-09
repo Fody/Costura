@@ -82,6 +82,13 @@ public class TempFileTests
     }
 
     [Test]
+    public void Native()
+    {
+        var instance1 = assembly.GetInstance("ClassToTest");
+        Assert.AreEqual("Hello", instance1.NativeFoo());
+    }
+
+    [Test]
     public void EnsureOnly1RefToMscorLib()
     {
         var moduleDefinition = ModuleDefinition.ReadModule(assembly.CodeBase.Remove(0, 8));
