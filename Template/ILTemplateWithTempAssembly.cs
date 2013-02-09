@@ -14,9 +14,6 @@ static class ILTemplateWithTempAssembly
 
     public static void Attach()
     {
-        var currentDomain = AppDomain.CurrentDomain;
-        currentDomain.AssemblyResolve += ResolveAssembly;
-
         //Create a unique Temp directory for the application path.
         var md5Hash = CreateMd5Hash(Assembly.GetExecutingAssembly().CodeBase);
         var prefixPath = Path.Combine(Path.GetTempPath(), "Costura");
@@ -24,6 +21,9 @@ static class ILTemplateWithTempAssembly
         CreateDirectory();
 
         PreloadUnmanagedLibraries();
+
+        var currentDomain = AppDomain.CurrentDomain;
+        currentDomain.AssemblyResolve += ResolveAssembly;
     }
 
     public static Assembly ResolveAssembly(object sender, ResolveEventArgs args)
@@ -48,12 +48,9 @@ static class ILTemplateWithTempAssembly
         var libInfo = executingAssembly.GetManifestResourceInfo(String.Concat(prefix, name, ".dll"));
         if (libInfo == null)
         {
-            prefix = "costura32.";
-            libInfo = executingAssembly.GetManifestResourceInfo(String.Concat(prefix, name, ".dll"));
-        }
-        if (libInfo == null)
-        {
-            prefix = "costura64.";
+            var bittyness = IntPtr.Size == 8 ? "64" : "32";
+
+            prefix = String.Concat("costura", bittyness, ".");
             libInfo = executingAssembly.GetManifestResourceInfo(String.Concat(prefix, name, ".dll"));
         }
         if (libInfo == null)
@@ -180,8 +177,16 @@ static class ILTemplateWithTempAssembly
                     var assemblyData = ReadStream(assemblyStream);
                     File.WriteAllBytes(assemblyTempFilePath, assemblyData);
                 }
+        }
 
-            LoadLibrary(assemblyTempFilePath);
+        foreach (var lib in executingAssembly.GetManifestResourceNames())
+        {
+            if (lib.StartsWith("costura" + bittyness) && lib.EndsWith(".dll"))
+            {
+                var assemblyTempFilePath = Path.Combine(tempBasePath, lib.Substring(10));
+
+                LoadLibrary(assemblyTempFilePath);
+            }
         }
     }
 }

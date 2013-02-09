@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -14,9 +15,6 @@ static class ILTemplate
 
     public static void Attach()
     {
-        var currentDomain = AppDomain.CurrentDomain;
-        currentDomain.AssemblyResolve += ResolveAssembly;
-
         //Create a unique Temp directory for the application path.
         var md5Hash = CreateMd5Hash(Assembly.GetExecutingAssembly().CodeBase);
         var prefixPath = Path.Combine(Path.GetTempPath(), "Costura");
@@ -24,6 +22,9 @@ static class ILTemplate
         CreateDirectory();
 
         PreloadUnmanagedLibraries();
+
+        var currentDomain = AppDomain.CurrentDomain;
+        currentDomain.AssemblyResolve += ResolveAssembly;
     }
 
     public static Assembly ResolveAssembly(object sender, ResolveEventArgs args)
@@ -173,8 +174,16 @@ static class ILTemplate
                     var assemblyData = ReadStream(assemblyStream);
                     File.WriteAllBytes(assemblyTempFilePath, assemblyData);
                 }
+        }
 
-            LoadLibrary(assemblyTempFilePath);
+        foreach (var lib in executingAssembly.GetManifestResourceNames())
+        {
+            if (lib.StartsWith("costura" + bittyness) && lib.EndsWith(".dll"))
+            {
+                var assemblyTempFilePath = Path.Combine(tempBasePath, lib.Substring(10));
+
+                LoadLibrary(assemblyTempFilePath);
+            }
         }
     }
 }
