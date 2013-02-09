@@ -64,6 +64,7 @@
     <Compile Include="ModuleWeaver.cs" />
     <Compile Include="..\CommonAssemblyInfo.cs" />
     <Compile Include="MsCoreReferenceFinder.cs" />
+    <Compile Include="NativeResources.cs" />
     <Compile Include="ResourceCaseFixer.cs" />
     <Compile Include="ResourceEmbedder.cs" />
     <Compile Include="WeavingException.cs" />

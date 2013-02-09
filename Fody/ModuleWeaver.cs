@@ -23,6 +23,7 @@ public partial  class ModuleWeaver
         ImportAssemblyLoader();
         ImportModuleLoader();
         FixResourceCase();
+        ProcessNativeResources();
         EmbedResources();
     }
 }

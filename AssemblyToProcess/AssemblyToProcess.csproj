@@ -46,14 +46,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClassToTest.cs" />
-
     <EmbeddedResource Include="..\AssemblyToReferencePreEmbed\bin\$(ConfigurationName)\AssemblyToReferencePreEmbed.dll">
       <Visible>false</Visible>
       <LogicalName>Costura.AssemblyToReferencePreEmbed.dll</LogicalName>
     </EmbeddedResource>
-
-      </ItemGroup>
+  </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AssemblyToReferenceMixed\AssemblyToReferenceMixed.vcxproj">
+      <Project>{378ddf3e-44a4-48cf-be34-f55792ae561c}</Project>
+      <Name>AssemblyToReferenceMixed</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AssemblyToReferencePreEmbed\AssemblyToReferencePreEmbed.csproj">
       <Project>{E46EF81A-044A-43EF-82BD-F583BC4C045A}</Project>
       <Name>AssemblyToReferencePreEmbed</Name>
@@ -62,6 +64,12 @@
       <Project>{CD522993-41DF-4663-8585-7A8C98F6945E}</Project>
       <Name>AssemblyToReference</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="..\Debug\AssemblyToReferenceNative.dll">
+      <Link>costura32\AssemblyToReferenceNative.dll</Link>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
