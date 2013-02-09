@@ -9,6 +9,8 @@ public partial class ModuleWeaver
     public bool IncludeDebugSymbols = true;
     public List<string> IncludeAssemblies = new List<string>();
     public List<string> ExcludeAssemblies = new List<string>();
+    public List<string> Unmanaged32Assemblies = new List<string>();
+    public List<string> Unmanaged64Assemblies = new List<string>();
     public bool CreateTemporaryAssemblies;
 
     public void ReadConfig()
@@ -22,6 +24,8 @@ public partial class ModuleWeaver
         ReadCreateTemporaryAssemblies();
         ReadExcludes();
         ReadIncludes();
+        ReadUnmanaged32();
+        ReadUnmanaged64();
 
         if (IncludeAssemblies.Any() && ExcludeAssemblies.Any())
         {
@@ -95,6 +99,52 @@ public partial class ModuleWeaver
                                                          .NonEmpty())
             {
                 IncludeAssemblies.Add(item);
+            }
+        }
+    }
+
+    void ReadUnmanaged32()
+    {
+        var unmanagedAssembliesAttribute = Config.Attribute("Unmanaged32Assemblies");
+        if (unmanagedAssembliesAttribute != null)
+        {
+            foreach (var item in unmanagedAssembliesAttribute.Value.Split('|').NonEmpty())
+            {
+                Unmanaged32Assemblies.Add(item);
+            }
+        }
+
+        var unmanagedAssembliesElement = Config.Element("Unmanaged32Assemblies");
+        if (unmanagedAssembliesElement != null)
+        {
+            foreach (var item in unmanagedAssembliesElement.Value
+                                                           .Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)
+                                                           .NonEmpty())
+            {
+                Unmanaged32Assemblies.Add(item);
+            }
+        }
+    }
+
+    void ReadUnmanaged64()
+    {
+        var unmanagedAssembliesAttribute = Config.Attribute("Unmanaged64Assemblies");
+        if (unmanagedAssembliesAttribute != null)
+        {
+            foreach (var item in unmanagedAssembliesAttribute.Value.Split('|').NonEmpty())
+            {
+                Unmanaged64Assemblies.Add(item);
+            }
+        }
+
+        var unmanagedAssembliesElement = Config.Element("Unmanaged64Assemblies");
+        if (unmanagedAssembliesElement != null)
+        {
+            foreach (var item in unmanagedAssembliesElement.Value
+                                                           .Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)
+                                                           .NonEmpty())
+            {
+                Unmanaged64Assemblies.Add(item);
             }
         }
     }

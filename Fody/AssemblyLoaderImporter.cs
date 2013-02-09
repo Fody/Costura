@@ -84,8 +84,12 @@ public partial class ModuleWeaver
                             };
         if (templateMethod.IsPInvokeImpl)
         {
-            var moduleRef = new ModuleReference(templateMethod.PInvokeInfo.Module.Name);
-            ModuleDefinition.ModuleReferences.Add(moduleRef);
+            var moduleRef = ModuleDefinition.ModuleReferences.FirstOrDefault(mr => mr.Name == templateMethod.PInvokeInfo.Module.Name);
+            if (moduleRef == null)
+            {
+                moduleRef = new ModuleReference(templateMethod.PInvokeInfo.Module.Name);
+                ModuleDefinition.ModuleReferences.Add(moduleRef);
+            }
             newMethod.PInvokeInfo = new PInvokeInfo(templateMethod.PInvokeInfo.Attributes, templateMethod.PInvokeInfo.EntryPoint, moduleRef);
         }
 

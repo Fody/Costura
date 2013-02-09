@@ -14,10 +14,13 @@ public partial class ModuleWeaver : IDisposable
         {
             throw new WeavingException("ReferenceCopyLocalPaths is required you may need to update to the latest version of Fody.");
         }
-        foreach (var dependency in GetFilteredReferences())
+
+        var onlyBinaries = ReferenceCopyLocalPaths.Where(x => x.EndsWith(".dll") || x.EndsWith(".exe"));
+
+        foreach (var dependency in GetFilteredReferences(onlyBinaries))
         {
             var fullPath = Path.GetFullPath(dependency);
-            Embedd(fullPath);
+            Embedd("costura.", fullPath);
             if (!IncludeDebugSymbols)
             {
                 continue;
@@ -25,19 +28,45 @@ public partial class ModuleWeaver : IDisposable
             var pdbFullPath = Path.ChangeExtension(fullPath, "pdb");
             if (File.Exists(pdbFullPath))
             {
-                Embedd(pdbFullPath);
+                Embedd("costura.", pdbFullPath);
+            }
+        }
+
+        foreach (var dependency in onlyBinaries)
+        {
+            var prefix = "";
+
+            if (Unmanaged32Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(dependency)))
+                prefix = "costura32.";
+            if (Unmanaged64Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(dependency)))
+                prefix = "costura64.";
+
+            if (String.IsNullOrEmpty(prefix))
+                continue;
+
+            var fullPath = Path.GetFullPath(dependency);
+            Embedd(prefix, fullPath);
+            if (!IncludeDebugSymbols)
+            {
+                continue;
+            }
+            var pdbFullPath = Path.ChangeExtension(fullPath, "pdb");
+            if (File.Exists(pdbFullPath))
+            {
+                Embedd(prefix, pdbFullPath);
             }
         }
     }
 
-    IEnumerable<string> GetFilteredReferences()
+    IEnumerable<string> GetFilteredReferences(IEnumerable<string> onlyBinaries)
     {
-        var onlyBinaries = ReferenceCopyLocalPaths.Where(x => x.EndsWith(".dll") || x.EndsWith(".exe"));
         if (IncludeAssemblies.Any())
         {
             foreach (var file in onlyBinaries)
             {
-                if (IncludeAssemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)))
+                if (IncludeAssemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)) &&
+                    !Unmanaged32Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)) &&
+                    !Unmanaged64Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)))
                 {
                     yield return file;
                 }
@@ -46,9 +75,11 @@ public partial class ModuleWeaver : IDisposable
         }
         if (ExcludeAssemblies.Any())
         {
-            foreach (var file in onlyBinaries)
+            foreach (var file in onlyBinaries.Except(Unmanaged32Assemblies).Except(Unmanaged64Assemblies))
             {
-                if (ExcludeAssemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)))
+                if (ExcludeAssemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)) ||
+                    Unmanaged32Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)) ||
+                    Unmanaged64Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)))
                 {
                     continue;
                 }
@@ -58,13 +89,17 @@ public partial class ModuleWeaver : IDisposable
         }
         foreach (var file in onlyBinaries)
         {
-            yield return file;
+            if (!Unmanaged32Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)) &&
+                !Unmanaged64Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)))
+            {
+                yield return file;
+            }
         }
     }
 
-    void Embedd(string fullPath)
+    void Embedd(string prefix, string fullPath)
     {
-        var resourceName = "costura." + Path.GetFileName(fullPath).ToLowerInvariant();
+        var resourceName = prefix + Path.GetFileName(fullPath).ToLowerInvariant();
         if (ModuleDefinition.Resources.Any(x => x.Name == resourceName))
         {
             LogInfo(string.Format("\tSkipping '{0}' because it is already embedded", fullPath));

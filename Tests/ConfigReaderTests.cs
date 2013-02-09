@@ -50,7 +50,7 @@ Bar
     }
 
     [Test]
-    public void ExcludeAssembliesConbined()
+    public void ExcludeAssembliesCombined()
     {
         var xElement = XElement.Parse(@"
 <Costura  ExcludeAssemblies='Foo'>
@@ -102,7 +102,7 @@ Bar
     }
 
     [Test]
-    public void IncludeAssembliesConbined()
+    public void IncludeAssembliesCombined()
     {
         var xElement = XElement.Parse(@"
 <Costura  IncludeAssemblies='Foo'>
@@ -114,6 +114,90 @@ Bar
         moduleWeaver.ReadConfig();
         Assert.AreEqual("Foo", moduleWeaver.IncludeAssemblies[0]);
         Assert.AreEqual("Bar", moduleWeaver.IncludeAssemblies[1]);
+    }
+
+    [Test]
+    public void Unmanaged32AssembliesNode()
+    {
+        var xElement = XElement.Parse(@"
+<Costura>
+    <Unmanaged32Assemblies>
+Foo
+Bar
+    </Unmanaged32Assemblies>
+</Costura>");
+        var moduleWeaver = new ModuleWeaver { Config = xElement };
+        moduleWeaver.ReadConfig();
+        Assert.AreEqual("Foo", moduleWeaver.Unmanaged32Assemblies[0]);
+        Assert.AreEqual("Bar", moduleWeaver.Unmanaged32Assemblies[1]);
+    }
+
+    [Test]
+    public void Unmanaged32AssembliesAttribute()
+    {
+        var xElement = XElement.Parse(@"
+<Costura Unmanaged32Assemblies='Foo|Bar'/>");
+        var moduleWeaver = new ModuleWeaver { Config = xElement };
+        moduleWeaver.ReadConfig();
+        Assert.AreEqual("Foo", moduleWeaver.Unmanaged32Assemblies[0]);
+        Assert.AreEqual("Bar", moduleWeaver.Unmanaged32Assemblies[1]);
+    }
+
+    [Test]
+    public void Unmanaged32AssembliesCombined()
+    {
+        var xElement = XElement.Parse(@"
+<Costura  Unmanaged32Assemblies='Foo'>
+    <Unmanaged32Assemblies>
+Bar
+    </Unmanaged32Assemblies>
+</Costura>");
+        var moduleWeaver = new ModuleWeaver { Config = xElement };
+        moduleWeaver.ReadConfig();
+        Assert.AreEqual("Foo", moduleWeaver.Unmanaged32Assemblies[0]);
+        Assert.AreEqual("Bar", moduleWeaver.Unmanaged32Assemblies[1]);
+    }
+
+    [Test]
+    public void Unmanaged64AssembliesNode()
+    {
+        var xElement = XElement.Parse(@"
+<Costura>
+    <Unmanaged64Assemblies>
+Foo
+Bar
+    </Unmanaged64Assemblies>
+</Costura>");
+        var moduleWeaver = new ModuleWeaver { Config = xElement };
+        moduleWeaver.ReadConfig();
+        Assert.AreEqual("Foo", moduleWeaver.Unmanaged64Assemblies[0]);
+        Assert.AreEqual("Bar", moduleWeaver.Unmanaged64Assemblies[1]);
+    }
+
+    [Test]
+    public void Unmanaged64AssembliesAttribute()
+    {
+        var xElement = XElement.Parse(@"
+<Costura Unmanaged64Assemblies='Foo|Bar'/>");
+        var moduleWeaver = new ModuleWeaver { Config = xElement };
+        moduleWeaver.ReadConfig();
+        Assert.AreEqual("Foo", moduleWeaver.Unmanaged64Assemblies[0]);
+        Assert.AreEqual("Bar", moduleWeaver.Unmanaged64Assemblies[1]);
+    }
+
+    [Test]
+    public void Unmanaged64AssembliesCombined()
+    {
+        var xElement = XElement.Parse(@"
+<Costura  Unmanaged64Assemblies='Foo'>
+    <Unmanaged64Assemblies>
+Bar
+    </Unmanaged64Assemblies>
+</Costura>");
+        var moduleWeaver = new ModuleWeaver { Config = xElement };
+        moduleWeaver.ReadConfig();
+        Assert.AreEqual("Foo", moduleWeaver.Unmanaged64Assemblies[0]);
+        Assert.AreEqual("Bar", moduleWeaver.Unmanaged64Assemblies[1]);
     }
 
 }
