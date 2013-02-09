@@ -37,10 +37,12 @@ public class TempFileTests
             ModuleDefinition = moduleDefinition,
             AssemblyResolver = new MockAssemblyResolver(),
             CreateTemporaryAssemblies = true,
+            Unmanaged32Assemblies = new List<string> { "AssemblyToReferenceMixed" },
             ReferenceCopyLocalPaths = new List<string>
                 {
                     Path.Combine(directoryName, "AssemblyToReference.dll"),
                     Path.Combine(directoryName, "AssemblyToReferencePreEmbed.dll"),
+                    Path.Combine(directoryName, "AssemblyToReferenceMixed.dll"),
                 }
         };
 

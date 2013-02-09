@@ -40,7 +40,7 @@ static class ILTemplateWithTempAssembly
 
         var prefix = string.Concat("costura.", name);
 
-        var assemblyTempFilePath = Path.Combine(tempBasePath, string.Concat(prefix,".dll"));
+        var assemblyTempFilePath = Path.Combine(tempBasePath, string.Concat(prefix, ".dll"));
         if (File.Exists(assemblyTempFilePath))
         {
             return Assembly.LoadFile(assemblyTempFilePath);
@@ -48,6 +48,19 @@ static class ILTemplateWithTempAssembly
 
         var executingAssembly = Assembly.GetExecutingAssembly();
 
+        var libInfo = executingAssembly.GetManifestResourceInfo(String.Concat(prefix, ".dll"));
+        if (libInfo == null)
+        {
+            prefix = string.Concat("costura32.", name);
+            libInfo = executingAssembly.GetManifestResourceInfo(String.Concat(prefix, ".dll"));
+        }
+        if (libInfo == null)
+        {
+            prefix = string.Concat("costura64.", name);
+            libInfo = executingAssembly.GetManifestResourceInfo(String.Concat(prefix, ".dll"));
+        }
+        if (libInfo == null)
+            return null;
 
         using (var assemblyStream = GetAssemblyStream(executingAssembly, prefix))
         {
