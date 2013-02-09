@@ -50,7 +50,7 @@ Bar
     }
 
     [Test]
-    public void ExcludeAssembliesConbined()
+    public void ExcludeAssembliesCombined()
     {
         var xElement = XElement.Parse(@"
 <Costura  ExcludeAssemblies='Foo'>
@@ -102,7 +102,7 @@ Bar
     }
 
     [Test]
-    public void IncludeAssembliesConbined()
+    public void IncludeAssembliesCombined()
     {
         var xElement = XElement.Parse(@"
 <Costura  IncludeAssemblies='Foo'>
@@ -144,7 +144,7 @@ Bar
     }
 
     [Test]
-    public void Unmanaged32AssembliesConbined()
+    public void Unmanaged32AssembliesCombined()
     {
         var xElement = XElement.Parse(@"
 <Costura  Unmanaged32Assemblies='Foo'>
@@ -186,7 +186,7 @@ Bar
     }
 
     [Test]
-    public void Unmanaged64AssembliesConbined()
+    public void Unmanaged64AssembliesCombined()
     {
         var xElement = XElement.Parse(@"
 <Costura  Unmanaged64Assemblies='Foo'>
