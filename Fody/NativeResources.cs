@@ -2,7 +2,7 @@
 {
     public void ProcessNativeResources()
     {
-        var moduleName = ModuleDefinition.Name.Replace(".dll", "");
+        var moduleName = ModuleDefinition.Assembly.Name.Name;
 
         foreach (var resource in ModuleDefinition.Resources)
         {

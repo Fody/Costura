@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
 using Microsoft.Build.Utilities;
@@ -17,6 +18,10 @@ public static class Verifier
     public static string Validate(string assemblyPath2)
     {
         var exePath = GetPathToPEVerify();
+
+        if (!File.Exists(exePath))
+            Assert.Ignore(String.Concat("Could not find '", exePath, "'. Test ignored."));
+
         var process = Process.Start(new ProcessStartInfo(exePath, "\"" + assemblyPath2 + "\"")
         {
             RedirectStandardOutput = true,
