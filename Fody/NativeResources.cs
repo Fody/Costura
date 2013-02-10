@@ -1,14 +1,12 @@
-﻿using System;
-
-public partial class ModuleWeaver
+﻿public partial class ModuleWeaver
 {
     public void ProcessNativeResources()
     {
-        string moduleName = ModuleDefinition.Name.Replace(".dll", "");
+        var moduleName = ModuleDefinition.Name.Replace(".dll", "");
 
         foreach (var resource in ModuleDefinition.Resources)
         {
-            if (resource.Name.StartsWith(moduleName + ".costura", StringComparison.InvariantCultureIgnoreCase))
+            if (resource.Name.StartsWith(moduleName + ".costura"))
             {
                 resource.Name = resource.Name.Substring(moduleName.Length + 1).ToLowerInvariant();
             }
