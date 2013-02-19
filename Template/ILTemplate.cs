@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.IO.Compression;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
@@ -35,26 +36,16 @@ static class ILTemplate
             return existingAssembly;
         }
 
-        var prefix = string.Concat("costura.", name);
-        var executingAssembly = Assembly.GetExecutingAssembly();
-
-        var bittyness = IntPtr.Size == 8 ? "64" : "32";
-
-        var libInfo = executingAssembly.GetManifestResourceInfo(String.Concat("costura", bittyness, ".", name, ".dll"));
-        if (libInfo != null)
+        var assemblyTempFilePath = Path.Combine(tempBasePath, String.Concat(name, ".dll"));
+        if (File.Exists(assemblyTempFilePath))
         {
-            // Ok, mixed mode assemblies cannot be loaded through Assembly.Load.
-            // See http://stackoverflow.com/questions/2945080/ and http://connect.microsoft.com/VisualStudio/feedback/details/97801/
-            // But, since it's an unmanaged library we've already dumped it to disk to preload it into the process.
-            // So, we'll just load it from there.
-
-            var assemblyTempFilePath = Path.Combine(tempBasePath, String.Concat(name, ".dll"));
-
             return Assembly.LoadFile(assemblyTempFilePath);
         }
 
+        var executingAssembly = Assembly.GetExecutingAssembly();
+
         byte[] assemblyData;
-        using (var assemblyStream = GetAssemblyStream(executingAssembly, prefix))
+        using (var assemblyStream = TryFindEmbeddedStream(executingAssembly, "costura", name + ".dll"))
         {
             if (assemblyStream == null)
             {
@@ -63,7 +54,7 @@ static class ILTemplate
             assemblyData = ReadStream(assemblyStream);
         }
 
-        using (var pdbStream = GetDebugStream(executingAssembly, prefix))
+        using (var pdbStream = TryFindEmbeddedStream(executingAssembly, "costura", name + ".pdb"))
         {
             if (pdbStream != null)
             {
@@ -113,16 +104,37 @@ static class ILTemplate
         return data;
     }
 
-    static Stream GetDebugStream(Assembly executingAssembly, string prefix)
+    static Stream TryFindEmbeddedStream(Assembly executingAssembly, string prefix, string name)
     {
-        var pdbName = string.Concat(prefix, ".pdb");
-        return executingAssembly.GetManifestResourceStream(pdbName);
+        var fullName = String.Concat(prefix, ".", name);
+        var stream = executingAssembly.GetManifestResourceStream(fullName);
+        if (stream != null)
+            return stream;
+
+        fullName = String.Concat(prefix, ".cmp.", name);
+        stream = executingAssembly.GetManifestResourceStream(fullName);
+        if (stream != null)
+        {
+            var memStream = new MemoryStream();
+            using (var compressStream = new DeflateStream(stream, CompressionMode.Decompress))
+            {
+                CopyTo(compressStream, memStream);
+            }
+            memStream.Position = 0;
+            return memStream;
+        }
+
+        return null;
     }
 
-    static Stream GetAssemblyStream(Assembly executingAssembly, string prefix)
+    static void CopyTo(Stream source, Stream destination)
     {
-        var dllName = string.Concat(prefix, ".dll");
-        return executingAssembly.GetManifestResourceStream(dllName);
+        byte[] array = new byte[81920];
+        int count;
+        while ((count = source.Read(array, 0, array.Length)) != 0)
+        {
+            destination.Write(array, 0, count);
+        }
     }
 
     public static Assembly ReadExistingAssembly(string name)
@@ -147,39 +159,54 @@ static class ILTemplate
     }
 
     [DllImport("kernel32.dll")]
-    private static extern IntPtr LoadLibrary(string dllToLoad);
+    static extern IntPtr LoadLibrary(string dllToLoad);
 
-    private static void PreloadUnmanagedLibraries()
+    static void PreloadUnmanagedLibraries()
     {
         // Preload correct library
         var bittyness = IntPtr.Size == 8 ? "64" : "32";
 
         var executingAssembly = Assembly.GetExecutingAssembly();
 
+        string name;
+
         foreach (var lib in executingAssembly.GetManifestResourceNames())
         {
-            if (!lib.StartsWith("costura" + bittyness))
+            if (lib.StartsWith(String.Concat("costura", bittyness, ".cmp.")))
+                name = lib.Substring(14);
+            else if (lib.StartsWith(String.Concat("costura", bittyness, ".")))
+                name = lib.Substring(10);
+            else
                 continue;
 
-            var assemblyTempFilePath = Path.Combine(tempBasePath, lib.Substring(10));
+            var assemblyTempFilePath = Path.Combine(tempBasePath, name);
 
             if (!File.Exists(assemblyTempFilePath))
-                using (var assemblyStream = executingAssembly.GetManifestResourceStream(lib))
+                using (var assemblyStream = TryFindEmbeddedStream(executingAssembly, "costura" + bittyness, name))
                 {
                     if (assemblyStream == null)
                     {
                         continue;
                     }
-                    var assemblyData = ReadStream(assemblyStream);
-                    File.WriteAllBytes(assemblyTempFilePath, assemblyData);
+                    using (var assemblyTempFile = File.OpenWrite(assemblyTempFilePath))
+                    {
+                        CopyTo(assemblyStream, assemblyTempFile);
+                    }
                 }
         }
 
         foreach (var lib in executingAssembly.GetManifestResourceNames())
         {
-            if (lib.StartsWith("costura" + bittyness) && lib.EndsWith(".dll"))
+            if (lib.EndsWith(".dll"))
             {
-                var assemblyTempFilePath = Path.Combine(tempBasePath, lib.Substring(10));
+                if (lib.StartsWith(String.Concat("costura", bittyness, ".cmp.")))
+                    name = lib.Substring(14);
+                else if (lib.StartsWith(String.Concat("costura", bittyness, ".")))
+                    name = lib.Substring(10);
+                else
+                    continue;
+
+                var assemblyTempFilePath = Path.Combine(tempBasePath, name);
 
                 LoadLibrary(assemblyTempFilePath);
             }
