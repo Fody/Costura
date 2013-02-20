@@ -106,14 +106,17 @@ public partial class ModuleWeaver : IDisposable
             LogInfo(string.Format("\tSkipping '{0}' because it is already embedded", fullPath));
             return;
         }
-        resourceName = String.Format("{0}cmp.{1}", prefix, Path.GetFileName(fullPath).ToLowerInvariant());
+
+        if (!DisableCompression)
+            resourceName = String.Format("{0}cmp.{1}", prefix, Path.GetFileName(fullPath).ToLowerInvariant());
         LogInfo(string.Format("\tEmbedding '{0}'", fullPath));
         var memStream = new MemoryStream();
         using (var fileStream = File.OpenRead(fullPath))
-            using (var compressedStream = new DeflateStream(memStream, CompressionMode.Compress, true))
-            {
-                fileStream.CopyTo(compressedStream);
-            }
+            if (!DisableCompression)
+                using (var compressedStream = new DeflateStream(memStream, CompressionMode.Compress, true))
+                    fileStream.CopyTo(compressedStream);
+            else
+                fileStream.CopyTo(memStream);
         memStream.Position = 0;
         streams.Add(memStream);
         var resource = new EmbeddedResource(resourceName, ManifestResourceAttributes.Private, memStream);
