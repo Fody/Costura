@@ -2,7 +2,6 @@
 
 $addinName = "Costura"
 
-
 $fodyWeaversPath = [System.IO.Path]::Combine([System.IO.Path]::GetDirectoryName($project.FullName), "FodyWeavers.xml")
 
 if (!(Test-Path ($fodyWeaversPath)))
@@ -10,14 +9,15 @@ if (!(Test-Path ($fodyWeaversPath)))
 	exit
 }	
 
-$xmlDocument = New-Object System.XML.XMLDocument
-$xmlDocument.Load($fodyWeaversPath)
+$xml = [xml](get-content $fodyWeaversPath)
 
+$weavers = $xml["Weavers"]
+$node = $xml.Weavers[$addinName]
 
-$node = $xmlDocument.SelectSingleNode("/Weavers/" + $addinName)
 if ($node -ne $null)
 {
-	$node.ParentNode.RemoveChild($node)
+    $weavers.RemoveChild($node)
 }
 
-$xmlDocument.Save($fodyWeaversPath)
+$xml.Save($fodyWeaversPath)
+
