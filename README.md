@@ -36,42 +36,10 @@ eg
         ILTemplate.Attach();
     }
 
- * Injects the following class into the target assembly. This means if an assembly load fails it will be loaded from the embedded resources
+ * Injects the following class into the target assembly. This means if an assembly load fails it will be loaded from the embedded resources.
 
-eg
-
-    static class ILTemplate
-    {
-        public static void Attach()
-        {
-            var currentDomain = AppDomain.CurrentDomain;
-            currentDomain.AssemblyResolve += OnCurrentDomainOnAssemblyResolve;
-        }
-
-        public static Assembly OnCurrentDomainOnAssemblyResolve(object sender, ResolveEventArgs args)
-        {
-            var name = new AssemblyName(args.Name).Name;
-            var assemblyResourceName = string.Format("WeavingTask.{0}.dll", name);
-            var executingAssembly = Assembly.GetExecutingAssembly();
-
-            using (var assemblyStream = executingAssembly.GetManifestResourceStream(assemblyResourceName))
-            {
-                var assemblyData = new Byte[assemblyStream.Length];
-                assemblyStream.Read(assemblyData, 0, assemblyData.Length);
-
-                using (var pdbStream = executingAssembly.GetManifestResourceStream(Path.ChangeExtension(assemblyResourceName, "pdb")))
-                {
-                    if (pdbStream != null)
-                    {
-                        var pdbData = new Byte[pdbStream.Length];
-                        pdbStream.Read(pdbData, 0, pdbData.Length);
-                        return Assembly.Load(assemblyData, pdbData);
-                    }
-                }
-                return Assembly.Load(assemblyData);
-            }
-        }
-    }
+  - [ILTemplate.cs](https://github.com/Fody/Costura/blob/master/Template/ILTemplate.cs)
+  - [ILTemplateWithTempAssembly.cs](https://github.com/Fody/Costura/blob/master/Template/ILTemplateWithTempAssembly.cs)
 
 # Configuration Options
 
@@ -83,7 +51,7 @@ This will copy embedded files to disk before loading them into memory. This is h
 
 *Defaults to `false`*
 
-    <Costura CreateTemporaryAssemblies='true'/>
+    <Costura CreateTemporaryAssemblies='true' />
     
 ## IncludeDebugSymbols
 
@@ -91,7 +59,15 @@ Controls if .pdbs for reference assemblies are also embedded.
 
 *Defaults to `false`*
 
-    <Costura IncludeDebugSymbols='false'/>
+    <Costura IncludeDebugSymbols='false' />
+
+## DisableCompression
+
+Embedded assemblies are compressed by default, and uncompressed when they are loaded. You can turn compression off with this option.
+
+*Defaults to `false`*
+
+    <Costura DisableCompression='false' />
     
 ## ExcludeAssemblies
 
@@ -114,7 +90,7 @@ As an element with items delimited by a newline.
     
 Or as a attribute with items delimited by a pipe `|`.
 
-    <Costura ExcludeAssemblies='Foo|Bar'/>
+    <Costura ExcludeAssemblies='Foo|Bar' />
     
         
 ## IncludeAssemblies
@@ -123,7 +99,7 @@ A list of assembly names to include from the default action of "embed all Copy L
 
 Do not include `.exe` or `.dll` in the names.
 
-Can not be defiend with `ExcludeAssemblies`.
+Can not be defined with `ExcludeAssemblies`.
 
 Can take two forms. 
 
@@ -138,4 +114,34 @@ As an element with items delimited by a newline.
     
 Or as a attribute with items delimited by a pipe `|`.
 
-    <Costura IncludeAssemblies='Foo|Bar'/>
+    <Costura IncludeAssemblies='Foo|Bar' />
+
+
+## Unmanaged32Assemblies & Unmanaged64Assemblies
+
+Mixed-mode assemblies cannot be loaded the same way as managed assemblies.
+
+Therefore, to help Costura identify which assemblies are mixed-mode, and in what environment to load them in you should include their names in one or both of these lists.
+
+Do not include `.exe` or `.dll` in the names.
+
+Can take two forms. 
+
+As an element with items delimited by a newline.
+
+    <Costura>
+        <Unmanaged32Assemblies>
+            Foo32
+            Bar32
+        </Unmanaged32Assemblies>
+        <Unmanaged64Assemblies>
+            Foo64
+            Bar64
+        </Unmanaged64Assemblies>
+    </Costura>
+    
+Or as a attribute with items delimited by a pipe `|`.
+
+    <Costura 
+        Unmanaged32Assemblies='Foo32|Bar32' 
+        Unmanaged64Assemblies='Foo64|Bar64' />
