@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.IO.Compression;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
@@ -35,48 +36,13 @@ static class ILTemplateWithTempAssembly
             return existingAssembly;
         }
 
-        var prefix = "costura.";
-
-        var assemblyTempFilePath = Path.Combine(tempBasePath, string.Concat(name, ".dll"));
+        var assemblyTempFilePath = Path.Combine(tempBasePath, String.Concat(name, ".dll"));
         if (File.Exists(assemblyTempFilePath))
         {
             return Assembly.LoadFile(assemblyTempFilePath);
         }
 
-        var executingAssembly = Assembly.GetExecutingAssembly();
-
-        var libInfo = executingAssembly.GetManifestResourceInfo(String.Concat(prefix, name, ".dll"));
-        if (libInfo == null)
-        {
-            var bittyness = IntPtr.Size == 8 ? "64" : "32";
-
-            prefix = String.Concat("costura", bittyness, ".");
-            libInfo = executingAssembly.GetManifestResourceInfo(String.Concat(prefix, name, ".dll"));
-        }
-        if (libInfo == null)
-            return null;
-
-        using (var assemblyStream = GetAssemblyStream(executingAssembly, String.Concat(prefix, name)))
-        {
-            if (assemblyStream == null)
-            {
-                return null;
-            }
-            var assemblyData = ReadStream(assemblyStream);
-            File.WriteAllBytes(assemblyTempFilePath, assemblyData);
-        }
-
-        using (var pdbStream = GetDebugStream(executingAssembly, String.Concat(prefix, name)))
-        {
-            if (pdbStream != null)
-            {
-                var pdbData = ReadStream(pdbStream);
-                var pdbTempFilePath = Path.Combine(tempBasePath, string.Concat(name, ".pdb"));
-                var assemblyPdbTempFilePath = Path.Combine(tempBasePath, pdbTempFilePath);
-                File.WriteAllBytes(assemblyPdbTempFilePath, pdbData);
-            }
-        }
-        return Assembly.LoadFile(assemblyTempFilePath);
+        return null;
     }
 
     static void CreateDirectory()
@@ -117,16 +83,37 @@ static class ILTemplateWithTempAssembly
         return data;
     }
 
-    static Stream GetDebugStream(Assembly executingAssembly, string prefix)
+    static Stream TryFindEmbeddedStream(Assembly executingAssembly, string prefix, string name)
     {
-        var pdbName = string.Concat(prefix, ".pdb");
-        return executingAssembly.GetManifestResourceStream(pdbName);
+        var fullName = String.Concat(prefix, ".", name);
+        var stream = executingAssembly.GetManifestResourceStream(fullName);
+        if (stream != null)
+            return stream;
+
+        fullName = String.Concat(prefix, ".cmp.", name);
+        stream = executingAssembly.GetManifestResourceStream(fullName);
+        if (stream != null)
+        {
+            var memStream = new MemoryStream();
+            using (var compressStream = new DeflateStream(stream, CompressionMode.Decompress))
+            {
+                CopyTo(compressStream, memStream);
+            }
+            memStream.Position = 0;
+            return memStream;
+        }
+
+        return null;
     }
 
-    static Stream GetAssemblyStream(Assembly executingAssembly, string prefix)
+    static void CopyTo(Stream source, Stream destination)
     {
-        var dllName = string.Concat(prefix, ".dll");
-        return executingAssembly.GetManifestResourceStream(dllName);
+        byte[] array = new byte[81920];
+        int count;
+        while ((count = source.Read(array, 0, array.Length)) != 0)
+        {
+            destination.Write(array, 0, count);
+        }
     }
 
     public static Assembly ReadExistingAssembly(string name)
@@ -151,39 +138,64 @@ static class ILTemplateWithTempAssembly
     }
 
     [DllImport("kernel32.dll")]
-    private static extern IntPtr LoadLibrary(string dllToLoad);
+    static extern IntPtr LoadLibrary(string dllToLoad);
 
-    private static void PreloadUnmanagedLibraries()
+    static void PreloadUnmanagedLibraries()
     {
         // Preload correct library
         var bittyness = IntPtr.Size == 8 ? "64" : "32";
 
         var executingAssembly = Assembly.GetExecutingAssembly();
 
+        string name;
+
         foreach (var lib in executingAssembly.GetManifestResourceNames())
         {
-            if (!lib.StartsWith("costura" + bittyness))
+            if (lib.StartsWith(String.Concat("costura", bittyness, ".cmp.")))
+                name = lib.Substring(14);
+            else if (lib.StartsWith(String.Concat("costura", bittyness, ".")))
+                name = lib.Substring(10);
+            else if (lib.StartsWith("costura.cmp."))
+                name = lib.Substring(12);
+            else if (lib.StartsWith("costura."))
+                name = lib.Substring(8);
+            else
                 continue;
 
-            var assemblyTempFilePath = Path.Combine(tempBasePath, lib.Substring(10));
+            var assemblyTempFilePath = Path.Combine(tempBasePath, name);
 
             if (!File.Exists(assemblyTempFilePath))
-                using (var assemblyStream = executingAssembly.GetManifestResourceStream(lib))
+            {
+                var assemblyStream = TryFindEmbeddedStream(executingAssembly, "costura" + bittyness, name);
+                if (assemblyStream == null)
                 {
-                    if (assemblyStream == null)
-                    {
-                        continue;
-                    }
-                    var assemblyData = ReadStream(assemblyStream);
-                    File.WriteAllBytes(assemblyTempFilePath, assemblyData);
+                    assemblyStream = TryFindEmbeddedStream(executingAssembly, "costura", name);
                 }
+                if (assemblyStream == null)
+                {
+                    continue;
+                }
+
+                using (var copyStream = assemblyStream)
+                using (var assemblyTempFile = File.OpenWrite(assemblyTempFilePath))
+                {
+                    CopyTo(copyStream, assemblyTempFile);
+                }
+            }
         }
 
         foreach (var lib in executingAssembly.GetManifestResourceNames())
         {
-            if (lib.StartsWith("costura" + bittyness) && lib.EndsWith(".dll"))
+            if (lib.EndsWith(".dll"))
             {
-                var assemblyTempFilePath = Path.Combine(tempBasePath, lib.Substring(10));
+                if (lib.StartsWith(String.Concat("costura", bittyness, ".cmp.")))
+                    name = lib.Substring(14);
+                else if (lib.StartsWith(String.Concat("costura", bittyness, ".")))
+                    name = lib.Substring(10);
+                else
+                    continue;
+
+                var assemblyTempFilePath = Path.Combine(tempBasePath, name);
 
                 LoadLibrary(assemblyTempFilePath);
             }

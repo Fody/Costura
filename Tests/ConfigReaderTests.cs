@@ -14,6 +14,15 @@ public class ConfigReaderTests
     }
 
     [Test]
+    public void TrueDisableCompression()
+    {
+        var xElement = XElement.Parse(@"<Costura DisableCompression='true'/>");
+        var moduleWeaver = new ModuleWeaver { Config = xElement };
+        moduleWeaver.ReadConfig();
+        Assert.IsTrue(moduleWeaver.DisableCompression);
+    }
+
+    [Test]
     public void TrueCreateTemporaryAssemblies()
     {
         var xElement = XElement.Parse(@"<Costura CreateTemporaryAssemblies='true'/>");

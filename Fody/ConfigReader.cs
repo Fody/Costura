@@ -7,6 +7,7 @@ public partial class ModuleWeaver
 {
     public XElement Config { get; set; }
     public bool IncludeDebugSymbols = true;
+    public bool DisableCompression = false;
     public List<string> IncludeAssemblies = new List<string>();
     public List<string> ExcludeAssemblies = new List<string>();
     public List<string> Unmanaged32Assemblies = new List<string>();
@@ -21,6 +22,7 @@ public partial class ModuleWeaver
         }
 
         ReadDebugSymbols();
+        ReadCompression();
         ReadCreateTemporaryAssemblies();
         ReadExcludes();
         ReadIncludes();
@@ -53,6 +55,18 @@ public partial class ModuleWeaver
             if (!bool.TryParse(includeDebugAttribute.Value, out IncludeDebugSymbols))
             {
                 throw new Exception(string.Format("Could not parse 'IncludeDebugSymbols' from '{0}'.", includeDebugAttribute.Value));
+            }
+        }
+    }
+
+    void ReadCompression()
+    {
+        var disableCompressionAttribute = Config.Attribute("DisableCompression");
+        if (disableCompressionAttribute != null)
+        {
+            if (!bool.TryParse(disableCompressionAttribute.Value, out DisableCompression))
+            {
+                throw new Exception(string.Format("Could not parse 'DisableCompression' from '{0}'.", disableCompressionAttribute.Value));
             }
         }
     }
