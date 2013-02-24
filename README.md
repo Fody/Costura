@@ -11,7 +11,7 @@ Users of the [Costura VSIX](http://visualstudiogallery.msdn.microsoft.com/70c0e5
 
 ## Nuget package
 
-Avaliable here http://nuget.org/packages/Costura.Fody 
+Available here http://nuget.org/packages/Costura.Fody 
 
 # How it works
 
@@ -99,11 +99,11 @@ A list of assembly names to exclude from the default action of "embed all Copy L
 
 Do not include `.exe` or `.dll` in the names.
 
-Can not be defiend with `IncludeAssemblies`.
+Can not be defined with `IncludeAssemblies`.
 
 Can take two forms. 
 
-As an element with items delimetered by a newline.
+As an element with items delimited by a newline.
 
     <Costura>
         <ExcludeAssemblies>
@@ -112,7 +112,7 @@ As an element with items delimetered by a newline.
         </ExcludeAssemblies>
     </Costura>
     
-Or as a attribute with items delimetered by a pipe `|`.
+Or as a attribute with items delimited by a pipe `|`.
 
     <Costura ExcludeAssemblies='Foo|Bar'/>
     
@@ -127,7 +127,7 @@ Can not be defiend with `ExcludeAssemblies`.
 
 Can take two forms. 
 
-As an element with items delimetered by a newline.
+As an element with items delimited by a newline.
 
     <Costura>
         <IncludeAssemblies>
@@ -136,6 +136,6 @@ As an element with items delimetered by a newline.
         </IncludeAssemblies>
     </Costura>
     
-Or as a attribute with items delimetered by a pipe `|`.
+Or as a attribute with items delimited by a pipe `|`.
 
     <Costura IncludeAssemblies='Foo|Bar'/>
