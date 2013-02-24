@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using Mono.Cecil;
 
@@ -99,16 +100,26 @@ public partial class ModuleWeaver : IDisposable
 
     void Embedd(string prefix, string fullPath)
     {
-        var resourceName = prefix + Path.GetFileName(fullPath).ToLowerInvariant();
+        var resourceName = String.Format("{0}{1}", prefix, Path.GetFileName(fullPath).ToLowerInvariant());
         if (ModuleDefinition.Resources.Any(x => x.Name == resourceName))
         {
             LogInfo(string.Format("\tSkipping '{0}' because it is already embedded", fullPath));
             return;
         }
+
+        if (!DisableCompression)
+            resourceName = String.Format("{0}cmp.{1}", prefix, Path.GetFileName(fullPath).ToLowerInvariant());
         LogInfo(string.Format("\tEmbedding '{0}'", fullPath));
-        var fileStream = File.OpenRead(fullPath);
-        streams.Add(fileStream);
-        var resource = new EmbeddedResource(resourceName, ManifestResourceAttributes.Private, fileStream);
+        var memStream = new MemoryStream();
+        using (var fileStream = File.OpenRead(fullPath))
+            if (!DisableCompression)
+                using (var compressedStream = new DeflateStream(memStream, CompressionMode.Compress, true))
+                    fileStream.CopyTo(compressedStream);
+            else
+                fileStream.CopyTo(memStream);
+        memStream.Position = 0;
+        streams.Add(memStream);
+        var resource = new EmbeddedResource(resourceName, ManifestResourceAttributes.Private, memStream);
         ModuleDefinition.Resources.Add(resource);
     }
 
