@@ -1,23 +1,44 @@
 ﻿param($installPath, $toolsPath, $package, $project)
 
-$addinName = "Costura"
 
-$fodyWeaversPath = [System.IO.Path]::Combine([System.IO.Path]::GetDirectoryName($project.FullName), "FodyWeavers.xml")
-
-if (!(Test-Path ($fodyWeaversPath)))
+function Update-FodyConfig($addinName, $project)
 {
-	exit
-}	
+    $fodyWeaversPath = [System.IO.Path]::Combine([System.IO.Path]::GetDirectoryName($project.FullName), "FodyWeavers.xml")
 
-$xml = [xml](get-content $fodyWeaversPath)
+    if (!(Test-Path ($fodyWeaversPath)))
+    {
+        return
+    }   
 
-$weavers = $xml["Weavers"]
-$node = $xml.Weavers[$addinName]
+    $xml = [xml](get-content $fodyWeaversPath)
 
-if ($node -ne $null)
-{
-    $weavers.RemoveChild($node)
+    $weavers = $xml["Weavers"]
+    $node = $weavers.SelectSingleNode($addinName)
+
+    if ($node)
+    {
+        $weavers.RemoveChild($node)
+    }
+
+    $xml.Save($fodyWeaversPath)
 }
 
-$xml.Save($fodyWeaversPath)
+function Uninstall-Target($targetName, $project)
+{
+    # Need to load MSBuild assembly if it's not loaded yet.
+    Add-Type -AssemblyName 'Microsoft.Build, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a'
 
+    # Grab the loaded MSBuild project for the project
+    $msbuild = [Microsoft.Build.Evaluation.ProjectCollection]::GlobalProjectCollection.GetLoadedProjects($project.FullName) | Select-Object -First 1
+    $importToRemove = $msbuild.Xml.Imports | Where-Object { $_.Project.Endswith($targetName + '.targets') }
+
+    # Add the import and save the project
+    $msbuild.Xml.RemoveChild($importToRemove) | out-null
+    $project.Save()
+}
+
+
+
+Update-FodyConfig "Costura" $project
+
+Uninstall-Target "Costura" $project

@@ -1,0 +1,43 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <ReferencesPath Condition=" '$(ReferencesPath)' == '' ">References\</ReferencesPath>
+  </PropertyGroup>
+
+  <!--
+    ============================================================
+                                        _CopyFilesMarkedCopyLocal
+
+    Copy references that are marked as "CopyLocal" and their dependencies, including .pdbs, .xmls and satellites.
+    ============================================================
+    -->
+  <Target
+      Name="_CopyFilesMarkedCopyLocal"
+      Condition="'@(ReferenceCopyLocalPaths)' != ''"
+        >
+
+    <PropertyGroup>
+      <!-- By default we're not using Hard Links to copy to the output directory, and never when building in VS -->
+      <CreateHardLinksForCopyLocalIfPossible Condition="'$(BuildingInsideVisualStudio)' == 'true' or '$(CreateHardLinksForCopyLocalIfPossible)' == ''">false</CreateHardLinksForCopyLocalIfPossible>
+    </PropertyGroup>
+
+    <Message Text="Costura : Copying References to '$(OutDir)$(ReferencesPath)'" />
+
+    <Copy
+        SourceFiles="@(ReferenceCopyLocalPaths)"
+        DestinationFiles="@(ReferenceCopyLocalPaths->'$(OutDir)$(ReferencesPath)%(DestinationSubDirectory)%(Filename)%(Extension)')"
+        SkipUnchangedFiles="$(SkipCopyUnchangedFiles)"
+        OverwriteReadOnlyFiles="$(OverwriteReadOnlyFiles)"
+        Retries="$(CopyRetryCount)"
+        RetryDelayMilliseconds="$(CopyRetryDelayMilliseconds)"
+        UseHardlinksIfPossible="$(CreateHardLinksForCopyLocalIfPossible)"
+        Condition="'$(UseCommonOutputDirectory)' != 'true'"
+            >
+
+      <Output TaskParameter="DestinationFiles" ItemName="FileWritesShareable"/>
+
+    </Copy>
+
+  </Target>
+  
+</Project>

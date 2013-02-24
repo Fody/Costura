@@ -17,6 +17,7 @@
     </None>
     <None Include="install.ps1" />
     <None Include="uninstall.ps1" />
+    <None Include="Costura.targets" />
     <Content Include="Fody_ToBeDeleted.txt" />
   </ItemGroup>
   <Target Name="Clean">
@@ -32,6 +33,7 @@
     <Copy SourceFiles="$(SolutionDir)Fody\bin\$(ConfigurationName)\Costura.Fody.dll" DestinationFolder="$(SolutionDir)NuGetBuild" />
     <Copy SourceFiles="$(ProjectDir)install.ps1" DestinationFolder="$(SolutionDir)NuGetBuild\Tools" />
     <Copy SourceFiles="$(ProjectDir)uninstall.ps1" DestinationFolder="$(SolutionDir)NuGetBuild\Tools" />
+    <Copy SourceFiles="$(ProjectDir)Costura.targets" DestinationFolder="$(SolutionDir)NuGetBuild\Tools" />
     <PepitaPackage.WeavingTask NuGetBuildDirectory="$(SolutionDir)NuGetBuild" MetadataAssembly="$(SolutionDir)Fody\bin\$(ConfigurationName)\Costura.Fody.dll" />
   </Target>
   <ItemGroup>
