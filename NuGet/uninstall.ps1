@@ -32,7 +32,7 @@ function Uninstall-Target($targetName, $project)
     $msbuild = [Microsoft.Build.Evaluation.ProjectCollection]::GlobalProjectCollection.GetLoadedProjects($project.FullName) | Select-Object -First 1
     $importToRemove = $msbuild.Xml.Imports | Where-Object { $_.Project.Endswith($targetName + '.targets') }
 
-    # Add the import and save the project
+    # Remove the import and save the project
     $msbuild.Xml.RemoveChild($importToRemove) | out-null
     $project.Save()
 }
