@@ -24,45 +24,8 @@ function Update-FodyConfig($addinName, $project)
     $xml.Save($fodyWeaversPath)
 }
 
-function Copy-Target($targetName, $toolsPath, $project)
-{
-    $targetsFile = [System.IO.Path]::Combine($toolsPath, $targetName + '.targets')
-
-    $projectToolsPath = [System.IO.Path]::Combine([System.IO.Path]::GetDirectoryName($project.FullName), "..", "Tools")
-
-    New-Item $projectToolsPath -type directory -force | Out-Null
-    Copy-Item $targetsFile $projectToolsPath -Force | Out-Null
-
-    return $projectToolsPath
-}
-
-function Install-Target($targetName, $toolsPath, $project)
-{
-    # This is the MSBuild targets file to add
-    $targetsFile = [System.IO.Path]::Combine($toolsPath, $targetName + '.targets')
- 
-    # Need to load MSBuild assembly if it's not loaded yet.
-    Add-Type -AssemblyName 'Microsoft.Build, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a'
-
-    # Grab the loaded MSBuild project for the project
-    $msbuild = [Microsoft.Build.Evaluation.ProjectCollection]::GlobalProjectCollection.GetLoadedProjects($project.FullName) | Select-Object -First 1
- 
-    # Make the path to the targets file relative.
-    $projectUri = new-object Uri('file://' + $project.FullName)
-    $targetUri = new-object Uri('file://' + $targetsFile)
-    $relativePath = $projectUri.MakeRelativeUri($targetUri).ToString().Replace([System.IO.Path]::AltDirectorySeparatorChar, [System.IO.Path]::DirectorySeparatorChar)
- 
-    # Add the import and save the project
-    $msbuild.Xml.AddImport('$(ProjectDir)\' + $relativePath) | out-null
-    $project.Save()
-}
-
 
 
 $project.ProjectItems.Item("Fody_ToBeDeleted.txt").Delete()
 
 Update-FodyConfig "Costura" $project
-
-$projectToolsPath = Copy-Target "Costura" $toolsPath $project
-
-Install-Target "Costura" $projectToolsPath $project
