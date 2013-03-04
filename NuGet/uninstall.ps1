@@ -8,8 +8,12 @@ function Update-FodyConfig($addinName, $project)
     if (!(Test-Path ($fodyWeaversPath)))
     {
         return
-    }   
+    }   	
 
+	$env:FodyLastProjectPath = $project.FullName
+	$env:FodyLastWeaverName = $addinName
+	$env:FodyLastXmlContents = [IO.File]::ReadAllText($fodyWeaversPath)
+	
     $xml = [xml](get-content $fodyWeaversPath)
 
     $weavers = $xml["Weavers"]
@@ -25,4 +29,4 @@ function Update-FodyConfig($addinName, $project)
 
 
 
-Update-FodyConfig "Costura" $project
+Update-FodyConfig $package.Id.Replace(".Fody", "") $project
