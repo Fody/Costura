@@ -3,18 +3,20 @@
 
 function RemoveForceProjectLevelHack($project)
 {
-	if (Test-Path "content/Fody_ToBeDeleted.txt")
+	Foreach ($item in $project.ProjectItems) 
 	{
-		$itemToRemove = $project.ProjectItems.Item("Fody_ToBeDeleted.txt")	
-		$itemToRemove.Delete()
-	}	
+		if ($item.Name -eq "Fody_ToBeDeleted.txt")
+		{
+			$item.Delete()
+		}
+	}
 }
 
 function Update-FodyConfig($addinName, $project)
 {
 	
     $fodyWeaversPath = [System.IO.Path]::Combine([System.IO.Path]::GetDirectoryName($project.FullName), "FodyWeavers.xml")
-	
+
 	$FodyLastProjectPath = $env:FodyLastProjectPath
 	$FodyLastWeaverName = $env:FodyLastWeaverName
 	$FodyLastXmlContents = $env:FodyLastXmlContents
