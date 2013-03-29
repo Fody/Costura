@@ -13,6 +13,10 @@ Users of the [Costura VSIX](http://visualstudiogallery.msdn.microsoft.com/70c0e5
 
 Available here http://nuget.org/packages/Costura.Fody 
 
+To Install from the Nuget Package Manager Console 
+    
+    PM> Install-Package Costura.Fody
+
 # How it works
 
 ## Merge assemblies as embedded resources.
