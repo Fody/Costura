@@ -149,3 +149,7 @@ Or as a attribute with items delimited by a pipe `|`.
     <Costura 
         Unmanaged32Assemblies='Foo32|Bar32' 
         Unmanaged64Assemblies='Foo64|Bar64' />
+        
+## Icon
+
+Icon courtesy of [The Noun Project](http://thenounproject.com)
