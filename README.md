@@ -152,4 +152,4 @@ Or as a attribute with items delimited by a pipe `|`.
         
 ## Icon
 
-Icon courtesy of [The Noun Project](http://thenounproject.com)
+<a href="http://thenounproject.com/noun/merge/#icon-No256" target="_blank">Merge</a>  from The Noun Project
