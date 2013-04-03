@@ -12,6 +12,7 @@
     <AssemblyName>Costura.Fody</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <FodyPath>..\packages\Fody.1.13.6.1</FodyPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -54,6 +55,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
+    <None Include="Fody.targets" />
     <None Include="FodyWeavers.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -86,8 +88,5 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(ProjectPath)\..\..\Tools\Pepita\PepitaGet.targets" />
-  <Import Project="..\packages\Fody.1.13.3.0\Fody.targets" Condition="Exists('..\packages\Fody.1.13.3.0\Fody.targets')" />
-  <Target Name="FodyTargetsCheck" BeforeTargets="BeforeCompile">
-    <Error Condition="!Exists('..\packages\Fody.1.13.3.0\Fody.targets')" Text="Could not find Fody.targets. You either forget to check in the package or forgot to enable package restore." />
-  </Target>
+  <Import Project="Fody.targets" />
 </Project>
