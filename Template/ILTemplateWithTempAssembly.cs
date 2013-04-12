@@ -90,7 +90,7 @@ static class ILTemplateWithTempAssembly
         if (stream != null)
             return stream;
 
-        fullName = String.Concat(prefix, ".cmp.", name);
+        fullName = String.Concat(prefix, ".", name, ".zip");
         stream = executingAssembly.GetManifestResourceStream(fullName);
         if (stream != null)
         {
@@ -151,16 +151,15 @@ static class ILTemplateWithTempAssembly
 
         foreach (var lib in executingAssembly.GetManifestResourceNames())
         {
-            if (lib.StartsWith(String.Concat("costura", bittyness, ".cmp.")))
-                name = lib.Substring(14);
-            else if (lib.StartsWith(String.Concat("costura", bittyness, ".")))
+             if (lib.StartsWith(String.Concat("costura", bittyness, ".")))
                 name = lib.Substring(10);
-            else if (lib.StartsWith("costura.cmp."))
-                name = lib.Substring(12);
             else if (lib.StartsWith("costura."))
                 name = lib.Substring(8);
             else
                 continue;
+
+            if (name.EndsWith(".zip"))
+                name = name.Substring(0, name.Length - 4);
 
             var assemblyTempFilePath = Path.Combine(tempBasePath, name);
 
@@ -188,12 +187,13 @@ static class ILTemplateWithTempAssembly
         {
             if (lib.EndsWith(".dll"))
             {
-                if (lib.StartsWith(String.Concat("costura", bittyness, ".cmp.")))
-                    name = lib.Substring(14);
-                else if (lib.StartsWith(String.Concat("costura", bittyness, ".")))
+                if (lib.StartsWith(String.Concat("costura", bittyness, ".")))
                     name = lib.Substring(10);
                 else
                     continue;
+
+                if (name.EndsWith(".zip"))
+                    name = name.Substring(0, name.Length - 4);
 
                 var assemblyTempFilePath = Path.Combine(tempBasePath, name);
 
