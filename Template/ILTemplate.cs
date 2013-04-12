@@ -106,12 +106,12 @@ static class ILTemplate
 
     static Stream TryFindEmbeddedStream(Assembly executingAssembly, string prefix, string name)
     {
-        var fullName = String.Concat(prefix, ".", name);
+        var fullName = String.Concat(prefix,".", name);
         var stream = executingAssembly.GetManifestResourceStream(fullName);
         if (stream != null)
             return stream;
 
-        fullName = String.Concat(prefix, ".cmp.", name);
+        fullName = String.Concat(prefix, ".", name, ".zip");
         stream = executingAssembly.GetManifestResourceStream(fullName);
         if (stream != null)
         {
@@ -172,12 +172,13 @@ static class ILTemplate
 
         foreach (var lib in executingAssembly.GetManifestResourceNames())
         {
-            if (lib.StartsWith(String.Concat("costura", bittyness, ".cmp.")))
-                name = lib.Substring(14);
-            else if (lib.StartsWith(String.Concat("costura", bittyness, ".")))
+            if (lib.StartsWith(String.Concat("costura", bittyness, ".")))
                 name = lib.Substring(10);
             else
                 continue;
+
+            if (name.EndsWith(".zip"))
+                name = name.Substring(0, name.Length - 4);
 
             var assemblyTempFilePath = Path.Combine(tempBasePath, name);
 
@@ -199,12 +200,13 @@ static class ILTemplate
         {
             if (lib.EndsWith(".dll"))
             {
-                if (lib.StartsWith(String.Concat("costura", bittyness, ".cmp.")))
-                    name = lib.Substring(14);
-                else if (lib.StartsWith(String.Concat("costura", bittyness, ".")))
+                if (lib.StartsWith(String.Concat("costura", bittyness, ".")))
                     name = lib.Substring(10);
                 else
                     continue;
+
+                if (name.EndsWith(".zip"))
+                    name = name.Substring(0, name.Length - 4);
 
                 var assemblyTempFilePath = Path.Combine(tempBasePath, name);
 
