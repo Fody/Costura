@@ -108,7 +108,7 @@ public partial class ModuleWeaver : IDisposable
         }
 
         if (!DisableCompression)
-            resourceName = String.Format("{0}cmp.{1}", prefix, Path.GetFileName(fullPath).ToLowerInvariant());
+            resourceName = String.Format("{0}{1}.zip", prefix, Path.GetFileName(fullPath).ToLowerInvariant());
         LogInfo(string.Format("\tEmbedding '{0}'", fullPath));
         var memStream = new MemoryStream();
         using (var fileStream = File.OpenRead(fullPath))
