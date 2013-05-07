@@ -4,11 +4,6 @@ Embeds dependencies as resources.
 
 [Introduction to Fody](http://github.com/Fody/Fody/wiki/SampleUsage)
 
-### Note: Costura VSIX
-
-Users of the [Costura VSIX](http://visualstudiogallery.msdn.microsoft.com/70c0e54d-07de-4ff3-a62f-aac9c31e8c39) extension who are migrating to [Fody](https://github.com/Fody/fody) will want to use NuGet to Install the Costura.Fody package along with Fody itself to get the same functionality as before. This is because Fody is a general purpose weaver with plugins while Costura VSIX was specific to one scenario. See [Converting from Costura VSIX](https://github.com/Fody/Costura/wiki/ConvertingFromTheCosturaVSIX) for more information 
-
-
 ## Nuget package
 
 Available here http://nuget.org/packages/Costura.Fody 
