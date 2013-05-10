@@ -5,11 +5,10 @@ using Mono.Cecil.Cil;
 
 public partial class ModuleWeaver
 {
-    ConstructorInfo instructionConstructorInfo = typeof (Instruction).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, new[] {typeof (OpCode), typeof (object)}, null);
+    ConstructorInfo instructionConstructorInfo = typeof(Instruction).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(OpCode), typeof(object) }, null);
     TypeDefinition targetType;
     TypeDefinition sourceType;
     public MethodDefinition AttachMethod;
-
 
     public void ImportAssemblyLoader()
     {
@@ -19,7 +18,6 @@ public partial class ModuleWeaver
             AttachMethod = existingILTemplate.Methods.First(x => x.Name == "Attach");
             return;
         }
-
 
         var moduleDefinition = GetTemplateModuleDefinition();
 
@@ -33,6 +31,7 @@ public partial class ModuleWeaver
         }
 
         targetType = new TypeDefinition("Costura", "AssemblyLoader", sourceType.Attributes, Resolve(sourceType.BaseType));
+        targetType.CustomAttributes.Add(new CustomAttribute(CompilerGeneratedAttributeCtor));
         ModuleDefinition.Types.Add(targetType);
         CopyFields(sourceType);
         CopyMethod(sourceType.Methods.First(x => x.Name == "ResolveAssembly"));
@@ -61,7 +60,6 @@ public partial class ModuleWeaver
         }
     }
 
-
     TypeReference Resolve(TypeReference baseType)
     {
         var typeDefinition = baseType.Resolve();
@@ -72,7 +70,6 @@ public partial class ModuleWeaver
         }
         return typeReference;
     }
-
 
     MethodDefinition CopyMethod(MethodDefinition templateMethod)
     {
@@ -93,7 +90,6 @@ public partial class ModuleWeaver
             newMethod.PInvokeInfo = new PInvokeInfo(templateMethod.PInvokeInfo.Attributes, templateMethod.PInvokeInfo.EntryPoint, moduleRef);
         }
 
-
         if (templateMethod.Body != null)
         {
             newMethod.Body.InitLocals = templateMethod.Body.InitLocals;
@@ -103,14 +99,12 @@ public partial class ModuleWeaver
             }
             CopyInstructions(templateMethod, newMethod);
             CopyExceptionHandlers(templateMethod, newMethod);
-
         }
         foreach (var parameterDefinition in templateMethod.Parameters)
         {
             newMethod.Parameters.Add(new ParameterDefinition(Resolve(parameterDefinition.ParameterType)));
         }
 
-        
         targetType.Methods.Add(newMethod);
         return newMethod;
     }
@@ -164,7 +158,7 @@ public partial class ModuleWeaver
 
     Instruction CloneInstruction(Instruction instruction)
     {
-        var newInstruction = (Instruction) instructionConstructorInfo.Invoke(new[] {instruction.OpCode, instruction.Operand});
+        var newInstruction = (Instruction)instructionConstructorInfo.Invoke(new[] { instruction.OpCode, instruction.Operand });
         newInstruction.Operand = Import(instruction.Operand);
         return newInstruction;
     }

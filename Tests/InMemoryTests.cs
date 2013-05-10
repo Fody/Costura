@@ -7,7 +7,6 @@ using System.Reflection;
 using Mono.Cecil;
 using NUnit.Framework;
 
-
 [TestFixture]
 public class InMemoryTests
 {
@@ -28,8 +27,6 @@ public class InMemoryTests
 
         afterAssemblyPath = beforeAssemblyPath.Replace(".dll", "InMemory.dll");
         File.Copy(beforeAssemblyPath, afterAssemblyPath, true);
-
-
 
         moduleDefinition = ModuleDefinition.ReadModule(afterAssemblyPath);
         var weavingTask = new ModuleWeaver
@@ -52,7 +49,6 @@ public class InMemoryTests
         File.Copy(afterAssemblyPath, isolatedPath, true);
         assembly = Assembly.LoadFile(isolatedPath);
     }
-
 
     [Test]
     public void Simple()
@@ -104,18 +100,21 @@ public class InMemoryTests
         Assert.AreEqual("Hello", instance1.MixedFooPInvoke());
     }
 
-
     [Test]
     public void EnsureOnly1RefToMscorLib()
     {
         Assert.AreEqual(1, moduleDefinition.AssemblyReferences.Count(x => x.Name == "mscorlib"));
     }
 
+    [Test]
+    public void EnsureCompilerGeneratedAttribute()
+    {
+        Assert.IsTrue(moduleDefinition.GetType("Costura.AssemblyLoader").Resolve().CustomAttributes.Any(attr => attr.AttributeType.Name == "CompilerGeneratedAttribute"));
+    }
 
     [Test]
     public void PeVerify()
     {
         Verifier.Verify(beforeAssemblyPath, afterAssemblyPath);
     }
-
 }

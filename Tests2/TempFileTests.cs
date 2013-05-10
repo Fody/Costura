@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using Mono.Cecil;
 using NUnit.Framework;
-using System.Linq;
-
 
 [TestFixture]
 public class TempFileTests
@@ -29,7 +28,6 @@ public class TempFileTests
         File.Copy(beforeAssemblyPath, afterAssemblyPath, true);
 
         var directoryName = Path.GetDirectoryName(beforeAssemblyPath);
-
 
         moduleDefinition = ModuleDefinition.ReadModule(afterAssemblyPath);
         var weavingTask = new ModuleWeaver
@@ -54,13 +52,13 @@ public class TempFileTests
         assembly = Assembly.LoadFile(isolatedPath);
     }
 
-
     [Test]
     public void Simple()
     {
         var instance1 = assembly.GetInstance("ClassToTest");
         Assert.AreEqual("Hello", instance1.Foo());
     }
+
     [Test]
     public void SimplePreEmbed()
     {
@@ -111,11 +109,15 @@ public class TempFileTests
         Assert.AreEqual(1, moduleDefinition.AssemblyReferences.Count(x => x.Name == "mscorlib"));
     }
 
+    [Test]
+    public void EnsureCompilerGeneratedAttribute()
+    {
+        Assert.IsTrue(moduleDefinition.GetType("Costura.AssemblyLoader").Resolve().CustomAttributes.Any(attr => attr.AttributeType.Name == "CompilerGeneratedAttribute"));
+    }
 
     [Test]
     public void PeVerify()
     {
-        Verifier.Verify(beforeAssemblyPath,afterAssemblyPath);
+        Verifier.Verify(beforeAssemblyPath, afterAssemblyPath);
     }
-
 }
