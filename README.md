@@ -144,7 +144,25 @@ Or as a attribute with items delimited by a pipe `|`.
     <Costura 
         Unmanaged32Assemblies='Foo32|Bar32' 
         Unmanaged64Assemblies='Foo64|Bar64' />
-        
-## Icon
+
+# Creating a clean output directory
+
+Costura only merges dependencies. It does not handle cleaning those dependencies from you output directory. So this means the resultant merged dll/exe will exist in your output directory (eg `bin\Debug`) next to all your dependencies. If you want to clean this directory you can add the following to your project file.
+
+    <Target 
+        AfterTargets="AfterBuild;NonWinFodyTarget"
+        Name="CleanReferenceCopyLocalPaths" >
+         <Delete Files="@(ReferenceCopyLocalPaths->'$(OutDir)%(DestinationSubDirectory)%(Filename)%(Extension)')" />
+    </Target>
+
+Note that this does not handle `ExcludeAssemblies` or `IncludeAssemblies` options mentioned above. You will have to handle these explicitly.
+
+# Icon
 
 <a href="http://thenounproject.com/noun/merge/#icon-No256" target="_blank">Merge</a>  from The Noun Project
+
+# Contributors
+
+ * [Cameron MacFarland](https://github.com/distantcam)
+ * [Simon Cropp](https://github.com/SimonCropp) 
+
