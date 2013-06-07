@@ -38,12 +38,18 @@ public partial class ModuleWeaver : IDisposable
             var prefix = "";
 
             if (Unmanaged32Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(dependency)))
+            {
                 prefix = "costura32.";
+            }
             if (Unmanaged64Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(dependency)))
+            {
                 prefix = "costura64.";
+            }
 
             if (String.IsNullOrEmpty(prefix))
+            {
                 continue;
+            }
 
             var fullPath = Path.GetFullPath(dependency);
             Embedd(prefix, fullPath);
@@ -66,8 +72,8 @@ public partial class ModuleWeaver : IDisposable
             foreach (var file in onlyBinaries)
             {
                 if (IncludeAssemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)) &&
-                    !Unmanaged32Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)) &&
-                    !Unmanaged64Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)))
+                    Unmanaged32Assemblies.All(x => x != Path.GetFileNameWithoutExtension(file)) &&
+                    Unmanaged64Assemblies.All(x => x != Path.GetFileNameWithoutExtension(file)))
                 {
                     yield return file;
                 }
@@ -90,8 +96,8 @@ public partial class ModuleWeaver : IDisposable
         }
         foreach (var file in onlyBinaries)
         {
-            if (!Unmanaged32Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)) &&
-                !Unmanaged64Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)))
+            if (Unmanaged32Assemblies.All(x => x != Path.GetFileNameWithoutExtension(file)) &&
+                Unmanaged64Assemblies.All(x => x != Path.GetFileNameWithoutExtension(file)))
             {
                 yield return file;
             }
@@ -108,18 +114,28 @@ public partial class ModuleWeaver : IDisposable
         }
 
         if (!DisableCompression)
+        {
             resourceName = String.Format("{0}{1}.zip", prefix, Path.GetFileName(fullPath).ToLowerInvariant());
+        }
         LogInfo(string.Format("\tEmbedding '{0}'", fullPath));
-        var memStream = new MemoryStream();
-        using (var fileStream = File.OpenRead(fullPath))
+        var memoryStream = new MemoryStream();
+        using (var fileStream = File.Open(fullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+        {
             if (!DisableCompression)
-                using (var compressedStream = new DeflateStream(memStream, CompressionMode.Compress, true))
+            {
+                using (var compressedStream = new DeflateStream(memoryStream, CompressionMode.Compress, true))
+                {
                     fileStream.CopyTo(compressedStream);
+                }
+            }
             else
-                fileStream.CopyTo(memStream);
-        memStream.Position = 0;
-        streams.Add(memStream);
-        var resource = new EmbeddedResource(resourceName, ManifestResourceAttributes.Private, memStream);
+            {
+                fileStream.CopyTo(memoryStream);
+            }
+        }
+        memoryStream.Position = 0;
+        streams.Add(memoryStream);
+        var resource = new EmbeddedResource(resourceName, ManifestResourceAttributes.Private, memoryStream);
         ModuleDefinition.Resources.Add(resource);
     }
 
