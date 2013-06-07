@@ -119,7 +119,7 @@ public partial class ModuleWeaver : IDisposable
         }
         LogInfo(string.Format("\tEmbedding '{0}'", fullPath));
         var memoryStream = new MemoryStream();
-        using (var fileStream = File.Open(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read))
+        using (var fileStream = File.Open(fullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
         {
             if (!DisableCompression)
             {
