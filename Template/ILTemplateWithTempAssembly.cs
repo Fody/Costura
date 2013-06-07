@@ -52,11 +52,16 @@ static class ILTemplateWithTempAssembly
             try
             {
                 Directory.Delete(tempBasePath, true);
+                Directory.CreateDirectory(tempBasePath);
             }
             catch
-            { }
+            {
+            }
         }
-        Directory.CreateDirectory(tempBasePath);
+        else
+        {
+            Directory.CreateDirectory(tempBasePath);
+        }
         MoveFileEx(tempBasePath, null, 0x4);
     }
 
