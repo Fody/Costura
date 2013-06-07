@@ -102,10 +102,10 @@ static class ILTemplate
         }
     }
 
-    static byte[] ReadStream(Stream atream)
+    static byte[] ReadStream(Stream stream)
     {
-        var data = new Byte[atream.Length];
-        atream.Read(data, 0, data.Length);
+        var data = new Byte[stream.Length];
+        stream.Read(data, 0, data.Length);
         return data;
     }
 
@@ -134,7 +134,7 @@ static class ILTemplate
 
     static void CopyTo(Stream source, Stream destination)
     {
-        byte[] array = new byte[81920];
+        var array = new byte[81920];
         int count;
         while ((count = source.Read(array, 0, array.Length)) != 0)
         {
