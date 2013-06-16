@@ -1,3 +1,5 @@
+![Icon](https://raw.github.com/Fody/Costura/master/Icons/package_icon.png)
+
 ## This is an add-in for [Fody](https://github.com/Fody/Fody/) 
 
 Embeds dependencies as resources.
