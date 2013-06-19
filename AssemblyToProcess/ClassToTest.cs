@@ -10,6 +10,11 @@ public class ClassToTest
     {
         return ClassToReference2.Foo();
     }
+    public string ExeFoo()
+    {
+        return ExeClassToReference.Foo();
+    }
+
     public void ThrowException()
     {
         ClassToReference.ThrowException();

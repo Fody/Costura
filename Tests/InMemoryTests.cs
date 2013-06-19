@@ -19,11 +19,11 @@ public class InMemoryTests
     public InMemoryTests()
     {
         beforeAssemblyPath = Path.GetFullPath(@"..\..\..\AssemblyToProcess\bin\Debug\AssemblyToProcess.dll");
+        var directoryName = Path.GetDirectoryName(@"..\..\..\Debug\");
 #if (!DEBUG)
         beforeAssemblyPath = beforeAssemblyPath.Replace("Debug", "Release");
+        directoryName = directoryName.Replace("Debug", "Release");
 #endif
-
-        var directoryName = Path.GetDirectoryName(beforeAssemblyPath);
 
         afterAssemblyPath = beforeAssemblyPath.Replace(".dll", "InMemory.dll");
         File.Copy(beforeAssemblyPath, afterAssemblyPath, true);
@@ -36,8 +36,9 @@ public class InMemoryTests
                 Unmanaged32Assemblies = new List<string> { "AssemblyToReferenceMixed" },
                 ReferenceCopyLocalPaths = new List<string>
                     {
-                        Path.Combine(directoryName, "AssemblyToReference.dll"),
-                        Path.Combine(directoryName, "AssemblyToReferencePreEmbed.dll"),
+                        beforeAssemblyPath.Replace("AssemblyToProcess", "AssemblyToReference"),
+                        beforeAssemblyPath.Replace("AssemblyToProcess", "AssemblyToReferencePreEmbed"),
+                        Path.ChangeExtension(beforeAssemblyPath.Replace("AssemblyToProcess", "ExeToReference"), "exe"),
                         Path.Combine(directoryName, "AssemblyToReferenceMixed.dll"),
                     }
             };
@@ -62,6 +63,13 @@ public class InMemoryTests
     {
         var instance2 = assembly.GetInstance("ClassToTest");
         Assert.AreEqual("Hello", instance2.Foo2());
+    }
+
+    [Test]
+    public void Exe()
+    {
+        var instance2 = assembly.GetInstance("ClassToTest");
+        Assert.AreEqual("Hello", instance2.ExeFoo());
     }
 
     [Test]

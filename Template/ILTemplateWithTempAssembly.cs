@@ -41,6 +41,11 @@ static class ILTemplateWithTempAssembly
         {
             return Assembly.LoadFile(assemblyTempFilePath);
         }
+        assemblyTempFilePath = Path.ChangeExtension(assemblyTempFilePath, "exe");
+        if (File.Exists(assemblyTempFilePath))
+        {
+            return Assembly.LoadFile(assemblyTempFilePath);
+        }
 
         return null;
     }

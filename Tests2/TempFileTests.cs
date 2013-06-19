@@ -19,15 +19,14 @@ public class TempFileTests
     public TempFileTests()
     {
         beforeAssemblyPath = Path.GetFullPath(@"..\..\..\AssemblyToProcess\bin\Debug\AssemblyToProcess.dll");
+        var directoryName = Path.GetDirectoryName(@"..\..\..\Debug\");
 #if (!DEBUG)
-
         beforeAssemblyPath = beforeAssemblyPath.Replace("Debug", "Release");
+        directoryName = directoryName.Replace("Debug", "Release");
 #endif
 
         afterAssemblyPath = beforeAssemblyPath.Replace(".dll", "TempFile.dll");
         File.Copy(beforeAssemblyPath, afterAssemblyPath, true);
-
-        var directoryName = Path.GetDirectoryName(beforeAssemblyPath);
 
         moduleDefinition = ModuleDefinition.ReadModule(afterAssemblyPath);
         var weavingTask = new ModuleWeaver
@@ -38,8 +37,9 @@ public class TempFileTests
             Unmanaged32Assemblies = new List<string> { "AssemblyToReferenceMixed" },
             ReferenceCopyLocalPaths = new List<string>
                 {
-                    Path.Combine(directoryName, "AssemblyToReference.dll"),
-                    Path.Combine(directoryName, "AssemblyToReferencePreEmbed.dll"),
+                    beforeAssemblyPath.Replace("AssemblyToProcess", "AssemblyToReference"),
+                    beforeAssemblyPath.Replace("AssemblyToProcess", "AssemblyToReferencePreEmbed"),
+                    Path.ChangeExtension(beforeAssemblyPath.Replace("AssemblyToProcess", "ExeToReference"), "exe"),
                     Path.Combine(directoryName, "AssemblyToReferenceMixed.dll"),
                 }
         };
@@ -64,6 +64,13 @@ public class TempFileTests
     {
         var instance1 = assembly.GetInstance("ClassToTest");
         Assert.AreEqual("Hello", instance1.Foo2());
+    }
+
+    [Test]
+    public void Exe()
+    {
+        var instance2 = assembly.GetInstance("ClassToTest");
+        Assert.AreEqual("Hello", instance2.ExeFoo());
     }
 
     [Test]

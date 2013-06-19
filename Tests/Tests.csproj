@@ -74,18 +74,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AssemblyToReferenceMixed\AssemblyToReferenceMixed.vcxproj">
-      <Project>{378ddf3e-44a4-48cf-be34-f55792ae561c}</Project>
-      <Name>AssemblyToReferenceMixed</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AssemblyToReferencePreEmbed\AssemblyToReferencePreEmbed.csproj">
-      <Project>{e46ef81a-044a-43ef-82bd-f583bc4c045a}</Project>
-      <Name>AssemblyToReferencePreEmbed</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AssemblyWithLoadNonExistentAssembly\AssemblyWithLoadNonExistentAssembly.csproj">
-      <Project>{48206525-d571-4768-b3cc-2437dc329128}</Project>
-      <Name>AssemblyWithLoadNonExistentAssembly</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Fody\Fody.csproj">
       <Project>{C3578A7B-09A6-4444-9383-0DEAFA4958BD}</Project>
       <Name>Fody</Name>

@@ -41,11 +41,16 @@ static class ILTemplate
         {
             return Assembly.LoadFile(assemblyTempFilePath);
         }
+        assemblyTempFilePath = Path.ChangeExtension(assemblyTempFilePath, "exe");
+        if (File.Exists(assemblyTempFilePath))
+        {
+            return Assembly.LoadFile(assemblyTempFilePath);
+        }
 
         var executingAssembly = Assembly.GetExecutingAssembly();
 
         byte[] assemblyData;
-        using (var assemblyStream = TryFindEmbeddedStream(executingAssembly, "costura", name + ".dll"))
+        using (var assemblyStream = TryFindEmbeddedStream(executingAssembly, "costura", name, new string[] { ".dll", ".exe" }))
         {
             if (assemblyStream == null)
             {
@@ -54,7 +59,7 @@ static class ILTemplate
             assemblyData = ReadStream(assemblyStream);
         }
 
-        using (var pdbStream = TryFindEmbeddedStream(executingAssembly, "costura", name + ".pdb"))
+        using (var pdbStream = TryFindEmbeddedStream(executingAssembly, "costura", name, new string[] { ".pdb" }))
         {
             if (pdbStream != null)
             {
@@ -109,24 +114,27 @@ static class ILTemplate
         return data;
     }
 
-    static Stream TryFindEmbeddedStream(Assembly executingAssembly, string prefix, string name)
+    static Stream TryFindEmbeddedStream(Assembly executingAssembly, string prefix, string name, string[] extensions)
     {
-        var fullName = String.Concat(prefix,".", name);
-        var stream = executingAssembly.GetManifestResourceStream(fullName);
-        if (stream != null)
-            return stream;
-
-        fullName = String.Concat(prefix, ".", name, ".zip");
-        stream = executingAssembly.GetManifestResourceStream(fullName);
-        if (stream != null)
+        for (int i = 0; i < extensions.Length; i++)
         {
-            var memStream = new MemoryStream();
-            using (var compressStream = new DeflateStream(stream, CompressionMode.Decompress))
+            var fullName = String.Concat(prefix, ".", name, extensions[i]);
+            var stream = executingAssembly.GetManifestResourceStream(fullName);
+            if (stream != null)
+                return stream;
+
+            fullName = String.Concat(prefix, ".", name, extensions[i], ".zip");
+            stream = executingAssembly.GetManifestResourceStream(fullName);
+            if (stream != null)
             {
-                CopyTo(compressStream, memStream);
+                var memStream = new MemoryStream();
+                using (var compressStream = new DeflateStream(stream, CompressionMode.Decompress))
+                {
+                    CopyTo(compressStream, memStream);
+                }
+                memStream.Position = 0;
+                return memStream;
             }
-            memStream.Position = 0;
-            return memStream;
         }
 
         return null;
@@ -188,7 +196,7 @@ static class ILTemplate
             var assemblyTempFilePath = Path.Combine(tempBasePath, name);
 
             if (!File.Exists(assemblyTempFilePath))
-                using (var assemblyStream = TryFindEmbeddedStream(executingAssembly, "costura" + bittyness, name))
+                using (var assemblyStream = TryFindEmbeddedStream(executingAssembly, "costura" + bittyness, name, new string[] { "" }))
                 {
                     if (assemblyStream == null)
                     {
