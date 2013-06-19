@@ -1,12 +1,10 @@
 ![Icon](https://raw.github.com/Fody/Costura/master/Icons/package_icon.png)
 
-## This is an add-in for [Fody](https://github.com/Fody/Fody/) 
+### This is an add-in for [Fody](https://github.com/Fody/Fody/) 
 
 Embeds dependencies as resources.
 
-[Introduction to Fody](http://github.com/Fody/Fody/wiki/SampleUsage)
-
-## Nuget package
+### Nuget package
 
 Available here http://nuget.org/packages/Costura.Fody 
 
@@ -14,16 +12,16 @@ To Install from the Nuget Package Manager Console
     
     PM> Install-Package Costura.Fody
 
-# How it works
+## How it works
 
-## Merge assemblies as embedded resources.
+### Merge assemblies as embedded resources.
 
 This approach uses a combination of two methods
 
  * Jeffrey Richter's suggestion of using [embedded resources as a method of merging assemblies](http://blogs.msdn.com/b/microsoft_press/archive/2010/02/03/jeffrey-richter-excerpt-2-from-clr-via-c-third-edition.aspx)
  * Einar Egilsson's suggestion [using cecil to create module initializers](http://tech.einaregilsson.com/2009/12/16/module-initializers-in-csharp/)
 
-## Details 
+### Details 
 
 This Task performs the following changes
 
@@ -42,11 +40,11 @@ eg
   - [ILTemplate.cs](https://github.com/Fody/Costura/blob/master/Template/ILTemplate.cs)
   - [ILTemplateWithTempAssembly.cs](https://github.com/Fody/Costura/blob/master/Template/ILTemplateWithTempAssembly.cs)
 
-# Configuration Options
+## Configuration Options
 
 All config options are access by modifying the `Costura` node in FodyWeavers.xml
 
-## CreateTemporaryAssemblies
+### CreateTemporaryAssemblies
 
 This will copy embedded files to disk before loading them into memory. This is helpful for some scenarios that expected an assembly to be loaded from a physical file.
 
@@ -54,15 +52,15 @@ This will copy embedded files to disk before loading them into memory. This is h
 
     <Costura CreateTemporaryAssemblies='true' />
     
-## IncludeDebugSymbols
+### IncludeDebugSymbols
 
 Controls if .pdbs for reference assemblies are also embedded.
 
-*Defaults to `false`*
+*Defaults to `true`*
 
     <Costura IncludeDebugSymbols='false' />
 
-## DisableCompression
+### DisableCompression
 
 Embedded assemblies are compressed by default, and uncompressed when they are loaded. You can turn compression off with this option.
 
@@ -70,7 +68,7 @@ Embedded assemblies are compressed by default, and uncompressed when they are lo
 
     <Costura DisableCompression='false' />
     
-## ExcludeAssemblies
+### ExcludeAssemblies
 
 A list of assembly names to exclude from the default action of "embed all Copy Local references".
 
@@ -94,7 +92,7 @@ Or as a attribute with items delimited by a pipe `|`.
     <Costura ExcludeAssemblies='Foo|Bar' />
     
         
-## IncludeAssemblies
+### IncludeAssemblies
 
 A list of assembly names to include from the default action of "embed all Copy Local references".
 
@@ -118,7 +116,7 @@ Or as a attribute with items delimited by a pipe `|`.
     <Costura IncludeAssemblies='Foo|Bar' />
 
 
-## Unmanaged32Assemblies & Unmanaged64Assemblies
+### Unmanaged32Assemblies & Unmanaged64Assemblies
 
 Mixed-mode assemblies cannot be loaded the same way as managed assemblies.
 
@@ -147,7 +145,7 @@ Or as a attribute with items delimited by a pipe `|`.
         Unmanaged32Assemblies='Foo32|Bar32' 
         Unmanaged64Assemblies='Foo64|Bar64' />
 
-# Creating a clean output directory
+## Creating a clean output directory
 
 Costura only merges dependencies. It does not handle cleaning those dependencies from you output directory. So this means the resultant merged dll/exe will exist in your output directory (eg `bin\Debug`) next to all your dependencies. If you want to clean this directory you can add the following to your project file.
 
@@ -159,11 +157,11 @@ Costura only merges dependencies. It does not handle cleaning those dependencies
 
 Note that this does not handle `ExcludeAssemblies` or `IncludeAssemblies` options mentioned above. You will have to handle these explicitly.
 
-# Icon
+## Icon
 
 <a href="http://thenounproject.com/noun/merge/#icon-No256" target="_blank">Merge</a>  from The Noun Project
 
-# Contributors
+## Contributors
 
  * [Cameron MacFarland](https://github.com/distantcam)
  * [Simon Cropp](https://github.com/SimonCropp) 
