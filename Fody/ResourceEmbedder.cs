@@ -40,10 +40,12 @@ public partial class ModuleWeaver : IDisposable
             if (Unmanaged32Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(dependency)))
             {
                 prefix = "costura32.";
+                HasUnmanaged = true;
             }
             if (Unmanaged64Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(dependency)))
             {
                 prefix = "costura64.";
+                HasUnmanaged = true;
             }
 
             if (String.IsNullOrEmpty(prefix))

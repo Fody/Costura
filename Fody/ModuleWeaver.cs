@@ -20,10 +20,11 @@ public partial  class ModuleWeaver
         ReadConfig();
         FindMsCoreReferences();
 
-        ImportAssemblyLoader();
-        ImportModuleLoader();
         FixResourceCase();
         ProcessNativeResources();
         EmbedResources();
+
+        ImportAssemblyLoader();
+        ImportModuleLoader();
     }
 }

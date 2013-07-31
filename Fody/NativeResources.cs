@@ -9,6 +9,7 @@
             if (resource.Name.StartsWith(moduleName + ".costura"))
             {
                 resource.Name = resource.Name.Substring(moduleName.Length + 1).ToLowerInvariant();
+                HasUnmanaged = true;
             }
         }
     }

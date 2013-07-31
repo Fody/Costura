@@ -8,21 +8,8 @@ using System.Text;
 
 static class ILTemplate
 {
-    [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
-    public static extern bool MoveFileEx(string lpExistingFileName, string lpNewFileName, int dwFlags);
-
-    private static string tempBasePath;
-
     public static void Attach()
     {
-        //Create a unique Temp directory for the application path.
-        var md5Hash = CreateMd5Hash(Assembly.GetExecutingAssembly().CodeBase);
-        var prefixPath = Path.Combine(Path.GetTempPath(), "Costura");
-        tempBasePath = Path.Combine(prefixPath, md5Hash);
-        CreateDirectory();
-
-        PreloadUnmanagedLibraries();
-
         var currentDomain = AppDomain.CurrentDomain;
         currentDomain.AssemblyResolve += ResolveAssembly;
     }
@@ -34,17 +21,6 @@ static class ILTemplate
         if (existingAssembly != null)
         {
             return existingAssembly;
-        }
-
-        var assemblyTempFilePath = Path.Combine(tempBasePath, String.Concat(name, ".dll"));
-        if (File.Exists(assemblyTempFilePath))
-        {
-            return Assembly.LoadFile(assemblyTempFilePath);
-        }
-        assemblyTempFilePath = Path.ChangeExtension(assemblyTempFilePath, "exe");
-        if (File.Exists(assemblyTempFilePath))
-        {
-            return Assembly.LoadFile(assemblyTempFilePath);
         }
 
         var executingAssembly = Assembly.GetExecutingAssembly();
@@ -69,42 +45,6 @@ static class ILTemplate
         }
 
         return Assembly.Load(assemblyData);
-    }
-
-    static void CreateDirectory()
-    {
-        if (Directory.Exists(tempBasePath))
-        {
-            try
-            {
-                Directory.Delete(tempBasePath, true);
-                Directory.CreateDirectory(tempBasePath);
-            }
-            catch
-            {
-            }
-        }
-        else
-        {
-            Directory.CreateDirectory(tempBasePath);
-        }
-        MoveFileEx(tempBasePath, null, 0x4);
-    }
-
-    static string CreateMd5Hash(string input)
-    {
-        using (var md5 = MD5.Create())
-        {
-            var inputBytes = Encoding.ASCII.GetBytes(input);
-            var hashBytes = md5.ComputeHash(inputBytes);
-
-            var sb = new StringBuilder();
-            for (var i = 0; i < hashBytes.Length; i++)
-            {
-                sb.Append(hashBytes[i].ToString("X2"));
-            }
-            return sb.ToString();
-        }
     }
 
     static byte[] ReadStream(Stream stream)
@@ -169,62 +109,5 @@ static class ILTemplate
             }
         }
         return null;
-    }
-
-    [DllImport("kernel32.dll")]
-    static extern IntPtr LoadLibrary(string dllToLoad);
-
-    static void PreloadUnmanagedLibraries()
-    {
-        // Preload correct library
-        var bittyness = IntPtr.Size == 8 ? "64" : "32";
-
-        var executingAssembly = Assembly.GetExecutingAssembly();
-
-        string name;
-
-        foreach (var lib in executingAssembly.GetManifestResourceNames())
-        {
-            if (lib.StartsWith(String.Concat("costura", bittyness, ".")))
-                name = lib.Substring(10);
-            else
-                continue;
-
-            if (name.EndsWith(".zip"))
-                name = name.Substring(0, name.Length - 4);
-
-            var assemblyTempFilePath = Path.Combine(tempBasePath, name);
-
-            if (!File.Exists(assemblyTempFilePath))
-                using (var assemblyStream = TryFindEmbeddedStream(executingAssembly, "costura" + bittyness, name, new string[] { "" }))
-                {
-                    if (assemblyStream == null)
-                    {
-                        continue;
-                    }
-                    using (var assemblyTempFile = File.OpenWrite(assemblyTempFilePath))
-                    {
-                        CopyTo(assemblyStream, assemblyTempFile);
-                    }
-                }
-        }
-
-        foreach (var lib in executingAssembly.GetManifestResourceNames())
-        {
-            if (lib.EndsWith(".dll"))
-            {
-                if (lib.StartsWith(String.Concat("costura", bittyness, ".")))
-                    name = lib.Substring(10);
-                else
-                    continue;
-
-                if (name.EndsWith(".zip"))
-                    name = name.Substring(0, name.Length - 4);
-
-                var assemblyTempFilePath = Path.Combine(tempBasePath, name);
-
-                LoadLibrary(assemblyTempFilePath);
-            }
-        }
     }
 }

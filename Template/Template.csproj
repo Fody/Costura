@@ -35,9 +35,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ILTemplateWithUnmanagedHandler.cs" />
     <Compile Include="ILTemplate.cs" />
     <Compile Include="ILTemplateWithTempAssembly.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  
 </Project>

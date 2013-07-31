@@ -9,6 +9,7 @@ public partial class ModuleWeaver
     TypeDefinition targetType;
     TypeDefinition sourceType;
     public MethodDefinition AttachMethod;
+    public bool HasUnmanaged;
 
     public void ImportAssemblyLoader()
     {
@@ -24,6 +25,10 @@ public partial class ModuleWeaver
         if (CreateTemporaryAssemblies)
         {
             sourceType = moduleDefinition.Types.First(x => x.Name == "ILTemplateWithTempAssembly");
+        }
+        else if (HasUnmanaged)
+        {
+            sourceType = moduleDefinition.Types.First(x => x.Name == "ILTemplateWithUnmanagedHandler");
         }
         else
         {
