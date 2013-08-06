@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using Mono.Cecil;
-using Mono.Cecil.Rocks;
 
 public partial class ModuleWeaver
 {
@@ -24,14 +23,12 @@ public partial class ModuleWeaver
         VoidTypeReference = ModuleDefinition.Import(voidDefinition);
 
         var dictionary = msCoreTypes.First(x => x.Name == "Dictionary`2");
-        var dictionaryOfStringOfString = ModuleDefinition.Import(dictionary)
-            .MakeGenericInstanceType(ModuleDefinition.TypeSystem.String, ModuleDefinition.TypeSystem.String);
+        var dictionaryOfStringOfString = ModuleDefinition.Import(dictionary);
         DictionaryOfStringOfStringAdd = ModuleDefinition.Import(dictionaryOfStringOfString.Resolve().Methods.First(m => m.Name == "Add"))
             .MakeHostInstanceGeneric(ModuleDefinition.TypeSystem.String, ModuleDefinition.TypeSystem.String);
 
         var list = msCoreTypes.First(x => x.Name == "List`1");
-        var listOfString = ModuleDefinition.Import(list)
-            .MakeGenericInstanceType(ModuleDefinition.TypeSystem.String);
+        var listOfString = ModuleDefinition.Import(list);
         ListOfStringAdd = ModuleDefinition.Import(listOfString.Resolve().Methods.First(m => m.Name == "Add"))
             .MakeHostInstanceGeneric(ModuleDefinition.TypeSystem.String);
 
