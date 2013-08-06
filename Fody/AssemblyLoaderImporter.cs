@@ -2,6 +2,7 @@
 using System.Reflection;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+using Mono.Cecil.Rocks;
 
 public partial class ModuleWeaver
 {
@@ -9,7 +10,13 @@ public partial class ModuleWeaver
     TypeDefinition targetType;
     TypeDefinition sourceType;
     public MethodDefinition AttachMethod;
+    public MethodDefinition LoaderCctor;
     public bool HasUnmanaged;
+    public FieldDefinition AssemblyNamesField;
+    public FieldDefinition SymbolNamesField;
+    public FieldDefinition PreloadListField;
+    public FieldDefinition Preload32ListField;
+    public FieldDefinition Preload64ListField;
 
     public void ImportAssemblyLoader()
     {
@@ -41,6 +48,7 @@ public partial class ModuleWeaver
         CopyFields(sourceType);
         CopyMethod(sourceType.Methods.First(x => x.Name == "ResolveAssembly"));
 
+        LoaderCctor = CopyMethod(sourceType.Methods.First(x => x.IsConstructor && x.IsStatic));
         AttachMethod = CopyMethod(sourceType.Methods.First(x => x.Name == "Attach"));
     }
 
@@ -48,7 +56,18 @@ public partial class ModuleWeaver
     {
         foreach (var field in source.Fields)
         {
-            targetType.Fields.Add(new FieldDefinition(field.Name, field.Attributes, Resolve(field.FieldType)));
+            var newField = new FieldDefinition(field.Name, field.Attributes, Resolve(field.FieldType));
+            targetType.Fields.Add(newField);
+            if (field.Name == "assemblyNames")
+                AssemblyNamesField = newField;
+            if (field.Name == "symbolNames")
+                SymbolNamesField = newField;
+            if (field.Name == "preloadList")
+                PreloadListField = newField;
+            if (field.Name == "preload32List")
+                Preload32ListField = newField;
+            if (field.Name == "preload64List")
+                Preload64ListField = newField;
         }
     }
 
@@ -72,6 +91,10 @@ public partial class ModuleWeaver
         if (baseType is ArrayType)
         {
             return new ArrayType(typeReference);
+        }
+        if (baseType.IsGenericInstance)
+        {
+            typeReference = typeReference.MakeGenericInstanceType(baseType.GetGenericInstanceArguments().ToArray());
         }
         return typeReference;
     }
@@ -184,6 +207,11 @@ public partial class ModuleWeaver
                                                                     && m.Parameters.Count == methodReference.Parameters.Count));
                 }
                 return mr;
+            }
+            if (methodReference.DeclaringType.IsGenericInstance)
+            {
+                return ModuleDefinition.Import(methodReference.Resolve())
+                    .MakeHostInstanceGeneric(methodReference.DeclaringType.GetGenericInstanceArguments().ToArray());
             }
             return ModuleDefinition.Import(methodReference.Resolve());
         }

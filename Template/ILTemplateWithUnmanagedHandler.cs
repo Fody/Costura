@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Reflection;
@@ -12,6 +13,12 @@ static class ILTemplateWithUnmanagedHandler
     public static extern bool MoveFileEx(string lpExistingFileName, string lpNewFileName, int dwFlags);
 
     private static string tempBasePath;
+
+    readonly static Dictionary<string, string> assemblyNames = new Dictionary<string, string>();
+    readonly static Dictionary<string, string> symbolNames = new Dictionary<string, string>();
+
+    readonly static List<string> preload32List = new List<string>();
+    readonly static List<string> preload64List = new List<string>();
 
     public static void Attach()
     {
@@ -50,7 +57,7 @@ static class ILTemplateWithUnmanagedHandler
         var executingAssembly = Assembly.GetExecutingAssembly();
 
         byte[] assemblyData;
-        using (var assemblyStream = TryFindEmbeddedStream(executingAssembly, "costura", name, new string[] { ".dll", ".exe" }))
+        using (var assemblyStream = LoadAssemblyStream(executingAssembly, name))
         {
             if (assemblyStream == null)
             {
@@ -59,7 +66,7 @@ static class ILTemplateWithUnmanagedHandler
             assemblyData = ReadStream(assemblyStream);
         }
 
-        using (var pdbStream = TryFindEmbeddedStream(executingAssembly, "costura", name, new string[] { ".pdb" }))
+        using (var pdbStream = LoadSymbolStream(executingAssembly, name))
         {
             if (pdbStream != null)
             {
@@ -114,30 +121,37 @@ static class ILTemplateWithUnmanagedHandler
         return data;
     }
 
-    static Stream TryFindEmbeddedStream(Assembly executingAssembly, string prefix, string name, string[] extensions)
+    static Stream LoadAssemblyStream(Assembly executingAssembly, string name)
     {
-        for (int i = 0; i < extensions.Length; i++)
-        {
-            var fullName = String.Concat(prefix, ".", name, extensions[i]);
-            var stream = executingAssembly.GetManifestResourceStream(fullName);
-            if (stream != null)
-                return stream;
+        if (assemblyNames.ContainsKey(name))
+            return LoadStream(executingAssembly, assemblyNames[name]);
 
-            fullName = String.Concat(prefix, ".", name, extensions[i], ".zip");
-            stream = executingAssembly.GetManifestResourceStream(fullName);
-            if (stream != null)
+        return null;
+    }
+
+    static Stream LoadSymbolStream(Assembly executingAssembly, string name)
+    {
+        if (symbolNames.ContainsKey(name))
+            return LoadStream(executingAssembly, symbolNames[name]);
+
+        return null;
+    }
+
+    static Stream LoadStream(Assembly executingAssembly, string fullname)
+    {
+        if (fullname.EndsWith(".zip"))
+        {
+            using (var stream = executingAssembly.GetManifestResourceStream(fullname))
+            using (var compressStream = new DeflateStream(stream, CompressionMode.Decompress))
             {
                 var memStream = new MemoryStream();
-                using (var compressStream = new DeflateStream(stream, CompressionMode.Decompress))
-                {
-                    CopyTo(compressStream, memStream);
-                }
+                CopyTo(compressStream, memStream);
                 memStream.Position = 0;
                 return memStream;
             }
         }
 
-        return null;
+        return executingAssembly.GetManifestResourceStream(fullname);
     }
 
     static void CopyTo(Stream source, Stream destination)
@@ -182,11 +196,14 @@ static class ILTemplateWithUnmanagedHandler
         var executingAssembly = Assembly.GetExecutingAssembly();
 
         string name;
+        var unmanagedAssemblies = IntPtr.Size == 8 ? preload64List : preload32List;
 
-        foreach (var lib in executingAssembly.GetManifestResourceNames())
+        foreach (var lib in unmanagedAssemblies)
         {
             if (lib.StartsWith(String.Concat("costura", bittyness, ".")))
                 name = lib.Substring(10);
+            else if (lib.StartsWith("costura."))
+                name = lib.Substring(8);
             else
                 continue;
 
@@ -196,31 +213,23 @@ static class ILTemplateWithUnmanagedHandler
             var assemblyTempFilePath = Path.Combine(tempBasePath, name);
 
             if (!File.Exists(assemblyTempFilePath))
-                using (var assemblyStream = TryFindEmbeddedStream(executingAssembly, "costura" + bittyness, name, new string[] { "" }))
+            {
+                using (var copyStream = LoadStream(executingAssembly, lib))
+                using (var assemblyTempFile = File.OpenWrite(assemblyTempFilePath))
                 {
-                    if (assemblyStream == null)
-                    {
-                        continue;
-                    }
-                    using (var assemblyTempFile = File.OpenWrite(assemblyTempFilePath))
-                    {
-                        CopyTo(assemblyStream, assemblyTempFile);
-                    }
+                    CopyTo(copyStream, assemblyTempFile);
                 }
+            }
         }
 
-        foreach (var lib in executingAssembly.GetManifestResourceNames())
+        foreach (var lib in unmanagedAssemblies)
         {
-            if (lib.EndsWith(".dll"))
+            name = lib.Substring(10);
+            if (name.EndsWith(".zip"))
+                name = name.Substring(0, name.Length - 4);
+
+            if (name.EndsWith(".dll"))
             {
-                if (lib.StartsWith(String.Concat("costura", bittyness, ".")))
-                    name = lib.Substring(10);
-                else
-                    continue;
-
-                if (name.EndsWith(".zip"))
-                    name = name.Substring(0, name.Length - 4);
-
                 var assemblyTempFilePath = Path.Combine(tempBasePath, name);
 
                 LoadLibrary(assemblyTempFilePath);

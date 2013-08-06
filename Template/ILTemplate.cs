@@ -1,13 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography;
-using System.Text;
 
 static class ILTemplate
 {
+    readonly static Dictionary<string, string> assemblyNames = new Dictionary<string, string>();
+    readonly static Dictionary<string, string> symbolNames = new Dictionary<string, string>();
+
     public static void Attach()
     {
         var currentDomain = AppDomain.CurrentDomain;
@@ -26,7 +27,7 @@ static class ILTemplate
         var executingAssembly = Assembly.GetExecutingAssembly();
 
         byte[] assemblyData;
-        using (var assemblyStream = TryFindEmbeddedStream(executingAssembly, "costura", name, new string[] { ".dll", ".exe" }))
+        using (var assemblyStream = LoadAssemblyStream(executingAssembly, name))
         {
             if (assemblyStream == null)
             {
@@ -35,7 +36,7 @@ static class ILTemplate
             assemblyData = ReadStream(assemblyStream);
         }
 
-        using (var pdbStream = TryFindEmbeddedStream(executingAssembly, "costura", name, new string[] { ".pdb" }))
+        using (var pdbStream = LoadSymbolStream(executingAssembly, name))
         {
             if (pdbStream != null)
             {
@@ -54,30 +55,37 @@ static class ILTemplate
         return data;
     }
 
-    static Stream TryFindEmbeddedStream(Assembly executingAssembly, string prefix, string name, string[] extensions)
+    static Stream LoadAssemblyStream(Assembly executingAssembly, string name)
     {
-        for (int i = 0; i < extensions.Length; i++)
-        {
-            var fullName = String.Concat(prefix, ".", name, extensions[i]);
-            var stream = executingAssembly.GetManifestResourceStream(fullName);
-            if (stream != null)
-                return stream;
+        if (assemblyNames.ContainsKey(name))
+            return LoadStream(executingAssembly, assemblyNames[name]);
 
-            fullName = String.Concat(prefix, ".", name, extensions[i], ".zip");
-            stream = executingAssembly.GetManifestResourceStream(fullName);
-            if (stream != null)
+        return null;
+    }
+
+    static Stream LoadSymbolStream(Assembly executingAssembly, string name)
+    {
+        if (symbolNames.ContainsKey(name))
+            return LoadStream(executingAssembly, symbolNames[name]);
+
+        return null;
+    }
+
+    static Stream LoadStream(Assembly executingAssembly, string fullname)
+    {
+        if (fullname.EndsWith(".zip"))
+        {
+            using (var stream = executingAssembly.GetManifestResourceStream(fullname))
+            using (var compressStream = new DeflateStream(stream, CompressionMode.Decompress))
             {
                 var memStream = new MemoryStream();
-                using (var compressStream = new DeflateStream(stream, CompressionMode.Decompress))
-                {
-                    CopyTo(compressStream, memStream);
-                }
+                CopyTo(compressStream, memStream);
                 memStream.Position = 0;
                 return memStream;
             }
         }
 
-        return null;
+        return executingAssembly.GetManifestResourceStream(fullname);
     }
 
     static void CopyTo(Stream source, Stream destination)

@@ -26,5 +26,7 @@ public partial  class ModuleWeaver
 
         ImportAssemblyLoader();
         ImportModuleLoader();
+
+        BuildUpNameDictionary();
     }
 }

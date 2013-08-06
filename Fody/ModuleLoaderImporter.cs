@@ -7,9 +7,12 @@ public partial class ModuleWeaver
 
     public void ImportModuleLoader()
     {
-        const MethodAttributes attributes = MethodAttributes.Static
+        const MethodAttributes attributes = MethodAttributes.Private
+                                            | MethodAttributes.HideBySig
+                                            | MethodAttributes.Static
                                             | MethodAttributes.SpecialName
                                             | MethodAttributes.RTSpecialName;
+
         var moduleClass = ModuleDefinition.Types.FirstOrDefault(x => x.Name == "<Module>");
         if (moduleClass == null)
         {

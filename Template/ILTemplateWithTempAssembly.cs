@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Reflection;
@@ -12,6 +13,10 @@ static class ILTemplateWithTempAssembly
     public static extern bool MoveFileEx(string lpExistingFileName, string lpNewFileName, int dwFlags);
 
     private static string tempBasePath;
+
+    readonly static List<string> preloadList = new List<string>();
+    readonly static List<string> preload32List = new List<string>();
+    readonly static List<string> preload64List = new List<string>();
 
     public static void Attach()
     {
@@ -86,34 +91,21 @@ static class ILTemplateWithTempAssembly
         }
     }
 
-    static byte[] ReadStream(Stream stream)
+    static Stream LoadStream(Assembly executingAssembly, string fullname)
     {
-        var data = new Byte[stream.Length];
-        stream.Read(data, 0, data.Length);
-        return data;
-    }
-
-    static Stream TryFindEmbeddedStream(Assembly executingAssembly, string prefix, string name)
-    {
-        var fullName = String.Concat(prefix, ".", name);
-        var stream = executingAssembly.GetManifestResourceStream(fullName);
-        if (stream != null)
-            return stream;
-
-        fullName = String.Concat(prefix, ".", name, ".zip");
-        stream = executingAssembly.GetManifestResourceStream(fullName);
-        if (stream != null)
+        if (fullname.EndsWith(".zip"))
         {
-            var memStream = new MemoryStream();
+            using (var stream = executingAssembly.GetManifestResourceStream(fullname))
             using (var compressStream = new DeflateStream(stream, CompressionMode.Decompress))
             {
+                var memStream = new MemoryStream();
                 CopyTo(compressStream, memStream);
+                memStream.Position = 0;
+                return memStream;
             }
-            memStream.Position = 0;
-            return memStream;
         }
 
-        return null;
+        return executingAssembly.GetManifestResourceStream(fullname);
     }
 
     static void CopyTo(Stream source, Stream destination)
@@ -158,10 +150,15 @@ static class ILTemplateWithTempAssembly
         var executingAssembly = Assembly.GetExecutingAssembly();
 
         string name;
+        var unmanagedAssemblies = IntPtr.Size == 8 ? preload64List : preload32List;
 
-        foreach (var lib in executingAssembly.GetManifestResourceNames())
+        var libList = new List<string>();
+        libList.AddRange(unmanagedAssemblies);
+        libList.AddRange(preloadList);
+
+        foreach (var lib in libList)
         {
-             if (lib.StartsWith(String.Concat("costura", bittyness, ".")))
+            if (lib.StartsWith(String.Concat("costura", bittyness, ".")))
                 name = lib.Substring(10);
             else if (lib.StartsWith("costura."))
                 name = lib.Substring(8);
@@ -175,17 +172,7 @@ static class ILTemplateWithTempAssembly
 
             if (!File.Exists(assemblyTempFilePath))
             {
-                var assemblyStream = TryFindEmbeddedStream(executingAssembly, "costura" + bittyness, name);
-                if (assemblyStream == null)
-                {
-                    assemblyStream = TryFindEmbeddedStream(executingAssembly, "costura", name);
-                }
-                if (assemblyStream == null)
-                {
-                    continue;
-                }
-
-                using (var copyStream = assemblyStream)
+                using (var copyStream = LoadStream(executingAssembly, lib))
                 using (var assemblyTempFile = File.OpenWrite(assemblyTempFilePath))
                 {
                     CopyTo(copyStream, assemblyTempFile);
@@ -193,18 +180,14 @@ static class ILTemplateWithTempAssembly
             }
         }
 
-        foreach (var lib in executingAssembly.GetManifestResourceNames())
+        foreach (var lib in unmanagedAssemblies)
         {
-            if (lib.EndsWith(".dll"))
+            name = lib.Substring(10);
+            if (name.EndsWith(".zip"))
+                name = name.Substring(0, name.Length - 4);
+
+            if (name.EndsWith(".dll"))
             {
-                if (lib.StartsWith(String.Concat("costura", bittyness, ".")))
-                    name = lib.Substring(10);
-                else
-                    continue;
-
-                if (name.EndsWith(".zip"))
-                    name = name.Substring(0, name.Length - 4);
-
                 var assemblyTempFilePath = Path.Combine(tempBasePath, name);
 
                 LoadLibrary(assemblyTempFilePath);
