@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using FluentValidation;
 
 public class ClassToTest
 {
@@ -39,5 +40,15 @@ public class ClassToTest
     public string MixedFoo()
     {
         return ClassToReferenceMixed.Foo();
+    }
+
+    public bool Validate()
+    {
+        var validator = new Validator();
+        return validator.Validate(this).IsValid;
+    }
+
+    private class Validator : AbstractValidator<ClassToTest>
+    {
     }
 }

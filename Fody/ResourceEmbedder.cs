@@ -16,7 +16,8 @@ public partial class ModuleWeaver : IDisposable
             throw new WeavingException("ReferenceCopyLocalPaths is required you may need to update to the latest version of Fody.");
         }
 
-        var onlyBinaries = ReferenceCopyLocalPaths.Where(x => x.EndsWith(".dll") || x.EndsWith(".exe"));
+        // Ignore resource assemblies for now
+        var onlyBinaries = ReferenceCopyLocalPaths.Where(x => (x.EndsWith(".dll") || x.EndsWith(".exe")) && !x.EndsWith(".resources.dll"));
 
         foreach (var dependency in GetFilteredReferences(onlyBinaries))
         {

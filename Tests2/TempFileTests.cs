@@ -29,20 +29,29 @@ public class TempFileTests
         File.Copy(beforeAssemblyPath, afterAssemblyPath, true);
 
         moduleDefinition = ModuleDefinition.ReadModule(afterAssemblyPath);
+
+        var references = new List<string>
+            {
+                beforeAssemblyPath.Replace("AssemblyToProcess", "AssemblyToReference"),
+                beforeAssemblyPath.Replace("AssemblyToProcess", "AssemblyToReferencePreEmbed"),
+                Path.ChangeExtension(beforeAssemblyPath.Replace("AssemblyToProcess", "ExeToReference"), "exe"),
+                Path.Combine(directoryName, "AssemblyToReferenceMixed.dll"),
+            };
+
+        var fluentDirectory = Directory.GetDirectories(@"..\..\..\Packages\", "FluentValidation.*").First();
+        var net40Directory = Directory.GetDirectories(fluentDirectory, "Net40", SearchOption.AllDirectories).First();
+
+        var fluentValidationRefs = Directory.GetFiles(net40Directory, "FluentValidation*.dll", SearchOption.AllDirectories);
+        references.AddRange(fluentValidationRefs);
+
         var weavingTask = new ModuleWeaver
-        {
-            ModuleDefinition = moduleDefinition,
-            AssemblyResolver = new MockAssemblyResolver(),
-            CreateTemporaryAssemblies = true,
-            Unmanaged32Assemblies = new List<string> { "AssemblyToReferenceMixed" },
-            ReferenceCopyLocalPaths = new List<string>
-                {
-                    beforeAssemblyPath.Replace("AssemblyToProcess", "AssemblyToReference"),
-                    beforeAssemblyPath.Replace("AssemblyToProcess", "AssemblyToReferencePreEmbed"),
-                    Path.ChangeExtension(beforeAssemblyPath.Replace("AssemblyToProcess", "ExeToReference"), "exe"),
-                    Path.Combine(directoryName, "AssemblyToReferenceMixed.dll"),
-                }
-        };
+            {
+                ModuleDefinition = moduleDefinition,
+                AssemblyResolver = new MockAssemblyResolver(),
+                CreateTemporaryAssemblies = true,
+                Unmanaged32Assemblies = new List<string> { "AssemblyToReferenceMixed" },
+                ReferenceCopyLocalPaths = references
+            };
 
         weavingTask.Execute();
         moduleDefinition.Write(afterAssemblyPath);
