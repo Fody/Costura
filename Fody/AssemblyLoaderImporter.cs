@@ -9,6 +9,7 @@ public partial class ModuleWeaver
     ConstructorInfo instructionConstructorInfo = typeof(Instruction).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(OpCode), typeof(object) }, null);
     TypeDefinition targetType;
     TypeDefinition sourceType;
+    TypeDefinition commonType;
     public MethodDefinition AttachMethod;
     public MethodDefinition LoaderCctor;
     public bool HasUnmanaged;
@@ -41,6 +42,7 @@ public partial class ModuleWeaver
         {
             sourceType = moduleDefinition.Types.First(x => x.Name == "ILTemplate");
         }
+        commonType = moduleDefinition.Types.First(x => x.Name == "Common");
 
         targetType = new TypeDefinition("Costura", "AssemblyLoader", sourceType.Attributes, Resolve(sourceType.BaseType));
         targetType.CustomAttributes.Add(new CustomAttribute(CompilerGeneratedAttributeCtor));
@@ -99,10 +101,16 @@ public partial class ModuleWeaver
         return typeReference;
     }
 
-    MethodDefinition CopyMethod(MethodDefinition templateMethod)
+    MethodDefinition CopyMethod(MethodDefinition templateMethod, bool makePrivate = false)
     {
+        var attributes = templateMethod.Attributes;
+        if (makePrivate)
+        {
+            attributes &= ~Mono.Cecil.MethodAttributes.Public;
+            attributes |= Mono.Cecil.MethodAttributes.Private;
+        }
         var returnType = Resolve(templateMethod.ReturnType);
-        var newMethod = new MethodDefinition(templateMethod.Name, templateMethod.Attributes, returnType)
+        var newMethod = new MethodDefinition(templateMethod.Name, attributes, returnType)
                             {
                                 IsPInvokeImpl = templateMethod.IsPInvokeImpl,
                                 IsPreserveSig = templateMethod.IsPreserveSig,
@@ -197,14 +205,15 @@ public partial class ModuleWeaver
         if (reference != null)
         {
             var methodReference = reference;
-            if (methodReference.DeclaringType == sourceType)
+            if (methodReference.DeclaringType == sourceType || methodReference.DeclaringType == commonType)
             {
-                var mr = targetType.Methods.FirstOrDefault(x => x.Name == methodReference.Name);
+                var mr = targetType.Methods.FirstOrDefault(x => x.Name == methodReference.Name && x.Parameters.Count == methodReference.Parameters.Count);
                 if (mr == null)
                 {
                     //little poetic license... :). .Resolve() doesn't work with "extern" methods
-                    return CopyMethod(sourceType.Methods.First(m => m.Name == methodReference.Name
-                                                                    && m.Parameters.Count == methodReference.Parameters.Count));
+                    return CopyMethod(methodReference.DeclaringType.Resolve().Methods
+                                      .First(m => m.Name == methodReference.Name && m.Parameters.Count == methodReference.Parameters.Count),
+                        methodReference.DeclaringType != sourceType);
                 }
                 return mr;
             }
