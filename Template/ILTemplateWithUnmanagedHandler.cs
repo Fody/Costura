@@ -16,14 +16,14 @@ static class ILTemplateWithUnmanagedHandler
     public static void Attach()
     {
         //Create a unique Temp directory for the application path.
-        var md5Hash = Common.CreateMd5Hash(Assembly.GetExecutingAssembly().CodeBase);
+        var md5Hash = "To be replaced at compile time";
         var prefixPath = Path.Combine(Path.GetTempPath(), "Costura");
         tempBasePath = Path.Combine(prefixPath, md5Hash);
         Common.CreateDirectory(tempBasePath);
 
         // Preload
         var unmanagedAssemblies = IntPtr.Size == 8 ? preload64List : preload32List;
-        Common.PreloadUnmanagedLibraries(tempBasePath, unmanagedAssemblies);
+        Common.PreloadUnmanagedLibraries(md5Hash, tempBasePath, unmanagedAssemblies);
 
         var currentDomain = AppDomain.CurrentDomain;
         currentDomain.AssemblyResolve += ResolveAssembly;

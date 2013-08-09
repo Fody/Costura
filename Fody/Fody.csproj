@@ -62,6 +62,7 @@
     <Compile Include="AssemblyLoaderImporter.cs" />
     <Compile Include="ConfigReader.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="HashCalculator.cs" />
     <Compile Include="ModuleLoaderImporter.cs" />
     <Compile Include="ModuleWeaver.cs" />
     <Compile Include="..\CommonAssemblyInfo.cs" />

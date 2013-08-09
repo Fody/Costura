@@ -194,6 +194,11 @@ public partial class ModuleWeaver
 
     Instruction CloneInstruction(Instruction instruction)
     {
+        if (instruction.OpCode == OpCodes.Ldstr && ((string)instruction.Operand) == "To be replaced at compile time")
+        {
+            return Instruction.Create(OpCodes.Ldstr, resourcesHash);
+        }
+
         var newInstruction = (Instruction)instructionConstructorInfo.Invoke(new[] { instruction.OpCode, instruction.Operand });
         newInstruction.Operand = Import(instruction.Operand);
         return newInstruction;

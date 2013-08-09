@@ -14,7 +14,7 @@ static class ILTemplateWithTempAssembly
     public static void Attach()
     {
         //Create a unique Temp directory for the application path.
-        var md5Hash = Common.CreateMd5Hash(Assembly.GetExecutingAssembly().CodeBase);
+        var md5Hash = "To be replaced at compile time";
         var prefixPath = Path.Combine(Path.GetTempPath(), "Costura");
         tempBasePath = Path.Combine(prefixPath, md5Hash);
         Common.CreateDirectory(tempBasePath);
@@ -24,7 +24,7 @@ static class ILTemplateWithTempAssembly
         var libList = new List<string>();
         libList.AddRange(unmanagedAssemblies);
         libList.AddRange(preloadList);
-        Common.PreloadUnmanagedLibraries(tempBasePath, libList);
+        Common.PreloadUnmanagedLibraries(md5Hash, tempBasePath, libList);
 
         var currentDomain = AppDomain.CurrentDomain;
         currentDomain.AssemblyResolve += ResolveAssembly;

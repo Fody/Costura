@@ -50,4 +50,13 @@ public static class Extensions
             index++;
         }
     }
+
+    public static byte[] FixedGetResourceData(this EmbeddedResource resource)
+    {
+        // There's a bug in Mono.Cecil so when you access a resources data
+        // the stream is not reset after use.
+        var data = resource.GetResourceData();
+        resource.GetResourceStream().Position = 0;
+        return data;
+    }
 }

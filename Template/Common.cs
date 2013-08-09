@@ -5,8 +5,11 @@ using System.IO;
 using System.IO.Compression;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Security.AccessControl;
 using System.Security.Cryptography;
+using System.Security.Principal;
 using System.Text;
+using System.Threading;
 
 static class Common
 {
@@ -15,22 +18,6 @@ static class Common
 
     [DllImport("kernel32.dll")]
     static extern IntPtr LoadLibrary(string dllToLoad);
-
-    public static string CreateMd5Hash(string input)
-    {
-        using (var md5 = MD5.Create())
-        {
-            var inputBytes = Encoding.ASCII.GetBytes(input);
-            var hashBytes = md5.ComputeHash(inputBytes);
-
-            var sb = new StringBuilder();
-            for (var i = 0; i < hashBytes.Length; i++)
-            {
-                sb.Append(hashBytes[i].ToString("X2"));
-            }
-            return sb.ToString();
-        }
-    }
 
     static void CopyTo(Stream source, Stream destination)
     {
@@ -156,7 +143,43 @@ static class Common
         return executingAssembly.GetManifestResourceStream(fullname);
     }
 
-    public static void PreloadUnmanagedLibraries(string tempBasePath, IEnumerable<string> libs)
+    // Mutex code from http://stackoverflow.com/questions/229565/what-is-a-good-pattern-for-using-a-global-mutex-in-c
+    public static void PreloadUnmanagedLibraries(string hash, string tempBasePath, IEnumerable<string> libs)
+    {
+        string mutexId = string.Format("Global\\Costura{0}", hash);
+
+        using (var mutex = new Mutex(false, mutexId))
+        {
+            var allowEveryoneRule = new MutexAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null), MutexRights.FullControl, AccessControlType.Allow);
+            var securitySettings = new MutexSecurity();
+            securitySettings.AddAccessRule(allowEveryoneRule);
+            mutex.SetAccessControl(securitySettings);
+
+            var hasHandle = false;
+            try
+            {
+                try
+                {
+                    hasHandle = mutex.WaitOne(5000, false);
+                    if (hasHandle == false)
+                        throw new TimeoutException("Timeout waiting for exclusive access");
+                }
+                catch (AbandonedMutexException)
+                {
+                    hasHandle = true;
+                }
+
+                InternalPreloadUnmanagedLibraries(tempBasePath, libs);
+            }
+            finally
+            {
+                if (hasHandle)
+                    mutex.ReleaseMutex();
+            }
+        }
+    }
+
+    static void InternalPreloadUnmanagedLibraries(string tempBasePath, IEnumerable<string> libs)
     {
         // Preload correct library
         var bittyness = IntPtr.Size == 8 ? "64" : "32";

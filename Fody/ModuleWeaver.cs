@@ -24,6 +24,7 @@ public partial  class ModuleWeaver
         ProcessNativeResources();
         EmbedResources();
 
+        CalculateHash();
         ImportAssemblyLoader();
         ImportModuleLoader();
 
