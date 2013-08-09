@@ -4,8 +4,8 @@
     <id>Costura.Fody</id>
     <version>$version$</version>
     <title>Costura.Fody</title>
-    <authors>Simon Cropp</authors>
-    <owners>Simon Cropp</owners>
+    <authors>Simon Cropp, Cameron MacFarland</authors>
+    <owners>Simon Cropp, Cameron MacFarland</owners>
     <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
     <projectUrl>http://github.com/Fody/Costura</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
