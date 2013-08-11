@@ -48,7 +48,8 @@ public class TempFileTests
                 AssemblyResolver = new MockAssemblyResolver(),
                 CreateTemporaryAssemblies = true,
                 Unmanaged32Assemblies = new List<string> { "AssemblyToReferenceMixed" },
-                ReferenceCopyLocalPaths = references
+                ReferenceCopyLocalPaths = references,
+                AssemblyFilePath = beforeAssemblyPath
             };
 
         weavingTask.Execute();

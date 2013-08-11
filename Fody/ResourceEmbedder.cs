@@ -10,12 +10,19 @@ using Mono.Cecil;
 public partial class ModuleWeaver : IDisposable
 {
     List<Stream> streams = new List<Stream>();
+    string cachePath;
 
     public void EmbedResources()
     {
         if (ReferenceCopyLocalPaths == null)
         {
             throw new WeavingException("ReferenceCopyLocalPaths is required you may need to update to the latest version of Fody.");
+        }
+
+        cachePath = Path.Combine(Path.GetDirectoryName(AssemblyFilePath), "Costura");
+        if (!Directory.Exists(cachePath))
+        {
+            Directory.CreateDirectory(cachePath);
         }
 
         // Ignore resource assemblies for now
@@ -134,19 +141,37 @@ public partial class ModuleWeaver : IDisposable
         }
 
         LogInfo(string.Format("\tEmbedding '{0}'", fullPath));
+
+        var cacheFile = Path.Combine(cachePath, resourceName);
         var memoryStream = new MemoryStream();
-        using (var fileStream = File.Open(fullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+
+        if (File.Exists(cacheFile))
         {
-            if (!DisableCompression)
-            {
-                using (var compressedStream = new DeflateStream(memoryStream, CompressionMode.Compress, true))
-                {
-                    fileStream.CopyTo(compressedStream);
-                }
-            }
-            else
+            using (var fileStream = File.Open(cacheFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 fileStream.CopyTo(memoryStream);
+            }
+        }
+        else
+        {
+            using (var fileStream = File.Open(fullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                if (!DisableCompression)
+                {
+                    using (var compressedStream = new DeflateStream(memoryStream, CompressionMode.Compress, true))
+                    {
+                        fileStream.CopyTo(compressedStream);
+                    }
+                }
+                else
+                {
+                    fileStream.CopyTo(memoryStream);
+                }
+            }
+            memoryStream.Position = 0;
+            using (var fileStream = File.Open(cacheFile, FileMode.CreateNew, FileAccess.Write, FileShare.Read))
+            {
+                memoryStream.CopyTo(fileStream);
             }
         }
         memoryStream.Position = 0;

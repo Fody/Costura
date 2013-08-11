@@ -47,7 +47,8 @@ public class InMemoryTests
                 ModuleDefinition = moduleDefinition,
                 AssemblyResolver = new MockAssemblyResolver(),
                 Unmanaged32Assemblies = new List<string> { "AssemblyToReferenceMixed" },
-                ReferenceCopyLocalPaths = references
+                ReferenceCopyLocalPaths = references,
+                AssemblyFilePath = beforeAssemblyPath
             };
 
         weavingTask.Execute();
