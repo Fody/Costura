@@ -1,11 +1,15 @@
-﻿using System.Runtime.InteropServices;
-using FluentValidation;
+﻿using System;
+using System.Runtime.InteropServices;
 
 public class ClassToTest
 {
     public string Foo()
     {
         return ClassToReference.Foo();
+    }
+    public string InternationalFoo()
+    {
+        return ClassToReference.InternationalFoo();
     }
     public string Foo2()
     {
@@ -40,15 +44,5 @@ public class ClassToTest
     public string MixedFoo()
     {
         return ClassToReferenceMixed.Foo();
-    }
-
-    public bool Validate()
-    {
-        var validator = new Validator();
-        return validator.Validate(this).IsValid;
-    }
-
-    private class Validator : AbstractValidator<ClassToTest>
-    {
     }
 }

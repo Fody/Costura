@@ -29,7 +29,7 @@ static class Common
         }
     }
     
-    public static void CreateDirectory(string tempBasePath)
+    static void CreateDirectory(string tempBasePath)
     {
         if (Directory.Exists(tempBasePath))
         {
@@ -169,6 +169,7 @@ static class Common
                     hasHandle = true;
                 }
 
+                CreateDirectory(tempBasePath);
                 InternalPreloadUnmanagedLibraries(tempBasePath, libs);
             }
             finally

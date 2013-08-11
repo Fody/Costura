@@ -38,11 +38,9 @@ public class TempFileTests
                 Path.Combine(directoryName, "AssemblyToReferenceMixed.dll"),
             };
 
-        var fluentDirectory = Directory.GetDirectories(@"..\..\..\Packages\", "FluentValidation.*").First();
-        var net40Directory = Directory.GetDirectories(fluentDirectory, "Net40", SearchOption.AllDirectories).First();
-
-        var fluentValidationRefs = Directory.GetFiles(net40Directory, "FluentValidation*.dll", SearchOption.AllDirectories);
-        references.AddRange(fluentValidationRefs);
+        var assemblyToReferenceDirectory = Path.GetDirectoryName(beforeAssemblyPath.Replace("AssemblyToProcess", "AssemblyToReference"));
+        var assemblyToReferenceResources = Directory.GetFiles(assemblyToReferenceDirectory, "*.resources.dll", SearchOption.AllDirectories);
+        references.AddRange(assemblyToReferenceResources);
 
         var weavingTask = new ModuleWeaver
             {

@@ -17,7 +17,6 @@ static class ILTemplateWithTempAssembly
         var md5Hash = "To be replaced at compile time";
         var prefixPath = Path.Combine(Path.GetTempPath(), "Costura");
         tempBasePath = Path.Combine(prefixPath, md5Hash);
-        Common.CreateDirectory(tempBasePath);
 
         // Preload
         var unmanagedAssemblies = IntPtr.Size == 8 ? preload64List : preload32List;

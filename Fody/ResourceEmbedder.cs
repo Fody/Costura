@@ -17,11 +17,19 @@ public partial class ModuleWeaver : IDisposable
         }
 
         // Ignore resource assemblies for now
-        var onlyBinaries = ReferenceCopyLocalPaths.Where(x => (x.EndsWith(".dll") || x.EndsWith(".exe")) && !x.EndsWith(".resources.dll"));
+        var onlyBinaries = ReferenceCopyLocalPaths.Where(x => x.EndsWith(".dll") || x.EndsWith(".exe"));
 
         foreach (var dependency in GetFilteredReferences(onlyBinaries))
         {
             var fullPath = Path.GetFullPath(dependency);
+            
+            if (dependency.EndsWith(".resources.dll"))
+            {
+                // TODO support resources
+                //Embedd(string.Format("costura.{0}.", Path.GetFileName(Path.GetDirectoryName(fullPath))), fullPath);
+                continue;
+            }
+
             Embedd("costura.", fullPath);
             if (!IncludeDebugSymbols)
             {

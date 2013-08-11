@@ -18,25 +18,28 @@ public static class Verifier
     public static string Validate(string assemblyPath2)
     {
         var exePath = GetPathToPEVerify();
-
-        if (!File.Exists(exePath))
-            Assert.Ignore(String.Concat("Could not find '", exePath, "'. Test ignored."));
-
-        var process = Process.Start(new ProcessStartInfo(exePath, "\"" + assemblyPath2 + "\"")
+        using (var process = Process.Start(new ProcessStartInfo(exePath, String.Format("\"{0}\"", assemblyPath2))
         {
             RedirectStandardOutput = true,
             UseShellExecute = false,
             CreateNoWindow = true
-        });
-
-        process.WaitForExit(10000);
-        return process.StandardOutput.ReadToEnd().Trim().Replace(assemblyPath2, "");
+        }))
+        {
+            process.WaitForExit(10000);
+            return process.StandardOutput.ReadToEnd().Trim().Replace(assemblyPath2, "");
+        }
     }
 
     static string GetPathToPEVerify()
     {
-        return Path.Combine(ToolLocationHelper.GetPathToDotNetFrameworkSdk(TargetDotNetFrameworkVersion.Version40), @"bin\NETFX 4.0 Tools\peverify.exe");
+        var path = Path.Combine(ToolLocationHelper.GetPathToDotNetFrameworkSdk(TargetDotNetFrameworkVersion.Version40), @"bin\NETFX 4.0 Tools\peverify.exe");
+        if (!File.Exists(path))
+            path = path.Replace("v7.0", "v8.0");
+        if (!File.Exists(path))
+            Assert.Ignore("PEVerify could not be found");
+        return path;
     }
+
     static string TrimLineNumbers(string foo)
     {
         return Regex.Replace(foo, @"0x.*]", "");
