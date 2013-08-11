@@ -9,12 +9,8 @@ using Mono.Collections.Generic;
 
 public partial class ModuleWeaver
 {
-    MethodDefinition assemblyLoaderCCtor;
-
     void BuildUpNameDictionary()
     {
-        assemblyLoaderCCtor = targetType.Methods.FirstOrDefault(x => x.Name == ".cctor");
-
         foreach (var resource in ModuleDefinition.Resources.OrderBy(r => r.Name))
         {
             if (!resource.Name.StartsWith("costura"))
@@ -31,27 +27,27 @@ public partial class ModuleWeaver
             if (parts[0] == "costura")
             {
                 if (CreateTemporaryAssemblies)
-                    AddNameList(PreloadListField, resource.Name);
+                    AddToList(PreloadListField, resource.Name);
                 else
                 {
                     if (ext == "pdb")
-                        AddNameLookup(SymbolNamesField, name, resource.Name);
+                        AddToDictionary(SymbolNamesField, name, resource.Name);
                     else
-                        AddNameLookup(AssemblyNamesField, name, resource.Name);
+                        AddToDictionary(AssemblyNamesField, name, resource.Name);
                 }
             }
             else if (parts[0] == "costura32")
             {
-                AddNameList(Preload32ListField, resource.Name);
+                AddToList(Preload32ListField, resource.Name);
             }
             else if (parts[0] == "costura64")
             {
-                AddNameList(Preload64ListField, resource.Name);
+                AddToList(Preload64ListField, resource.Name);
             }
         }
     }
 
-    void AddNameLookup(FieldDefinition field, string key, string name)
+    void AddToDictionary(FieldDefinition field, string key, string name)
     {
         var retIndex = assemblyLoaderCCtor.Body.Instructions.Count - 1;
         assemblyLoaderCCtor.Body.Instructions.InsertBefore(retIndex, new Instruction[] { 
@@ -62,7 +58,7 @@ public partial class ModuleWeaver
         });
     }
 
-    void AddNameList(FieldDefinition field, string name)
+    void AddToList(FieldDefinition field, string name)
     {
         var retIndex = assemblyLoaderCCtor.Body.Instructions.Count - 1;
         assemblyLoaderCCtor.Body.Instructions.InsertBefore(retIndex, new Instruction[] { 

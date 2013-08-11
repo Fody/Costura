@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using Mono.Cecil;
 
 public partial class ModuleWeaver : IDisposable
@@ -30,7 +32,7 @@ public partial class ModuleWeaver : IDisposable
                 continue;
             }
 
-            Embedd("costura.", fullPath);
+            Embed("costura.", fullPath);
             if (!IncludeDebugSymbols)
             {
                 continue;
@@ -38,7 +40,7 @@ public partial class ModuleWeaver : IDisposable
             var pdbFullPath = Path.ChangeExtension(fullPath, "pdb");
             if (File.Exists(pdbFullPath))
             {
-                Embedd("costura.", pdbFullPath);
+                Embed("costura.", pdbFullPath);
             }
         }
 
@@ -63,7 +65,8 @@ public partial class ModuleWeaver : IDisposable
             }
 
             var fullPath = Path.GetFullPath(dependency);
-            Embedd(prefix, fullPath);
+            var resourceName = Embed(prefix, fullPath);
+            checksums.Add(resourceName, CalculateChecksum(fullPath));
             if (!IncludeDebugSymbols)
             {
                 continue;
@@ -71,7 +74,8 @@ public partial class ModuleWeaver : IDisposable
             var pdbFullPath = Path.ChangeExtension(fullPath, "pdb");
             if (File.Exists(pdbFullPath))
             {
-                Embedd(prefix, pdbFullPath);
+                resourceName = Embed(prefix, pdbFullPath);
+                checksums.Add(resourceName, CalculateChecksum(pdbFullPath));
             }
         }
     }
@@ -115,19 +119,20 @@ public partial class ModuleWeaver : IDisposable
         }
     }
 
-    void Embedd(string prefix, string fullPath)
+    string Embed(string prefix, string fullPath)
     {
         var resourceName = String.Format("{0}{1}", prefix, Path.GetFileName(fullPath).ToLowerInvariant());
         if (ModuleDefinition.Resources.Any(x => x.Name == resourceName))
         {
             LogInfo(string.Format("\tSkipping '{0}' because it is already embedded", fullPath));
-            return;
+            return resourceName;
         }
 
         if (!DisableCompression)
         {
             resourceName = String.Format("{0}{1}.zip", prefix, Path.GetFileName(fullPath).ToLowerInvariant());
         }
+
         LogInfo(string.Format("\tEmbedding '{0}'", fullPath));
         var memoryStream = new MemoryStream();
         using (var fileStream = File.Open(fullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
@@ -148,6 +153,8 @@ public partial class ModuleWeaver : IDisposable
         streams.Add(memoryStream);
         var resource = new EmbeddedResource(resourceName, ManifestResourceAttributes.Private, memoryStream);
         ModuleDefinition.Resources.Add(resource);
+
+        return resourceName;
     }
 
     public void Dispose()

@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyLoaderImporter.cs" />
+    <Compile Include="Checksums.cs" />
     <Compile Include="ConfigReader.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="HashCalculator.cs" />

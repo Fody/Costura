@@ -32,6 +32,7 @@ public partial class ModuleWeaver
         ImportAssemblyLoader();
         ImportModuleLoader();
 
+        AddChecksumsToTemplate();
         BuildUpNameDictionary();
     }
 }

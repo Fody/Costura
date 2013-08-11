@@ -13,9 +13,6 @@ using System.Threading;
 
 static class Common
 {
-    [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
-    static extern bool MoveFileEx(string lpExistingFileName, string lpNewFileName, int dwFlags);
-
     [DllImport("kernel32.dll")]
     static extern IntPtr LoadLibrary(string dllToLoad);
 
@@ -31,22 +28,10 @@ static class Common
     
     static void CreateDirectory(string tempBasePath)
     {
-        if (Directory.Exists(tempBasePath))
-        {
-            try
-            {
-                Directory.Delete(tempBasePath, true);
-                Directory.CreateDirectory(tempBasePath);
-            }
-            catch
-            {
-            }
-        }
-        else
+        if (!Directory.Exists(tempBasePath))
         {
             Directory.CreateDirectory(tempBasePath);
         }
-        MoveFileEx(tempBasePath, null, 0x4);
     }
 
     static byte[] ReadStream(Stream stream)
@@ -54,6 +39,24 @@ static class Common
         var data = new Byte[stream.Length];
         stream.Read(data, 0, data.Length);
         return data;
+    }
+
+    public static string CalculateChecksum(string filename)
+    {
+        using (FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+        using (BufferedStream bs = new BufferedStream(fs))
+        {
+            using (SHA1Managed sha1 = new SHA1Managed())
+            {
+                byte[] hash = sha1.ComputeHash(bs);
+                StringBuilder formatted = new StringBuilder(2 * hash.Length);
+                foreach (byte b in hash)
+                {
+                    formatted.AppendFormat("{0:X2}", b);
+                }
+                return formatted.ToString();
+            }
+        }
     }
 
     public static Assembly ReadExistingAssembly(string name)
@@ -144,7 +147,7 @@ static class Common
     }
 
     // Mutex code from http://stackoverflow.com/questions/229565/what-is-a-good-pattern-for-using-a-global-mutex-in-c
-    public static void PreloadUnmanagedLibraries(string hash, string tempBasePath, IEnumerable<string> libs)
+    public static void PreloadUnmanagedLibraries(string hash, string tempBasePath, IEnumerable<string> libs, Dictionary<string, string> checksums)
     {
         string mutexId = string.Format("Global\\Costura{0}", hash);
 
@@ -170,7 +173,7 @@ static class Common
                 }
 
                 CreateDirectory(tempBasePath);
-                InternalPreloadUnmanagedLibraries(tempBasePath, libs);
+                InternalPreloadUnmanagedLibraries(tempBasePath, libs, checksums);
             }
             finally
             {
@@ -180,7 +183,7 @@ static class Common
         }
     }
 
-    static void InternalPreloadUnmanagedLibraries(string tempBasePath, IEnumerable<string> libs)
+    static void InternalPreloadUnmanagedLibraries(string tempBasePath, IEnumerable<string> libs, Dictionary<string, string> checksums)
     {
         // Preload correct library
         var bittyness = IntPtr.Size == 8 ? "64" : "32";
@@ -200,6 +203,13 @@ static class Common
                 name = name.Substring(0, name.Length - 4);
 
             var assemblyTempFilePath = Path.Combine(tempBasePath, name);
+
+            if (File.Exists(assemblyTempFilePath))
+            {
+                var checksum = CalculateChecksum(assemblyTempFilePath);
+                if (checksum != checksums[lib])
+                    File.Delete(assemblyTempFilePath);
+            }
 
             if (!File.Exists(assemblyTempFilePath))
             {

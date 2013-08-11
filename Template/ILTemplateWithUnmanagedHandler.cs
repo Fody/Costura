@@ -13,6 +13,8 @@ static class ILTemplateWithUnmanagedHandler
     readonly static List<string> preload32List = new List<string>();
     readonly static List<string> preload64List = new List<string>();
 
+    readonly static Dictionary<string, string> checksums = new Dictionary<string, string>();
+
     public static void Attach()
     {
         //Create a unique Temp directory for the application path.
@@ -22,7 +24,7 @@ static class ILTemplateWithUnmanagedHandler
 
         // Preload
         var unmanagedAssemblies = IntPtr.Size == 8 ? preload64List : preload32List;
-        Common.PreloadUnmanagedLibraries(md5Hash, tempBasePath, unmanagedAssemblies);
+        Common.PreloadUnmanagedLibraries(md5Hash, tempBasePath, unmanagedAssemblies, checksums);
 
         var currentDomain = AppDomain.CurrentDomain;
         currentDomain.AssemblyResolve += ResolveAssembly;

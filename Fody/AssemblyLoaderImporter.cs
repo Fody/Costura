@@ -7,6 +7,7 @@ using Mono.Cecil.Rocks;
 public partial class ModuleWeaver
 {
     ConstructorInfo instructionConstructorInfo = typeof(Instruction).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(OpCode), typeof(object) }, null);
+    MethodDefinition assemblyLoaderCCtor; 
     TypeDefinition targetType;
     TypeDefinition sourceType;
     TypeDefinition commonType;
@@ -18,6 +19,7 @@ public partial class ModuleWeaver
     public FieldDefinition PreloadListField;
     public FieldDefinition Preload32ListField;
     public FieldDefinition Preload64ListField;
+    public FieldDefinition ChecksumsField;
 
     public void ImportAssemblyLoader()
     {
@@ -52,6 +54,8 @@ public partial class ModuleWeaver
 
         LoaderCctor = CopyMethod(sourceType.Methods.First(x => x.IsConstructor && x.IsStatic));
         AttachMethod = CopyMethod(sourceType.Methods.First(x => x.Name == "Attach"));
+
+        assemblyLoaderCCtor = targetType.Methods.FirstOrDefault(x => x.Name == ".cctor");
     }
 
     void CopyFields(TypeDefinition source)
@@ -70,6 +74,8 @@ public partial class ModuleWeaver
                 Preload32ListField = newField;
             if (field.Name == "preload64List")
                 Preload64ListField = newField;
+            if (field.Name == "checksums")
+                ChecksumsField = newField;
         }
     }
 
