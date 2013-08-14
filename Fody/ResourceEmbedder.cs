@@ -31,7 +31,7 @@ public partial class ModuleWeaver : IDisposable
         foreach (var dependency in GetFilteredReferences(onlyBinaries))
         {
             var fullPath = Path.GetFullPath(dependency);
-            
+
             if (dependency.EndsWith(".resources.dll"))
             {
                 // TODO support resources
@@ -142,7 +142,8 @@ public partial class ModuleWeaver : IDisposable
 
         LogInfo(string.Format("\tEmbedding '{0}'", fullPath));
 
-        var cacheFile = Path.Combine(cachePath, resourceName);
+        var checksum = CalculateChecksum(fullPath);
+        var cacheFile = Path.Combine(cachePath, String.Format("{0}.{1}", checksum, resourceName));
         var memoryStream = new MemoryStream();
 
         if (File.Exists(cacheFile))
