@@ -39,7 +39,11 @@ public partial class ModuleWeaver : IDisposable
                 continue;
             }
 
-            Embed("costura.", fullPath);
+            var resourceName = Embed("costura.", fullPath);
+            if (CreateTemporaryAssemblies)
+            {
+                checksums.Add(resourceName, CalculateChecksum(fullPath));
+            }
             if (!IncludeDebugSymbols)
             {
                 continue;
@@ -47,7 +51,11 @@ public partial class ModuleWeaver : IDisposable
             var pdbFullPath = Path.ChangeExtension(fullPath, "pdb");
             if (File.Exists(pdbFullPath))
             {
-                Embed("costura.", pdbFullPath);
+                resourceName = Embed("costura.", pdbFullPath);
+                if (CreateTemporaryAssemblies)
+                {
+                    checksums.Add(resourceName, CalculateChecksum(pdbFullPath));
+                }
             }
         }
 

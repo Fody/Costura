@@ -36,6 +36,9 @@ partial class ModuleWeaver
 
     void AddChecksumsToTemplate()
     {
+        if (ChecksumsField == null)
+            return;
+
         foreach (var checksum in checksums)
             AddToDictionary(ChecksumsField, checksum.Key, checksum.Value);
     }
