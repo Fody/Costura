@@ -75,6 +75,11 @@
     <Compile Include="WeavingException.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="NugetAssets\Costura.nuspec">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="NugetAssets\install.ps1" />
+    <None Include="NugetAssets\uninstall.ps1" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -89,7 +94,24 @@
       <InProject>false</InProject>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="NugetAssets\Fody_ToBeDeleted.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(ProjectPath)\..\..\Tools\Pepita\PepitaGet.targets" />
+  <UsingTask TaskName="PepitaPackage.WeavingTask" AssemblyFile="$(SolutionDir)Tools\Pepita\PepitaPackage.dll" />
+  <Target Name="AfterBuild">
+    <ItemGroup>
+      <FilesToDelete Include="$(SolutionDir)NuGetBuild\**\*.*" />
+    </ItemGroup>
+    <Delete Files="@(FilesToDelete)" />
+    <MakeDir Directories="$(SolutionDir)NuGetBuild" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\Fody_ToBeDeleted.txt" DestinationFolder="$(SolutionDir)NuGetBuild\Content" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\Costura.nuspec" DestinationFolder="$(SolutionDir)NuGetBuild" />
+    <Copy SourceFiles="$(OutputPath)\Costura.Fody.dll" DestinationFolder="$(SolutionDir)NuGetBuild" />
+    <Copy SourceFiles="$(OutputPath)\Costura.Fody.pdb" DestinationFolder="$(SolutionDir)NuGetBuild" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\install.ps1" DestinationFolder="$(SolutionDir)NuGetBuild\Tools" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\uninstall.ps1" DestinationFolder="$(SolutionDir)NuGetBuild\Tools" />
+    <PepitaPackage.WeavingTask NuGetBuildDirectory="$(SolutionDir)NuGetBuild" MetadataAssembly="$(OutputPath)\Costura.Fody.dll" />
+  </Target>
   <Import Project="Fody.targets" />
 </Project>
