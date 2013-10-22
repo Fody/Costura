@@ -12,9 +12,12 @@ static class ILTemplateWithTempAssembly
     readonly static List<string> preload64List = new List<string>();
 
     readonly static Dictionary<string, string> checksums = new Dictionary<string, string>();
+    static AssemblyName[] referencedAssemblies;
 
     public static void Attach()
     {
+        referencedAssemblies = Assembly.GetExecutingAssembly().GetReferencedAssemblies();
+
         //Create a unique Temp directory for the application path.
         var md5Hash = "To be replaced at compile time";
         var prefixPath = Path.Combine(Path.GetTempPath(), "Costura");
@@ -33,7 +36,17 @@ static class ILTemplateWithTempAssembly
 
     public static Assembly ResolveAssembly(object sender, ResolveEventArgs args)
     {
-        var name = new AssemblyName(args.Name).Name.ToLowerInvariant();
+        var requestedAssemblyName = new AssemblyName(args.Name);
+
+        foreach (var assembly in referencedAssemblies)
+        {
+            if (assembly.Name == requestedAssemblyName.Name && assembly.Version != requestedAssemblyName.Version)
+            {
+                return Assembly.Load(assembly);
+            }
+        }
+
+        var name = requestedAssemblyName.Name.ToLowerInvariant();
 
         var existingAssembly = Common.ReadExistingAssembly(name);
         if (existingAssembly != null)

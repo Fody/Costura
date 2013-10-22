@@ -7,16 +7,28 @@ static class ILTemplate
 {
     readonly static Dictionary<string, string> assemblyNames = new Dictionary<string, string>();
     readonly static Dictionary<string, string> symbolNames = new Dictionary<string, string>();
+    static AssemblyName[] referencedAssemblies;
 
     public static void Attach()
     {
+        referencedAssemblies = Assembly.GetExecutingAssembly().GetReferencedAssemblies();
         var currentDomain = AppDomain.CurrentDomain;
         currentDomain.AssemblyResolve += ResolveAssembly;
     }
 
     public static Assembly ResolveAssembly(object sender, ResolveEventArgs args)
     {
-        var name = new AssemblyName(args.Name).Name.ToLowerInvariant();
+        var requestedAssemblyName = new AssemblyName(args.Name);
+
+        foreach (var assembly in referencedAssemblies)
+        {
+            if (assembly.Name == requestedAssemblyName.Name && assembly.Version != requestedAssemblyName.Version)
+            {
+                return Assembly.Load(assembly);
+            }
+        }
+
+        var name = requestedAssemblyName.Name.ToLowerInvariant();
 
         var existingAssembly = Common.ReadExistingAssembly(name);
         if (existingAssembly != null)
