@@ -27,6 +27,13 @@ public partial class ModuleWeaver
         if (existingILTemplate != null)
         {
             AttachMethod = existingILTemplate.Methods.First(x => x.Name == "Attach");
+            assemblyLoaderCCtor = existingILTemplate.Methods.FirstOrDefault(x => x.Name == ".cctor");
+            AssemblyNamesField = existingILTemplate.Fields.FirstOrDefault(x => x.Name == "assemblyNames");
+            SymbolNamesField = existingILTemplate.Fields.FirstOrDefault(x => x.Name == "symbolNames");
+            PreloadListField = existingILTemplate.Fields.FirstOrDefault(x => x.Name == "preloadList");
+            Preload32ListField = existingILTemplate.Fields.FirstOrDefault(x => x.Name == "preload32List");
+            Preload64ListField = existingILTemplate.Fields.FirstOrDefault(x => x.Name == "preload64List");
+            ChecksumsField = existingILTemplate.Fields.FirstOrDefault(x => x.Name == "checksums");
             return;
         }
 
