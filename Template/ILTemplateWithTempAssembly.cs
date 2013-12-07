@@ -5,13 +5,14 @@ using System.Reflection;
 
 static class ILTemplateWithTempAssembly
 {
-    private static string tempBasePath;
+    static string tempBasePath;
 
     readonly static List<string> preloadList = new List<string>();
     readonly static List<string> preload32List = new List<string>();
     readonly static List<string> preload64List = new List<string>();
 
     readonly static Dictionary<string, string> checksums = new Dictionary<string, string>();
+
     static AssemblyName[] referencedAssemblies;
 
     public static void Attach()

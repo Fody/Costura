@@ -3,16 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using Mono.Cecil;
 
-public partial class ModuleWeaver : IDisposable
+partial class ModuleWeaver : IDisposable
 {
-    List<Stream> streams = new List<Stream>();
+    readonly List<Stream> streams = new List<Stream>();
     string cachePath;
 
-    public void EmbedResources()
+    void EmbedResources()
     {
         if (ReferenceCopyLocalPaths == null)
         {
@@ -66,12 +64,12 @@ public partial class ModuleWeaver : IDisposable
             if (Unmanaged32Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(dependency)))
             {
                 prefix = "costura32.";
-                HasUnmanaged = true;
+                hasUnmanaged = true;
             }
             if (Unmanaged64Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(dependency)))
             {
                 prefix = "costura64.";
-                HasUnmanaged = true;
+                hasUnmanaged = true;
             }
 
             if (String.IsNullOrEmpty(prefix))

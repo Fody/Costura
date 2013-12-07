@@ -7,7 +7,7 @@ using System.Text;
 
 partial class ModuleWeaver
 {
-    Dictionary<string, string> checksums = new Dictionary<string, string>();
+    readonly Dictionary<string, string> checksums = new Dictionary<string, string>();
 
     static string CalculateChecksum(string filename)
     {
@@ -36,10 +36,10 @@ partial class ModuleWeaver
 
     void AddChecksumsToTemplate()
     {
-        if (ChecksumsField == null)
+        if (checksumsField == null)
             return;
 
         foreach (var checksum in checksums)
-            AddToDictionary(ChecksumsField, checksum.Key, checksum.Value);
+            AddToDictionary(checksumsField, checksum.Key, checksum.Value);
     }
 }

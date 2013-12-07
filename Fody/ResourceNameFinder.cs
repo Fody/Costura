@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
-using Mono.Cecil.Rocks;
-using Mono.Collections.Generic;
 
-public partial class ModuleWeaver
+partial class ModuleWeaver
 {
     void BuildUpNameDictionary()
     {
@@ -27,22 +23,22 @@ public partial class ModuleWeaver
             if (parts[0] == "costura")
             {
                 if (CreateTemporaryAssemblies)
-                    AddToList(PreloadListField, resource.Name);
+                    AddToList(preloadListField, resource.Name);
                 else
                 {
                     if (ext == "pdb")
-                        AddToDictionary(SymbolNamesField, name, resource.Name);
+                        AddToDictionary(symbolNamesField, name, resource.Name);
                     else
-                        AddToDictionary(AssemblyNamesField, name, resource.Name);
+                        AddToDictionary(assemblyNamesField, name, resource.Name);
                 }
             }
             else if (parts[0] == "costura32")
             {
-                AddToList(Preload32ListField, resource.Name);
+                AddToList(preload32ListField, resource.Name);
             }
             else if (parts[0] == "costura64")
             {
-                AddToList(Preload64ListField, resource.Name);
+                AddToList(preload64ListField, resource.Name);
             }
         }
     }
@@ -50,21 +46,21 @@ public partial class ModuleWeaver
     void AddToDictionary(FieldDefinition field, string key, string name)
     {
         var retIndex = assemblyLoaderCCtor.Body.Instructions.Count - 1;
-        assemblyLoaderCCtor.Body.Instructions.InsertBefore(retIndex, new Instruction[] { 
+        assemblyLoaderCCtor.Body.Instructions.InsertBefore(retIndex, new Instruction[] {
             Instruction.Create(OpCodes.Ldsfld, field),
             Instruction.Create(OpCodes.Ldstr, key),
             Instruction.Create(OpCodes.Ldstr, name),
-            Instruction.Create(OpCodes.Callvirt, DictionaryOfStringOfStringAdd),
+            Instruction.Create(OpCodes.Callvirt, dictionaryOfStringOfStringAdd),
         });
     }
 
     void AddToList(FieldDefinition field, string name)
     {
         var retIndex = assemblyLoaderCCtor.Body.Instructions.Count - 1;
-        assemblyLoaderCCtor.Body.Instructions.InsertBefore(retIndex, new Instruction[] { 
+        assemblyLoaderCCtor.Body.Instructions.InsertBefore(retIndex, new Instruction[] {
             Instruction.Create(OpCodes.Ldsfld, field),
             Instruction.Create(OpCodes.Ldstr, name),
-            Instruction.Create(OpCodes.Callvirt, ListOfStringAdd),
+            Instruction.Create(OpCodes.Callvirt, listOfStringAdd),
         });
     }
 }

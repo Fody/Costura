@@ -3,19 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 
-public partial class ModuleWeaver
+partial class ModuleWeaver
 {
     public XElement Config { get; set; }
-    public bool IncludeDebugSymbols = true;
-    public bool DisableCompression = false;
-    public List<string> IncludeAssemblies = new List<string>();
-    public List<string> ExcludeAssemblies = new List<string>();
-    public List<string> Unmanaged32Assemblies = new List<string>();
-    public List<string> Unmanaged64Assemblies = new List<string>();
-    public bool CreateTemporaryAssemblies;
+    public bool IncludeDebugSymbols { get; private set; }
+    public bool DisableCompression { get; private set; }
+    public bool CreateTemporaryAssemblies { get; private set; }
+    public List<string> IncludeAssemblies { get; private set; }
+    public List<string> ExcludeAssemblies { get; private set; }
+    public List<string> Unmanaged32Assemblies { get; private set; }
+    public List<string> Unmanaged64Assemblies { get; private set; }
 
     public void ReadConfig()
     {
+        // Defaults
+        IncludeDebugSymbols = true;
+        DisableCompression = false;
+        CreateTemporaryAssemblies = false;
+        IncludeAssemblies = new List<string>();
+        ExcludeAssemblies = new List<string>();
+        Unmanaged32Assemblies = new List<string>();
+        Unmanaged64Assemblies = new List<string>();
+
         if (Config == null)
         {
             return;
@@ -40,7 +49,12 @@ public partial class ModuleWeaver
         var createTemporaryAssembliesAttribute = Config.Attribute("CreateTemporaryAssemblies");
         if (createTemporaryAssembliesAttribute != null)
         {
-            if (!bool.TryParse(createTemporaryAssembliesAttribute.Value, out CreateTemporaryAssemblies))
+            bool createTemporaryAssemblies;
+            if (bool.TryParse(createTemporaryAssembliesAttribute.Value, out createTemporaryAssemblies))
+            {
+                CreateTemporaryAssemblies = createTemporaryAssemblies;
+            }
+            else
             {
                 throw new Exception(string.Format("Could not parse 'CreateTemporaryAssemblies' from '{0}'.", createTemporaryAssembliesAttribute.Value));
             }
@@ -52,7 +66,12 @@ public partial class ModuleWeaver
         var includeDebugAttribute = Config.Attribute("IncludeDebugSymbols");
         if (includeDebugAttribute != null)
         {
-            if (!bool.TryParse(includeDebugAttribute.Value, out IncludeDebugSymbols))
+            bool includeDebugSymbols;
+            if (bool.TryParse(includeDebugAttribute.Value, out includeDebugSymbols))
+            {
+                IncludeDebugSymbols = includeDebugSymbols;
+            }
+            else
             {
                 throw new Exception(string.Format("Could not parse 'IncludeDebugSymbols' from '{0}'.", includeDebugAttribute.Value));
             }
@@ -64,7 +83,12 @@ public partial class ModuleWeaver
         var disableCompressionAttribute = Config.Attribute("DisableCompression");
         if (disableCompressionAttribute != null)
         {
-            if (!bool.TryParse(disableCompressionAttribute.Value, out DisableCompression))
+            bool disableCompression;
+            if (bool.TryParse(disableCompressionAttribute.Value, out disableCompression))
+            {
+                DisableCompression = disableCompression;
+            }
+            else
             {
                 throw new Exception(string.Format("Could not parse 'DisableCompression' from '{0}'.", disableCompressionAttribute.Value));
             }
@@ -86,7 +110,7 @@ public partial class ModuleWeaver
         if (excludeAssembliesElement != null)
         {
             foreach (var item in excludeAssembliesElement.Value
-                                                         .Split(new[] {"\r\n", "\n"}, StringSplitOptions.RemoveEmptyEntries)
+                                                         .Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)
                                                          .NonEmpty())
             {
                 ExcludeAssemblies.Add(item);
@@ -109,7 +133,7 @@ public partial class ModuleWeaver
         if (includeAssembliesElement != null)
         {
             foreach (var item in includeAssembliesElement.Value
-                                                         .Split(new[] {"\r\n", "\n"}, StringSplitOptions.RemoveEmptyEntries)
+                                                         .Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)
                                                          .NonEmpty())
             {
                 IncludeAssemblies.Add(item);

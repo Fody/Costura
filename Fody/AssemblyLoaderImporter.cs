@@ -4,36 +4,36 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
 
-public partial class ModuleWeaver
+partial class ModuleWeaver
 {
-    ConstructorInfo instructionConstructorInfo = typeof(Instruction).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(OpCode), typeof(object) }, null);
-    MethodDefinition assemblyLoaderCCtor; 
+    readonly ConstructorInfo instructionConstructorInfo = typeof(Instruction).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(OpCode), typeof(object) }, null);
+    MethodDefinition assemblyLoaderCCtor;
     TypeDefinition targetType;
     TypeDefinition sourceType;
     TypeDefinition commonType;
-    public MethodDefinition AttachMethod;
-    public MethodDefinition LoaderCctor;
-    public bool HasUnmanaged;
-    public FieldDefinition AssemblyNamesField;
-    public FieldDefinition SymbolNamesField;
-    public FieldDefinition PreloadListField;
-    public FieldDefinition Preload32ListField;
-    public FieldDefinition Preload64ListField;
-    public FieldDefinition ChecksumsField;
+    MethodDefinition attachMethod;
+    MethodDefinition loaderCctor;
+    bool hasUnmanaged;
+    FieldDefinition assemblyNamesField;
+    FieldDefinition symbolNamesField;
+    FieldDefinition preloadListField;
+    FieldDefinition preload32ListField;
+    FieldDefinition preload64ListField;
+    FieldDefinition checksumsField;
 
-    public void ImportAssemblyLoader()
+    void ImportAssemblyLoader()
     {
         var existingILTemplate = ModuleDefinition.GetTypes().FirstOrDefault(x => x.FullName == "Costura.AssemblyLoader");
         if (existingILTemplate != null)
         {
-            AttachMethod = existingILTemplate.Methods.First(x => x.Name == "Attach");
+            attachMethod = existingILTemplate.Methods.First(x => x.Name == "Attach");
             assemblyLoaderCCtor = existingILTemplate.Methods.FirstOrDefault(x => x.Name == ".cctor");
-            AssemblyNamesField = existingILTemplate.Fields.FirstOrDefault(x => x.Name == "assemblyNames");
-            SymbolNamesField = existingILTemplate.Fields.FirstOrDefault(x => x.Name == "symbolNames");
-            PreloadListField = existingILTemplate.Fields.FirstOrDefault(x => x.Name == "preloadList");
-            Preload32ListField = existingILTemplate.Fields.FirstOrDefault(x => x.Name == "preload32List");
-            Preload64ListField = existingILTemplate.Fields.FirstOrDefault(x => x.Name == "preload64List");
-            ChecksumsField = existingILTemplate.Fields.FirstOrDefault(x => x.Name == "checksums");
+            assemblyNamesField = existingILTemplate.Fields.FirstOrDefault(x => x.Name == "assemblyNames");
+            symbolNamesField = existingILTemplate.Fields.FirstOrDefault(x => x.Name == "symbolNames");
+            preloadListField = existingILTemplate.Fields.FirstOrDefault(x => x.Name == "preloadList");
+            preload32ListField = existingILTemplate.Fields.FirstOrDefault(x => x.Name == "preload32List");
+            preload64ListField = existingILTemplate.Fields.FirstOrDefault(x => x.Name == "preload64List");
+            checksumsField = existingILTemplate.Fields.FirstOrDefault(x => x.Name == "checksums");
             return;
         }
 
@@ -43,7 +43,7 @@ public partial class ModuleWeaver
         {
             sourceType = moduleDefinition.Types.First(x => x.Name == "ILTemplateWithTempAssembly");
         }
-        else if (HasUnmanaged)
+        else if (hasUnmanaged)
         {
             sourceType = moduleDefinition.Types.First(x => x.Name == "ILTemplateWithUnmanagedHandler");
         }
@@ -54,13 +54,13 @@ public partial class ModuleWeaver
         commonType = moduleDefinition.Types.First(x => x.Name == "Common");
 
         targetType = new TypeDefinition("Costura", "AssemblyLoader", sourceType.Attributes, Resolve(sourceType.BaseType));
-        targetType.CustomAttributes.Add(new CustomAttribute(CompilerGeneratedAttributeCtor));
+        targetType.CustomAttributes.Add(new CustomAttribute(compilerGeneratedAttributeCtor));
         ModuleDefinition.Types.Add(targetType);
         CopyFields(sourceType);
         CopyMethod(sourceType.Methods.First(x => x.Name == "ResolveAssembly"));
 
-        LoaderCctor = CopyMethod(sourceType.Methods.First(x => x.IsConstructor && x.IsStatic));
-        AttachMethod = CopyMethod(sourceType.Methods.First(x => x.Name == "Attach"));
+        loaderCctor = CopyMethod(sourceType.Methods.First(x => x.IsConstructor && x.IsStatic));
+        attachMethod = CopyMethod(sourceType.Methods.First(x => x.Name == "Attach"));
 
         assemblyLoaderCCtor = targetType.Methods.FirstOrDefault(x => x.Name == ".cctor");
     }
@@ -72,17 +72,17 @@ public partial class ModuleWeaver
             var newField = new FieldDefinition(field.Name, field.Attributes, Resolve(field.FieldType));
             targetType.Fields.Add(newField);
             if (field.Name == "assemblyNames")
-                AssemblyNamesField = newField;
+                assemblyNamesField = newField;
             if (field.Name == "symbolNames")
-                SymbolNamesField = newField;
+                symbolNamesField = newField;
             if (field.Name == "preloadList")
-                PreloadListField = newField;
+                preloadListField = newField;
             if (field.Name == "preload32List")
-                Preload32ListField = newField;
+                preload32ListField = newField;
             if (field.Name == "preload64List")
-                Preload64ListField = newField;
+                preload64ListField = newField;
             if (field.Name == "checksums")
-                ChecksumsField = newField;
+                checksumsField = newField;
         }
     }
 

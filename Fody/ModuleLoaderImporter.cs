@@ -2,10 +2,9 @@
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
-public partial class ModuleWeaver
+partial class ModuleWeaver
 {
-
-    public void ImportModuleLoader()
+    void ImportModuleLoader()
     {
         const MethodAttributes attributes = MethodAttributes.Private
                                             | MethodAttributes.HideBySig
@@ -21,10 +20,10 @@ public partial class ModuleWeaver
         var cctor = moduleClass.Methods.FirstOrDefault(x => x.Name == ".cctor");
         if (cctor == null)
         {
-            cctor = new MethodDefinition(".cctor", attributes, VoidTypeReference);
+            cctor = new MethodDefinition(".cctor", attributes, voidTypeReference);
             cctor.Body.Instructions.Add(Instruction.Create(OpCodes.Ret));
             moduleClass.Methods.Add(cctor);
         }
-        cctor.Body.Instructions.Insert(0, Instruction.Create(OpCodes.Call, AttachMethod));
+        cctor.Body.Instructions.Insert(0, Instruction.Create(OpCodes.Call, attachMethod));
     }
 }

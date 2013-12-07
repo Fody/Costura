@@ -1,6 +1,6 @@
-public partial class ModuleWeaver
+partial class ModuleWeaver
 {
-    public void FixResourceCase()
+    void FixResourceCase()
     {
         foreach (var resource in ModuleDefinition.Resources)
         {

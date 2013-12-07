@@ -5,7 +5,7 @@ using System.Reflection;
 
 static class ILTemplateWithUnmanagedHandler
 {
-    private static string tempBasePath;
+    static string tempBasePath;
 
     readonly static Dictionary<string, string> assemblyNames = new Dictionary<string, string>();
     readonly static Dictionary<string, string> symbolNames = new Dictionary<string, string>();
@@ -14,6 +14,7 @@ static class ILTemplateWithUnmanagedHandler
     readonly static List<string> preload64List = new List<string>();
 
     readonly static Dictionary<string, string> checksums = new Dictionary<string, string>();
+
     static AssemblyName[] referencedAssemblies;
 
     public static void Attach()
@@ -35,7 +36,6 @@ static class ILTemplateWithUnmanagedHandler
 
     public static Assembly ResolveAssembly(object sender, ResolveEventArgs args)
     {
-
         var requestedAssemblyName = new AssemblyName(args.Name);
 
         foreach (var assembly in referencedAssemblies)

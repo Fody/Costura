@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
 
 static class ILTemplate
 {
     readonly static Dictionary<string, string> assemblyNames = new Dictionary<string, string>();
     readonly static Dictionary<string, string> symbolNames = new Dictionary<string, string>();
+
     static AssemblyName[] referencedAssemblies;
 
     public static void Attach()

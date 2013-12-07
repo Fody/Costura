@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Xml.Linq;
 using Mono.Cecil;
 using NUnit.Framework;
 
@@ -41,12 +42,12 @@ public class InMemoryTests
         var assemblyToReferenceDirectory = Path.GetDirectoryName(beforeAssemblyPath.Replace("AssemblyToProcess", "AssemblyToReference"));
         var assemblyToReferenceResources = Directory.GetFiles(assemblyToReferenceDirectory, "*.resources.dll", SearchOption.AllDirectories);
         references.AddRange(assemblyToReferenceResources);
-        
+
         var weavingTask = new ModuleWeaver
             {
                 ModuleDefinition = moduleDefinition,
                 AssemblyResolver = new MockAssemblyResolver(),
-                Unmanaged32Assemblies = new List<string> { "AssemblyToReferenceMixed" },
+                Config = XElement.Parse("<Costura Unmanaged32Assemblies='AssemblyToReferenceMixed' />"),
                 ReferenceCopyLocalPaths = references,
                 AssemblyFilePath = beforeAssemblyPath
             };

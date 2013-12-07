@@ -2,9 +2,9 @@
 using System.Linq;
 using Mono.Cecil;
 
-public partial class ModuleWeaver
+partial class ModuleWeaver
 {
-    public void ProcessNativeResources()
+    void ProcessNativeResources()
     {
         var moduleName = ModuleDefinition.Assembly.Name.Name;
 
@@ -13,7 +13,7 @@ public partial class ModuleWeaver
             if (resource.Name.StartsWith(moduleName + ".costura"))
             {
                 resource.Name = resource.Name.Substring(moduleName.Length + 1).ToLowerInvariant();
-                HasUnmanaged = true;
+                hasUnmanaged = true;
                 checksums.Add(resource.Name, CalculateChecksum(resource.GetResourceStream()));
             }
         }
