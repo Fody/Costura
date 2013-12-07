@@ -9,55 +9,52 @@ public class ConfigReaderTests
     public void CanReadFalseNode()
     {
         var xElement = XElement.Parse(@"<Node attr='false'/>");
-        ModuleWeaver.ReadBool(xElement, "attr", b => Assert.IsFalse(b));
+        Configuration.ReadBool(xElement, "attr", b => Assert.IsFalse(b));
     }
 
     [Test]
     public void CanReadTrueNode()
     {
         var xElement = XElement.Parse(@"<Node attr='true'/>");
-        ModuleWeaver.ReadBool(xElement, "attr", b => Assert.IsTrue(b));
+        Configuration.ReadBool(xElement, "attr", b => Assert.IsTrue(b));
     }
 
     [Test]
     public void DoesNotReadInvalidBoolNode()
     {
         var xElement = XElement.Parse(@"<Node attr='foo'/>");
-        Assert.Throws<WeavingException>(() => ModuleWeaver.ReadBool(xElement, "attr", b => Assert.Fail()), "Could not parse 'attr' from 'foo'.");
+        Assert.Throws<WeavingException>(() => Configuration.ReadBool(xElement, "attr", b => Assert.Fail()), "Could not parse 'attr' from 'foo'.");
     }
 
     [Test]
     public void DoesNotSetBoolWhenNodeMissing()
     {
         var xElement = XElement.Parse(@"<Node attr='false'/>");
-        ModuleWeaver.ReadBool(xElement, "missing", b => Assert.Fail());
+        Configuration.ReadBool(xElement, "missing", b => Assert.Fail());
     }
 
     [Test]
     public void FalseIncludeDebugSymbols()
     {
         var xElement = XElement.Parse(@"<Costura IncludeDebugSymbols='false'/>");
-        var moduleWeaver = new ModuleWeaver { Config = xElement };
-        moduleWeaver.ReadConfig();
-        Assert.IsFalse(moduleWeaver.IncludeDebugSymbols);
+        var config = new Configuration(xElement);
+        Assert.IsFalse(config.IncludeDebugSymbols);
     }
 
     [Test]
     public void TrueDisableCompression()
     {
         var xElement = XElement.Parse(@"<Costura DisableCompression='true'/>");
-        var moduleWeaver = new ModuleWeaver { Config = xElement };
-        moduleWeaver.ReadConfig();
-        Assert.IsTrue(moduleWeaver.DisableCompression);
+        var config = new Configuration(xElement);
+        Assert.IsTrue(config.DisableCompression);
     }
 
     [Test]
     public void TrueCreateTemporaryAssemblies()
     {
         var xElement = XElement.Parse(@"<Costura CreateTemporaryAssemblies='true'/>");
-        var moduleWeaver = new ModuleWeaver { Config = xElement };
-        moduleWeaver.ReadConfig();
-        Assert.IsTrue(moduleWeaver.CreateTemporaryAssemblies);
+        var config = new Configuration(xElement);
+        Assert.IsTrue(config.CreateTemporaryAssemblies);
     }
 
     [Test]
@@ -70,10 +67,9 @@ Foo
 Bar
     </ExcludeAssemblies>
 </Costura>");
-        var moduleWeaver = new ModuleWeaver { Config = xElement };
-        moduleWeaver.ReadConfig();
-        Assert.AreEqual("Foo", moduleWeaver.ExcludeAssemblies[0]);
-        Assert.AreEqual("Bar", moduleWeaver.ExcludeAssemblies[1]);
+        var config = new Configuration(xElement);
+        Assert.AreEqual("Foo", config.ExcludeAssemblies[0]);
+        Assert.AreEqual("Bar", config.ExcludeAssemblies[1]);
     }
 
     [Test]
@@ -81,10 +77,9 @@ Bar
     {
         var xElement = XElement.Parse(@"
 <Costura ExcludeAssemblies='Foo|Bar'/>");
-        var moduleWeaver = new ModuleWeaver { Config = xElement };
-        moduleWeaver.ReadConfig();
-        Assert.AreEqual("Foo", moduleWeaver.ExcludeAssemblies[0]);
-        Assert.AreEqual("Bar", moduleWeaver.ExcludeAssemblies[1]);
+        var config = new Configuration(xElement);
+        Assert.AreEqual("Foo", config.ExcludeAssemblies[0]);
+        Assert.AreEqual("Bar", config.ExcludeAssemblies[1]);
     }
 
     [Test]
@@ -96,10 +91,9 @@ Bar
 Bar
     </ExcludeAssemblies>
 </Costura>");
-        var moduleWeaver = new ModuleWeaver { Config = xElement };
-        moduleWeaver.ReadConfig();
-        Assert.AreEqual("Foo", moduleWeaver.ExcludeAssemblies[0]);
-        Assert.AreEqual("Bar", moduleWeaver.ExcludeAssemblies[1]);
+        var config = new Configuration(xElement);
+        Assert.AreEqual("Foo", config.ExcludeAssemblies[0]);
+        Assert.AreEqual("Bar", config.ExcludeAssemblies[1]);
     }
 
     [Test]
@@ -112,10 +106,9 @@ Foo
 Bar
     </IncludeAssemblies>
 </Costura>");
-        var moduleWeaver = new ModuleWeaver { Config = xElement };
-        moduleWeaver.ReadConfig();
-        Assert.AreEqual("Foo", moduleWeaver.IncludeAssemblies[0]);
-        Assert.AreEqual("Bar", moduleWeaver.IncludeAssemblies[1]);
+        var config = new Configuration(xElement);
+        Assert.AreEqual("Foo", config.IncludeAssemblies[0]);
+        Assert.AreEqual("Bar", config.IncludeAssemblies[1]);
     }
 
     [Test]
@@ -123,10 +116,9 @@ Bar
     {
         var xElement = XElement.Parse(@"
 <Costura IncludeAssemblies='Foo|Bar'/>");
-        var moduleWeaver = new ModuleWeaver { Config = xElement };
-        moduleWeaver.ReadConfig();
-        Assert.AreEqual("Foo", moduleWeaver.IncludeAssemblies[0]);
-        Assert.AreEqual("Bar", moduleWeaver.IncludeAssemblies[1]);
+        var config = new Configuration(xElement);
+        Assert.AreEqual("Foo", config.IncludeAssemblies[0]);
+        Assert.AreEqual("Bar", config.IncludeAssemblies[1]);
     }
 
     [Test]
@@ -134,8 +126,7 @@ Bar
     {
         var xElement = XElement.Parse(@"
 <Costura IncludeAssemblies='Bar' ExcludeAssemblies='Foo'/>");
-        var moduleWeaver = new ModuleWeaver { Config = xElement };
-        Assert.Throws<WeavingException>(() => moduleWeaver.ReadConfig(), "Either configure IncludeAssemblies OR ExcludeAssemblies, not both.");
+        Assert.Throws<WeavingException>(() => new Configuration(xElement), "Either configure IncludeAssemblies OR ExcludeAssemblies, not both.");
     }
 
     [Test]
@@ -147,10 +138,9 @@ Bar
 Bar
     </IncludeAssemblies>
 </Costura>");
-        var moduleWeaver = new ModuleWeaver { Config = xElement };
-        moduleWeaver.ReadConfig();
-        Assert.AreEqual("Foo", moduleWeaver.IncludeAssemblies[0]);
-        Assert.AreEqual("Bar", moduleWeaver.IncludeAssemblies[1]);
+        var config = new Configuration(xElement);
+        Assert.AreEqual("Foo", config.IncludeAssemblies[0]);
+        Assert.AreEqual("Bar", config.IncludeAssemblies[1]);
     }
 
     [Test]
@@ -163,10 +153,9 @@ Foo
 Bar
     </Unmanaged32Assemblies>
 </Costura>");
-        var moduleWeaver = new ModuleWeaver { Config = xElement };
-        moduleWeaver.ReadConfig();
-        Assert.AreEqual("Foo", moduleWeaver.Unmanaged32Assemblies[0]);
-        Assert.AreEqual("Bar", moduleWeaver.Unmanaged32Assemblies[1]);
+        var config = new Configuration(xElement);
+        Assert.AreEqual("Foo", config.Unmanaged32Assemblies[0]);
+        Assert.AreEqual("Bar", config.Unmanaged32Assemblies[1]);
     }
 
     [Test]
@@ -174,10 +163,9 @@ Bar
     {
         var xElement = XElement.Parse(@"
 <Costura Unmanaged32Assemblies='Foo|Bar'/>");
-        var moduleWeaver = new ModuleWeaver { Config = xElement };
-        moduleWeaver.ReadConfig();
-        Assert.AreEqual("Foo", moduleWeaver.Unmanaged32Assemblies[0]);
-        Assert.AreEqual("Bar", moduleWeaver.Unmanaged32Assemblies[1]);
+        var config = new Configuration(xElement);
+        Assert.AreEqual("Foo", config.Unmanaged32Assemblies[0]);
+        Assert.AreEqual("Bar", config.Unmanaged32Assemblies[1]);
     }
 
     [Test]
@@ -189,10 +177,9 @@ Bar
 Bar
     </Unmanaged32Assemblies>
 </Costura>");
-        var moduleWeaver = new ModuleWeaver { Config = xElement };
-        moduleWeaver.ReadConfig();
-        Assert.AreEqual("Foo", moduleWeaver.Unmanaged32Assemblies[0]);
-        Assert.AreEqual("Bar", moduleWeaver.Unmanaged32Assemblies[1]);
+        var config = new Configuration(xElement);
+        Assert.AreEqual("Foo", config.Unmanaged32Assemblies[0]);
+        Assert.AreEqual("Bar", config.Unmanaged32Assemblies[1]);
     }
 
     [Test]
@@ -205,10 +192,9 @@ Foo
 Bar
     </Unmanaged64Assemblies>
 </Costura>");
-        var moduleWeaver = new ModuleWeaver { Config = xElement };
-        moduleWeaver.ReadConfig();
-        Assert.AreEqual("Foo", moduleWeaver.Unmanaged64Assemblies[0]);
-        Assert.AreEqual("Bar", moduleWeaver.Unmanaged64Assemblies[1]);
+        var config = new Configuration(xElement);
+        Assert.AreEqual("Foo", config.Unmanaged64Assemblies[0]);
+        Assert.AreEqual("Bar", config.Unmanaged64Assemblies[1]);
     }
 
     [Test]
@@ -216,10 +202,9 @@ Bar
     {
         var xElement = XElement.Parse(@"
 <Costura Unmanaged64Assemblies='Foo|Bar'/>");
-        var moduleWeaver = new ModuleWeaver { Config = xElement };
-        moduleWeaver.ReadConfig();
-        Assert.AreEqual("Foo", moduleWeaver.Unmanaged64Assemblies[0]);
-        Assert.AreEqual("Bar", moduleWeaver.Unmanaged64Assemblies[1]);
+        var config = new Configuration(xElement);
+        Assert.AreEqual("Foo", config.Unmanaged64Assemblies[0]);
+        Assert.AreEqual("Bar", config.Unmanaged64Assemblies[1]);
     }
 
     [Test]
@@ -231,9 +216,8 @@ Bar
 Bar
     </Unmanaged64Assemblies>
 </Costura>");
-        var moduleWeaver = new ModuleWeaver { Config = xElement };
-        moduleWeaver.ReadConfig();
-        Assert.AreEqual("Foo", moduleWeaver.Unmanaged64Assemblies[0]);
-        Assert.AreEqual("Bar", moduleWeaver.Unmanaged64Assemblies[1]);
+        var config = new Configuration(xElement);
+        Assert.AreEqual("Foo", config.Unmanaged64Assemblies[0]);
+        Assert.AreEqual("Bar", config.Unmanaged64Assemblies[1]);
     }
 }

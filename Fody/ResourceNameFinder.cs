@@ -5,7 +5,7 @@ using Mono.Cecil.Cil;
 
 partial class ModuleWeaver
 {
-    void BuildUpNameDictionary()
+    void BuildUpNameDictionary(bool createTemporaryAssemblies)
     {
         foreach (var resource in ModuleDefinition.Resources.OrderBy(r => r.Name))
         {
@@ -22,7 +22,7 @@ partial class ModuleWeaver
 
             if (parts[0] == "costura")
             {
-                if (CreateTemporaryAssemblies)
+                if (createTemporaryAssemblies)
                     AddToList(preloadListField, resource.Name);
                 else
                 {

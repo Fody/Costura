@@ -21,7 +21,7 @@ partial class ModuleWeaver
     FieldDefinition preload64ListField;
     FieldDefinition checksumsField;
 
-    void ImportAssemblyLoader()
+    void ImportAssemblyLoader(bool createTemporaryAssemblies)
     {
         var existingILTemplate = ModuleDefinition.GetTypes().FirstOrDefault(x => x.FullName == "Costura.AssemblyLoader");
         if (existingILTemplate != null)
@@ -39,7 +39,7 @@ partial class ModuleWeaver
 
         var moduleDefinition = GetTemplateModuleDefinition();
 
-        if (CreateTemporaryAssemblies)
+        if (createTemporaryAssemblies)
         {
             sourceType = moduleDefinition.Types.First(x => x.Name == "ILTemplateWithTempAssembly");
         }

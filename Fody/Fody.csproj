@@ -61,7 +61,7 @@
   <ItemGroup>
     <Compile Include="AssemblyLoaderImporter.cs" />
     <Compile Include="Checksums.cs" />
-    <Compile Include="ConfigReader.cs" />
+    <Compile Include="Configuration.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="HashCalculator.cs" />
     <Compile Include="ModuleLoaderImporter.cs" />

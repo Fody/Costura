@@ -10,7 +10,7 @@ partial class ModuleWeaver : IDisposable
     readonly List<Stream> streams = new List<Stream>();
     string cachePath;
 
-    void EmbedResources()
+    void EmbedResources(Configuration config)
     {
         if (ReferenceCopyLocalPaths == null)
         {
@@ -26,7 +26,7 @@ partial class ModuleWeaver : IDisposable
         // Ignore resource assemblies for now
         var onlyBinaries = ReferenceCopyLocalPaths.Where(x => x.EndsWith(".dll") || x.EndsWith(".exe"));
 
-        foreach (var dependency in GetFilteredReferences(onlyBinaries))
+        foreach (var dependency in GetFilteredReferences(onlyBinaries, config))
         {
             var fullPath = Path.GetFullPath(dependency);
 
@@ -37,20 +37,20 @@ partial class ModuleWeaver : IDisposable
                 continue;
             }
 
-            var resourceName = Embed("costura.", fullPath);
-            if (CreateTemporaryAssemblies)
+            var resourceName = Embed("costura.", fullPath, !config.DisableCompression);
+            if (config.CreateTemporaryAssemblies)
             {
                 checksums.Add(resourceName, CalculateChecksum(fullPath));
             }
-            if (!IncludeDebugSymbols)
+            if (!config.IncludeDebugSymbols)
             {
                 continue;
             }
             var pdbFullPath = Path.ChangeExtension(fullPath, "pdb");
             if (File.Exists(pdbFullPath))
             {
-                resourceName = Embed("costura.", pdbFullPath);
-                if (CreateTemporaryAssemblies)
+                resourceName = Embed("costura.", pdbFullPath, !config.DisableCompression);
+                if (config.CreateTemporaryAssemblies)
                 {
                     checksums.Add(resourceName, CalculateChecksum(pdbFullPath));
                 }
@@ -61,12 +61,12 @@ partial class ModuleWeaver : IDisposable
         {
             var prefix = "";
 
-            if (Unmanaged32Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(dependency)))
+            if (config.Unmanaged32Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(dependency)))
             {
                 prefix = "costura32.";
                 hasUnmanaged = true;
             }
-            if (Unmanaged64Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(dependency)))
+            if (config.Unmanaged64Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(dependency)))
             {
                 prefix = "costura64.";
                 hasUnmanaged = true;
@@ -78,43 +78,43 @@ partial class ModuleWeaver : IDisposable
             }
 
             var fullPath = Path.GetFullPath(dependency);
-            var resourceName = Embed(prefix, fullPath);
+            var resourceName = Embed(prefix, fullPath, config.DisableCompression);
             checksums.Add(resourceName, CalculateChecksum(fullPath));
-            if (!IncludeDebugSymbols)
+            if (!config.IncludeDebugSymbols)
             {
                 continue;
             }
             var pdbFullPath = Path.ChangeExtension(fullPath, "pdb");
             if (File.Exists(pdbFullPath))
             {
-                resourceName = Embed(prefix, pdbFullPath);
+                resourceName = Embed(prefix, pdbFullPath, config.DisableCompression);
                 checksums.Add(resourceName, CalculateChecksum(pdbFullPath));
             }
         }
     }
 
-    IEnumerable<string> GetFilteredReferences(IEnumerable<string> onlyBinaries)
+    IEnumerable<string> GetFilteredReferences(IEnumerable<string> onlyBinaries, Configuration config)
     {
-        if (IncludeAssemblies.Any())
+        if (config.IncludeAssemblies.Any())
         {
             foreach (var file in onlyBinaries)
             {
-                if (IncludeAssemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)) &&
-                    Unmanaged32Assemblies.All(x => x != Path.GetFileNameWithoutExtension(file)) &&
-                    Unmanaged64Assemblies.All(x => x != Path.GetFileNameWithoutExtension(file)))
+                if (config.IncludeAssemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)) &&
+                    config.Unmanaged32Assemblies.All(x => x != Path.GetFileNameWithoutExtension(file)) &&
+                    config.Unmanaged64Assemblies.All(x => x != Path.GetFileNameWithoutExtension(file)))
                 {
                     yield return file;
                 }
             }
             yield break;
         }
-        if (ExcludeAssemblies.Any())
+        if (config.ExcludeAssemblies.Any())
         {
-            foreach (var file in onlyBinaries.Except(Unmanaged32Assemblies).Except(Unmanaged64Assemblies))
+            foreach (var file in onlyBinaries.Except(config.Unmanaged32Assemblies).Except(config.Unmanaged64Assemblies))
             {
-                if (ExcludeAssemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)) ||
-                    Unmanaged32Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)) ||
-                    Unmanaged64Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)))
+                if (config.ExcludeAssemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)) ||
+                    config.Unmanaged32Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)) ||
+                    config.Unmanaged64Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)))
                 {
                     continue;
                 }
@@ -124,15 +124,15 @@ partial class ModuleWeaver : IDisposable
         }
         foreach (var file in onlyBinaries)
         {
-            if (Unmanaged32Assemblies.All(x => x != Path.GetFileNameWithoutExtension(file)) &&
-                Unmanaged64Assemblies.All(x => x != Path.GetFileNameWithoutExtension(file)))
+            if (config.Unmanaged32Assemblies.All(x => x != Path.GetFileNameWithoutExtension(file)) &&
+                config.Unmanaged64Assemblies.All(x => x != Path.GetFileNameWithoutExtension(file)))
             {
                 yield return file;
             }
         }
     }
 
-    string Embed(string prefix, string fullPath)
+    string Embed(string prefix, string fullPath, bool compress)
     {
         var resourceName = String.Format("{0}{1}", prefix, Path.GetFileName(fullPath).ToLowerInvariant());
         if (ModuleDefinition.Resources.Any(x => x.Name == resourceName))
@@ -141,7 +141,7 @@ partial class ModuleWeaver : IDisposable
             return resourceName;
         }
 
-        if (!DisableCompression)
+        if (compress)
         {
             resourceName = String.Format("{0}{1}.zip", prefix, Path.GetFileName(fullPath).ToLowerInvariant());
         }
@@ -163,7 +163,7 @@ partial class ModuleWeaver : IDisposable
         {
             using (var fileStream = File.Open(fullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
-                if (!DisableCompression)
+                if (compress)
                 {
                     using (var compressedStream = new DeflateStream(memoryStream, CompressionMode.Compress, true))
                     {
