@@ -30,13 +30,14 @@ partial class ModuleWeaver
             return;
         }
 
-        ReadDebugSymbols();
-        ReadCompression();
-        ReadCreateTemporaryAssemblies();
-        ReadExcludes();
-        ReadIncludes();
-        ReadUnmanaged32();
-        ReadUnmanaged64();
+        ReadBool(Config, "IncludeDebugSymbols", b => IncludeDebugSymbols = b);
+        ReadBool(Config, "DisableCompression", b => DisableCompression = b);
+        ReadBool(Config, "CreateTemporaryAssemblies", b => CreateTemporaryAssemblies = b);
+
+        ReadList(Config, "ExcludeAssemblies", ExcludeAssemblies);
+        ReadList(Config, "IncludeAssemblies", IncludeAssemblies);
+        ReadList(Config, "Unmanaged32Assemblies", Unmanaged32Assemblies);
+        ReadList(Config, "Unmanaged64Assemblies", Unmanaged64Assemblies);
 
         if (IncludeAssemblies.Any() && ExcludeAssemblies.Any())
         {
@@ -44,145 +45,42 @@ partial class ModuleWeaver
         }
     }
 
-    void ReadCreateTemporaryAssemblies()
+    public static void ReadBool(XElement config, string nodeName, Action<bool> setter)
     {
-        var createTemporaryAssembliesAttribute = Config.Attribute("CreateTemporaryAssemblies");
-        if (createTemporaryAssembliesAttribute != null)
+        var attribute = config.Attribute(nodeName);
+        if (attribute != null)
         {
-            bool createTemporaryAssemblies;
-            if (bool.TryParse(createTemporaryAssembliesAttribute.Value, out createTemporaryAssemblies))
+            bool value;
+            if (bool.TryParse(attribute.Value, out value))
             {
-                CreateTemporaryAssemblies = createTemporaryAssemblies;
+                setter(value);
             }
             else
             {
-                throw new Exception(string.Format("Could not parse 'CreateTemporaryAssemblies' from '{0}'.", createTemporaryAssembliesAttribute.Value));
+                throw new WeavingException(string.Format("Could not parse '{0}' from '{1}'.", nodeName, attribute.Value));
             }
         }
     }
 
-    void ReadDebugSymbols()
+    public static void ReadList(XElement config, string nodeName, List<string> list)
     {
-        var includeDebugAttribute = Config.Attribute("IncludeDebugSymbols");
-        if (includeDebugAttribute != null)
+        var attribute = config.Attribute(nodeName);
+        if (attribute != null)
         {
-            bool includeDebugSymbols;
-            if (bool.TryParse(includeDebugAttribute.Value, out includeDebugSymbols))
+            foreach (var item in attribute.Value.Split('|').NonEmpty())
             {
-                IncludeDebugSymbols = includeDebugSymbols;
-            }
-            else
-            {
-                throw new Exception(string.Format("Could not parse 'IncludeDebugSymbols' from '{0}'.", includeDebugAttribute.Value));
-            }
-        }
-    }
-
-    void ReadCompression()
-    {
-        var disableCompressionAttribute = Config.Attribute("DisableCompression");
-        if (disableCompressionAttribute != null)
-        {
-            bool disableCompression;
-            if (bool.TryParse(disableCompressionAttribute.Value, out disableCompression))
-            {
-                DisableCompression = disableCompression;
-            }
-            else
-            {
-                throw new Exception(string.Format("Could not parse 'DisableCompression' from '{0}'.", disableCompressionAttribute.Value));
-            }
-        }
-    }
-
-    void ReadExcludes()
-    {
-        var excludeAssembliesAttribute = Config.Attribute("ExcludeAssemblies");
-        if (excludeAssembliesAttribute != null)
-        {
-            foreach (var item in excludeAssembliesAttribute.Value.Split('|').NonEmpty())
-            {
-                ExcludeAssemblies.Add(item);
+                list.Add(item);
             }
         }
 
-        var excludeAssembliesElement = Config.Element("ExcludeAssemblies");
-        if (excludeAssembliesElement != null)
+        var element = config.Element(nodeName);
+        if (element != null)
         {
-            foreach (var item in excludeAssembliesElement.Value
-                                                         .Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)
-                                                         .NonEmpty())
+            foreach (var item in element.Value
+                                        .Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)
+                                        .NonEmpty())
             {
-                ExcludeAssemblies.Add(item);
-            }
-        }
-    }
-
-    void ReadIncludes()
-    {
-        var includeAssembliesAttribute = Config.Attribute("IncludeAssemblies");
-        if (includeAssembliesAttribute != null)
-        {
-            foreach (var item in includeAssembliesAttribute.Value.Split('|').NonEmpty())
-            {
-                IncludeAssemblies.Add(item);
-            }
-        }
-
-        var includeAssembliesElement = Config.Element("IncludeAssemblies");
-        if (includeAssembliesElement != null)
-        {
-            foreach (var item in includeAssembliesElement.Value
-                                                         .Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)
-                                                         .NonEmpty())
-            {
-                IncludeAssemblies.Add(item);
-            }
-        }
-    }
-
-    void ReadUnmanaged32()
-    {
-        var unmanagedAssembliesAttribute = Config.Attribute("Unmanaged32Assemblies");
-        if (unmanagedAssembliesAttribute != null)
-        {
-            foreach (var item in unmanagedAssembliesAttribute.Value.Split('|').NonEmpty())
-            {
-                Unmanaged32Assemblies.Add(item);
-            }
-        }
-
-        var unmanagedAssembliesElement = Config.Element("Unmanaged32Assemblies");
-        if (unmanagedAssembliesElement != null)
-        {
-            foreach (var item in unmanagedAssembliesElement.Value
-                                                           .Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)
-                                                           .NonEmpty())
-            {
-                Unmanaged32Assemblies.Add(item);
-            }
-        }
-    }
-
-    void ReadUnmanaged64()
-    {
-        var unmanagedAssembliesAttribute = Config.Attribute("Unmanaged64Assemblies");
-        if (unmanagedAssembliesAttribute != null)
-        {
-            foreach (var item in unmanagedAssembliesAttribute.Value.Split('|').NonEmpty())
-            {
-                Unmanaged64Assemblies.Add(item);
-            }
-        }
-
-        var unmanagedAssembliesElement = Config.Element("Unmanaged64Assemblies");
-        if (unmanagedAssembliesElement != null)
-        {
-            foreach (var item in unmanagedAssembliesElement.Value
-                                                           .Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)
-                                                           .NonEmpty())
-            {
-                Unmanaged64Assemblies.Add(item);
+                list.Add(item);
             }
         }
     }

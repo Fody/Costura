@@ -1,16 +1,45 @@
-﻿using System.Xml.Linq;
+﻿using System;
+using System.Xml.Linq;
 using NUnit.Framework;
 
 [TestFixture]
 public class ConfigReaderTests
 {
     [Test]
+    public void CanReadFalseNode()
+    {
+        var xElement = XElement.Parse(@"<Node attr='false'/>");
+        ModuleWeaver.ReadBool(xElement, "attr", b => Assert.IsFalse(b));
+    }
+
+    [Test]
+    public void CanReadTrueNode()
+    {
+        var xElement = XElement.Parse(@"<Node attr='true'/>");
+        ModuleWeaver.ReadBool(xElement, "attr", b => Assert.IsTrue(b));
+    }
+
+    [Test]
+    public void DoesNotReadInvalidBoolNode()
+    {
+        var xElement = XElement.Parse(@"<Node attr='foo'/>");
+        Assert.Throws<WeavingException>(() => ModuleWeaver.ReadBool(xElement, "attr", b => Assert.Fail()), "Could not parse 'attr' from 'foo'.");
+    }
+
+    [Test]
+    public void DoesNotSetBoolWhenNodeMissing()
+    {
+        var xElement = XElement.Parse(@"<Node attr='false'/>");
+        ModuleWeaver.ReadBool(xElement, "missing", b => Assert.Fail());
+    }
+
+    [Test]
     public void FalseIncludeDebugSymbols()
     {
         var xElement = XElement.Parse(@"<Costura IncludeDebugSymbols='false'/>");
-        var moduleWeaver = new ModuleWeaver {Config = xElement};
+        var moduleWeaver = new ModuleWeaver { Config = xElement };
         moduleWeaver.ReadConfig();
-        Assert.IsFalse( moduleWeaver.IncludeDebugSymbols);
+        Assert.IsFalse(moduleWeaver.IncludeDebugSymbols);
     }
 
     [Test]
@@ -26,7 +55,7 @@ public class ConfigReaderTests
     public void TrueCreateTemporaryAssemblies()
     {
         var xElement = XElement.Parse(@"<Costura CreateTemporaryAssemblies='true'/>");
-        var moduleWeaver = new ModuleWeaver {Config = xElement};
+        var moduleWeaver = new ModuleWeaver { Config = xElement };
         moduleWeaver.ReadConfig();
         Assert.IsTrue(moduleWeaver.CreateTemporaryAssemblies);
     }
@@ -101,13 +130,12 @@ Bar
     }
 
     [Test]
-    [ExpectedException(ExpectedMessage = "Either configure IncludeAssemblies OR ExcludeAssemblies, not both.")]
     public void IncludeAndExcludeAssembliesAttribute()
     {
         var xElement = XElement.Parse(@"
 <Costura IncludeAssemblies='Bar' ExcludeAssemblies='Foo'/>");
         var moduleWeaver = new ModuleWeaver { Config = xElement };
-        moduleWeaver.ReadConfig();
+        Assert.Throws<WeavingException>(() => moduleWeaver.ReadConfig(), "Either configure IncludeAssemblies OR ExcludeAssemblies, not both.");
     }
 
     [Test]
@@ -208,5 +236,4 @@ Bar
         Assert.AreEqual("Foo", moduleWeaver.Unmanaged64Assemblies[0]);
         Assert.AreEqual("Bar", moduleWeaver.Unmanaged64Assemblies[1]);
     }
-
 }
