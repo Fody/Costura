@@ -47,13 +47,16 @@ static class ILTemplateWithTempAssembly
             }
         }
 
-        var name = requestedAssemblyName.Name.ToLowerInvariant();
-
-        var existingAssembly = Common.ReadExistingAssembly(name);
+        var existingAssembly = Common.ReadExistingAssembly(requestedAssemblyName);
         if (existingAssembly != null)
         {
             return existingAssembly;
         }
+
+        var name = requestedAssemblyName.Name.ToLowerInvariant();
+
+        if (requestedAssemblyName.CultureInfo != null && !String.IsNullOrEmpty(requestedAssemblyName.CultureInfo.Name))
+            name = String.Format("{0}.{1}", requestedAssemblyName.CultureInfo.Name, name);
 
         existingAssembly = Common.ReadFromDiskCache(tempBasePath, name);
         if (existingAssembly != null)

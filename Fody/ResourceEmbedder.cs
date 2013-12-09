@@ -32,8 +32,7 @@ partial class ModuleWeaver : IDisposable
 
             if (dependency.EndsWith(".resources.dll"))
             {
-                // TODO support resources
-                //Embedd(string.Format("costura.{0}.", Path.GetFileName(Path.GetDirectoryName(fullPath))), fullPath);
+                Embed(string.Format("costura.{0}.", Path.GetFileName(Path.GetDirectoryName(fullPath))), fullPath, !config.DisableCompression);
                 continue;
             }
 

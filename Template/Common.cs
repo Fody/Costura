@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Reflection;
@@ -25,7 +24,7 @@ static class Common
             destination.Write(array, 0, count);
         }
     }
-    
+
     static void CreateDirectory(string tempBasePath)
     {
         if (!Directory.Exists(tempBasePath))
@@ -59,20 +58,14 @@ static class Common
         }
     }
 
-    public static Assembly ReadExistingAssembly(string name)
+    public static Assembly ReadExistingAssembly(AssemblyName name)
     {
         var currentDomain = AppDomain.CurrentDomain;
         var assemblies = currentDomain.GetAssemblies();
         foreach (var assembly in assemblies)
         {
-            var fullName = assembly.FullName.ToLowerInvariant();
-            var indexOf = fullName.IndexOf(',');
-            if (indexOf > 1)
-            {
-                fullName = fullName.Substring(0, indexOf);
-            }
-
-            if (fullName == name)
+            var currentName = assembly.GetName();
+            if (currentName.Name == name.Name && currentName.CultureInfo.Name == name.CultureInfo.Name)
             {
                 return assembly;
             }
@@ -121,8 +114,9 @@ static class Common
 
     static Stream LoadStream(Dictionary<string, string> resourceNames, string name)
     {
-        if (resourceNames.ContainsKey(name))
-            return LoadStream(resourceNames[name]);
+        string value;
+        if (resourceNames.TryGetValue(name, out value))
+            return LoadStream(value);
 
         return null;
     }
