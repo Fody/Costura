@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{5A86453B-96FB-4B6E-A283-225BB9F753D3}</ProjectGuid>
+    <ProjectGuid>{BC615C87-5E16-451D-A086-D185952650A1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Tests</RootNamespace>
@@ -62,11 +62,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyExtensions.cs" />
-    <Compile Include="ConfigReaderTests.cs" />
-    <Compile Include="MockAssemblyResolver.cs" />
-    <Compile Include="Verifier.cs" />
-    <Compile Include="InMemoryTests.cs" />
+    <Compile Include="..\Tests\AssemblyExtensions.cs">
+      <Link>AssemblyExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Tests\MockAssemblyResolver.cs">
+      <Link>MockAssemblyResolver.cs</Link>
+    </Compile>
+    <Compile Include="..\Tests\Verifier.cs">
+      <Link>Verifier.cs</Link>
+    </Compile>
+    <Compile Include="CultureResourceTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
