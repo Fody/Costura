@@ -59,7 +59,7 @@ function Update-FodyConfig($addinName, $project)
 
 function Fix-ReferencesCopyLocal($package, $project)
 {
-    Write-Host "Fix-ReferencesCopyLocal $addinName"
+    Write-Host "Fix-ReferencesCopyLocal $($package.Id)"
     $asms = $package.AssemblyReferences | %{$_.Name}
 
     foreach ($reference in $project.Object.References)
