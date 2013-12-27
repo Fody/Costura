@@ -12,6 +12,10 @@ using System.Threading;
 
 static class Common
 {
+    
+    [DllImport("kernel32.dll", SetLastError=true, CharSet=CharSet.Unicode)]
+    static extern bool MoveFileEx(string lpExistingFileName, string lpNewFileName, int dwFlags);
+    
     [DllImport("kernel32.dll")]
     static extern IntPtr LoadLibrary(string dllToLoad);
 
@@ -211,6 +215,11 @@ static class Common
                 using (var assemblyTempFile = File.OpenWrite(assemblyTempFilePath))
                 {
                     CopyTo(copyStream, assemblyTempFile);
+                }
+                var delayUntilReboot = 4;
+                if (!MoveFileEx(assemblyTempFilePath, null, delayUntilReboot))
+                {
+                    //TODO: for now we ignore the return value.
                 }
             }
         }
