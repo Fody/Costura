@@ -59,6 +59,18 @@
     <None Include="FodyWeavers.xml" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="..\Template\Common.cs">
+      <Link>template\Common.cs</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Template\ILTemplate.cs">
+      <Link>template\ILTemplate.cs</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Template\ILTemplateWithTempAssembly.cs">
+      <Link>template\ILTemplateWithTempAssembly.cs</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Template\ILTemplateWithUnmanagedHandler.cs">
+      <Link>template\ILTemplateWithUnmanagedHandler.cs</Link>
+    </EmbeddedResource>
     <Compile Include="AssemblyLoaderImporter.cs" />
     <Compile Include="Checksums.cs" />
     <Compile Include="Configuration.cs" />
@@ -91,6 +103,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(SolutionDir)Template\bin\$(ConfigurationName)\Template.dll">
+      <InProject>false</InProject>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(SolutionDir)Template\bin\$(ConfigurationName)\Template.pdb">
       <InProject>false</InProject>
     </EmbeddedResource>
   </ItemGroup>

@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -22,35 +24,25 @@ partial class ModuleWeaver
 
     void ImportAssemblyLoader(bool createTemporaryAssemblies)
     {
-        var existingILTemplate = ModuleDefinition.GetTypes().FirstOrDefault(x => x.FullName == "Costura.AssemblyLoader");
-        if (existingILTemplate != null)
-        {
-            attachMethod = existingILTemplate.Methods.First(x => x.Name == "Attach");
-            assemblyLoaderCCtor = existingILTemplate.Methods.FirstOrDefault(x => x.Name == ".cctor");
-            assemblyNamesField = existingILTemplate.Fields.FirstOrDefault(x => x.Name == "assemblyNames");
-            symbolNamesField = existingILTemplate.Fields.FirstOrDefault(x => x.Name == "symbolNames");
-            preloadListField = existingILTemplate.Fields.FirstOrDefault(x => x.Name == "preloadList");
-            preload32ListField = existingILTemplate.Fields.FirstOrDefault(x => x.Name == "preload32List");
-            preload64ListField = existingILTemplate.Fields.FirstOrDefault(x => x.Name == "preload64List");
-            checksumsField = existingILTemplate.Fields.FirstOrDefault(x => x.Name == "checksums");
-            return;
-        }
-
         var moduleDefinition = GetTemplateModuleDefinition();
 
         if (createTemporaryAssemblies)
         {
             sourceType = moduleDefinition.Types.First(x => x.Name == "ILTemplateWithTempAssembly");
+            DumpSource("ILTemplateWithTempAssembly");
         }
         else if (hasUnmanaged)
         {
             sourceType = moduleDefinition.Types.First(x => x.Name == "ILTemplateWithUnmanagedHandler");
+            DumpSource("ILTemplateWithUnmanagedHandler");
         }
         else
         {
             sourceType = moduleDefinition.Types.First(x => x.Name == "ILTemplate");
+            DumpSource("ILTemplate");
         }
         commonType = moduleDefinition.Types.First(x => x.Name == "Common");
+        DumpSource("Common");
 
         targetType = new TypeDefinition("Costura", "AssemblyLoader", sourceType.Attributes, Resolve(sourceType.BaseType));
         targetType.CustomAttributes.Add(new CustomAttribute(compilerGeneratedAttributeCtor));
@@ -60,6 +52,20 @@ partial class ModuleWeaver
 
         loaderCctor = CopyMethod(sourceType.Methods.First(x => x.IsConstructor && x.IsStatic));
         attachMethod = CopyMethod(sourceType.Methods.First(x => x.Name == "Attach"));
+    }
+
+    void DumpSource(string file)
+    {
+        string localFile = Path.Combine(Path.GetDirectoryName(AssemblyFilePath), file + ".cs");
+
+        if (File.Exists(localFile))
+            return;
+
+        using (var stream = GetType().Assembly.GetManifestResourceStream(String.Format("Costura.Fody.template.{0}.cs", file)))
+        {
+            using (var outStream = new FileStream(localFile, FileMode.Create))
+                stream.CopyTo(outStream);
+        }
     }
 
     void CopyFields(TypeDefinition source)
@@ -88,6 +94,8 @@ partial class ModuleWeaver
         var readerParameters = new ReaderParameters
                                    {
                                        AssemblyResolver = AssemblyResolver,
+                                       ReadSymbols = true,
+                                       SymbolStream = GetType().Assembly.GetManifestResourceStream("Costura.Fody.Template.pdb"),
                                    };
 
         using (var resourceStream = GetType().Assembly.GetManifestResourceStream("Costura.Fody.Template.dll"))
@@ -141,14 +149,18 @@ partial class ModuleWeaver
             newMethod.Body.InitLocals = templateMethod.Body.InitLocals;
             foreach (var variableDefinition in templateMethod.Body.Variables)
             {
-                newMethod.Body.Variables.Add(new VariableDefinition(Resolve(variableDefinition.VariableType)));
+                var newVariableDefinition = new VariableDefinition(Resolve(variableDefinition.VariableType));
+                newVariableDefinition.Name = variableDefinition.Name;
+                newMethod.Body.Variables.Add(newVariableDefinition);
             }
             CopyInstructions(templateMethod, newMethod);
             CopyExceptionHandlers(templateMethod, newMethod);
         }
         foreach (var parameterDefinition in templateMethod.Parameters)
         {
-            newMethod.Parameters.Add(new ParameterDefinition(Resolve(parameterDefinition.ParameterType)));
+            var newParameterDefinition = new ParameterDefinition(Resolve(parameterDefinition.ParameterType));
+            newParameterDefinition.Name = parameterDefinition.Name;
+            newMethod.Parameters.Add(newParameterDefinition);
         }
 
         targetType.Methods.Add(newMethod);
@@ -211,7 +223,29 @@ partial class ModuleWeaver
 
         var newInstruction = (Instruction)instructionConstructorInfo.Invoke(new[] { instruction.OpCode, instruction.Operand });
         newInstruction.Operand = Import(instruction.Operand);
+        newInstruction.SequencePoint = TranslateSequencePoint(instruction.SequencePoint);
         return newInstruction;
+    }
+
+    SequencePoint TranslateSequencePoint(SequencePoint sequencePoint)
+    {
+        if (sequencePoint == null)
+            return null;
+
+        var document = new Document(Path.Combine(Path.GetDirectoryName(AssemblyFilePath), Path.GetFileName(sequencePoint.Document.Url)))
+        {
+            Language = sequencePoint.Document.Language,
+            LanguageVendor = sequencePoint.Document.LanguageVendor,
+            Type = sequencePoint.Document.Type,
+        };
+
+        return new SequencePoint(document)
+        {
+            StartLine = sequencePoint.StartLine,
+            StartColumn = sequencePoint.StartColumn,
+            EndLine = sequencePoint.EndLine,
+            EndColumn = sequencePoint.EndColumn,
+        };
     }
 
     object Import(object operand)

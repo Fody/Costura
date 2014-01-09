@@ -5,10 +5,13 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
+using ApprovalTests;
+using ApprovalTests.Reporters;
 using Mono.Cecil;
 using NUnit.Framework;
 
 [TestFixture]
+[UseReporter(typeof(DiffReporter))]
 public class InMemoryTests
 {
     Assembly assembly;
@@ -28,8 +31,11 @@ public class InMemoryTests
 
         afterAssemblyPath = beforeAssemblyPath.Replace(".dll", "InMemory.dll");
         File.Copy(beforeAssemblyPath, afterAssemblyPath, true);
+        File.Copy(beforeAssemblyPath.Replace(".dll", ".pdb"), afterAssemblyPath.Replace(".dll", ".pdb"), true);
 
-        moduleDefinition = ModuleDefinition.ReadModule(afterAssemblyPath);
+        var readerParams = new ReaderParameters() { ReadSymbols = true };
+
+        moduleDefinition = ModuleDefinition.ReadModule(afterAssemblyPath, readerParams);
 
         var references = new List<string>
             {
@@ -53,7 +59,10 @@ public class InMemoryTests
             };
 
         weavingTask.Execute();
-        moduleDefinition.Write(afterAssemblyPath);
+
+        var writerParams = new WriterParameters() { WriteSymbols = true };
+
+        moduleDefinition.Write(afterAssemblyPath, writerParams);
 
         isolatedPath = Path.Combine(Path.GetTempPath(), "CosturaIsolatedMemory.dll");
         File.Copy(afterAssemblyPath, isolatedPath, true);
@@ -128,6 +137,16 @@ public class InMemoryTests
     {
         Assert.IsTrue(moduleDefinition.GetType("Costura.AssemblyLoader").Resolve().CustomAttributes.Any(attr => attr.AttributeType.Name == "CompilerGeneratedAttribute"));
     }
+
+#if DEBUG
+
+    [Test]
+    public void TemplateHasCorrectSymbols()
+    {
+        Approvals.Verify(Decompiler.Decompile(afterAssemblyPath, "Costura.AssemblyLoader"));
+        //Approvals.Verify(Decompiler.Decompile(Path.GetFullPath(@"..\..\..\Template\bin\Debug\Template.dll"), "Common"));
+    }
+#endif
 
     [Test]
     public void PeVerify()
