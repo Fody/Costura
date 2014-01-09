@@ -36,6 +36,6 @@ public partial class ModuleWeaver
         ImportModuleLoader();
 
         AddChecksumsToTemplate();
-        BuildUpNameDictionary(config.CreateTemporaryAssemblies);
+        BuildUpNameDictionary(config.CreateTemporaryAssemblies, config.PreloadOrder);
     }
 }

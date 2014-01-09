@@ -15,6 +15,7 @@ public class Configuration
         ExcludeAssemblies = new List<string>();
         Unmanaged32Assemblies = new List<string>();
         Unmanaged64Assemblies = new List<string>();
+        PreloadOrder = new List<string>();
 
         if (config == null)
         {
@@ -29,6 +30,7 @@ public class Configuration
         ReadList(config, "IncludeAssemblies", IncludeAssemblies);
         ReadList(config, "Unmanaged32Assemblies", Unmanaged32Assemblies);
         ReadList(config, "Unmanaged64Assemblies", Unmanaged64Assemblies);
+        ReadList(config, "PreloadOrder", PreloadOrder);
 
         if (IncludeAssemblies.Any() && ExcludeAssemblies.Any())
         {
@@ -43,6 +45,7 @@ public class Configuration
     public List<string> ExcludeAssemblies { get; private set; }
     public List<string> Unmanaged32Assemblies { get; private set; }
     public List<string> Unmanaged64Assemblies { get; private set; }
+    public List<string> PreloadOrder { get; private set; }
 
     public static void ReadBool(XElement config, string nodeName, Action<bool> setter)
     {

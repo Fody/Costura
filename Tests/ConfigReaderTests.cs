@@ -220,4 +220,43 @@ Bar
         Assert.AreEqual("Foo", config.Unmanaged64Assemblies[0]);
         Assert.AreEqual("Bar", config.Unmanaged64Assemblies[1]);
     }
+
+    [Test]
+    public void PreloadOrderNode()
+    {
+        var xElement = XElement.Parse(@"
+<Costura>
+    <PreloadOrder>
+Foo
+Bar
+    </PreloadOrder>
+</Costura>");
+        var config = new Configuration(xElement);
+        Assert.AreEqual("Foo", config.PreloadOrder[0]);
+        Assert.AreEqual("Bar", config.PreloadOrder[1]);
+    }
+
+    [Test]
+    public void PreloadOrderAttribute()
+    {
+        var xElement = XElement.Parse(@"
+<Costura PreloadOrder='Foo|Bar'/>");
+        var config = new Configuration(xElement);
+        Assert.AreEqual("Foo", config.PreloadOrder[0]);
+        Assert.AreEqual("Bar", config.PreloadOrder[1]);
+    }
+
+    [Test]
+    public void PreloadOrderCombined()
+    {
+        var xElement = XElement.Parse(@"
+<Costura  PreloadOrder='Foo'>
+    <PreloadOrder>
+Bar
+    </PreloadOrder>
+</Costura>");
+        var config = new Configuration(xElement);
+        Assert.AreEqual("Foo", config.PreloadOrder[0]);
+        Assert.AreEqual("Bar", config.PreloadOrder[1]);
+    }
 }

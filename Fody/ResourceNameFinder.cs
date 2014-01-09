@@ -1,46 +1,63 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 partial class ModuleWeaver
 {
-    void BuildUpNameDictionary(bool createTemporaryAssemblies)
+    void BuildUpNameDictionary(bool createTemporaryAssemblies, List<string> preloadOrder)
     {
-        foreach (var resource in ModuleDefinition.Resources.OrderBy(r => r.Name))
+        var orderedResources = preloadOrder
+            .Join<string, Resource, string, Resource>(ModuleDefinition.Resources, p => p.ToLowerInvariant(),
+            r =>
+            {
+                var parts = r.Name.Split('.');
+                string ext, name;
+                GetNameAndExt(parts, out name, out ext);
+                return name;
+            }, (s, r) => r)
+            .Union(ModuleDefinition.Resources.OrderBy(r => r.Name))
+            .Where(r => r.Name.StartsWith("costura"))
+            .Select(r => r.Name);
+
+        foreach (var resource in orderedResources)
         {
-            if (!resource.Name.StartsWith("costura"))
-                continue;
+            var parts = resource.Split('.');
 
-            var parts = resource.Name.Split('.');
-
-            var isZip = parts[parts.Length - 1] == "zip";
-
-            var ext = parts[parts.Length - (isZip ? 2 : 1)];
-
-            var name = string.Join(".", parts.Skip(1).Take(parts.Length - (isZip ? 3 : 2)));
+            string ext, name;
+            GetNameAndExt(parts, out name, out ext);
 
             if (parts[0] == "costura")
             {
                 if (createTemporaryAssemblies)
-                    AddToList(preloadListField, resource.Name);
+                    AddToList(preloadListField, resource);
                 else
                 {
                     if (ext == "pdb")
-                        AddToDictionary(symbolNamesField, name, resource.Name);
+                        AddToDictionary(symbolNamesField, name, resource);
                     else
-                        AddToDictionary(assemblyNamesField, name, resource.Name);
+                        AddToDictionary(assemblyNamesField, name, resource);
                 }
             }
             else if (parts[0] == "costura32")
             {
-                AddToList(preload32ListField, resource.Name);
+                AddToList(preload32ListField, resource);
             }
             else if (parts[0] == "costura64")
             {
-                AddToList(preload64ListField, resource.Name);
+                AddToList(preload64ListField, resource);
             }
         }
+    }
+
+    private static void GetNameAndExt(string[] parts, out string name, out string ext)
+    {
+        var isZip = parts[parts.Length - 1] == "zip";
+
+        ext = parts[parts.Length - (isZip ? 2 : 1)];
+
+        name = string.Join(".", parts.Skip(1).Take(parts.Length - (isZip ? 3 : 2)));
     }
 
     void AddToDictionary(FieldDefinition field, string key, string name)

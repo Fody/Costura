@@ -145,6 +145,25 @@ Or as a attribute with items delimited by a pipe `|`.
         Unmanaged32Assemblies='Foo32|Bar32' 
         Unmanaged64Assemblies='Foo64|Bar64' />
 
+### Native Libraries and PreloadOrder
+
+Native libraries can be loaded by Costura automatically. To include a native library include it in your project as an Embedded Resource in a folder called `costura32` or `costura64` depending on the bittyness of the library.
+
+Optionally you can also specify the order that preloaded libraries are loaded. When using temporary assemblies from disk mixed mode assemblies are also preloaded.
+
+To specify the order of preloaded assemblies add a `PreloadOrder` element to the config.
+
+    <Costura>
+	    <PreloadOrder>
+		    Foo
+		    Bar
+		</PreloadOrder>
+	</Costura>
+
+Or as a attribute with items delimited by a pipe `|`.
+
+    <Costura PreloadOrder='Foo|Bar' />
+
 ## Creating a clean output directory
 
 Costura only merges dependencies. It does not handle cleaning those dependencies from you output directory. So this means the resultant merged dll/exe will exist in your output directory (eg `bin\Debug`) next to all your dependencies. If you want to clean this directory you can add the following to your project file.

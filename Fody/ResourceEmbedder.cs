@@ -23,20 +23,25 @@ partial class ModuleWeaver : IDisposable
             Directory.CreateDirectory(cachePath);
         }
 
-        // Ignore resource assemblies for now
         var onlyBinaries = ReferenceCopyLocalPaths.Where(x => x.EndsWith(".dll") || x.EndsWith(".exe"));
 
         foreach (var dependency in GetFilteredReferences(onlyBinaries, config))
         {
             var fullPath = Path.GetFullPath(dependency);
 
+            string resourceName;
+
             if (dependency.EndsWith(".resources.dll"))
             {
-                Embed(string.Format("costura.{0}.", Path.GetFileName(Path.GetDirectoryName(fullPath))), fullPath, !config.DisableCompression);
+                resourceName = Embed(string.Format("costura.{0}.", Path.GetFileName(Path.GetDirectoryName(fullPath))), fullPath, !config.DisableCompression);
+                if (config.CreateTemporaryAssemblies)
+                {
+                    checksums.Add(resourceName, CalculateChecksum(fullPath));
+                }
                 continue;
             }
 
-            var resourceName = Embed("costura.", fullPath, !config.DisableCompression);
+            resourceName = Embed("costura.", fullPath, !config.DisableCompression);
             if (config.CreateTemporaryAssemblies)
             {
                 checksums.Add(resourceName, CalculateChecksum(fullPath));

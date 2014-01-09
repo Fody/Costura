@@ -47,7 +47,7 @@ public class InMemoryTests
             {
                 ModuleDefinition = moduleDefinition,
                 AssemblyResolver = new MockAssemblyResolver(),
-                Config = XElement.Parse("<Costura Unmanaged32Assemblies='AssemblyToReferenceMixed' />"),
+                Config = XElement.Parse("<Costura Unmanaged32Assemblies='AssemblyToReferenceMixed' PreloadOrder='AssemblyToReferenceNative' />"),
                 ReferenceCopyLocalPaths = references,
                 AssemblyFilePath = beforeAssemblyPath
             };
