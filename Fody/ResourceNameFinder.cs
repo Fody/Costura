@@ -62,8 +62,8 @@ partial class ModuleWeaver
 
     void AddToDictionary(FieldDefinition field, string key, string name)
     {
-        var retIndex = assemblyLoaderCCtor.Body.Instructions.Count - 1;
-        assemblyLoaderCCtor.Body.Instructions.InsertBefore(retIndex, new Instruction[] {
+        var retIndex = loaderCctor.Body.Instructions.Count - 1;
+        loaderCctor.Body.Instructions.InsertBefore(retIndex, new Instruction[] {
             Instruction.Create(OpCodes.Ldsfld, field),
             Instruction.Create(OpCodes.Ldstr, key),
             Instruction.Create(OpCodes.Ldstr, name),
@@ -73,8 +73,8 @@ partial class ModuleWeaver
 
     void AddToList(FieldDefinition field, string name)
     {
-        var retIndex = assemblyLoaderCCtor.Body.Instructions.Count - 1;
-        assemblyLoaderCCtor.Body.Instructions.InsertBefore(retIndex, new Instruction[] {
+        var retIndex = loaderCctor.Body.Instructions.Count - 1;
+        loaderCctor.Body.Instructions.InsertBefore(retIndex, new Instruction[] {
             Instruction.Create(OpCodes.Ldsfld, field),
             Instruction.Create(OpCodes.Ldstr, name),
             Instruction.Create(OpCodes.Callvirt, listOfStringAdd),

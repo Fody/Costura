@@ -7,7 +7,6 @@ using Mono.Cecil.Rocks;
 partial class ModuleWeaver
 {
     readonly ConstructorInfo instructionConstructorInfo = typeof(Instruction).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(OpCode), typeof(object) }, null);
-    MethodDefinition assemblyLoaderCCtor;
     TypeDefinition targetType;
     TypeDefinition sourceType;
     TypeDefinition commonType;
@@ -61,8 +60,6 @@ partial class ModuleWeaver
 
         loaderCctor = CopyMethod(sourceType.Methods.First(x => x.IsConstructor && x.IsStatic));
         attachMethod = CopyMethod(sourceType.Methods.First(x => x.Name == "Attach"));
-
-        assemblyLoaderCCtor = targetType.Methods.FirstOrDefault(x => x.Name == ".cctor");
     }
 
     void CopyFields(TypeDefinition source)
