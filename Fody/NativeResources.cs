@@ -6,13 +6,12 @@ partial class ModuleWeaver
 {
     void ProcessNativeResources()
     {
-        var moduleName = ModuleDefinition.Assembly.Name.Name;
-
         foreach (var resource in ModuleDefinition.Resources.OfType<EmbeddedResource>())
         {
-            if (resource.Name.StartsWith(moduleName + ".costura"))
+            int costuraHintPosition = resource.Name.IndexOf(".costura", StringComparison.OrdinalIgnoreCase);
+            if (costuraHintPosition >= 0)
             {
-                resource.Name = resource.Name.Substring(moduleName.Length + 1).ToLowerInvariant();
+                resource.Name = resource.Name.Substring(costuraHintPosition + 1).ToLowerInvariant();
                 hasUnmanaged = true;
                 checksums.Add(resource.Name, CalculateChecksum(resource.GetResourceStream()));
             }
