@@ -8,9 +8,10 @@ partial class ModuleWeaver
     {
         foreach (var resource in ModuleDefinition.Resources.OfType<EmbeddedResource>())
         {
-            if (resource.Name.IndexOf(".costura", StringComparison.OrdinalIgnoreCase) >= 0)
+            int costuraHintPosition = resource.Name.IndexOf(".costura", StringComparison.OrdinalIgnoreCase);
+            if (costuraHintPosition >= 0)
             {
-                resource.Name = resource.Name.Substring(resource.Name.IndexOf(".costura", StringComparison.OrdinalIgnoreCase) + 1).ToLowerInvariant();
+                resource.Name = resource.Name.Substring(costuraHintPosition + 1).ToLowerInvariant();
                 hasUnmanaged = true;
                 checksums.Add(resource.Name, CalculateChecksum(resource.GetResourceStream()));
             }
