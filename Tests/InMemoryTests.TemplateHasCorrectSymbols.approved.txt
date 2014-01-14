@@ -719,17 +719,17 @@
     IL_002d:  stsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
     IL_0032:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
     IL_0037:  ldstr      "costura32.assemblytoreferencenative.dll"
-    IL_003c:  ldstr      "11AAEF4D9BF61F7EE59B3DD533CFB432DE8842A3"
+    IL_003c:  ldstr      "[CHECKSUM]"
     IL_0041:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
                                                                                                                    !1)
     IL_0046:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
     IL_004b:  ldstr      "costura32.assemblytoreferencemixed.dll"
-    IL_0050:  ldstr      "1D147D618596A10C1AE7F181C8A3F9D0931F4CEC"
+    IL_0050:  ldstr      "[CHECKSUM]"
     IL_0055:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
                                                                                                                    !1)
     IL_005a:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
     IL_005f:  ldstr      "costura32.assemblytoreferencemixed.pdb"
-    IL_0064:  ldstr      "1D18BF17929B77F8B5FD965F17B86866C7D3A761"
+    IL_0064:  ldstr      "[CHECKSUM]"
     IL_0069:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
                                                                                                                    !1)
     IL_006e:  ldsfld     class [mscorlib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::preload32List
@@ -1499,7 +1499,7 @@
     IL_0001:  call       class [mscorlib]System.Reflection.Assembly [mscorlib]System.Reflection.Assembly::GetExecutingAssembly()
     IL_0006:  callvirt   instance class [mscorlib]System.Reflection.AssemblyName[] [mscorlib]System.Reflection.Assembly::GetReferencedAssemblies()
     IL_000b:  stsfld     class [mscorlib]System.Reflection.AssemblyName[] Costura.AssemblyLoader::referencedAssemblies
-    IL_0010:  ldstr      "F9E38881C0F90835EDFD78A3C988C726"
+    IL_0010:  ldstr      "[CHECKSUM]"
     IL_0015:  stloc.0
     .line 26,26 : 9,70 ''
     IL_0016:  call       string [mscorlib]System.IO.Path::GetTempPath()
