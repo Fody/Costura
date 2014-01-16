@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Mono.Cecil;
@@ -21,7 +23,20 @@ partial class ModuleWeaver
 
             if (processedNameMatch.IsMatch(resource.Name))
             {
-                checksums.Add(resource.Name, CalculateChecksum(resource.GetResourceStream()));
+                using (Stream stream = resource.GetResourceStream())
+                {
+                    if (resource.Name.EndsWith(".zip"))
+                    {
+                        using (var compressStream = new DeflateStream(stream, CompressionMode.Decompress))
+                        {
+                            checksums.Add(resource.Name, CalculateChecksum(compressStream));
+                        }
+                    }
+                    else
+                    {
+                        checksums.Add(resource.Name, CalculateChecksum(stream));
+                    }
+                }
             }
         }
     }
