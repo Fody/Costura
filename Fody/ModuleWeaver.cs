@@ -28,7 +28,7 @@ public partial class ModuleWeaver
         FindMsCoreReferences();
 
         FixResourceCase();
-        ProcessNativeResources();
+        ProcessNativeResources(!config.DisableCompression);
         EmbedResources(config);
 
         CalculateHash();

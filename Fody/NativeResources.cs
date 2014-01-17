@@ -7,7 +7,7 @@ using Mono.Cecil;
 
 partial class ModuleWeaver
 {
-    void ProcessNativeResources()
+    void ProcessNativeResources(bool compress)
     {
         var unprocessedNameMatch = new Regex(@"^(.*\.)?costura(32|64)\.", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
         var processedNameMatch = new Regex(@"^costura(32|64)\.", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
@@ -25,7 +25,7 @@ partial class ModuleWeaver
             {
                 using (Stream stream = resource.GetResourceStream())
                 {
-                    if (resource.Name.EndsWith(".zip"))
+                    if (compress && resource.Name.EndsWith(".zip"))
                     {
                         using (var compressStream = new DeflateStream(stream, CompressionMode.Decompress))
                         {
