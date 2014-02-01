@@ -15,12 +15,8 @@ static class ILTemplateWithUnmanagedHandler
 
     readonly static Dictionary<string, string> checksums = new Dictionary<string, string>();
 
-    static AssemblyName[] referencedAssemblies;
-
     public static void Attach()
     {
-        referencedAssemblies = Assembly.GetExecutingAssembly().GetReferencedAssemblies();
-
         //Create a unique Temp directory for the application path.
         var md5Hash = "To be replaced at compile time";
         var prefixPath = Path.Combine(Path.GetTempPath(), "Costura");
@@ -37,14 +33,6 @@ static class ILTemplateWithUnmanagedHandler
     public static Assembly ResolveAssembly(object sender, ResolveEventArgs args)
     {
         var requestedAssemblyName = new AssemblyName(args.Name);
-
-        foreach (var assembly in referencedAssemblies)
-        {
-            if (assembly.Name == requestedAssemblyName.Name && assembly.Version != requestedAssemblyName.Version)
-            {
-                return Assembly.Load(assembly);
-            }
-        }
 
         var existingAssembly = Common.ReadExistingAssembly(requestedAssemblyName);
         if (existingAssembly != null)
