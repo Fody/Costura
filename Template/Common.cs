@@ -70,7 +70,7 @@ static class Common
         foreach (var assembly in assemblies)
         {
             var currentName = assembly.GetName();
-            if (currentName.Name == name.Name && currentName.CultureInfo.Name == name.CultureInfo.Name)
+            if (currentName.Name == name.Name && object.Equals(currentName.CultureInfo, name.CultureInfo))
             {
                 return assembly;
             }

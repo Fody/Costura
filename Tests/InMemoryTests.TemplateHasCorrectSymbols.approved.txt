@@ -12,7 +12,7 @@
   .method private hidebysig static class [mscorlib]System.Reflection.Assembly 
           ReadExistingAssembly(class [mscorlib]System.Reflection.AssemblyName name) cil managed
   {
-    // Code size       132 (0x84)
+    // Code size       122 (0x7a)
     .maxstack  2
     .locals init ([0] class [mscorlib]System.AppDomain currentDomain,
              [1] class [mscorlib]System.Reflection.Assembly[] assemblies,
@@ -23,7 +23,7 @@
              [6] int32 CS$7$0002,
              [7] bool CS$4$0003)
     .language '{3F5162F8-07C6-11D3-9053-00C04FA302A1}', '{994B45C4-E6E9-11D2-903F-00C04FA302A1}', '{5A869D0B-6611-11D3-BD2A-0000F80849BD}'
-    .line 67,67 : 5,6 'D:\\src3\\fody\\Costura\\AssemblyToProcess\\bin\\Debug\\Common.cs'
+    .line 67,67 : 5,6 'AssemblyToProcess\\bin\\Debug\\Common.cs'
     IL_0000:  nop
     .line 68,68 : 9,53 ''
     IL_0001:  call       class [mscorlib]System.AppDomain [mscorlib]System.AppDomain::get_CurrentDomain()
@@ -40,7 +40,7 @@
     .line 16707566,16707566 : 0,0 ''
     IL_0012:  ldc.i4.0
     IL_0013:  stloc.s    CS$7$0002
-    IL_0015:  br.s       IL_006d
+    IL_0015:  br.s       IL_0063
     .line 70,70 : 18,30 ''
     IL_0017:  ldloc.s    CS$6$0001
     IL_0019:  ldloc.s    CS$7$0002
@@ -52,63 +52,61 @@
     IL_001e:  ldloc.2
     IL_001f:  callvirt   instance class [mscorlib]System.Reflection.AssemblyName [mscorlib]System.Reflection.Assembly::GetName()
     IL_0024:  stloc.3
-    .line 73,73 : 13,104 ''
+    .line 73,73 : 13,107 ''
     IL_0025:  ldloc.3
     IL_0026:  callvirt   instance string [mscorlib]System.Reflection.AssemblyName::get_Name()
     IL_002b:  ldarg.0
     IL_002c:  callvirt   instance string [mscorlib]System.Reflection.AssemblyName::get_Name()
     IL_0031:  call       bool [mscorlib]System.String::op_Equality(string,
                                                                    string)
-    IL_0036:  brfalse.s  IL_0058
+    IL_0036:  brfalse.s  IL_004e
     IL_0038:  ldloc.3
     IL_0039:  callvirt   instance class [mscorlib]System.Globalization.CultureInfo [mscorlib]System.Reflection.AssemblyName::get_CultureInfo()
-    IL_003e:  callvirt   instance string [mscorlib]System.Globalization.CultureInfo::get_Name()
-    IL_0043:  ldarg.0
-    IL_0044:  callvirt   instance class [mscorlib]System.Globalization.CultureInfo [mscorlib]System.Reflection.AssemblyName::get_CultureInfo()
-    IL_0049:  callvirt   instance string [mscorlib]System.Globalization.CultureInfo::get_Name()
-    IL_004e:  call       bool [mscorlib]System.String::op_Equality(string,
-                                                                   string)
-    IL_0053:  ldc.i4.0
-    IL_0054:  ceq
-    IL_0056:  br.s       IL_0059
-    IL_0058:  ldc.i4.1
-    IL_0059:  nop
-    IL_005a:  stloc.s    CS$4$0003
+    IL_003e:  ldarg.0
+    IL_003f:  callvirt   instance class [mscorlib]System.Globalization.CultureInfo [mscorlib]System.Reflection.AssemblyName::get_CultureInfo()
+    IL_0044:  call       bool [mscorlib]System.Object::Equals(object,
+                                                              object)
+    IL_0049:  ldc.i4.0
+    IL_004a:  ceq
+    IL_004c:  br.s       IL_004f
+    IL_004e:  ldc.i4.1
+    IL_004f:  nop
+    IL_0050:  stloc.s    CS$4$0003
     .line 16707566,16707566 : 0,0 ''
-    IL_005c:  ldloc.s    CS$4$0003
-    IL_005e:  brtrue.s   IL_0066
+    IL_0052:  ldloc.s    CS$4$0003
+    IL_0054:  brtrue.s   IL_005c
     .line 74,74 : 13,14 ''
-    IL_0060:  nop
+    IL_0056:  nop
     .line 75,75 : 17,33 ''
-    IL_0061:  ldloc.2
-    IL_0062:  stloc.s    CS$1$0000
-    IL_0064:  leave.s    IL_0080
+    IL_0057:  ldloc.2
+    IL_0058:  stloc.s    CS$1$0000
+    IL_005a:  leave.s    IL_0076
     .line 77,77 : 9,10 ''
-    IL_0066:  nop
+    IL_005c:  nop
     .line 16707566,16707566 : 0,0 ''
-    IL_0067:  ldloc.s    CS$7$0002
-    IL_0069:  ldc.i4.1
-    IL_006a:  add
-    IL_006b:  stloc.s    CS$7$0002
+    IL_005d:  ldloc.s    CS$7$0002
+    IL_005f:  ldc.i4.1
+    IL_0060:  add
+    IL_0061:  stloc.s    CS$7$0002
     .line 70,70 : 31,33 ''
-    IL_006d:  ldloc.s    CS$7$0002
-    IL_006f:  ldloc.s    CS$6$0001
-    IL_0071:  ldlen
-    IL_0072:  conv.i4
-    IL_0073:  clt
-    IL_0075:  stloc.s    CS$4$0003
+    IL_0063:  ldloc.s    CS$7$0002
+    IL_0065:  ldloc.s    CS$6$0001
+    IL_0067:  ldlen
+    IL_0068:  conv.i4
+    IL_0069:  clt
+    IL_006b:  stloc.s    CS$4$0003
     .line 16707566,16707566 : 0,0 ''
-    IL_0077:  ldloc.s    CS$4$0003
-    IL_0079:  brtrue.s   IL_0017
+    IL_006d:  ldloc.s    CS$4$0003
+    IL_006f:  brtrue.s   IL_0017
     .line 78,78 : 9,21 ''
-    IL_007b:  ldnull
-    IL_007c:  stloc.s    CS$1$0000
-    IL_007e:  br.s       IL_0080
+    IL_0071:  ldnull
+    IL_0072:  stloc.s    CS$1$0000
+    IL_0074:  br.s       IL_0076
     .line 16707566,16707566 : 0,0 ''
-    IL_0080:  nop
+    IL_0076:  nop
     .line 79,79 : 5,6 ''
-    IL_0081:  ldloc.s    CS$1$0000
-    IL_0083:  ret
+    IL_0077:  ldloc.s    CS$1$0000
+    IL_0079:  ret
   } // end of method AssemblyLoader::ReadExistingAssembly
   .method private hidebysig static class [mscorlib]System.Reflection.Assembly 
           ReadFromDiskCache(string tempBasePath,
@@ -544,7 +542,7 @@
              [5] class [mscorlib]System.Reflection.AssemblyName[] CS$6$0001,
              [6] int32 CS$7$0002,
              [7] bool CS$4$0003)
-    .line 38,38 : 5,6 'D:\\src3\\fody\\Costura\\AssemblyToProcess\\bin\\Debug\\ILTemplateWithUnmanagedHandler.cs'
+    .line 38,38 : 5,6 'AssemblyToProcess\\bin\\Debug\\ILTemplateWithUnmanagedHandler.cs'
     IL_0000:  nop
     .line 39,39 : 9,65 ''
     IL_0001:  ldarg.1
@@ -789,7 +787,7 @@
     // Code size       21 (0x15)
     .maxstack  1
     .locals init ([0] bool CS$4$0000)
-    .line 34,34 : 5,6 'D:\\src3\\fody\\Costura\\AssemblyToProcess\\bin\\Debug\\Common.cs'
+    .line 34,34 : 5,6 'AssemblyToProcess\\bin\\Debug\\Common.cs'
     IL_0000:  nop
     .line 35,35 : 9,45 ''
     IL_0001:  ldarg.0
@@ -1493,7 +1491,7 @@
              [1] string prefixPath,
              [2] class [mscorlib]System.Collections.Generic.List`1<string> unmanagedAssemblies,
              [3] class [mscorlib]System.AppDomain currentDomain)
-    .line 21,21 : 5,6 'D:\\src3\\fody\\Costura\\AssemblyToProcess\\bin\\Debug\\ILTemplateWithUnmanagedHandler.cs'
+    .line 21,21 : 5,6 'AssemblyToProcess\\bin\\Debug\\ILTemplateWithUnmanagedHandler.cs'
     IL_0000:  nop
     .line 22,22 : 9,90 ''
     IL_0001:  call       class [mscorlib]System.Reflection.Assembly [mscorlib]System.Reflection.Assembly::GetExecutingAssembly()
