@@ -90,6 +90,8 @@
     <None Include="NugetAssets\Costura.nuspec">
       <SubType>Designer</SubType>
     </None>
+    <None Include="NugetAssets\init.ps1" />
+    <None Include="NugetAssets\commands.psm1" />
     <None Include="NugetAssets\install.ps1" />
     <None Include="NugetAssets\uninstall.ps1" />
     <None Include="packages.config" />
@@ -124,8 +126,10 @@
     <Copy SourceFiles="$(ProjectDir)NugetAssets\Costura.nuspec" DestinationFolder="$(SolutionDir)NuGetBuild" />
     <Copy SourceFiles="$(OutputPath)\Costura.Fody.dll" DestinationFolder="$(SolutionDir)NuGetBuild" />
     <Copy SourceFiles="$(OutputPath)\Costura.Fody.pdb" DestinationFolder="$(SolutionDir)NuGetBuild" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\init.ps1" DestinationFolder="$(SolutionDir)NuGetBuild\Tools" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\install.ps1" DestinationFolder="$(SolutionDir)NuGetBuild\Tools" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\uninstall.ps1" DestinationFolder="$(SolutionDir)NuGetBuild\Tools" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\commands.psm1" DestinationFolder="$(SolutionDir)NuGetBuild\Tools" />
     <PepitaPackage.WeavingTask NuGetBuildDirectory="$(SolutionDir)NuGetBuild" MetadataAssembly="$(OutputPath)\Costura.Fody.dll" />
   </Target>
   <Import Project="Fody.targets" />
