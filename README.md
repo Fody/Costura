@@ -174,6 +174,10 @@ Costura only merges dependencies. It does not handle cleaning those dependencies
          <Delete Files="@(ReferenceCopyLocalPaths->'$(OutDir)%(DestinationSubDirectory)%(Filename)%(Extension)')" />
     </Target>
 
+There is also a powershell cmdlet to install this target into your project automatically. In the Package Manager Console type:
+
+    PM> Install-CleanReferencesTarget
+
 Note that this does not handle `ExcludeAssemblies` or `IncludeAssemblies` options mentioned above. You will have to handle these explicitly.
 
 ## Icon
