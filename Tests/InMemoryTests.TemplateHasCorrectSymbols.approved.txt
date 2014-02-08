@@ -904,7 +904,7 @@
                                                                            class [mscorlib]System.Collections.Generic.IEnumerable`1<string> libs,
                                                                            class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> checksums) cil managed
   {
-    // Code size       506 (0x1fa)
+    // Code size       512 (0x200)
     .maxstack  4
     .locals init ([0] string bittyness,
              [1] string name,
@@ -915,9 +915,9 @@
              [6] class [mscorlib]System.IO.FileStream assemblyTempFile,
              [7] class [mscorlib]System.Collections.Generic.IEnumerator`1<string> CS$5$0000,
              [8] bool CS$4$0001)
-    .line 186,186 : 5,6 ''
+    .line 187,187 : 5,6 ''
     IL_0000:  nop
-    .line 188,188 : 9,56 ''
+    .line 189,189 : 9,56 ''
     IL_0001:  call       int32 [mscorlib]System.IntPtr::get_Size()
     IL_0006:  ldc.i4.8
     IL_0007:  beq.s      IL_0010
@@ -926,23 +926,23 @@
     IL_0010:  ldstr      "64"
     IL_0015:  nop
     IL_0016:  stloc.0
-    .line 192,192 : 9,16 ''
+    .line 193,193 : 9,16 ''
     IL_0017:  nop
-    .line 192,192 : 29,33 ''
+    .line 193,193 : 29,33 ''
     IL_0018:  ldarg.1
     IL_0019:  callvirt   instance class [mscorlib]System.Collections.Generic.IEnumerator`1<!0> class [mscorlib]System.Collections.Generic.IEnumerable`1<string>::GetEnumerator()
     IL_001e:  stloc.s    CS$5$0000
     .line 16707566,16707566 : 0,0 ''
     .try
     {
-      IL_0020:  br         IL_0147
-      .line 192,192 : 18,25 ''
+      IL_0020:  br         IL_014d
+      .line 193,193 : 18,25 ''
       IL_0025:  ldloc.s    CS$5$0000
       IL_0027:  callvirt   instance !0 class [mscorlib]System.Collections.Generic.IEnumerator`1<string>::get_Current()
       IL_002c:  stloc.2
-      .line 193,193 : 9,10 ''
+      .line 194,194 : 9,10 ''
       IL_002d:  nop
-      .line 194,194 : 13,74 ''
+      .line 195,195 : 13,74 ''
       IL_002e:  ldloc.2
       IL_002f:  ldstr      "costura"
       IL_0034:  ldloc.0
@@ -956,310 +956,314 @@
       IL_0047:  stloc.s    CS$4$0001
       .line 16707566,16707566 : 0,0 ''
       IL_0049:  ldloc.s    CS$4$0001
-      IL_004b:  brtrue.s   IL_0058
-      .line 195,195 : 17,42 ''
-      IL_004d:  ldloc.2
-      IL_004e:  ldc.i4.s   10
-      IL_0050:  callvirt   instance string [mscorlib]System.String::Substring(int32)
-      IL_0055:  stloc.1
-      .line 16707566,16707566 : 0,0 ''
-      IL_0056:  br.s       IL_007b
-      .line 196,196 : 18,49 ''
-      IL_0058:  ldloc.2
-      IL_0059:  ldstr      "costura."
-      IL_005e:  callvirt   instance bool [mscorlib]System.String::StartsWith(string)
-      IL_0063:  ldc.i4.0
-      IL_0064:  ceq
-      IL_0066:  stloc.s    CS$4$0001
-      .line 16707566,16707566 : 0,0 ''
-      IL_0068:  ldloc.s    CS$4$0001
-      IL_006a:  brtrue.s   IL_0076
-      .line 197,197 : 17,41 ''
-      IL_006c:  ldloc.2
-      IL_006d:  ldc.i4.8
-      IL_006e:  callvirt   instance string [mscorlib]System.String::Substring(int32)
-      IL_0073:  stloc.1
-      .line 16707566,16707566 : 0,0 ''
-      IL_0074:  br.s       IL_007b
-      .line 199,199 : 17,26 ''
-      IL_0076:  br         IL_0147
-      .line 201,201 : 13,39 ''
-      IL_007b:  ldloc.1
-      IL_007c:  ldstr      ".zip"
-      IL_0081:  callvirt   instance bool [mscorlib]System.String::EndsWith(string)
-      IL_0086:  ldc.i4.0
-      IL_0087:  ceq
-      IL_0089:  stloc.s    CS$4$0001
-      .line 16707566,16707566 : 0,0 ''
-      IL_008b:  ldloc.s    CS$4$0001
-      IL_008d:  brtrue.s   IL_009f
-      .line 202,202 : 17,59 ''
-      IL_008f:  ldloc.1
-      IL_0090:  ldc.i4.0
-      IL_0091:  ldloc.1
-      IL_0092:  callvirt   instance int32 [mscorlib]System.String::get_Length()
-      IL_0097:  ldc.i4.4
-      IL_0098:  sub
-      IL_0099:  callvirt   instance string [mscorlib]System.String::Substring(int32,
-                                                                              int32)
-      IL_009e:  stloc.1
-      .line 204,204 : 13,73 ''
-      IL_009f:  ldarg.0
-      IL_00a0:  ldloc.1
-      IL_00a1:  call       string [mscorlib]System.IO.Path::Combine(string,
+      IL_004b:  brtrue.s   IL_005e
+      .line 196,196 : 17,67 ''
+      IL_004d:  ldloc.0
+      IL_004e:  ldloc.2
+      IL_004f:  ldc.i4.s   10
+      IL_0051:  callvirt   instance string [mscorlib]System.String::Substring(int32)
+      IL_0056:  call       string [mscorlib]System.IO.Path::Combine(string,
                                                                     string)
-      IL_00a6:  stloc.3
-      .line 206,206 : 13,51 ''
-      IL_00a7:  ldloc.3
-      IL_00a8:  call       bool [mscorlib]System.IO.File::Exists(string)
-      IL_00ad:  ldc.i4.0
-      IL_00ae:  ceq
-      IL_00b0:  stloc.s    CS$4$0001
+      IL_005b:  stloc.1
       .line 16707566,16707566 : 0,0 ''
-      IL_00b2:  ldloc.s    CS$4$0001
-      IL_00b4:  brtrue.s   IL_00de
-      .line 207,207 : 13,14 ''
-      IL_00b6:  nop
-      .line 208,208 : 17,72 ''
-      IL_00b7:  ldloc.3
-      IL_00b8:  call       string Costura.AssemblyLoader::CalculateChecksum(string)
-      IL_00bd:  stloc.s    checksum
-      .line 209,209 : 17,48 ''
-      IL_00bf:  ldloc.s    checksum
-      IL_00c1:  ldarg.2
-      IL_00c2:  ldloc.2
-      IL_00c3:  callvirt   instance !1 class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::get_Item(!0)
-      IL_00c8:  call       bool [mscorlib]System.String::op_Inequality(string,
+      IL_005c:  br.s       IL_0081
+      .line 197,197 : 18,49 ''
+      IL_005e:  ldloc.2
+      IL_005f:  ldstr      "costura."
+      IL_0064:  callvirt   instance bool [mscorlib]System.String::StartsWith(string)
+      IL_0069:  ldc.i4.0
+      IL_006a:  ceq
+      IL_006c:  stloc.s    CS$4$0001
+      .line 16707566,16707566 : 0,0 ''
+      IL_006e:  ldloc.s    CS$4$0001
+      IL_0070:  brtrue.s   IL_007c
+      .line 198,198 : 17,41 ''
+      IL_0072:  ldloc.2
+      IL_0073:  ldc.i4.8
+      IL_0074:  callvirt   instance string [mscorlib]System.String::Substring(int32)
+      IL_0079:  stloc.1
+      .line 16707566,16707566 : 0,0 ''
+      IL_007a:  br.s       IL_0081
+      .line 200,200 : 17,26 ''
+      IL_007c:  br         IL_014d
+      .line 202,202 : 13,39 ''
+      IL_0081:  ldloc.1
+      IL_0082:  ldstr      ".zip"
+      IL_0087:  callvirt   instance bool [mscorlib]System.String::EndsWith(string)
+      IL_008c:  ldc.i4.0
+      IL_008d:  ceq
+      IL_008f:  stloc.s    CS$4$0001
+      .line 16707566,16707566 : 0,0 ''
+      IL_0091:  ldloc.s    CS$4$0001
+      IL_0093:  brtrue.s   IL_00a5
+      .line 203,203 : 17,59 ''
+      IL_0095:  ldloc.1
+      IL_0096:  ldc.i4.0
+      IL_0097:  ldloc.1
+      IL_0098:  callvirt   instance int32 [mscorlib]System.String::get_Length()
+      IL_009d:  ldc.i4.4
+      IL_009e:  sub
+      IL_009f:  callvirt   instance string [mscorlib]System.String::Substring(int32,
+                                                                              int32)
+      IL_00a4:  stloc.1
+      .line 205,205 : 13,73 ''
+      IL_00a5:  ldarg.0
+      IL_00a6:  ldloc.1
+      IL_00a7:  call       string [mscorlib]System.IO.Path::Combine(string,
+                                                                    string)
+      IL_00ac:  stloc.3
+      .line 207,207 : 13,51 ''
+      IL_00ad:  ldloc.3
+      IL_00ae:  call       bool [mscorlib]System.IO.File::Exists(string)
+      IL_00b3:  ldc.i4.0
+      IL_00b4:  ceq
+      IL_00b6:  stloc.s    CS$4$0001
+      .line 16707566,16707566 : 0,0 ''
+      IL_00b8:  ldloc.s    CS$4$0001
+      IL_00ba:  brtrue.s   IL_00e4
+      .line 208,208 : 13,14 ''
+      IL_00bc:  nop
+      .line 209,209 : 17,72 ''
+      IL_00bd:  ldloc.3
+      IL_00be:  call       string Costura.AssemblyLoader::CalculateChecksum(string)
+      IL_00c3:  stloc.s    checksum
+      .line 210,210 : 17,48 ''
+      IL_00c5:  ldloc.s    checksum
+      IL_00c7:  ldarg.2
+      IL_00c8:  ldloc.2
+      IL_00c9:  callvirt   instance !1 class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::get_Item(!0)
+      IL_00ce:  call       bool [mscorlib]System.String::op_Inequality(string,
                                                                        string)
-      IL_00cd:  ldc.i4.0
-      IL_00ce:  ceq
-      IL_00d0:  stloc.s    CS$4$0001
+      IL_00d3:  ldc.i4.0
+      IL_00d4:  ceq
+      IL_00d6:  stloc.s    CS$4$0001
       .line 16707566,16707566 : 0,0 ''
-      IL_00d2:  ldloc.s    CS$4$0001
-      IL_00d4:  brtrue.s   IL_00dd
-      .line 210,210 : 21,55 ''
-      IL_00d6:  ldloc.3
-      IL_00d7:  call       void [mscorlib]System.IO.File::Delete(string)
-      IL_00dc:  nop
-      .line 211,211 : 13,14 ''
-      IL_00dd:  nop
-      .line 213,213 : 13,52 ''
-      IL_00de:  ldloc.3
-      IL_00df:  call       bool [mscorlib]System.IO.File::Exists(string)
-      IL_00e4:  stloc.s    CS$4$0001
+      IL_00d8:  ldloc.s    CS$4$0001
+      IL_00da:  brtrue.s   IL_00e3
+      .line 211,211 : 21,55 ''
+      IL_00dc:  ldloc.3
+      IL_00dd:  call       void [mscorlib]System.IO.File::Delete(string)
+      IL_00e2:  nop
+      .line 212,212 : 13,14 ''
+      IL_00e3:  nop
+      .line 214,214 : 13,52 ''
+      IL_00e4:  ldloc.3
+      IL_00e5:  call       bool [mscorlib]System.IO.File::Exists(string)
+      IL_00ea:  stloc.s    CS$4$0001
       .line 16707566,16707566 : 0,0 ''
-      IL_00e6:  ldloc.s    CS$4$0001
-      IL_00e8:  brtrue.s   IL_0146
-      .line 214,214 : 13,14 ''
-      IL_00ea:  nop
-      .line 215,215 : 24,56 ''
-      IL_00eb:  ldloc.2
-      IL_00ec:  call       class [mscorlib]System.IO.Stream Costura.AssemblyLoader::LoadStream(string)
-      IL_00f1:  stloc.s    copyStream
-      .line 216,216 : 24,83 ''
+      IL_00ec:  ldloc.s    CS$4$0001
+      IL_00ee:  brtrue.s   IL_014c
+      .line 215,215 : 13,14 ''
+      IL_00f0:  nop
+      .line 216,216 : 24,56 ''
+      IL_00f1:  ldloc.2
+      IL_00f2:  call       class [mscorlib]System.IO.Stream Costura.AssemblyLoader::LoadStream(string)
+      IL_00f7:  stloc.s    copyStream
+      .line 217,217 : 24,83 ''
       .try
       {
-        IL_00f3:  ldloc.3
-        IL_00f4:  call       class [mscorlib]System.IO.FileStream [mscorlib]System.IO.File::OpenWrite(string)
-        IL_00f9:  stloc.s    assemblyTempFile
-        .line 217,217 : 17,18 ''
+        IL_00f9:  ldloc.3
+        IL_00fa:  call       class [mscorlib]System.IO.FileStream [mscorlib]System.IO.File::OpenWrite(string)
+        IL_00ff:  stloc.s    assemblyTempFile
+        .line 218,218 : 17,18 ''
         .try
         {
-          IL_00fb:  nop
-          .line 218,218 : 21,58 ''
-          IL_00fc:  ldloc.s    copyStream
-          IL_00fe:  ldloc.s    assemblyTempFile
-          IL_0100:  call       void Costura.AssemblyLoader::CopyTo(class [mscorlib]System.IO.Stream,
+          IL_0101:  nop
+          .line 219,219 : 21,58 ''
+          IL_0102:  ldloc.s    copyStream
+          IL_0104:  ldloc.s    assemblyTempFile
+          IL_0106:  call       void Costura.AssemblyLoader::CopyTo(class [mscorlib]System.IO.Stream,
                                                                    class [mscorlib]System.IO.Stream)
-          IL_0105:  nop
-          .line 219,219 : 17,18 ''
-          IL_0106:  nop
+          IL_010b:  nop
+          .line 220,220 : 17,18 ''
+          IL_010c:  nop
           .line 16707566,16707566 : 0,0 ''
-          IL_0107:  leave.s    IL_011d
+          IL_010d:  leave.s    IL_0123
         }  // end .try
         finally
         {
-          IL_0109:  ldloc.s    assemblyTempFile
-          IL_010b:  ldnull
-          IL_010c:  ceq
-          IL_010e:  stloc.s    CS$4$0001
-          IL_0110:  ldloc.s    CS$4$0001
-          IL_0112:  brtrue.s   IL_011c
-          IL_0114:  ldloc.s    assemblyTempFile
-          IL_0116:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
-          IL_011b:  nop
-          IL_011c:  endfinally
+          IL_010f:  ldloc.s    assemblyTempFile
+          IL_0111:  ldnull
+          IL_0112:  ceq
+          IL_0114:  stloc.s    CS$4$0001
+          IL_0116:  ldloc.s    CS$4$0001
+          IL_0118:  brtrue.s   IL_0122
+          IL_011a:  ldloc.s    assemblyTempFile
+          IL_011c:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
+          IL_0121:  nop
+          IL_0122:  endfinally
           .line 16707566,16707566 : 0,0 ''
         }  // end handler
-        IL_011d:  nop
+        IL_0123:  nop
         .line 16707566,16707566 : 0,0 ''
-        IL_011e:  leave.s    IL_0134
+        IL_0124:  leave.s    IL_013a
       }  // end .try
       finally
       {
-        IL_0120:  ldloc.s    copyStream
-        IL_0122:  ldnull
-        IL_0123:  ceq
-        IL_0125:  stloc.s    CS$4$0001
-        IL_0127:  ldloc.s    CS$4$0001
-        IL_0129:  brtrue.s   IL_0133
-        IL_012b:  ldloc.s    copyStream
-        IL_012d:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
-        IL_0132:  nop
-        IL_0133:  endfinally
+        IL_0126:  ldloc.s    copyStream
+        IL_0128:  ldnull
+        IL_0129:  ceq
+        IL_012b:  stloc.s    CS$4$0001
+        IL_012d:  ldloc.s    CS$4$0001
+        IL_012f:  brtrue.s   IL_0139
+        IL_0131:  ldloc.s    copyStream
+        IL_0133:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
+        IL_0138:  nop
+        IL_0139:  endfinally
         .line 16707566,16707566 : 0,0 ''
       }  // end handler
-      IL_0134:  nop
-      .line 220,220 : 17,79 ''
-      IL_0135:  ldloc.3
-      IL_0136:  ldnull
-      IL_0137:  ldc.i4.4
-      IL_0138:  call       bool Costura.AssemblyLoader::MoveFileEx(string,
+      IL_013a:  nop
+      .line 221,221 : 17,79 ''
+      IL_013b:  ldloc.3
+      IL_013c:  ldnull
+      IL_013d:  ldc.i4.4
+      IL_013e:  call       bool Costura.AssemblyLoader::MoveFileEx(string,
                                                                    string,
                                                                    int32)
-      IL_013d:  stloc.s    CS$4$0001
+      IL_0143:  stloc.s    CS$4$0001
       .line 16707566,16707566 : 0,0 ''
-      IL_013f:  ldloc.s    CS$4$0001
-      IL_0141:  brtrue.s   IL_0145
-      .line 221,221 : 17,18 ''
-      IL_0143:  nop
-      .line 223,223 : 17,18 ''
-      IL_0144:  nop
-      .line 224,224 : 13,14 ''
-      IL_0145:  nop
-      .line 225,225 : 9,10 ''
-      IL_0146:  nop
-      .line 192,192 : 26,28 ''
-      IL_0147:  ldloc.s    CS$5$0000
-      IL_0149:  callvirt   instance bool [mscorlib]System.Collections.IEnumerator::MoveNext()
-      IL_014e:  stloc.s    CS$4$0001
+      IL_0145:  ldloc.s    CS$4$0001
+      IL_0147:  brtrue.s   IL_014b
+      .line 222,222 : 17,18 ''
+      IL_0149:  nop
+      .line 224,224 : 17,18 ''
+      IL_014a:  nop
+      .line 225,225 : 13,14 ''
+      IL_014b:  nop
+      .line 226,226 : 9,10 ''
+      IL_014c:  nop
+      .line 193,193 : 26,28 ''
+      IL_014d:  ldloc.s    CS$5$0000
+      IL_014f:  callvirt   instance bool [mscorlib]System.Collections.IEnumerator::MoveNext()
+      IL_0154:  stloc.s    CS$4$0001
       .line 16707566,16707566 : 0,0 ''
-      IL_0150:  ldloc.s    CS$4$0001
-      IL_0152:  brtrue     IL_0025
-      IL_0157:  leave.s    IL_016d
+      IL_0156:  ldloc.s    CS$4$0001
+      IL_0158:  brtrue     IL_0025
+      IL_015d:  leave.s    IL_0173
     }  // end .try
     finally
     {
-      IL_0159:  ldloc.s    CS$5$0000
-      IL_015b:  ldnull
-      IL_015c:  ceq
-      IL_015e:  stloc.s    CS$4$0001
-      IL_0160:  ldloc.s    CS$4$0001
-      IL_0162:  brtrue.s   IL_016c
-      IL_0164:  ldloc.s    CS$5$0000
-      IL_0166:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
-      IL_016b:  nop
-      IL_016c:  endfinally
+      IL_015f:  ldloc.s    CS$5$0000
+      IL_0161:  ldnull
+      IL_0162:  ceq
+      IL_0164:  stloc.s    CS$4$0001
+      IL_0166:  ldloc.s    CS$4$0001
+      IL_0168:  brtrue.s   IL_0172
+      IL_016a:  ldloc.s    CS$5$0000
+      IL_016c:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
+      IL_0171:  nop
+      IL_0172:  endfinally
       .line 16707566,16707566 : 0,0 ''
     }  // end handler
-    IL_016d:  nop
-    .line 227,227 : 9,16 ''
-    IL_016e:  nop
-    .line 227,227 : 29,33 ''
-    IL_016f:  ldarg.1
-    IL_0170:  callvirt   instance class [mscorlib]System.Collections.Generic.IEnumerator`1<!0> class [mscorlib]System.Collections.Generic.IEnumerable`1<string>::GetEnumerator()
-    IL_0175:  stloc.s    CS$5$0000
+    IL_0173:  nop
+    .line 228,228 : 9,16 ''
+    IL_0174:  nop
+    .line 228,228 : 29,33 ''
+    IL_0175:  ldarg.1
+    IL_0176:  callvirt   instance class [mscorlib]System.Collections.Generic.IEnumerator`1<!0> class [mscorlib]System.Collections.Generic.IEnumerable`1<string>::GetEnumerator()
+    IL_017b:  stloc.s    CS$5$0000
     .line 16707566,16707566 : 0,0 ''
     .try
     {
-      IL_0177:  br.s       IL_01d5
-      .line 227,227 : 18,25 ''
-      IL_0179:  ldloc.s    CS$5$0000
-      IL_017b:  callvirt   instance !0 class [mscorlib]System.Collections.Generic.IEnumerator`1<string>::get_Current()
-      IL_0180:  stloc.2
-      .line 228,228 : 9,10 ''
-      IL_0181:  nop
-      .line 229,229 : 13,38 ''
-      IL_0182:  ldloc.2
-      IL_0183:  ldc.i4.s   10
-      IL_0185:  callvirt   instance string [mscorlib]System.String::Substring(int32)
-      IL_018a:  stloc.1
-      .line 230,230 : 13,39 ''
-      IL_018b:  ldloc.1
-      IL_018c:  ldstr      ".zip"
-      IL_0191:  callvirt   instance bool [mscorlib]System.String::EndsWith(string)
-      IL_0196:  ldc.i4.0
-      IL_0197:  ceq
-      IL_0199:  stloc.s    CS$4$0001
+      IL_017d:  br.s       IL_01db
+      .line 228,228 : 18,25 ''
+      IL_017f:  ldloc.s    CS$5$0000
+      IL_0181:  callvirt   instance !0 class [mscorlib]System.Collections.Generic.IEnumerator`1<string>::get_Current()
+      IL_0186:  stloc.2
+      .line 229,229 : 9,10 ''
+      IL_0187:  nop
+      .line 230,230 : 13,38 ''
+      IL_0188:  ldloc.2
+      IL_0189:  ldc.i4.s   10
+      IL_018b:  callvirt   instance string [mscorlib]System.String::Substring(int32)
+      IL_0190:  stloc.1
+      .line 231,231 : 13,39 ''
+      IL_0191:  ldloc.1
+      IL_0192:  ldstr      ".zip"
+      IL_0197:  callvirt   instance bool [mscorlib]System.String::EndsWith(string)
+      IL_019c:  ldc.i4.0
+      IL_019d:  ceq
+      IL_019f:  stloc.s    CS$4$0001
       .line 16707566,16707566 : 0,0 ''
-      IL_019b:  ldloc.s    CS$4$0001
-      IL_019d:  brtrue.s   IL_01af
-      .line 231,231 : 17,59 ''
-      IL_019f:  ldloc.1
-      IL_01a0:  ldc.i4.0
-      IL_01a1:  ldloc.1
-      IL_01a2:  callvirt   instance int32 [mscorlib]System.String::get_Length()
-      IL_01a7:  ldc.i4.4
-      IL_01a8:  sub
-      IL_01a9:  callvirt   instance string [mscorlib]System.String::Substring(int32,
+      IL_01a1:  ldloc.s    CS$4$0001
+      IL_01a3:  brtrue.s   IL_01b5
+      .line 232,232 : 17,59 ''
+      IL_01a5:  ldloc.1
+      IL_01a6:  ldc.i4.0
+      IL_01a7:  ldloc.1
+      IL_01a8:  callvirt   instance int32 [mscorlib]System.String::get_Length()
+      IL_01ad:  ldc.i4.4
+      IL_01ae:  sub
+      IL_01af:  callvirt   instance string [mscorlib]System.String::Substring(int32,
                                                                               int32)
-      IL_01ae:  stloc.1
-      .line 233,233 : 13,39 ''
-      IL_01af:  ldloc.1
-      IL_01b0:  ldstr      ".dll"
-      IL_01b5:  callvirt   instance bool [mscorlib]System.String::EndsWith(string)
-      IL_01ba:  ldc.i4.0
-      IL_01bb:  ceq
-      IL_01bd:  stloc.s    CS$4$0001
+      IL_01b4:  stloc.1
+      .line 234,234 : 13,39 ''
+      IL_01b5:  ldloc.1
+      IL_01b6:  ldstr      ".dll"
+      IL_01bb:  callvirt   instance bool [mscorlib]System.String::EndsWith(string)
+      IL_01c0:  ldc.i4.0
+      IL_01c1:  ceq
+      IL_01c3:  stloc.s    CS$4$0001
       .line 16707566,16707566 : 0,0 ''
-      IL_01bf:  ldloc.s    CS$4$0001
-      IL_01c1:  brtrue.s   IL_01d4
-      .line 234,234 : 13,14 ''
-      IL_01c3:  nop
-      .line 235,235 : 17,77 ''
-      IL_01c4:  ldarg.0
-      IL_01c5:  ldloc.1
-      IL_01c6:  call       string [mscorlib]System.IO.Path::Combine(string,
+      IL_01c5:  ldloc.s    CS$4$0001
+      IL_01c7:  brtrue.s   IL_01da
+      .line 235,235 : 13,14 ''
+      IL_01c9:  nop
+      .line 236,236 : 17,77 ''
+      IL_01ca:  ldarg.0
+      IL_01cb:  ldloc.1
+      IL_01cc:  call       string [mscorlib]System.IO.Path::Combine(string,
                                                                     string)
-      IL_01cb:  stloc.3
-      .line 237,237 : 17,51 ''
-      IL_01cc:  ldloc.3
-      IL_01cd:  call       native int Costura.AssemblyLoader::LoadLibrary(string)
-      IL_01d2:  pop
-      .line 238,238 : 13,14 ''
-      IL_01d3:  nop
-      .line 239,239 : 9,10 ''
-      IL_01d4:  nop
-      .line 227,227 : 26,28 ''
-      IL_01d5:  ldloc.s    CS$5$0000
-      IL_01d7:  callvirt   instance bool [mscorlib]System.Collections.IEnumerator::MoveNext()
-      IL_01dc:  stloc.s    CS$4$0001
+      IL_01d1:  stloc.3
+      .line 238,238 : 17,51 ''
+      IL_01d2:  ldloc.3
+      IL_01d3:  call       native int Costura.AssemblyLoader::LoadLibrary(string)
+      IL_01d8:  pop
+      .line 239,239 : 13,14 ''
+      IL_01d9:  nop
+      .line 240,240 : 9,10 ''
+      IL_01da:  nop
+      .line 228,228 : 26,28 ''
+      IL_01db:  ldloc.s    CS$5$0000
+      IL_01dd:  callvirt   instance bool [mscorlib]System.Collections.IEnumerator::MoveNext()
+      IL_01e2:  stloc.s    CS$4$0001
       .line 16707566,16707566 : 0,0 ''
-      IL_01de:  ldloc.s    CS$4$0001
-      IL_01e0:  brtrue.s   IL_0179
-      IL_01e2:  leave.s    IL_01f8
+      IL_01e4:  ldloc.s    CS$4$0001
+      IL_01e6:  brtrue.s   IL_017f
+      IL_01e8:  leave.s    IL_01fe
     }  // end .try
     finally
     {
-      IL_01e4:  ldloc.s    CS$5$0000
-      IL_01e6:  ldnull
-      IL_01e7:  ceq
-      IL_01e9:  stloc.s    CS$4$0001
-      IL_01eb:  ldloc.s    CS$4$0001
-      IL_01ed:  brtrue.s   IL_01f7
-      IL_01ef:  ldloc.s    CS$5$0000
-      IL_01f1:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
-      IL_01f6:  nop
-      IL_01f7:  endfinally
+      IL_01ea:  ldloc.s    CS$5$0000
+      IL_01ec:  ldnull
+      IL_01ed:  ceq
+      IL_01ef:  stloc.s    CS$4$0001
+      IL_01f1:  ldloc.s    CS$4$0001
+      IL_01f3:  brtrue.s   IL_01fd
+      IL_01f5:  ldloc.s    CS$5$0000
+      IL_01f7:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
+      IL_01fc:  nop
+      IL_01fd:  endfinally
       .line 16707566,16707566 : 0,0 ''
     }  // end handler
-    IL_01f8:  nop
-    .line 240,240 : 5,6 ''
-    IL_01f9:  ret
+    IL_01fe:  nop
+    .line 241,241 : 5,6 ''
+    IL_01ff:  ret
   } // end of method AssemblyLoader::InternalPreloadUnmanagedLibraries
   .method private hidebysig static void  PreloadUnmanagedLibraries(string hash,
                                                                    string tempBasePath,
                                                                    class [mscorlib]System.Collections.Generic.IEnumerable`1<string> libs,
                                                                    class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> checksums) cil managed
   {
-    // Code size       177 (0xb1)
+    // Code size       207 (0xcf)
     .maxstack  3
     .locals init ([0] string mutexId,
              [1] class [mscorlib]System.Threading.Mutex mutex,
              [2] class [mscorlib]System.Security.AccessControl.MutexAccessRule allowEveryoneRule,
              [3] class [mscorlib]System.Security.AccessControl.MutexSecurity securitySettings,
              [4] bool hasHandle,
-             [5] bool CS$4$0000)
+             [5] string bittyness,
+             [6] bool CS$4$0000)
     .line 150,150 : 5,6 ''
     IL_0000:  nop
     .line 151,151 : 9,68 ''
@@ -1351,68 +1355,80 @@
           .line 16707566,16707566 : 0,0 ''
         }  // end handler
         IL_0070:  nop
-        .line 174,174 : 17,47 ''
-        IL_0071:  ldarg.1
-        IL_0072:  call       void Costura.AssemblyLoader::CreateDirectory(string)
-        IL_0077:  nop
-        .line 175,175 : 17,82 ''
-        IL_0078:  ldarg.1
-        IL_0079:  ldarg.2
-        IL_007a:  ldarg.3
-        IL_007b:  call       void Costura.AssemblyLoader::InternalPreloadUnmanagedLibraries(string,
+        .line 174,174 : 17,64 ''
+        IL_0071:  call       int32 [mscorlib]System.IntPtr::get_Size()
+        IL_0076:  ldc.i4.8
+        IL_0077:  beq.s      IL_0080
+        IL_0079:  ldstr      "32"
+        IL_007e:  br.s       IL_0085
+        IL_0080:  ldstr      "64"
+        IL_0085:  nop
+        IL_0086:  stloc.s    bittyness
+        .line 175,175 : 17,72 ''
+        IL_0088:  ldarg.1
+        IL_0089:  ldloc.s    bittyness
+        IL_008b:  call       string [mscorlib]System.IO.Path::Combine(string,
+                                                                      string)
+        IL_0090:  call       void Costura.AssemblyLoader::CreateDirectory(string)
+        IL_0095:  nop
+        .line 176,176 : 17,82 ''
+        IL_0096:  ldarg.1
+        IL_0097:  ldarg.2
+        IL_0098:  ldarg.3
+        IL_0099:  call       void Costura.AssemblyLoader::InternalPreloadUnmanagedLibraries(string,
                                                                                             class [mscorlib]System.Collections.Generic.IEnumerable`1<string>,
                                                                                             class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>)
-        IL_0080:  nop
-        .line 176,176 : 13,14 ''
-        IL_0081:  nop
+        IL_009e:  nop
+        .line 177,177 : 13,14 ''
+        IL_009f:  nop
         .line 16707566,16707566 : 0,0 ''
-        IL_0082:  leave.s    IL_0099
-        .line 178,178 : 13,14 ''
+        IL_00a0:  leave.s    IL_00b7
+        .line 179,179 : 13,14 ''
       }  // end .try
       finally
       {
-        IL_0084:  nop
-        .line 179,179 : 17,31 ''
-        IL_0085:  ldloc.s    hasHandle
-        IL_0087:  ldc.i4.0
-        IL_0088:  ceq
-        IL_008a:  stloc.s    CS$4$0000
+        IL_00a2:  nop
+        .line 180,180 : 17,31 ''
+        IL_00a3:  ldloc.s    hasHandle
+        IL_00a5:  ldc.i4.0
+        IL_00a6:  ceq
+        IL_00a8:  stloc.s    CS$4$0000
         .line 16707566,16707566 : 0,0 ''
-        IL_008c:  ldloc.s    CS$4$0000
-        IL_008e:  brtrue.s   IL_0097
-        .line 180,180 : 21,42 ''
-        IL_0090:  ldloc.1
-        IL_0091:  callvirt   instance void [mscorlib]System.Threading.Mutex::ReleaseMutex()
-        IL_0096:  nop
-        .line 181,181 : 13,14 ''
-        IL_0097:  nop
+        IL_00aa:  ldloc.s    CS$4$0000
+        IL_00ac:  brtrue.s   IL_00b5
+        .line 181,181 : 21,42 ''
+        IL_00ae:  ldloc.1
+        IL_00af:  callvirt   instance void [mscorlib]System.Threading.Mutex::ReleaseMutex()
+        IL_00b4:  nop
+        .line 182,182 : 13,14 ''
+        IL_00b5:  nop
         .line 16707566,16707566 : 0,0 ''
-        IL_0098:  endfinally
+        IL_00b6:  endfinally
         .line 16707566,16707566 : 0,0 ''
       }  // end handler
-      IL_0099:  nop
-      .line 182,182 : 9,10 ''
-      IL_009a:  nop
+      IL_00b7:  nop
+      .line 183,183 : 9,10 ''
+      IL_00b8:  nop
       .line 16707566,16707566 : 0,0 ''
-      IL_009b:  leave.s    IL_00af
+      IL_00b9:  leave.s    IL_00cd
     }  // end .try
     finally
     {
-      IL_009d:  ldloc.1
-      IL_009e:  ldnull
-      IL_009f:  ceq
-      IL_00a1:  stloc.s    CS$4$0000
-      IL_00a3:  ldloc.s    CS$4$0000
-      IL_00a5:  brtrue.s   IL_00ae
-      IL_00a7:  ldloc.1
-      IL_00a8:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
-      IL_00ad:  nop
-      IL_00ae:  endfinally
+      IL_00bb:  ldloc.1
+      IL_00bc:  ldnull
+      IL_00bd:  ceq
+      IL_00bf:  stloc.s    CS$4$0000
+      IL_00c1:  ldloc.s    CS$4$0000
+      IL_00c3:  brtrue.s   IL_00cc
+      IL_00c5:  ldloc.1
+      IL_00c6:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
+      IL_00cb:  nop
+      IL_00cc:  endfinally
       .line 16707566,16707566 : 0,0 ''
     }  // end handler
-    IL_00af:  nop
-    .line 183,183 : 5,6 ''
-    IL_00b0:  ret
+    IL_00cd:  nop
+    .line 184,184 : 5,6 ''
+    IL_00ce:  ret
   } // end of method AssemblyLoader::PreloadUnmanagedLibraries
   .method public hidebysig static void  Attach() cil managed
   {

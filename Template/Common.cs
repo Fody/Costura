@@ -171,7 +171,8 @@ static class Common
                     hasHandle = true;
                 }
 
-                CreateDirectory(tempBasePath);
+                var bittyness = IntPtr.Size == 8 ? "64" : "32";
+                CreateDirectory(Path.Combine(tempBasePath, bittyness));
                 InternalPreloadUnmanagedLibraries(tempBasePath, libs, checksums);
             }
             finally
@@ -192,7 +193,7 @@ static class Common
         foreach (var lib in libs)
         {
             if (lib.StartsWith(String.Concat("costura", bittyness, ".")))
-                name = lib.Substring(10);
+                name = Path.Combine(bittyness, lib.Substring(10));
             else if (lib.StartsWith("costura."))
                 name = lib.Substring(8);
             else
