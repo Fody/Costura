@@ -80,7 +80,18 @@ static class Common
 
     public static Assembly ReadFromDiskCache(string tempBasePath, string name)
     {
+        var bittyness = IntPtr.Size == 8 ? "64" : "32";
         var assemblyTempFilePath = Path.Combine(tempBasePath, String.Concat(name, ".dll"));
+        if (File.Exists(assemblyTempFilePath))
+        {
+            return Assembly.LoadFile(assemblyTempFilePath);
+        }
+        assemblyTempFilePath = Path.ChangeExtension(assemblyTempFilePath, "exe");
+        if (File.Exists(assemblyTempFilePath))
+        {
+            return Assembly.LoadFile(assemblyTempFilePath);
+        }
+        assemblyTempFilePath = Path.Combine(Path.Combine(tempBasePath, bittyness), String.Concat(name, ".dll"));
         if (File.Exists(assemblyTempFilePath))
         {
             return Assembly.LoadFile(assemblyTempFilePath);
@@ -185,22 +196,11 @@ static class Common
 
     static void InternalPreloadUnmanagedLibraries(string tempBasePath, IEnumerable<string> libs, Dictionary<string, string> checksums)
     {
-        // Preload correct library
-        var bittyness = IntPtr.Size == 8 ? "64" : "32";
-
         string name;
 
         foreach (var lib in libs)
         {
-            if (lib.StartsWith(String.Concat("costura", bittyness, ".")))
-                name = Path.Combine(bittyness, lib.Substring(10));
-            else if (lib.StartsWith("costura."))
-                name = lib.Substring(8);
-            else
-                continue;
-
-            if (name.EndsWith(".zip"))
-                name = name.Substring(0, name.Length - 4);
+            name = ResourceNameToPath(lib);
 
             var assemblyTempFilePath = Path.Combine(tempBasePath, name);
 
@@ -227,9 +227,7 @@ static class Common
 
         foreach (var lib in libs)
         {
-            name = lib.Substring(10);
-            if (name.EndsWith(".zip"))
-                name = name.Substring(0, name.Length - 4);
+            name = ResourceNameToPath(lib);
 
             if (name.EndsWith(".dll"))
             {
@@ -238,5 +236,22 @@ static class Common
                 LoadLibrary(assemblyTempFilePath);
             }
         }
+    }
+
+    static string ResourceNameToPath(string lib)
+    {
+        var bittyness = IntPtr.Size == 8 ? "64" : "32";
+
+        string name = lib;
+
+        if (lib.StartsWith(String.Concat("costura", bittyness, ".")))
+            name = Path.Combine(bittyness, lib.Substring(10));
+        else if (lib.StartsWith("costura."))
+            name = lib.Substring(8);
+
+        if (name.EndsWith(".zip"))
+            name = name.Substring(0, name.Length - 4);
+
+        return name;
     }
 }

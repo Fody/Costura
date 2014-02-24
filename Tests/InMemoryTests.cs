@@ -49,23 +49,23 @@ public class InMemoryTests
         var assemblyToReferenceResources = Directory.GetFiles(assemblyToReferenceDirectory, "*.resources.dll", SearchOption.AllDirectories);
         references.AddRange(assemblyToReferenceResources);
 
-        var weavingTask = new ModuleWeaver
+        using (var weavingTask = new ModuleWeaver
             {
                 ModuleDefinition = moduleDefinition,
                 AssemblyResolver = new MockAssemblyResolver(),
                 Config = XElement.Parse("<Costura Unmanaged32Assemblies='AssemblyToReferenceMixed' PreloadOrder='AssemblyToReferenceNative' />"),
                 ReferenceCopyLocalPaths = references,
                 AssemblyFilePath = beforeAssemblyPath
-            };
-
-        weavingTask.Execute();
-
-        var writerParams = new WriterParameters() { WriteSymbols = true };
-
-        moduleDefinition.Write(afterAssemblyPath, writerParams);
+            })
+        {
+            weavingTask.Execute();
+            var writerParams = new WriterParameters() { WriteSymbols = true };
+            moduleDefinition.Write(afterAssemblyPath, writerParams);
+        }
 
         isolatedPath = Path.Combine(Path.GetTempPath(), "CosturaIsolatedMemory.dll");
         File.Copy(afterAssemblyPath, isolatedPath, true);
+        File.Copy(afterAssemblyPath.Replace(".dll", ".pdb"), isolatedPath.Replace(".dll", ".pdb"), true);
         assembly = Assembly.LoadFile(isolatedPath);
     }
 

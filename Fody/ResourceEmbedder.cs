@@ -165,24 +165,24 @@ partial class ModuleWeaver : IDisposable
         }
         else
         {
-            using (var fileStream = File.Open(fullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (var cacheFileStream = File.Open(cacheFile, FileMode.CreateNew, FileAccess.Write, FileShare.Read))
             {
-                if (compress)
+                using (var fileStream = File.Open(fullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
-                    using (var compressedStream = new DeflateStream(memoryStream, CompressionMode.Compress, true))
+                    if (compress)
                     {
-                        fileStream.CopyTo(compressedStream);
+                        using (var compressedStream = new DeflateStream(memoryStream, CompressionMode.Compress, true))
+                        {
+                            fileStream.CopyTo(compressedStream);
+                        }
+                    }
+                    else
+                    {
+                        fileStream.CopyTo(memoryStream);
                     }
                 }
-                else
-                {
-                    fileStream.CopyTo(memoryStream);
-                }
-            }
-            memoryStream.Position = 0;
-            using (var fileStream = File.Open(cacheFile, FileMode.CreateNew, FileAccess.Write, FileShare.Read))
-            {
-                memoryStream.CopyTo(fileStream);
+                memoryStream.Position = 0;
+                memoryStream.CopyTo(cacheFileStream);
             }
         }
         memoryStream.Position = 0;

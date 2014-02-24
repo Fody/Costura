@@ -43,17 +43,18 @@ public class TempFileTests
         var assemblyToReferenceResources = Directory.GetFiles(assemblyToReferenceDirectory, "*.resources.dll", SearchOption.AllDirectories);
         references.AddRange(assemblyToReferenceResources);
 
-        var weavingTask = new ModuleWeaver
+        using (var weavingTask = new ModuleWeaver
             {
                 ModuleDefinition = moduleDefinition,
                 AssemblyResolver = new MockAssemblyResolver(),
                 Config = XElement.Parse("<Costura CreateTemporaryAssemblies='true' Unmanaged32Assemblies='AssemblyToReferenceMixed' />"),
                 ReferenceCopyLocalPaths = references,
                 AssemblyFilePath = beforeAssemblyPath
-            };
-
-        weavingTask.Execute();
-        moduleDefinition.Write(afterAssemblyPath);
+            })
+        {
+            weavingTask.Execute();
+            moduleDefinition.Write(afterAssemblyPath);
+        }
 
         isolatedPath = Path.Combine(Path.GetTempPath(), "CosturaIsolatedTemp.dll");
         File.Copy(afterAssemblyPath, isolatedPath, true);

@@ -216,13 +216,16 @@ partial class ModuleWeaver
 
     Instruction CloneInstruction(Instruction instruction)
     {
+        Instruction newInstruction;
         if (instruction.OpCode == OpCodes.Ldstr && ((string)instruction.Operand) == "To be replaced at compile time")
         {
-            return Instruction.Create(OpCodes.Ldstr, resourcesHash);
+            newInstruction = Instruction.Create(OpCodes.Ldstr, resourcesHash);
         }
-
-        var newInstruction = (Instruction)instructionConstructorInfo.Invoke(new[] { instruction.OpCode, instruction.Operand });
-        newInstruction.Operand = Import(instruction.Operand);
+        else
+        {
+            newInstruction = (Instruction)instructionConstructorInfo.Invoke(new[] { instruction.OpCode, instruction.Operand });
+            newInstruction.Operand = Import(instruction.Operand);
+        }
         newInstruction.SequencePoint = TranslateSequencePoint(instruction.SequencePoint);
         return newInstruction;
     }
