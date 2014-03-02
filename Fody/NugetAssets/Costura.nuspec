@@ -1,9 +1,10 @@
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
-  <metadata>
+  <metadata minClientVersion="2.8">
     <id>Costura.Fody</id>
     <version>$version$</version>
     <title>Costura.Fody</title>
+    <developmentDependency>true</developmentDependency>
     <authors>Simon Cropp, Cameron MacFarland</authors>
     <owners>Simon Cropp, Cameron MacFarland</owners>
     <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
