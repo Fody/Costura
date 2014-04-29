@@ -10,7 +10,7 @@ partial class ModuleWeaver : IDisposable
     readonly List<Stream> streams = new List<Stream>();
     string cachePath;
 
-    void EmbedResources(Configuration config)
+    private void EmbedResources(Configuration config)
     {
         if (ReferenceCopyLocalPaths == null)
         {
@@ -97,7 +97,7 @@ partial class ModuleWeaver : IDisposable
         }
     }
 
-    IEnumerable<string> GetFilteredReferences(IEnumerable<string> onlyBinaries, Configuration config)
+    private IEnumerable<string> GetFilteredReferences(IEnumerable<string> onlyBinaries, Configuration config)
     {
         if (config.IncludeAssemblies.Any())
         {
@@ -126,17 +126,20 @@ partial class ModuleWeaver : IDisposable
             }
             yield break;
         }
-        foreach (var file in onlyBinaries)
+        if (config.OptOut)
         {
-            if (config.Unmanaged32Assemblies.All(x => x != Path.GetFileNameWithoutExtension(file)) &&
-                config.Unmanaged64Assemblies.All(x => x != Path.GetFileNameWithoutExtension(file)))
+            foreach (var file in onlyBinaries)
             {
-                yield return file;
+                if (config.Unmanaged32Assemblies.All(x => x != Path.GetFileNameWithoutExtension(file)) &&
+                    config.Unmanaged64Assemblies.All(x => x != Path.GetFileNameWithoutExtension(file)))
+                {
+                    yield return file;
+                }
             }
         }
     }
 
-    string Embed(string prefix, string fullPath, bool compress)
+    private string Embed(string prefix, string fullPath, bool compress)
     {
         var resourceName = String.Format("{0}{1}", prefix, Path.GetFileName(fullPath).ToLowerInvariant());
         if (ModuleDefinition.Resources.Any(x => x.Name == resourceName))

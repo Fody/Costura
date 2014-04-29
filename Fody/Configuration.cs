@@ -8,6 +8,7 @@ public class Configuration
     public Configuration(XElement config)
     {
         // Defaults
+        OptOut = true;
         IncludeDebugSymbols = true;
         DisableCompression = false;
         CreateTemporaryAssemblies = false;
@@ -20,6 +21,11 @@ public class Configuration
         if (config == null)
         {
             return;
+        }
+
+        if (config.Attribute("IncludeAssemblies") != null || config.Element("IncludeAssemblies") != null)
+        {
+            OptOut = false;
         }
 
         ReadBool(config, "IncludeDebugSymbols", b => IncludeDebugSymbols = b);
@@ -38,6 +44,7 @@ public class Configuration
         }
     }
 
+    public bool OptOut { get; private set; }
     public bool IncludeDebugSymbols { get; private set; }
     public bool DisableCompression { get; private set; }
     public bool CreateTemporaryAssemblies { get; private set; }
