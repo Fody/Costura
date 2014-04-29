@@ -12,6 +12,7 @@ public class Configuration
         IncludeDebugSymbols = true;
         DisableCompression = false;
         CreateTemporaryAssemblies = false;
+        LoadExistingAssemblyFromDisk = true;
         IncludeAssemblies = new List<string>();
         ExcludeAssemblies = new List<string>();
         Unmanaged32Assemblies = new List<string>();
@@ -31,6 +32,7 @@ public class Configuration
         ReadBool(config, "IncludeDebugSymbols", b => IncludeDebugSymbols = b);
         ReadBool(config, "DisableCompression", b => DisableCompression = b);
         ReadBool(config, "CreateTemporaryAssemblies", b => CreateTemporaryAssemblies = b);
+        ReadBool(config, "LoadExistingAssemblyFromDisk", b => LoadExistingAssemblyFromDisk = b);
 
         ReadList(config, "ExcludeAssemblies", ExcludeAssemblies);
         ReadList(config, "IncludeAssemblies", IncludeAssemblies);
@@ -48,6 +50,7 @@ public class Configuration
     public bool IncludeDebugSymbols { get; private set; }
     public bool DisableCompression { get; private set; }
     public bool CreateTemporaryAssemblies { get; private set; }
+    public bool LoadExistingAssemblyFromDisk { get; private set; }
     public List<string> IncludeAssemblies { get; private set; }
     public List<string> ExcludeAssemblies { get; private set; }
     public List<string> Unmanaged32Assemblies { get; private set; }

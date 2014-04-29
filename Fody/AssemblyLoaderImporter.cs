@@ -21,6 +21,7 @@ partial class ModuleWeaver
     FieldDefinition preload32ListField;
     FieldDefinition preload64ListField;
     FieldDefinition checksumsField;
+    FieldDefinition loadExistingAssemblyFromDiskField;
 
     void ImportAssemblyLoader(bool createTemporaryAssemblies)
     {
@@ -86,6 +87,8 @@ partial class ModuleWeaver
                 preload64ListField = newField;
             if (field.Name == "checksums")
                 checksumsField = newField;
+            if (field.Name == "loadExistingAssemblyFromDisk")
+                loadExistingAssemblyFromDiskField = newField;
         }
     }
 

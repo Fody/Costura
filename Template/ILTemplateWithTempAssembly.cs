@@ -15,6 +15,8 @@ static class ILTemplateWithTempAssembly
 
     static readonly Dictionary<string, string> checksums = new Dictionary<string, string>();
 
+    static readonly bool loadExistingAssemblyFromDisk;
+
     public static void Attach()
     {
         //Create a unique Temp directory for the application path.
@@ -42,10 +44,14 @@ static class ILTemplateWithTempAssembly
 
         var requestedAssemblyName = new AssemblyName(args.Name);
 
-        var assembly = Common.ReadExistingAssembly(requestedAssemblyName);
-        if (assembly != null)
+        Assembly assembly;
+        if (loadExistingAssemblyFromDisk)
         {
-            return assembly;
+            assembly = Common.ReadExistingAssembly(requestedAssemblyName);
+            if (assembly != null)
+            {
+                return assembly;
+            }
         }
 
         var name = requestedAssemblyName.Name.ToLowerInvariant();
