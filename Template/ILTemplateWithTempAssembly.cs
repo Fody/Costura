@@ -5,13 +5,15 @@ using System.Reflection;
 
 static class ILTemplateWithTempAssembly
 {
+    static readonly Dictionary<string, bool> nullCache = new Dictionary<string, bool>();
+
     static string tempBasePath;
 
-    readonly static List<string> preloadList = new List<string>();
-    readonly static List<string> preload32List = new List<string>();
-    readonly static List<string> preload64List = new List<string>();
+    static readonly List<string> preloadList = new List<string>();
+    static readonly List<string> preload32List = new List<string>();
+    static readonly List<string> preload64List = new List<string>();
 
-    readonly static Dictionary<string, string> checksums = new Dictionary<string, string>();
+    static readonly Dictionary<string, string> checksums = new Dictionary<string, string>();
 
     public static void Attach()
     {
@@ -33,12 +35,17 @@ static class ILTemplateWithTempAssembly
 
     public static Assembly ResolveAssembly(object sender, ResolveEventArgs args)
     {
+        if (nullCache.ContainsKey(args.Name))
+        {
+            return null;
+        }
+
         var requestedAssemblyName = new AssemblyName(args.Name);
 
-        var existingAssembly = Common.ReadExistingAssembly(requestedAssemblyName);
-        if (existingAssembly != null)
+        var assembly = Common.ReadExistingAssembly(requestedAssemblyName);
+        if (assembly != null)
         {
-            return existingAssembly;
+            return assembly;
         }
 
         var name = requestedAssemblyName.Name.ToLowerInvariant();
@@ -46,12 +53,11 @@ static class ILTemplateWithTempAssembly
         if (requestedAssemblyName.CultureInfo != null && !String.IsNullOrEmpty(requestedAssemblyName.CultureInfo.Name))
             name = String.Format("{0}.{1}", requestedAssemblyName.CultureInfo.Name, name);
 
-        existingAssembly = Common.ReadFromDiskCache(tempBasePath, name);
-        if (existingAssembly != null)
+        assembly = Common.ReadFromDiskCache(tempBasePath, name);
+        if (assembly == null)
         {
-            return existingAssembly;
+            nullCache.Add(args.Name, true);
         }
-
-        return null;
+        return assembly;
     }
 }

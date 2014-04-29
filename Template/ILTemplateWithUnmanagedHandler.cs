@@ -5,15 +5,17 @@ using System.Reflection;
 
 static class ILTemplateWithUnmanagedHandler
 {
+    static readonly Dictionary<string, bool> nullCache = new Dictionary<string, bool>();
+
     static string tempBasePath;
 
-    readonly static Dictionary<string, string> assemblyNames = new Dictionary<string, string>();
-    readonly static Dictionary<string, string> symbolNames = new Dictionary<string, string>();
+    static readonly Dictionary<string, string> assemblyNames = new Dictionary<string, string>();
+    static readonly Dictionary<string, string> symbolNames = new Dictionary<string, string>();
 
-    readonly static List<string> preload32List = new List<string>();
-    readonly static List<string> preload64List = new List<string>();
+    static readonly List<string> preload32List = new List<string>();
+    static readonly List<string> preload64List = new List<string>();
 
-    readonly static Dictionary<string, string> checksums = new Dictionary<string, string>();
+    static readonly Dictionary<string, string> checksums = new Dictionary<string, string>();
 
     public static void Attach()
     {
@@ -32,12 +34,17 @@ static class ILTemplateWithUnmanagedHandler
 
     public static Assembly ResolveAssembly(object sender, ResolveEventArgs args)
     {
+        if (nullCache.ContainsKey(args.Name))
+        {
+            return null;
+        }
+
         var requestedAssemblyName = new AssemblyName(args.Name);
 
-        var existingAssembly = Common.ReadExistingAssembly(requestedAssemblyName);
-        if (existingAssembly != null)
+        var assembly = Common.ReadExistingAssembly(requestedAssemblyName);
+        if (assembly != null)
         {
-            return existingAssembly;
+            return assembly;
         }
 
         var name = requestedAssemblyName.Name.ToLowerInvariant();
@@ -45,12 +52,17 @@ static class ILTemplateWithUnmanagedHandler
         if (requestedAssemblyName.CultureInfo != null && !String.IsNullOrEmpty(requestedAssemblyName.CultureInfo.Name))
             name = String.Format("{0}.{1}", requestedAssemblyName.CultureInfo.Name, name);
 
-        existingAssembly = Common.ReadFromDiskCache(tempBasePath, name);
-        if (existingAssembly != null)
+        assembly = Common.ReadFromDiskCache(tempBasePath, name);
+        if (assembly != null)
         {
-            return existingAssembly;
+            return assembly;
         }
 
-        return Common.ReadFromEmbeddedResources(assemblyNames, symbolNames, name);
+        assembly = Common.ReadFromEmbeddedResources(assemblyNames, symbolNames, name);
+        if (assembly == null)
+        {
+            nullCache.Add(args.Name, true);
+        }
+        return assembly;
     }
 }
