@@ -30,12 +30,7 @@ static class ILTemplate
             return assembly;
         }
 
-        var name = requestedAssemblyName.Name.ToLowerInvariant();
-
-        if (requestedAssemblyName.CultureInfo != null && !String.IsNullOrEmpty(requestedAssemblyName.CultureInfo.Name))
-            name = String.Format("{0}.{1}", requestedAssemblyName.CultureInfo.Name, name);
-
-        assembly = Common.ReadFromEmbeddedResources(assemblyNames, symbolNames, name);
+        assembly = Common.ReadFromEmbeddedResources(assemblyNames, symbolNames, requestedAssemblyName);
         if (assembly == null)
         {
             nullCache.Add(args.Name, true);

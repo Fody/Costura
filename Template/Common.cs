@@ -15,12 +15,12 @@ static class Common
     private const int DelayUntilReboot = 4;
 
     [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-    static extern bool MoveFileEx(string lpExistingFileName, string lpNewFileName, int dwFlags);
+    private static extern bool MoveFileEx(string lpExistingFileName, string lpNewFileName, int dwFlags);
 
     [DllImport("kernel32.dll")]
-    static extern IntPtr LoadLibrary(string dllToLoad);
+    private static extern IntPtr LoadLibrary(string dllToLoad);
 
-    static void CopyTo(Stream source, Stream destination)
+    private static void CopyTo(Stream source, Stream destination)
     {
         var array = new byte[81920];
         int count;
@@ -30,7 +30,7 @@ static class Common
         }
     }
 
-    static void CreateDirectory(string tempBasePath)
+    private static void CreateDirectory(string tempBasePath)
     {
         if (!Directory.Exists(tempBasePath))
         {
@@ -38,7 +38,7 @@ static class Common
         }
     }
 
-    static byte[] ReadStream(Stream stream)
+    private static byte[] ReadStream(Stream stream)
     {
         var data = new Byte[stream.Length];
         stream.Read(data, 0, data.Length);
@@ -78,8 +78,13 @@ static class Common
         return null;
     }
 
-    public static Assembly ReadFromDiskCache(string tempBasePath, string name)
+    public static Assembly ReadFromDiskCache(string tempBasePath, AssemblyName requestedAssemblyName)
     {
+        var name = requestedAssemblyName.Name.ToLowerInvariant();
+
+        if (requestedAssemblyName.CultureInfo != null && !String.IsNullOrEmpty(requestedAssemblyName.CultureInfo.Name))
+            name = String.Format("{0}.{1}", requestedAssemblyName.CultureInfo.Name, name);
+
         var bittyness = IntPtr.Size == 8 ? "64" : "32";
         var assemblyTempFilePath = Path.Combine(tempBasePath, String.Concat(name, ".dll"));
         if (File.Exists(assemblyTempFilePath))
@@ -104,8 +109,13 @@ static class Common
         return null;
     }
 
-    public static Assembly ReadFromEmbeddedResources(Dictionary<string, string> assemblyNames, Dictionary<string, string> symbolNames, string name)
+    public static Assembly ReadFromEmbeddedResources(Dictionary<string, string> assemblyNames, Dictionary<string, string> symbolNames, AssemblyName requestedAssemblyName)
     {
+        var name = requestedAssemblyName.Name.ToLowerInvariant();
+
+        if (requestedAssemblyName.CultureInfo != null && !String.IsNullOrEmpty(requestedAssemblyName.CultureInfo.Name))
+            name = String.Format("{0}.{1}", requestedAssemblyName.CultureInfo.Name, name);
+
         byte[] assemblyData;
         using (var assemblyStream = LoadStream(assemblyNames, name))
         {
@@ -128,7 +138,7 @@ static class Common
         return Assembly.Load(assemblyData);
     }
 
-    static Stream LoadStream(Dictionary<string, string> resourceNames, string name)
+    private static Stream LoadStream(Dictionary<string, string> resourceNames, string name)
     {
         string value;
         if (resourceNames.TryGetValue(name, out value))
@@ -137,7 +147,7 @@ static class Common
         return null;
     }
 
-    static Stream LoadStream(string fullname)
+    private static Stream LoadStream(string fullname)
     {
         var executingAssembly = Assembly.GetExecutingAssembly();
 
@@ -194,7 +204,7 @@ static class Common
         }
     }
 
-    static void InternalPreloadUnmanagedLibraries(string tempBasePath, IEnumerable<string> libs, Dictionary<string, string> checksums)
+    private static void InternalPreloadUnmanagedLibraries(string tempBasePath, IEnumerable<string> libs, Dictionary<string, string> checksums)
     {
         string name;
 
@@ -238,7 +248,7 @@ static class Common
         }
     }
 
-    static string ResourceNameToPath(string lib)
+    private static string ResourceNameToPath(string lib)
     {
         var bittyness = IntPtr.Size == 8 ? "64" : "32";
 
