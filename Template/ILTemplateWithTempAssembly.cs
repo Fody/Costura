@@ -35,18 +35,25 @@ static class ILTemplateWithTempAssembly
 
     public static Assembly ResolveAssembly(object sender, ResolveEventArgs args)
     {
-        if (nullCache.ContainsKey(args.Name))
+        return ResolveAssembly(args.Name);
+    }
+
+    public static Assembly ResolveAssembly(string assemblyName)
+    {
+        if (nullCache.ContainsKey(assemblyName))
         {
             return null;
         }
 
-        var requestedAssemblyName = new AssemblyName(args.Name);
+        var requestedAssemblyName = new AssemblyName(assemblyName);
 
         var assembly = Common.ReadExistingAssembly(requestedAssemblyName);
         if (assembly != null)
         {
             return assembly;
         }
+
+        Common.Log("Loading assembly '{0}' into the AppDomain", requestedAssemblyName);
 
         var name = requestedAssemblyName.Name.ToLowerInvariant();
 
@@ -56,7 +63,7 @@ static class ILTemplateWithTempAssembly
         assembly = Common.ReadFromDiskCache(tempBasePath, name);
         if (assembly == null)
         {
-            nullCache.Add(args.Name, true);
+            nullCache.Add(assemblyName, true);
         }
         return assembly;
     }
