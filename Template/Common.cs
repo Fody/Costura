@@ -15,12 +15,12 @@ static class Common
     private const int DelayUntilReboot = 4;
 
     [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-    private static extern bool MoveFileEx(string lpExistingFileName, string lpNewFileName, int dwFlags);
+    static extern bool MoveFileEx(string lpExistingFileName, string lpNewFileName, int dwFlags);
 
     [DllImport("kernel32.dll")]
-    private static extern IntPtr LoadLibrary(string dllToLoad);
+    static extern IntPtr LoadLibrary(string dllToLoad);
 
-    private static void CopyTo(Stream source, Stream destination)
+    static void CopyTo(Stream source, Stream destination)
     {
         var array = new byte[81920];
         int count;
@@ -30,7 +30,7 @@ static class Common
         }
     }
 
-    private static void CreateDirectory(string tempBasePath)
+    static void CreateDirectory(string tempBasePath)
     {
         if (!Directory.Exists(tempBasePath))
         {
@@ -38,7 +38,7 @@ static class Common
         }
     }
 
-    private static byte[] ReadStream(Stream stream)
+    static byte[] ReadStream(Stream stream)
     {
         var data = new Byte[stream.Length];
         stream.Read(data, 0, data.Length);
@@ -138,7 +138,7 @@ static class Common
         return Assembly.Load(assemblyData);
     }
 
-    private static Stream LoadStream(Dictionary<string, string> resourceNames, string name)
+    static Stream LoadStream(Dictionary<string, string> resourceNames, string name)
     {
         string value;
         if (resourceNames.TryGetValue(name, out value))
@@ -147,7 +147,7 @@ static class Common
         return null;
     }
 
-    private static Stream LoadStream(string fullname)
+    static Stream LoadStream(string fullname)
     {
         var executingAssembly = Assembly.GetExecutingAssembly();
 
@@ -204,7 +204,7 @@ static class Common
         }
     }
 
-    private static void InternalPreloadUnmanagedLibraries(string tempBasePath, IEnumerable<string> libs, Dictionary<string, string> checksums)
+    static void InternalPreloadUnmanagedLibraries(string tempBasePath, IEnumerable<string> libs, Dictionary<string, string> checksums)
     {
         string name;
 
@@ -248,7 +248,7 @@ static class Common
         }
     }
 
-    private static string ResourceNameToPath(string lib)
+    static string ResourceNameToPath(string lib)
     {
         var bittyness = IntPtr.Size == 8 ? "64" : "32";
 
