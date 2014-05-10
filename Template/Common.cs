@@ -14,6 +14,13 @@ static class Common
 {
     private const int DelayUntilReboot = 4;
 
+    internal static void Log(string format, params object[] args)
+    {
+#if DEBUG
+        System.Diagnostics.Debug.WriteLine("=== COSTURA === " + string.Format(format, args));
+#endif
+    }
+
     [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
     static extern bool MoveFileEx(string lpExistingFileName, string lpNewFileName, int dwFlags);
 
@@ -63,18 +70,41 @@ static class Common
         }
     }
 
-    public static Assembly ReadExistingAssembly(AssemblyName name)
+    public static Assembly ReadExistingAssemblyByString(string assemblyName)
     {
         var currentDomain = AppDomain.CurrentDomain;
         var assemblies = currentDomain.GetAssemblies();
         foreach (var assembly in assemblies)
         {
-            var currentName = assembly.GetName();
-            if (currentName.Name == name.Name && object.Equals(currentName.CultureInfo, name.CultureInfo))
+            var originalName = assembly.GetName();
+            if (string.Equals(originalName.Name, assemblyName, StringComparison.InvariantCultureIgnoreCase))
             {
+                Log("Assembly '{0}' already loaded, returning existing assembly", assembly.FullName);
+
                 return assembly;
             }
         }
+
+        return null;
+    }
+
+    public static Assembly ReadExistingAssemblyByAssemblyName(AssemblyName assemblyName)
+    {
+        var currentDomain = AppDomain.CurrentDomain;
+        var assemblies = currentDomain.GetAssemblies();
+        foreach (var assembly in assemblies)
+        {
+            var originalName = assembly.GetName();
+
+            if (string.Equals(originalName.Name, assemblyName.Name, StringComparison.InvariantCultureIgnoreCase) &&
+                object.Equals(originalName.CultureInfo, assemblyName.CultureInfo))
+            {
+                Log("Assembly '{0}' already loaded, returning existing assembly", assembly.FullName);
+
+                return assembly;
+            }
+        }
+
         return null;
     }
 
@@ -106,6 +136,12 @@ static class Common
 
     public static Assembly ReadFromEmbeddedResources(Dictionary<string, string> assemblyNames, Dictionary<string, string> symbolNames, string name)
     {
+        var existingAssembly = ReadExistingAssemblyByString(name);
+        if (existingAssembly != null)
+        {
+            return existingAssembly;
+        }
+
         byte[] assemblyData;
         using (var assemblyStream = LoadStream(assemblyNames, name))
         {

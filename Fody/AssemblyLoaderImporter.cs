@@ -48,7 +48,9 @@ partial class ModuleWeaver
         targetType.CustomAttributes.Add(new CustomAttribute(compilerGeneratedAttributeCtor));
         ModuleDefinition.Types.Add(targetType);
         CopyFields(sourceType);
+
         CopyMethod(sourceType.Methods.First(x => x.Name == "ResolveAssembly"));
+        CopyMethod(sourceType.Methods.First(x => x.Name == "OnAssemblyResolve"));
 
         loaderCctor = CopyMethod(sourceType.Methods.First(x => x.IsConstructor && x.IsStatic));
         attachMethod = CopyMethod(sourceType.Methods.First(x => x.Name == "Attach"));
