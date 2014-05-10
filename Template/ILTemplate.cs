@@ -12,10 +12,10 @@ static class ILTemplate
     public static void Attach()
     {
         var currentDomain = AppDomain.CurrentDomain;
-        currentDomain.AssemblyResolve += ResolveAssembly;
+        currentDomain.AssemblyResolve += OnAssemblyResolve;
     }
 
-    public static Assembly ResolveAssembly(object sender, ResolveEventArgs args)
+    public static Assembly OnAssemblyResolve(object sender, ResolveEventArgs args)
     {
         return ResolveAssembly(args.Name);
     }
@@ -29,7 +29,7 @@ static class ILTemplate
 
         var requestedAssemblyName = new AssemblyName(assemblyName);
 
-        var assembly = Common.ReadExistingAssembly(requestedAssemblyName);
+        var assembly = Common.ReadExistingAssemblyByAssemblyName(requestedAssemblyName);
         if (assembly != null)
         {
             return assembly;

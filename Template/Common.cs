@@ -70,7 +70,7 @@ static class Common
         }
     }
 
-    public static Assembly ReadExistingAssembly(string assemblyName)
+    public static Assembly ReadExistingAssemblyByString(string assemblyName)
     {
         var currentDomain = AppDomain.CurrentDomain;
         var assemblies = currentDomain.GetAssemblies();
@@ -88,7 +88,7 @@ static class Common
         return null;
     }
 
-    public static Assembly ReadExistingAssembly(AssemblyName assemblyName)
+    public static Assembly ReadExistingAssemblyByAssemblyName(AssemblyName assemblyName)
     {
         var currentDomain = AppDomain.CurrentDomain;
         var assemblies = currentDomain.GetAssemblies();
@@ -136,7 +136,7 @@ static class Common
 
     public static Assembly ReadFromEmbeddedResources(Dictionary<string, string> assemblyNames, Dictionary<string, string> symbolNames, string name)
     {
-        var existingAssembly = ReadExistingAssembly(name);
+        var existingAssembly = ReadExistingAssemblyByString(name);
         if (existingAssembly != null)
         {
             return existingAssembly;
