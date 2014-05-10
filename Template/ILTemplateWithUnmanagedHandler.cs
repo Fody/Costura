@@ -29,23 +29,25 @@ static class ILTemplateWithUnmanagedHandler
         Common.PreloadUnmanagedLibraries(md5Hash, tempBasePath, unmanagedAssemblies, checksums);
 
         var currentDomain = AppDomain.CurrentDomain;
-        currentDomain.AssemblyResolve += ResolveAssembly;
+        currentDomain.AssemblyResolve += (s, e) => ResolveAssembly(e.Name);
     }
 
-    public static Assembly ResolveAssembly(object sender, ResolveEventArgs args)
+    public static Assembly ResolveAssembly(string assemblyName)
     {
-        if (nullCache.ContainsKey(args.Name))
+        if (nullCache.ContainsKey(assemblyName))
         {
             return null;
         }
 
-        var requestedAssemblyName = new AssemblyName(args.Name);
+        var requestedAssemblyName = new AssemblyName(assemblyName);
 
         var assembly = Common.ReadExistingAssembly(requestedAssemblyName);
         if (assembly != null)
         {
             return assembly;
         }
+
+        Common.Log("Loading assembly '{0}' into the AppDomain", requestedAssemblyName);
 
         assembly = Common.ReadFromDiskCache(tempBasePath, requestedAssemblyName);
         if (assembly != null)
@@ -56,7 +58,7 @@ static class ILTemplateWithUnmanagedHandler
         assembly = Common.ReadFromEmbeddedResources(assemblyNames, symbolNames, requestedAssemblyName);
         if (assembly == null)
         {
-            nullCache.Add(args.Name, true);
+            nullCache.Add(assemblyName, true);
         }
         return assembly;
     }

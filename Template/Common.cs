@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Reflection;
@@ -19,6 +20,13 @@ static class Common
 
     [DllImport("kernel32.dll")]
     static extern IntPtr LoadLibrary(string dllToLoad);
+
+    [Conditional("DEBUG")]
+    public static void Log(string format, params object[] args)
+    {
+        // Should this be trace?
+        Debug.WriteLine("=== COSTURA === " + string.Format(format, args));
+    }
 
     static void CopyTo(Stream source, Stream destination)
     {
@@ -70,8 +78,11 @@ static class Common
         foreach (var assembly in assemblies)
         {
             var currentName = assembly.GetName();
-            if (currentName.Name == name.Name && object.Equals(currentName.CultureInfo, name.CultureInfo))
+            if (string.Equals(currentName.Name, name.Name, StringComparison.InvariantCultureIgnoreCase) &&
+                object.Equals(currentName.CultureInfo, name.CultureInfo))
             {
+                Log("Assembly '{0}' already loaded, returning existing assembly", assembly.FullName);
+
                 return assembly;
             }
         }
