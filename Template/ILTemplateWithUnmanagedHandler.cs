@@ -11,6 +11,7 @@ static class ILTemplateWithUnmanagedHandler
 
     static readonly Dictionary<string, string> assemblyNames = new Dictionary<string, string>();
     static readonly Dictionary<string, string> symbolNames = new Dictionary<string, string>();
+    static readonly Dictionary<string, object> assemblyResourceNameCache = new Dictionary<string, object>();
 
     static readonly List<string> preload32List = new List<string>();
     static readonly List<string> preload64List = new List<string>();
@@ -55,7 +56,7 @@ static class ILTemplateWithUnmanagedHandler
             return assembly;
         }
 
-        assembly = Common.ReadFromEmbeddedResources(assemblyNames, symbolNames, requestedAssemblyName);
+        assembly = Common.ReadFromEmbeddedResources(assemblyResourceNameCache, assemblyNames, symbolNames, requestedAssemblyName);
         if (assembly == null)
         {
             nullCache.Add(assemblyName, true);

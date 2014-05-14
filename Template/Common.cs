@@ -120,13 +120,26 @@ static class Common
         return null;
     }
 
-    public static Assembly ReadFromEmbeddedResources(Dictionary<string, string> assemblyNames, Dictionary<string, string> symbolNames, AssemblyName requestedAssemblyName)
+    public static Assembly ReadFromEmbeddedResources(Dictionary<string, object> resourceNameCache, Dictionary<string, string> assemblyNames, Dictionary<string, string> symbolNames, AssemblyName requestedAssemblyName)
     {
         var name = requestedAssemblyName.Name.ToLowerInvariant();
 
         if (requestedAssemblyName.CultureInfo != null && !String.IsNullOrEmpty(requestedAssemblyName.CultureInfo.Name))
             name = String.Format("{0}.{1}", requestedAssemblyName.CultureInfo.Name, name);
 
+        object existingAssembly;
+        if (resourceNameCache.TryGetValue(name, out existingAssembly)) return (Assembly)existingAssembly;
+
+        // THREADING: Can this be reached concurrently or reentrantly?
+        // Concurrency may corrupt the dictionary, and reentrancy may cause repeated loads.
+        // Add(...) is used instead of []= to make bugs fail loudly.
+        var assembly = LoadAssemblyByResourceName(assemblyNames, symbolNames, name);
+        resourceNameCache.Add(name, assembly);
+        return assembly;
+    }
+
+    private static Assembly LoadAssemblyByResourceName(Dictionary<string, string> assemblyNames, Dictionary<string, string> symbolNames, string name)
+    {
         byte[] assemblyData;
         using (var assemblyStream = LoadStream(assemblyNames, name))
         {

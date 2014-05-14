@@ -8,6 +8,7 @@ static class ILTemplate
 
     static readonly Dictionary<string, string> assemblyNames = new Dictionary<string, string>();
     static readonly Dictionary<string, string> symbolNames = new Dictionary<string, string>();
+    static readonly Dictionary<string, object> assemblyResourceNameCache = new Dictionary<string, object>();
 
     public static void Attach()
     {
@@ -32,7 +33,7 @@ static class ILTemplate
 
         Common.Log("Loading assembly '{0}' into the AppDomain", requestedAssemblyName);
 
-        assembly = Common.ReadFromEmbeddedResources(assemblyNames, symbolNames, requestedAssemblyName);
+        assembly = Common.ReadFromEmbeddedResources(assemblyResourceNameCache, assemblyNames, symbolNames, requestedAssemblyName);
         if (assembly == null)
         {
             nullCache.Add(assemblyName, true);
