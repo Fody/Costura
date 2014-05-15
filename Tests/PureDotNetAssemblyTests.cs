@@ -11,8 +11,7 @@ using Mono.Cecil;
 using NUnit.Framework;
 
 [TestFixture]
-[UseReporter(typeof(DiffReporter))]
-public class InMemoryTests
+public class PureDotNetAssemblyTests
 {
     Assembly assembly;
     string beforeAssemblyPath;
@@ -20,9 +19,9 @@ public class InMemoryTests
     ModuleDefinition moduleDefinition;
     string isolatedPath;
 
-    public InMemoryTests()
+    public PureDotNetAssemblyTests()
     {
-        beforeAssemblyPath = Path.GetFullPath(@"..\..\..\AssemblyToProcess\bin\Debug\AssemblyToProcess.dll");
+        beforeAssemblyPath = Path.GetFullPath(@"..\..\..\AssemblyToProcessWithoutUnmanaged\bin\Debug\AssemblyToProcessWithoutUnmanaged.dll");
         var directoryName = Path.GetDirectoryName(@"..\..\..\Debug\");
 #if (!DEBUG)
         beforeAssemblyPath = beforeAssemblyPath.Replace("Debug", "Release");
@@ -39,21 +38,19 @@ public class InMemoryTests
 
         var references = new List<string>
             {
-                beforeAssemblyPath.Replace("AssemblyToProcess", "AssemblyToReference"),
-                beforeAssemblyPath.Replace("AssemblyToProcess", "AssemblyToReferencePreEmbed"),
-                Path.ChangeExtension(beforeAssemblyPath.Replace("AssemblyToProcess", "ExeToReference"), "exe"),
-                Path.Combine(directoryName, "AssemblyToReferenceMixed.dll"),
+                beforeAssemblyPath.Replace("AssemblyToProcessWithoutUnmanaged", "AssemblyToReference"),
             };
 
-        var assemblyToReferenceDirectory = Path.GetDirectoryName(beforeAssemblyPath.Replace("AssemblyToProcess", "AssemblyToReference"));
+        var assemblyToReferenceDirectory = Path.GetDirectoryName(beforeAssemblyPath.Replace("AssemblyToProcessWithoutUnmanaged", "AssemblyToReference"));
         var assemblyToReferenceResources = Directory.GetFiles(assemblyToReferenceDirectory, "*.resources.dll", SearchOption.AllDirectories);
         references.AddRange(assemblyToReferenceResources);
 
+        // This should use ILTemplate instead of ILTemplateWithUnmanagedHandler.
         using (var weavingTask = new ModuleWeaver
             {
                 ModuleDefinition = moduleDefinition,
                 AssemblyResolver = new MockAssemblyResolver(),
-                Config = XElement.Parse("<Costura Unmanaged32Assemblies='AssemblyToReferenceMixed' PreloadOrder='AssemblyToReferenceNative' />"),
+                Config = XElement.Parse("<Costura />"),
                 ReferenceCopyLocalPaths = references,
                 AssemblyFilePath = beforeAssemblyPath
             })
@@ -63,7 +60,7 @@ public class InMemoryTests
             moduleDefinition.Write(afterAssemblyPath, writerParams);
         }
 
-        isolatedPath = Path.Combine(Path.GetTempPath(), "CosturaIsolatedMemory.dll");
+        isolatedPath = Path.Combine(Path.GetTempPath(), "CosturaPureDotNetIsolatedMemory.dll");
         File.Copy(afterAssemblyPath, isolatedPath, true);
         File.Copy(afterAssemblyPath.Replace(".dll", ".pdb"), isolatedPath.Replace(".dll", ".pdb"), true);
         assembly = Assembly.LoadFile(isolatedPath);
@@ -74,20 +71,6 @@ public class InMemoryTests
     {
         var instance2 = assembly.GetInstance("ClassToTest");
         Assert.AreEqual("Hello", instance2.Foo());
-    }
-
-    [Test]
-    public void SimplePreEmbed()
-    {
-        var instance2 = assembly.GetInstance("ClassToTest");
-        Assert.AreEqual("Hello", instance2.Foo2());
-    }
-
-    [Test]
-    public void Exe()
-    {
-        var instance2 = assembly.GetInstance("ClassToTest");
-        Assert.AreEqual("Hello", instance2.ExeFoo());
     }
 
     [Test]
@@ -106,27 +89,6 @@ public class InMemoryTests
     }
 
     [Test]
-    public void Native()
-    {
-        var instance1 = assembly.GetInstance("ClassToTest");
-        Assert.AreEqual("Hello", instance1.NativeFoo());
-    }
-
-    [Test]
-    public void Mixed()
-    {
-        var instance1 = assembly.GetInstance("ClassToTest");
-        Assert.AreEqual("Hello", instance1.MixedFoo());
-    }
-
-    [Test]
-    public void MixedPInvoke()
-    {
-        var instance1 = assembly.GetInstance("ClassToTest");
-        Assert.AreEqual("Hello", instance1.MixedFooPInvoke());
-    }
-
-    [Test]
     public void EnsureOnly1RefToMscorLib()
     {
         Assert.AreEqual(1, moduleDefinition.AssemblyReferences.Count(x => x.Name == "mscorlib"));
@@ -138,16 +100,6 @@ public class InMemoryTests
         Assert.IsTrue(moduleDefinition.GetType("Costura.AssemblyLoader").Resolve().CustomAttributes.Any(attr => attr.AttributeType.Name == "CompilerGeneratedAttribute"));
     }
 
-#if DEBUG
-
-    [Test]
-    public void TemplateHasCorrectSymbols()
-    {
-        Approvals.Verify(Decompiler.Decompile(afterAssemblyPath, "Costura.AssemblyLoader"));
-        //Approvals.Verify(Decompiler.Decompile(Path.GetFullPath(@"..\..\..\Template\bin\Debug\Template.dll"), "Common"));
-    }
-#endif
-
     [Test]
     public void PeVerify()
     {
@@ -158,6 +110,7 @@ public class InMemoryTests
     public void TypeReferencedWithPartialAssemblyNameIsLoadedFromExistingAssemblyInstance()
     {
         var instance = assembly.GetInstance("ClassToTest");
+
         var assemblyLoadedByCompileTimeReference = instance.GetReferencedAssembly();
         var typeLoadedWithPartialAssemblyName = Type.GetType("ClassToReference, AssemblyToReference");
         Assume.That(typeLoadedWithPartialAssemblyName, Is.Not.Null);
