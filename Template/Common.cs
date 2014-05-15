@@ -127,14 +127,26 @@ static class Common
         if (requestedAssemblyName.CultureInfo != null && !String.IsNullOrEmpty(requestedAssemblyName.CultureInfo.Name))
             name = String.Format("{0}.{1}", requestedAssemblyName.CultureInfo.Name, name);
 
-        object existingAssembly;
-        if (resourceNameCache.TryGetValue(name, out existingAssembly)) return (Assembly)existingAssembly;
-
-        // THREADING: Can this be reached concurrently or reentrantly?
-        // Concurrency may corrupt the dictionary, and reentrancy may cause repeated loads.
-        // Add(...) is used instead of []= to make bugs fail loudly.
+        // THREADING: This may be reached concurrently. Re-entrancy unknown?
+        // 'assemblyNames' and 'symbolNames' are read-only mappings from the assembly file name to its resource names.
+        // They do not change for the lifetime of the process and do not require synchronisation.
+        // Our assembly cache does, however.
+        lock (resourceNameCache)
+        {
+            object existingAssembly;
+            if (resourceNameCache.TryGetValue(name, out existingAssembly)) return (Assembly)existingAssembly;
+        }
+        // Release lock to eliminate possibility of deadlocks. Should never happen anyway, but
+        // we don't know what other assembly-related logic we're sharing an appdomain with.
         var assembly = LoadAssemblyByResourceName(assemblyNames, symbolNames, name);
-        resourceNameCache.Add(name, assembly);
+        lock (resourceNameCache)
+        {
+            // If another thread added it in the meantime, return that instance instead.
+            // This means that we'll have loaded it multiple times, but always return the same instance.
+            object existingAssembly;
+            if (resourceNameCache.TryGetValue(name, out existingAssembly)) return (Assembly)existingAssembly;
+            resourceNameCache.Add(name, assembly);
+        }
         return assembly;
     }
 
