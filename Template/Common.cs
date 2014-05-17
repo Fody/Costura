@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Reflection;
@@ -79,7 +80,7 @@ static class Common
         {
             var currentName = assembly.GetName();
             if (string.Equals(currentName.Name, name.Name, StringComparison.InvariantCultureIgnoreCase) &&
-                object.Equals(currentName.CultureInfo, name.CultureInfo))
+                string.Equals(CultureToString(currentName.CultureInfo), CultureToString(name.CultureInfo), StringComparison.InvariantCultureIgnoreCase))
             {
                 Log("Assembly '{0}' already loaded, returning existing assembly", assembly.FullName);
 
@@ -87,6 +88,14 @@ static class Common
             }
         }
         return null;
+    }
+
+    static string CultureToString(CultureInfo culture)
+    {
+        if (culture == null)
+            return "";
+
+        return culture.Name;
     }
 
     public static Assembly ReadFromDiskCache(string tempBasePath, AssemblyName requestedAssemblyName)
