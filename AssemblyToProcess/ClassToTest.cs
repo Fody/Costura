@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 public class ClassToTest
@@ -44,5 +45,10 @@ public class ClassToTest
     public string MixedFoo()
     {
         return ClassToReferenceMixed.Foo();
+    }
+
+    public Assembly GetReferencedAssembly()
+    {
+        return typeof(ClassToReference).Assembly;
     }
 }
