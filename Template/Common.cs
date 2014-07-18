@@ -19,8 +19,12 @@ static class Common
     [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
     static extern bool MoveFileEx(string lpExistingFileName, string lpNewFileName, int dwFlags);
 
-    [DllImport("kernel32.dll")]
+    [DllImport("kernel32", SetLastError = true, CharSet = CharSet.Unicode)]
     static extern IntPtr LoadLibrary(string dllToLoad);
+
+    [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    static extern bool SetDllDirectory(string lpPathName);
 
     [Conditional("DEBUG")]
     public static void Log(string format, params object[] args)
@@ -254,6 +258,8 @@ static class Common
                 }
             }
         }
+
+        SetDllDirectory(tempBasePath);
 
         foreach (var lib in libs)
         {
