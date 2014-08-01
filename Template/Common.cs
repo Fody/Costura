@@ -207,7 +207,7 @@ static class Common
             {
                 try
                 {
-                    hasHandle = mutex.WaitOne(5000, false);
+                    hasHandle = mutex.WaitOne(60000, false);
                     if (hasHandle == false)
                         throw new TimeoutException("Timeout waiting for exclusive access");
                 }
