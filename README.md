@@ -166,7 +166,7 @@ Or as a attribute with items delimited by a pipe `|`.
 
 ## Creating a clean output directory
 
-Costura only merges dependencies. It does not handle cleaning those dependencies from you output directory. So this means the resultant merged dll/exe will exist in your output directory (eg `bin\Debug`) next to all your dependencies. If you want to clean this directory you can add the following to your project file.
+Costura only merges dependencies. It does not handle cleaning those dependencies from your output directory. So this means the resultant merged dll/exe will exist in your output directory (eg `bin\Debug`) next to all your dependencies. If you want to clean this directory you can add the following to your project file.
 
     <Target 
         AfterTargets="AfterBuild;NonWinFodyTarget"
