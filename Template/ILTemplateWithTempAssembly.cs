@@ -30,19 +30,19 @@ static class ILTemplateWithTempAssembly
         Common.PreloadUnmanagedLibraries(md5Hash, tempBasePath, libList, checksums);
 
         var currentDomain = AppDomain.CurrentDomain;
-		bool reenterant = false;
+		var reenterant = new Dictionary<string, object>();
 		currentDomain.AssemblyResolve += (s, e) =>
 		{
-			if (reenterant)
+			if (reenterant.ContainsKey(e.Name))
 				return null;
 			try
 			{
-				reenterant = true;
+				reenterant[e.Name] = null;
 				return ResolveAssembly(e.Name);
 			}
 			finally
 			{
-				reenterant = false;
+				reenterant.Remove(e.Name);
 			}
 		};
     }
