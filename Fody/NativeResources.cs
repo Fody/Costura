@@ -23,7 +23,7 @@ partial class ModuleWeaver
 
             if (processedNameMatch.IsMatch(resource.Name))
             {
-                using (Stream stream = resource.GetResourceStream())
+                using (var stream = resource.GetResourceStream())
                 {
                     if (compress && resource.Name.EndsWith(".zip"))
                     {
