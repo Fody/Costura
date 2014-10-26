@@ -23,13 +23,6 @@ public partial class ModuleWeaver
 
     public void Execute()
     {
-//#if DEBUG
-//        if (!System.Diagnostics.Debugger.IsAttached)
-//        {
-//            System.Diagnostics.Debugger.Launch();
-//        }
-//#endif
-
         var intermediateOutputPath = Path.GetDirectoryName(AssemblyFilePath);
         LogInfo("IntermediateOutputPath resolved to :" + intermediateOutputPath);
 
