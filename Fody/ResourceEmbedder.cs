@@ -132,7 +132,7 @@ partial class ModuleWeaver : IDisposable
                                     select splittedReference).FirstOrDefault();
                     if (string.IsNullOrEmpty(fileName))
                     {
-                        LogError(string.Format("Assembly '{0}' cannot be found (not even as CopyLocal='false'), please update the configuration"));
+                        LogError(string.Format("Assembly '{0}' cannot be found (not even as CopyLocal='false'), please update the configuration", skippedAssembly));
                     }
 
                     yield return fileName;
