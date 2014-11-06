@@ -1566,9 +1566,9 @@
         .try
         {
           IL_0043:  nop
-          .line 210,210 : 21,60 ''
+          .line 210,210 : 21,61 ''
           IL_0044:  ldloc.1
-          IL_0045:  ldc.i4     0x1388
+          IL_0045:  ldc.i4     0xea60
           IL_004a:  ldc.i4.0
           IL_004b:  callvirt   instance bool [mscorlib]System.Threading.WaitHandle::WaitOne(int32,
                                                                                             bool)
