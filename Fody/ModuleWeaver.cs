@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Xml.Linq;
 using Mono.Cecil;
 
@@ -23,9 +22,6 @@ public partial class ModuleWeaver
 
     public void Execute()
     {
-        var intermediateOutputPath = Path.GetDirectoryName(AssemblyFilePath);
-        LogInfo("IntermediateOutputPath resolved to :" + intermediateOutputPath);
-
         var config = new Configuration(Config);
 
         FindMsCoreReferences();
