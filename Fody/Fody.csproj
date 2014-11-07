@@ -12,7 +12,7 @@
     <AssemblyName>Costura.Fody</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>ac4dfd60</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>5b079f67</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -72,12 +72,12 @@
     </EmbeddedResource>
     <Compile Include="AssemblyLoaderImporter.cs" />
     <Compile Include="Checksums.cs" />
+    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="HashCalculator.cs" />
     <Compile Include="ModuleLoaderImporter.cs" />
     <Compile Include="ModuleWeaver.cs" />
-    <Compile Include="..\CommonAssemblyInfo.cs" />
     <Compile Include="MsCoreReferenceFinder.cs" />
     <Compile Include="NativeResources.cs" />
     <Compile Include="ResourceCaseFixer.cs" />
@@ -118,6 +118,7 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Fody.1.24.0\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.24.0\build\Fody.targets'))" />
     <Error Condition="!Exists('..\packages\PepitaPackage.1.20.1.0\build\PepitaPackage.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\PepitaPackage.1.20.1.0\build\PepitaPackage.targets'))" />
+    <Error Condition="!Exists('..\packages\GitVersionTask.1.3.3\Build\GitVersionTask.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GitVersionTask.1.3.3\Build\GitVersionTask.targets'))" />
   </Target>
   <Import Project="..\packages\PepitaPackage.1.20.1.0\build\PepitaPackage.targets" Condition="Exists('..\packages\PepitaPackage.1.20.1.0\build\PepitaPackage.targets')" />
   <Target Name="AfterBuild">
@@ -135,4 +136,5 @@
     <Copy SourceFiles="$(ProjectDir)NugetAssets\FodyWeavers.xml.uninstall.xdt" DestinationFolder="$(SolutionDir)NuGetBuild\Content" />
     <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)NuGetBuild" MetadataAssembly="$(OutputPath)\Costura.Fody.dll" />
   </Target>
+  <Import Project="..\packages\GitVersionTask.1.3.3\Build\GitVersionTask.targets" Condition="Exists('..\packages\GitVersionTask.1.3.3\Build\GitVersionTask.targets')" />
 </Project>
