@@ -101,24 +101,55 @@ partial class ModuleWeaver : IDisposable
     {
         if (config.IncludeAssemblies.Any())
         {
+            var skippedAssemblies = new List<string>(config.IncludeAssemblies);
+
             foreach (var file in onlyBinaries)
             {
-                if (config.IncludeAssemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)) &&
-                    config.Unmanaged32Assemblies.All(x => x != Path.GetFileNameWithoutExtension(file)) &&
-                    config.Unmanaged64Assemblies.All(x => x != Path.GetFileNameWithoutExtension(file)))
+                var assemblyName = Path.GetFileNameWithoutExtension(file);
+
+                if (config.IncludeAssemblies.Any(x => x == assemblyName) &&
+                    config.Unmanaged32Assemblies.All(x => x != assemblyName) &&
+                    config.Unmanaged64Assemblies.All(x => x != assemblyName))
                 {
+                    skippedAssemblies.Remove(assemblyName);
                     yield return file;
                 }
             }
+
+            if (skippedAssemblies.Count > 0)
+            {
+                if (References == null)
+                {
+                    throw new WeavingException("To embed references with CopyLocal='false', References is required - you may need to update to the latest version of Fody.");
+                }
+
+                var splittedReferences = References.Split(';');
+
+                foreach (var skippedAssembly in skippedAssemblies)
+                {
+                    var fileName = (from splittedReference in splittedReferences
+                                    where string.Equals(Path.GetFileNameWithoutExtension(splittedReference), skippedAssembly, StringComparison.InvariantCultureIgnoreCase)
+                                    select splittedReference).FirstOrDefault();
+                    if (string.IsNullOrEmpty(fileName))
+                    {
+                        LogError(string.Format("Assembly '{0}' cannot be found (not even as CopyLocal='false'), please update the configuration", skippedAssembly));
+                    }
+
+                    yield return fileName;
+                }
+            }
+
             yield break;
         }
         if (config.ExcludeAssemblies.Any())
         {
             foreach (var file in onlyBinaries.Except(config.Unmanaged32Assemblies).Except(config.Unmanaged64Assemblies))
             {
-                if (config.ExcludeAssemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)) ||
-                    config.Unmanaged32Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)) ||
-                    config.Unmanaged64Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(file)))
+                var assemblyName = Path.GetFileNameWithoutExtension(file);
+
+                if (config.ExcludeAssemblies.Any(x => x == assemblyName) ||
+                    config.Unmanaged32Assemblies.Any(x => x == assemblyName) ||
+                    config.Unmanaged64Assemblies.Any(x => x == assemblyName))
                 {
                     continue;
                 }
@@ -130,8 +161,10 @@ partial class ModuleWeaver : IDisposable
         {
             foreach (var file in onlyBinaries)
             {
-                if (config.Unmanaged32Assemblies.All(x => x != Path.GetFileNameWithoutExtension(file)) &&
-                    config.Unmanaged64Assemblies.All(x => x != Path.GetFileNameWithoutExtension(file)))
+                var assemblyName = Path.GetFileNameWithoutExtension(file);
+
+                if (config.Unmanaged32Assemblies.All(x => x != assemblyName) &&
+                    config.Unmanaged64Assemblies.All(x => x != assemblyName))
                 {
                     yield return file;
                 }
