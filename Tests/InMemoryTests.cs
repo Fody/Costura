@@ -11,7 +11,7 @@ using Mono.Cecil;
 using NUnit.Framework;
 
 [TestFixture]
-[UseReporter(typeof(DiffReporter))]
+[UseReporter(typeof(VisualStudioReporter))]
 public class InMemoryTests
 {
     Assembly assembly;
@@ -139,7 +139,6 @@ public class InMemoryTests
     }
 
 #if DEBUG
-
     [Test]
     public void TemplateHasCorrectSymbols()
     {

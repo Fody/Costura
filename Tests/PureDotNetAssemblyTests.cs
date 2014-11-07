@@ -11,6 +11,7 @@ using Mono.Cecil;
 using NUnit.Framework;
 
 [TestFixture]
+[UseReporter(typeof(VisualStudioReporter))]
 public class PureDotNetAssemblyTests
 {
     Assembly assembly;
@@ -99,6 +100,14 @@ public class PureDotNetAssemblyTests
     {
         Assert.IsTrue(moduleDefinition.GetType("Costura.AssemblyLoader").Resolve().CustomAttributes.Any(attr => attr.AttributeType.Name == "CompilerGeneratedAttribute"));
     }
+
+#if DEBUG
+    [Test]
+    public void TemplateHasCorrectSymbols()
+    {
+        Approvals.Verify(Decompiler.Decompile(afterAssemblyPath, "Costura.AssemblyLoader"));
+    }
+#endif
 
     [Test]
     public void PeVerify()
