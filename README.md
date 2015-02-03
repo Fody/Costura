@@ -4,12 +4,10 @@
 
 Embeds dependencies as resources.
 
-### Nuget package
+## The nuget package  [![NuGet Status](http://img.shields.io/nuget/v/Costura.Fody.svg?style=flat)](https://www.nuget.org/packages/Costura.Fody/)
 
-Available here http://nuget.org/packages/Costura.Fody 
+https://nuget.org/packages/Costura.Fody/
 
-To Install from the Nuget Package Manager Console 
-    
     PM> Install-Package Costura.Fody
 
 ## How it works
