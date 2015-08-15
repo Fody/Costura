@@ -86,7 +86,7 @@
     <Compile Include="WeavingException.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="NugetAssets\Costura.nuspec">
+    <None Include="NugetAssets\Costura.Fody.nuspec">
       <SubType>Designer</SubType>
     </None>
     <None Include="NugetAssets\FodyWeavers.xml.uninstall.xdt" />
@@ -127,7 +127,7 @@
     </ItemGroup>
     <Delete Files="@(FilesToDelete)" />
     <MakeDir Directories="$(SolutionDir)NuGetBuild" />
-    <Copy SourceFiles="$(ProjectDir)NugetAssets\Costura.nuspec" DestinationFolder="$(SolutionDir)NuGetBuild" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\Costura.Fody.nuspec" DestinationFolder="$(SolutionDir)NuGetBuild" />
     <Copy SourceFiles="$(OutputPath)\Costura.Fody.dll" DestinationFolder="$(SolutionDir)NuGetBuild" />
     <Copy SourceFiles="$(OutputPath)\Costura.Fody.pdb" DestinationFolder="$(SolutionDir)NuGetBuild" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\init.ps1" DestinationFolder="$(SolutionDir)NuGetBuild\Tools" />
