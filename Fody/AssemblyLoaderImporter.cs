@@ -164,7 +164,7 @@ partial class ModuleWeaver
             typeDefinition = baseType.Resolve();
         }
 
-        var typeReference = ModuleDefinition.Import(typeDefinition);
+        var typeReference = ModuleDefinition.ImportReference(typeDefinition);
         if (baseType is ArrayType)
         {
             return new ArrayType(typeReference);
@@ -354,11 +354,11 @@ partial class ModuleWeaver
 
             if (methodReference.DeclaringType.IsGenericInstance)
             {
-                return ModuleDefinition.Import(methodReference.Resolve())
+                return ModuleDefinition.ImportReference(methodReference.Resolve())
                     .MakeHostInstanceGeneric(methodReference.DeclaringType.GetGenericInstanceArguments().ToArray());
             }
 
-            return ModuleDefinition.Import(methodReference.Resolve());
+            return ModuleDefinition.ImportReference(methodReference.Resolve());
         }
 
         var typeReference = operand as TypeReference;
