@@ -47,11 +47,20 @@ partial class ModuleWeaver
         targetType = new TypeDefinition("Costura", "AssemblyLoader", sourceType.Attributes, Resolve(sourceType.BaseType));
         targetType.CustomAttributes.Add(new CustomAttribute(compilerGeneratedAttributeCtor));
         ModuleDefinition.Types.Add(targetType);
-        CopyFields(sourceType);
-        CopyMethod(sourceType.Methods.First(x => x.Name == "ResolveAssembly"));
 
-        loaderCctor = CopyMethod(sourceType.Methods.First(x => x.IsConstructor && x.IsStatic));
-        attachMethod = CopyMethod(sourceType.Methods.First(x => x.Name == "Attach"));
+        // Note: unfortunately the order is very important:
+        // 1) The fields (so if a static class is used for lambdas, they are available)
+        // 2) The method signatures (not the body)
+        // 3) Nested types (the actual static lambda classes)
+        // 4) The methods using the fields and nested types
+        CopyFields(sourceType, targetType);
+        CopyMethod(sourceType.Methods.First(x => x.Name == "ResolveAssembly"), sourceType, targetType, true);
+        CopyNestedTypes(sourceType, targetType, true);
+        CopyMethod(sourceType.Methods.First(x => x.Name == "ResolveAssembly"), sourceType, targetType, false);
+        CopyNestedTypes(sourceType, targetType, false);
+
+        loaderCctor = CopyMethod(sourceType.Methods.First(x => x.IsConstructor && x.IsStatic), sourceType, targetType, false);
+        attachMethod = CopyMethod(sourceType.Methods.First(x => x.Name == "Attach"), sourceType, targetType, false);
     }
 
     void DumpSource(string file)
@@ -68,35 +77,77 @@ partial class ModuleWeaver
         }
     }
 
-    void CopyFields(TypeDefinition source)
+    void CopyNestedTypes(TypeDefinition source, TypeDefinition target, bool signatureOnly)
+    {
+        foreach (var nestedType in source.NestedTypes)
+        {
+            var newNestedType = (from type in target.NestedTypes
+                                 where string.Equals(type.Name, nestedType.Name)
+                                 select type).FirstOrDefault();
+
+            var isExistingType = (newNestedType != null);
+            if (!isExistingType)
+            {
+                newNestedType = new TypeDefinition(nestedType.Namespace, nestedType.Name, nestedType.Attributes);
+                newNestedType.BaseType = ModuleDefinition.ImportReference(source.BaseType);
+                newNestedType.IsClass = source.IsClass;
+                target.NestedTypes.Add(newNestedType);
+            }
+
+            CopyNestedTypes(nestedType, newNestedType, signatureOnly);
+
+            if (!isExistingType)
+            {
+                CopyFields(nestedType, newNestedType);
+            }
+
+            CopyMethods(nestedType, newNestedType, signatureOnly);
+        }
+    }
+
+    void CopyFields(TypeDefinition source, TypeDefinition target)
     {
         foreach (var field in source.Fields)
         {
-            var newField = new FieldDefinition(field.Name, field.Attributes, Resolve(field.FieldType));
-            targetType.Fields.Add(newField);
+            var fieldType = Resolve(field.FieldType);
+            if (string.Equals(fieldType.FullName, source.FullName))
+            {
+                fieldType = Resolve(target);
+            }
+
+            var newField = new FieldDefinition(field.Name, field.Attributes, fieldType);
+            target.Fields.Add(newField);
             if (field.Name == "assemblyNames")
                 assemblyNamesField = newField;
-            if (field.Name == "symbolNames")
+            else if (field.Name == "symbolNames")
                 symbolNamesField = newField;
-            if (field.Name == "preloadList")
+            else if (field.Name == "preloadList")
                 preloadListField = newField;
-            if (field.Name == "preload32List")
+            else if (field.Name == "preload32List")
                 preload32ListField = newField;
-            if (field.Name == "preload64List")
+            else if (field.Name == "preload64List")
                 preload64ListField = newField;
-            if (field.Name == "checksums")
+            else if (field.Name == "checksums")
                 checksumsField = newField;
+        }
+    }
+
+    void CopyMethods(TypeDefinition source, TypeDefinition target, bool signatureOnly)
+    {
+        foreach (var method in source.Methods)
+        {
+            CopyMethod(method, source, target, signatureOnly);
         }
     }
 
     ModuleDefinition GetTemplateModuleDefinition()
     {
         var readerParameters = new ReaderParameters
-                                   {
-                                       AssemblyResolver = AssemblyResolver,
-                                       ReadSymbols = true,
-                                       SymbolStream = GetType().Assembly.GetManifestResourceStream("Costura.Fody.Template.pdb"),
-                                   };
+        {
+            AssemblyResolver = AssemblyResolver,
+            ReadSymbols = true,
+            SymbolStream = GetType().Assembly.GetManifestResourceStream("Costura.Fody.Template.pdb"),
+        };
 
         using (var resourceStream = GetType().Assembly.GetManifestResourceStream("Costura.Fody.Template.dll"))
         {
@@ -106,8 +157,14 @@ partial class ModuleWeaver
 
     TypeReference Resolve(TypeReference baseType)
     {
-        var typeDefinition = baseType.Resolve();
-        var typeReference = ModuleDefinition.Import(typeDefinition);
+        var typeDefinitionName = GetTargetTypeName(baseType.Name);
+        var typeDefinition = FindType(typeDefinitionName);
+        if (typeDefinition == null)
+        {
+            typeDefinition = baseType.Resolve();
+        }
+
+        var typeReference = ModuleDefinition.ImportReference(typeDefinition);
         if (baseType is ArrayType)
         {
             return new ArrayType(typeReference);
@@ -119,51 +176,66 @@ partial class ModuleWeaver
         return typeReference;
     }
 
-    MethodDefinition CopyMethod(MethodDefinition templateMethod, bool makePrivate = false)
+    MethodDefinition CopyMethod(MethodDefinition sourceMethod, TypeDefinition source, TypeDefinition target, bool signatureOnly, bool makePrivate = false)
     {
-        var attributes = templateMethod.Attributes;
-        if (makePrivate)
+        var newMethod = (from method in target.Methods
+                         where string.Equals(sourceMethod.Name, method.Name)
+                         select method).FirstOrDefault();
+
+        var isExistingMethod = (newMethod != null);
+        if (!isExistingMethod)
         {
-            attributes &= ~Mono.Cecil.MethodAttributes.Public;
-            attributes |= Mono.Cecil.MethodAttributes.Private;
-        }
-        var returnType = Resolve(templateMethod.ReturnType);
-        var newMethod = new MethodDefinition(templateMethod.Name, attributes, returnType)
-                            {
-                                IsPInvokeImpl = templateMethod.IsPInvokeImpl,
-                                IsPreserveSig = templateMethod.IsPreserveSig,
-                            };
-        if (templateMethod.IsPInvokeImpl)
-        {
-            var moduleRef = ModuleDefinition.ModuleReferences.FirstOrDefault(mr => mr.Name == templateMethod.PInvokeInfo.Module.Name);
-            if (moduleRef == null)
+            var attributes = sourceMethod.Attributes;
+            if (makePrivate)
             {
-                moduleRef = new ModuleReference(templateMethod.PInvokeInfo.Module.Name);
-                ModuleDefinition.ModuleReferences.Add(moduleRef);
+                attributes &= ~Mono.Cecil.MethodAttributes.Public;
+                attributes |= Mono.Cecil.MethodAttributes.Private;
             }
-            newMethod.PInvokeInfo = new PInvokeInfo(templateMethod.PInvokeInfo.Attributes, templateMethod.PInvokeInfo.EntryPoint, moduleRef);
+            var returnType = Resolve(sourceMethod.ReturnType);
+
+            newMethod = new MethodDefinition(sourceMethod.Name, attributes, returnType)
+            {
+                IsPInvokeImpl = sourceMethod.IsPInvokeImpl,
+                IsPreserveSig = sourceMethod.IsPreserveSig,
+            };
+
+            if (sourceMethod.IsPInvokeImpl)
+            {
+                var moduleRef = ModuleDefinition.ModuleReferences.FirstOrDefault(mr => mr.Name == sourceMethod.PInvokeInfo.Module.Name);
+                if (moduleRef == null)
+                {
+                    moduleRef = new ModuleReference(sourceMethod.PInvokeInfo.Module.Name);
+                    ModuleDefinition.ModuleReferences.Add(moduleRef);
+                }
+                newMethod.PInvokeInfo = new PInvokeInfo(sourceMethod.PInvokeInfo.Attributes, sourceMethod.PInvokeInfo.EntryPoint, moduleRef);
+            }
         }
 
-        if (templateMethod.Body != null)
+        if (!signatureOnly && sourceMethod.Body != null)
         {
-            newMethod.Body.InitLocals = templateMethod.Body.InitLocals;
-            foreach (var variableDefinition in templateMethod.Body.Variables)
+            newMethod.Body.InitLocals = sourceMethod.Body.InitLocals;
+            foreach (var variableDefinition in sourceMethod.Body.Variables)
             {
                 var newVariableDefinition = new VariableDefinition(Resolve(variableDefinition.VariableType));
                 newVariableDefinition.Name = variableDefinition.Name;
                 newMethod.Body.Variables.Add(newVariableDefinition);
             }
-            CopyInstructions(templateMethod, newMethod);
-            CopyExceptionHandlers(templateMethod, newMethod);
-        }
-        foreach (var parameterDefinition in templateMethod.Parameters)
-        {
-            var newParameterDefinition = new ParameterDefinition(Resolve(parameterDefinition.ParameterType));
-            newParameterDefinition.Name = parameterDefinition.Name;
-            newMethod.Parameters.Add(newParameterDefinition);
+            CopyInstructions(sourceMethod, newMethod, source, target);
+            CopyExceptionHandlers(sourceMethod, newMethod);
         }
 
-        targetType.Methods.Add(newMethod);
+        if (!isExistingMethod)
+        {
+            foreach (var parameterDefinition in sourceMethod.Parameters)
+            {
+                var newParameterDefinition = new ParameterDefinition(Resolve(parameterDefinition.ParameterType));
+                newParameterDefinition.Name = parameterDefinition.Name;
+                newMethod.Parameters.Add(newParameterDefinition);
+            }
+
+            target.Methods.Add(newMethod);
+        }
+
         return newMethod;
     }
 
@@ -206,15 +278,15 @@ partial class ModuleWeaver
         }
     }
 
-    void CopyInstructions(MethodDefinition templateMethod, MethodDefinition newMethod)
+    void CopyInstructions(MethodDefinition templateMethod, MethodDefinition newMethod, TypeDefinition source, TypeDefinition target)
     {
         foreach (var instruction in templateMethod.Body.Instructions)
         {
-            newMethod.Body.Instructions.Add(CloneInstruction(instruction));
+            newMethod.Body.Instructions.Add(CloneInstruction(instruction, source, target));
         }
     }
 
-    Instruction CloneInstruction(Instruction instruction)
+    Instruction CloneInstruction(Instruction instruction, TypeDefinition source, TypeDefinition target)
     {
         Instruction newInstruction;
         if (instruction.OpCode == OpCodes.Ldstr && ((string)instruction.Operand) == "To be replaced at compile time")
@@ -224,7 +296,7 @@ partial class ModuleWeaver
         else
         {
             newInstruction = (Instruction)instructionConstructorInfo.Invoke(new[] { instruction.OpCode, instruction.Operand });
-            newInstruction.Operand = Import(instruction.Operand);
+            newInstruction.Operand = Import(instruction.Operand, source, target);
         }
         newInstruction.SequencePoint = TranslateSequencePoint(instruction.SequencePoint);
         return newInstruction;
@@ -251,41 +323,112 @@ partial class ModuleWeaver
         };
     }
 
-    object Import(object operand)
+    object Import(object operand, TypeDefinition source, TypeDefinition target)
     {
         var reference = operand as MethodReference;
         if (reference != null)
         {
             var methodReference = reference;
-            if (methodReference.DeclaringType == sourceType || methodReference.DeclaringType == commonType)
+
+            var declaringTypeName = GetTargetTypeName(methodReference.DeclaringType.FullName);
+            var targetDeclaringType = FindType(declaringTypeName);
+            if (targetDeclaringType != null || methodReference.DeclaringType == commonType)
             {
-                var mr = targetType.Methods.FirstOrDefault(x => x.Name == methodReference.Name && x.Parameters.Count == methodReference.Parameters.Count);
+                if (targetDeclaringType == null)
+                {
+                    // Common type, fallback to target
+                    targetDeclaringType = target;
+                }
+
+                var mr = targetDeclaringType.Methods.FirstOrDefault(x => x.Name == methodReference.Name && x.Parameters.Count == methodReference.Parameters.Count);
                 if (mr == null)
                 {
                     //little poetic license... :). .Resolve() doesn't work with "extern" methods
                     return CopyMethod(methodReference.DeclaringType.Resolve().Methods
                                       .First(m => m.Name == methodReference.Name && m.Parameters.Count == methodReference.Parameters.Count),
-                        methodReference.DeclaringType != sourceType);
+                                      source, target, false, methodReference.DeclaringType != sourceType);
                 }
-                return mr;
+
+                return (targetDeclaringType.Module != ModuleDefinition) ? ModuleDefinition.ImportReference(mr.Resolve()) : mr;
             }
+
             if (methodReference.DeclaringType.IsGenericInstance)
             {
-                return ModuleDefinition.Import(methodReference.Resolve())
+                return ModuleDefinition.ImportReference(methodReference.Resolve())
                     .MakeHostInstanceGeneric(methodReference.DeclaringType.GetGenericInstanceArguments().ToArray());
             }
-            return ModuleDefinition.Import(methodReference.Resolve());
+
+            return ModuleDefinition.ImportReference(methodReference.Resolve());
         }
+
         var typeReference = operand as TypeReference;
         if (typeReference != null)
         {
-            return Resolve(typeReference);
+            var referencedTypeName = GetTargetTypeName(typeReference.FullName);
+            var targetReferenceType = FindType(referencedTypeName);
+            if (targetReferenceType == null)
+            {
+                targetReferenceType = typeReference.Resolve();
+            }
+
+            return Resolve(targetReferenceType);
         }
+
         var fieldReference = operand as FieldReference;
         if (fieldReference != null)
         {
-            return targetType.Fields.First(f => f.Name == fieldReference.Name);
+            var field = target.Fields.FirstOrDefault(f => f.Name == fieldReference.Name);
+            if (field != null)
+            {
+                return field;
+            }
+
+            var declaringTypeName = GetTargetTypeName(fieldReference.DeclaringType.FullName);
+            var targetDeclaringType = FindType(declaringTypeName);
+            if (targetDeclaringType == null || fieldReference.DeclaringType == commonType)
+            {
+                targetDeclaringType = fieldReference.DeclaringType.Resolve();
+            }
+
+            if (targetDeclaringType != null)
+            {
+                field = targetDeclaringType.Fields.FirstOrDefault(f => f.Name == fieldReference.Name);
+                if (field != null)
+                {
+                    return field;
+                }
+            }
+
+            LogError(string.Format("Field '{0}' could not be found, probably an error while cloning the IL templates, please report to the Costura team", fieldReference.Name));
+            return null;
         }
+
         return operand;
+    }
+
+    TypeDefinition FindType(string fullTypeName, TypeDefinition parentType = null)
+    {
+        var sourceTypes = (parentType != null) ? parentType.NestedTypes : ModuleDefinition.Types;
+
+        foreach (var sourceType in sourceTypes)
+        {
+            if (string.Equals(sourceType.FullName, fullTypeName))
+            {
+                return sourceType;
+            }
+
+            var nestedType = FindType(fullTypeName, sourceType);
+            if (nestedType != null)
+            {
+                return nestedType;
+            }
+        }
+
+        return null;
+    }
+
+    string GetTargetTypeName(string sourceTypeName)
+    {
+        return sourceTypeName.Replace("ILTemplate", "Costura.AssemblyLoader");
     }
 }
