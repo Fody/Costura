@@ -1,8 +1,10 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Mono.Cecil;
 
 partial class ModuleWeaver
 {
+    List<TypeDefinition> msCoreTypes;
     TypeReference voidTypeReference;
     MethodReference compilerGeneratedAttributeCtor;
     MethodReference dictionaryOfStringOfStringAdd;
@@ -11,7 +13,8 @@ partial class ModuleWeaver
     void FindMsCoreReferences()
     {
         var msCoreLibDefinition = AssemblyResolver.Resolve("mscorlib");
-        var msCoreTypes = msCoreLibDefinition.MainModule.Types;
+
+        msCoreTypes = msCoreLibDefinition.MainModule.Types.ToList();
 
         var objectDefinition = msCoreTypes.FirstOrDefault(x => x.Name == "Object");
         if (objectDefinition == null)

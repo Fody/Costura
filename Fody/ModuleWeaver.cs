@@ -34,6 +34,8 @@ public partial class ModuleWeaver
         ImportAssemblyLoader(config.CreateTemporaryAssemblies);
         ImportModuleLoader();
 
+        AssertMsCoreUsages();
+
         AddChecksumsToTemplate();
         BuildUpNameDictionary(config.CreateTemporaryAssemblies, config.PreloadOrder);
     }

@@ -80,6 +80,7 @@
     <Compile Include="ModuleLoaderImporter.cs" />
     <Compile Include="ModuleWeaver.cs" />
     <Compile Include="MsCoreReferenceFinder.cs" />
+    <Compile Include="MsCoreUsage.cs" />
     <Compile Include="NativeResources.cs" />
     <Compile Include="ResourceCaseFixer.cs" />
     <Compile Include="ResourceEmbedder.cs" />
