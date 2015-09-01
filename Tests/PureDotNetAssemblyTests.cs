@@ -96,6 +96,12 @@ public class PureDotNetAssemblyTests
     }
 
     [Test]
+    public void EnsureNoReferenceToTemplate()
+    {
+        Assert.AreEqual(0, moduleDefinition.AssemblyReferences.Count(x => x.Name == "Template"));
+    }
+
+    [Test]
     public void EnsureCompilerGeneratedAttribute()
     {
         Assert.IsTrue(moduleDefinition.GetType("Costura.AssemblyLoader").Resolve().CustomAttributes.Any(attr => attr.AttributeType.Name == "CompilerGeneratedAttribute"));

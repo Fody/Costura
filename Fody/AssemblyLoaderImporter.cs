@@ -5,6 +5,7 @@ using System.Reflection;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
+using System.Collections.Generic;
 
 partial class ModuleWeaver
 {
@@ -89,7 +90,7 @@ partial class ModuleWeaver
             if (!isExistingType)
             {
                 newNestedType = new TypeDefinition(nestedType.Namespace, nestedType.Name, nestedType.Attributes);
-                newNestedType.BaseType = ModuleDefinition.ImportReference(source.BaseType);
+                newNestedType.BaseType = Resolve(source.BaseType);
                 newNestedType.IsClass = source.IsClass;
                 target.NestedTypes.Add(newNestedType);
             }
@@ -157,7 +158,7 @@ partial class ModuleWeaver
 
     TypeReference Resolve(TypeReference baseType)
     {
-        var typeDefinitionName = GetTargetTypeName(baseType.Name);
+        var typeDefinitionName = GetTargetTypeName(baseType);
         var typeDefinition = FindType(typeDefinitionName);
         if (typeDefinition == null)
         {
@@ -325,12 +326,17 @@ partial class ModuleWeaver
 
     object Import(object operand, TypeDefinition source, TypeDefinition target)
     {
+        if (operand == null)
+        {
+            return null;
+        }
+
         var reference = operand as MethodReference;
         if (reference != null)
         {
             var methodReference = reference;
 
-            var declaringTypeName = GetTargetTypeName(methodReference.DeclaringType.FullName);
+            var declaringTypeName = GetTargetTypeName(methodReference.DeclaringType);
             var targetDeclaringType = FindType(declaringTypeName);
             if (targetDeclaringType != null || methodReference.DeclaringType == commonType)
             {
@@ -352,19 +358,40 @@ partial class ModuleWeaver
                 return (targetDeclaringType.Module != ModuleDefinition) ? ModuleDefinition.ImportReference(mr.Resolve()) : mr;
             }
 
-            if (methodReference.DeclaringType.IsGenericInstance)
+            var originalMethodReference = methodReference;
+            if (IsWrongMsCoreScope(methodReference.DeclaringType))
             {
-                return ModuleDefinition.ImportReference(methodReference.Resolve())
-                    .MakeHostInstanceGeneric(methodReference.DeclaringType.GetGenericInstanceArguments().ToArray());
+                methodReference = (MethodReference)ResolveMsCoreReference(methodReference);
             }
 
-            return ModuleDefinition.ImportReference(methodReference.Resolve());
+            if (methodReference.DeclaringType.HasGenericParameters || methodReference.DeclaringType.IsGenericInstance)
+            {
+                var resolvedMethodReference = ModuleDefinition.ImportReference(methodReference.Resolve());
+
+                var typeGenerics = originalMethodReference.DeclaringType.GetGenericInstanceArguments().Select(genericArgument => (TypeReference)ResolveMsCoreReference(genericArgument)).ToList();
+
+                if (!methodReference.DeclaringType.IsGenericInstance)
+                {
+                    methodReference.DeclaringType = methodReference.DeclaringType.MakeGenericInstanceType(typeGenerics.ToArray());
+                }
+
+                var methodGenerics = originalMethodReference.DeclaringType.GetGenericInstanceArguments().Select(genericArgument => (TypeReference)ResolveMsCoreReference(genericArgument)).ToList();
+                return resolvedMethodReference.MakeHostInstanceGeneric(methodGenerics.ToArray());
+            }
+
+            var importedReference = ModuleDefinition.ImportReference(methodReference.Resolve());
+            return importedReference;
         }
 
         var typeReference = operand as TypeReference;
         if (typeReference != null)
         {
-            var referencedTypeName = GetTargetTypeName(typeReference.FullName);
+            if (IsWrongMsCoreScope(typeReference))
+            {
+                typeReference = (TypeReference)ResolveMsCoreReference(typeReference);
+            }
+
+            var referencedTypeName = GetTargetTypeName(typeReference);
             var targetReferenceType = FindType(referencedTypeName);
             if (targetReferenceType == null)
             {
@@ -383,13 +410,13 @@ partial class ModuleWeaver
                 return field;
             }
 
-            var declaringTypeName = GetTargetTypeName(fieldReference.DeclaringType.FullName);
-            var targetDeclaringType = FindType(declaringTypeName);
-            if (targetDeclaringType == null || fieldReference.DeclaringType == commonType)
+            if (IsWrongMsCoreScope(fieldReference.DeclaringType))
             {
-                targetDeclaringType = fieldReference.DeclaringType.Resolve();
+                fieldReference = (FieldReference)ResolveMsCoreReference(fieldReference);
             }
 
+            var declaringTypeName = GetTargetTypeName(fieldReference.DeclaringType);
+            var targetDeclaringType = FindType(declaringTypeName);
             if (targetDeclaringType != null)
             {
                 field = targetDeclaringType.Fields.FirstOrDefault(f => f.Name == fieldReference.Name);
@@ -412,6 +439,12 @@ partial class ModuleWeaver
 
         foreach (var sourceType in sourceTypes)
         {
+            if (IsTemplateType(sourceType))
+            {
+                // Never include ILTemplate classes, we need to remove that
+                continue;
+            }
+
             if (string.Equals(sourceType.FullName, fullTypeName))
             {
                 return sourceType;
@@ -427,8 +460,135 @@ partial class ModuleWeaver
         return null;
     }
 
-    string GetTargetTypeName(string sourceTypeName)
+    string GetTargetTypeName(TypeReference sourceType)
     {
-        return sourceTypeName.Replace("ILTemplate", "Costura.AssemblyLoader");
+        var sourceTypeName = sourceType.FullName;
+        var targetTypeName = sourceTypeName;
+
+        // Special check so we don't screw up other assemblies
+        if (IsTemplateType(sourceType))
+        {
+            targetTypeName = sourceTypeName.Replace("ILTemplateWithTempAssembly", "Costura.AssemblyLoader")
+                .Replace("ILTemplateWithUnmanagedHandler", "Costura.AssemblyLoader")
+                .Replace("ILTemplate", "Costura.AssemblyLoader")
+                .Replace("Common", "Costura.AssemblyLoader");
+        }
+
+        return targetTypeName;
+    }
+
+    bool IsTemplateType(TypeReference type)
+    {
+        var module = type.Module;
+        if (module == null)
+        {
+            return false;
+        }
+
+        return module.Name == "Template.dll";
+    }
+
+    private bool IsWrongMsCoreScope(TypeReference type)
+    {
+        var actualScope = type.Scope as AssemblyNameReference;
+        if ((actualScope != null) && (actualScope.Name == "mscorlib"))
+        {
+            var expectedScope = msCoreTypes.First().Scope as ModuleDefinition;
+            if (expectedScope != null)
+            {
+                if (expectedScope.Assembly.Name.Version != actualScope.Version)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    object ResolveMsCoreReference(object reference)
+    {
+        var typeReference = reference as TypeReference;
+        if (typeReference != null)
+        {
+            return GetMsCoreType(typeReference);
+        }
+
+        var methodReference = reference as MethodReference;
+        if (methodReference != null)
+        {
+            var declaringType = GetMsCoreType(methodReference.DeclaringType).Resolve();
+
+            var possibleMembers = declaringType.Methods.Where(x => string.Equals(methodReference.Name, x.Name) &&
+                methodReference.Parameters.Count == x.Parameters.Count).Select(x => x.Resolve());
+
+            foreach (var possibleMember in possibleMembers)
+            {
+                bool isValid = true;
+
+                var parameters = methodReference.Parameters;
+                var possibleParameters = possibleMember.Parameters;
+
+                for (int i = 0; i < methodReference.Parameters.Count; i++)
+                {
+                    // Generic parameter names might not be comparable, so only compare names if not generic
+                    if (parameters[i].ParameterType.IsGenericParameter)
+                    {
+                        if (!possibleParameters[i].ParameterType.IsGenericParameter)
+                        {
+                            isValid = false;
+                            break;
+                        }
+                    }
+                    else if (parameters[i].ParameterType.Name != possibleParameters[i].ParameterType.Name)
+                    {
+                        isValid = false;
+                        break;
+                    }
+                }
+
+                if (isValid)
+                {
+                    return possibleMember.Resolve();
+                }
+            }
+        }
+
+        var propertyReference = reference as PropertyReference;
+        if (propertyReference != null)
+        {
+            var declaringType = GetMsCoreType(propertyReference.DeclaringType).Resolve();
+            return declaringType.Properties.First(x => string.Equals(x.Name, propertyReference.Name)).Resolve();
+        }
+
+        var fieldReference = reference as FieldReference;
+        if (fieldReference != null)
+        {
+            var declaringType = GetMsCoreType(fieldReference.DeclaringType).Resolve();
+            return declaringType.Fields.First(x => string.Equals(x.Name, fieldReference.Name)).Resolve();
+        }
+
+        return reference;
+    }
+
+    TypeReference GetMsCoreType(TypeReference declaringType)
+    {
+        if (IsWrongMsCoreScope(declaringType))
+        {
+            // Always ensure the right version of mscorlib
+            var msCoreType = (from type in msCoreTypes
+                              where string.Equals(declaringType.FullName, type.FullName)
+                              select type).FirstOrDefault();
+            if (msCoreType == null)
+            {
+                LogError(string.Format("Trying to redirect mscorlib type '{0}', but can't find it, please contact the Costura team", declaringType.FullName));
+            }
+            else
+            {
+                return msCoreType;
+            }
+        }
+
+        return declaringType;
     }
 }
