@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -9,7 +8,7 @@ partial class ModuleWeaver
     void BuildUpNameDictionary(bool createTemporaryAssemblies, List<string> preloadOrder)
     {
         var orderedResources = preloadOrder
-            .Join<string, Resource, string, Resource>(ModuleDefinition.Resources, p => p.ToLowerInvariant(),
+            .Join(ModuleDefinition.Resources, p => p.ToLowerInvariant(),
             r =>
             {
                 var parts = r.Name.Split('.');

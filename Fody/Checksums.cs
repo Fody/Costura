@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -11,7 +9,7 @@ partial class ModuleWeaver
 
     static string CalculateChecksum(string filename)
     {
-        using (FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+        using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
         {
             return CalculateChecksum(fs);
         }
@@ -19,18 +17,16 @@ partial class ModuleWeaver
 
     static string CalculateChecksum(Stream stream)
     {
-        using (BufferedStream bs = new BufferedStream(stream))
+        using (var bs = new BufferedStream(stream))
+        using (var sha1 = new SHA1Managed())
         {
-            using (SHA1Managed sha1 = new SHA1Managed())
+            var hash = sha1.ComputeHash(bs);
+            var formatted = new StringBuilder(2*hash.Length);
+            foreach (var b in hash)
             {
-                byte[] hash = sha1.ComputeHash(bs);
-                StringBuilder formatted = new StringBuilder(2 * hash.Length);
-                foreach (byte b in hash)
-                {
-                    formatted.AppendFormat("{0:X2}", b);
-                }
-                return formatted.ToString();
+                formatted.AppendFormat("{0:X2}", b);
             }
+            return formatted.ToString();
         }
     }
 

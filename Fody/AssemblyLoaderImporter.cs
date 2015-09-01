@@ -5,11 +5,10 @@ using System.Reflection;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
-using System.Collections.Generic;
 
 partial class ModuleWeaver
 {
-    readonly ConstructorInfo instructionConstructorInfo = typeof(Instruction).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(OpCode), typeof(object) }, null);
+    ConstructorInfo instructionConstructorInfo = typeof(Instruction).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(OpCode), typeof(object) }, null);
     TypeDefinition targetType;
     TypeDefinition sourceType;
     TypeDefinition commonType;
@@ -66,15 +65,15 @@ partial class ModuleWeaver
 
     void DumpSource(string file)
     {
-        string localFile = Path.Combine(Path.GetDirectoryName(AssemblyFilePath), file + ".cs");
+        var localFile = Path.Combine(Path.GetDirectoryName(AssemblyFilePath), file + ".cs");
 
         if (File.Exists(localFile))
             return;
 
         using (var stream = GetType().Assembly.GetManifestResourceStream(String.Format("Costura.Fody.template.{0}.cs", file)))
+        using (var outStream = new FileStream(localFile, FileMode.Create))
         {
-            using (var outStream = new FileStream(localFile, FileMode.Create))
-                stream.CopyTo(outStream);
+            stream.CopyTo(outStream);
         }
     }
 
@@ -524,12 +523,12 @@ partial class ModuleWeaver
 
             foreach (var possibleMember in possibleMembers)
             {
-                bool isValid = true;
+                var isValid = true;
 
                 var parameters = methodReference.Parameters;
                 var possibleParameters = possibleMember.Parameters;
 
-                for (int i = 0; i < methodReference.Parameters.Count; i++)
+                for (var i = 0; i < methodReference.Parameters.Count; i++)
                 {
                     // Generic parameter names might not be comparable, so only compare names if not generic
                     if (parameters[i].ParameterType.IsGenericParameter)

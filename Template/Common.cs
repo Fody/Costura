@@ -60,19 +60,17 @@ static class Common
 
     public static string CalculateChecksum(string filename)
     {
-        using (FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-        using (BufferedStream bs = new BufferedStream(fs))
+        using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+        using (var bs = new BufferedStream(fs))
+        using (var sha1 = new SHA1Managed())
         {
-            using (SHA1Managed sha1 = new SHA1Managed())
+            var hash = sha1.ComputeHash(bs);
+            var formatted = new StringBuilder(2*hash.Length);
+            foreach (var b in hash)
             {
-                byte[] hash = sha1.ComputeHash(bs);
-                StringBuilder formatted = new StringBuilder(2 * hash.Length);
-                foreach (byte b in hash)
-                {
-                    formatted.AppendFormat("{0:X2}", b);
-                }
-                return formatted.ToString();
+                formatted.AppendFormat("{0:X2}", b);
             }
+            return formatted.ToString();
         }
     }
 
@@ -193,7 +191,7 @@ static class Common
     // Mutex code from http://stackoverflow.com/questions/229565/what-is-a-good-pattern-for-using-a-global-mutex-in-c
     public static void PreloadUnmanagedLibraries(string hash, string tempBasePath, IEnumerable<string> libs, Dictionary<string, string> checksums)
     {
-        string mutexId = string.Format("Global\\Costura{0}", hash);
+        var mutexId = string.Format("Global\\Costura{0}", hash);
 
         using (var mutex = new Mutex(false, mutexId))
         {
@@ -278,15 +276,21 @@ static class Common
     {
         var bittyness = IntPtr.Size == 8 ? "64" : "32";
 
-        string name = lib;
+        var name = lib;
 
         if (lib.StartsWith(String.Concat("costura", bittyness, ".")))
+        {
             name = Path.Combine(bittyness, lib.Substring(10));
+        }
         else if (lib.StartsWith("costura."))
+        {
             name = lib.Substring(8);
+        }
 
         if (name.EndsWith(".zip"))
+        {
             name = name.Substring(0, name.Length - 4);
+        }
 
         return name;
     }

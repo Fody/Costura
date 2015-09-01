@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
-using ApprovalTests;
 using ApprovalTests.Reporters;
 using Mono.Cecil;
 using NUnit.Framework;
@@ -33,7 +32,7 @@ public class InMemoryTests
         File.Copy(beforeAssemblyPath, afterAssemblyPath, true);
         File.Copy(beforeAssemblyPath.Replace(".dll", ".pdb"), afterAssemblyPath.Replace(".dll", ".pdb"), true);
 
-        var readerParams = new ReaderParameters() { ReadSymbols = true };
+        var readerParams = new ReaderParameters { ReadSymbols = true };
 
         moduleDefinition = ModuleDefinition.ReadModule(afterAssemblyPath, readerParams);
 
@@ -59,7 +58,7 @@ public class InMemoryTests
             })
         {
             weavingTask.Execute();
-            var writerParams = new WriterParameters() { WriteSymbols = true };
+            var writerParams = new WriterParameters { WriteSymbols = true };
             moduleDefinition.Write(afterAssemblyPath, writerParams);
         }
 

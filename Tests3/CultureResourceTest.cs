@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Xml.Linq;
@@ -13,26 +11,22 @@ using NUnit.Framework;
 public class CultureResourceTest
 {
     Assembly assembly;
-    string beforeAssemblyPath;
-    string afterAssemblyPath;
-    ModuleDefinition moduleDefinition;
-    string isolatedPath;
 
     public CultureResourceTest()
     {
         Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("fr-FR");
 
-        beforeAssemblyPath = Path.GetFullPath(@"..\..\..\AssemblyToProcess\bin\Debug\AssemblyToProcess.dll");
+        var beforeAssemblyPath = Path.GetFullPath(@"..\..\..\AssemblyToProcess\bin\Debug\AssemblyToProcess.dll");
         var directoryName = Path.GetDirectoryName(@"..\..\..\Debug\");
 #if (!DEBUG)
         beforeAssemblyPath = beforeAssemblyPath.Replace("Debug", "Release");
         directoryName = directoryName.Replace("Debug", "Release");
 #endif
 
-        afterAssemblyPath = beforeAssemblyPath.Replace(".dll", "Culture.dll");
+        var afterAssemblyPath = beforeAssemblyPath.Replace(".dll", "Culture.dll");
         File.Copy(beforeAssemblyPath, afterAssemblyPath, true);
 
-        moduleDefinition = ModuleDefinition.ReadModule(afterAssemblyPath);
+        var moduleDefinition = ModuleDefinition.ReadModule(afterAssemblyPath);
 
         var references = new List<string>
             {
@@ -59,7 +53,7 @@ public class CultureResourceTest
             moduleDefinition.Write(afterAssemblyPath);
         }
 
-        isolatedPath = Path.Combine(Path.GetTempPath(), "CosturaCulture.dll");
+        var isolatedPath = Path.Combine(Path.GetTempPath(), "CosturaCulture.dll");
         File.Copy(afterAssemblyPath, isolatedPath, true);
         assembly = Assembly.LoadFile(isolatedPath);
     }
