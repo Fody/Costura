@@ -23,6 +23,8 @@ partial class ModuleWeaver : IDisposable
             Directory.CreateDirectory(cachePath);
         }
 
+        var assembliesAdded = false;
+
         var onlyBinaries = ReferenceCopyLocalPaths.Where(x => x.EndsWith(".dll") || x.EndsWith(".exe"));
 
         foreach (var dependency in GetFilteredReferences(onlyBinaries, config))
@@ -42,6 +44,8 @@ partial class ModuleWeaver : IDisposable
             }
 
             resourceName = Embed("costura.", fullPath, !config.DisableCompression);
+            assembliesAdded = true;
+
             if (config.CreateTemporaryAssemblies)
             {
                 checksums.Add(resourceName, CalculateChecksum(fullPath));
@@ -54,6 +58,8 @@ partial class ModuleWeaver : IDisposable
             if (File.Exists(pdbFullPath))
             {
                 resourceName = Embed("costura.", pdbFullPath, !config.DisableCompression);
+                assembliesAdded = true;
+
                 if (config.CreateTemporaryAssemblies)
                 {
                     checksums.Add(resourceName, CalculateChecksum(pdbFullPath));
@@ -83,6 +89,8 @@ partial class ModuleWeaver : IDisposable
 
             var fullPath = Path.GetFullPath(dependency);
             var resourceName = Embed(prefix, fullPath, config.DisableCompression);
+            assembliesAdded = true;
+
             checksums.Add(resourceName, CalculateChecksum(fullPath));
             if (!config.IncludeDebugSymbols)
             {
@@ -92,8 +100,15 @@ partial class ModuleWeaver : IDisposable
             if (File.Exists(pdbFullPath))
             {
                 resourceName = Embed(prefix, pdbFullPath, config.DisableCompression);
+                assembliesAdded = true;
+
                 checksums.Add(resourceName, CalculateChecksum(pdbFullPath));
             }
+        }
+
+        if (!assembliesAdded)
+        {
+            LogInfo("No assemblies were embedded");
         }
     }
 
