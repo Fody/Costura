@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
-using ApprovalTests;
 using ApprovalTests.Reporters;
 using Mono.Cecil;
 using NUnit.Framework;
@@ -18,7 +17,6 @@ public class PureDotNetAssemblyTests
     string beforeAssemblyPath;
     string afterAssemblyPath;
     ModuleDefinition moduleDefinition;
-    string isolatedPath;
 
     public PureDotNetAssemblyTests()
     {
@@ -61,7 +59,7 @@ public class PureDotNetAssemblyTests
             moduleDefinition.Write(afterAssemblyPath, writerParams);
         }
 
-        isolatedPath = Path.Combine(Path.GetTempPath(), "CosturaPureDotNetIsolatedMemory.dll");
+        var isolatedPath = Path.Combine(Path.GetTempPath(), "CosturaPureDotNetIsolatedMemory.dll");
         File.Copy(afterAssemblyPath, isolatedPath, true);
         File.Copy(afterAssemblyPath.Replace(".dll", ".pdb"), isolatedPath.Replace(".dll", ".pdb"), true);
         assembly = Assembly.LoadFile(isolatedPath);
