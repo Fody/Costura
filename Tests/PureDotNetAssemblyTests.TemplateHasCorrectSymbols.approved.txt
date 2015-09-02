@@ -163,9 +163,9 @@
     .maxstack  2
     .locals init ([0] bool ,
              [1] string V_1)
-    .line 98,98 : 5,6 'AssemblyToProcessWithoutUnmanaged\\bin\\Debug\\Common.cs'
+    .line 96,96 : 5,6 'AssemblyToProcessWithoutUnmanaged\\bin\\Debug\\Common.cs'
     IL_0000:  nop
-    .line 99,99 : 9,29 ''
+    .line 97,97 : 9,29 ''
     IL_0001:  ldarg.0
     IL_0002:  ldnull
     IL_0003:  ceq
@@ -173,16 +173,16 @@
     .line 16707566,16707566 : 0,0 ''
     IL_0006:  ldloc.0
     IL_0007:  brfalse.s  IL_0011
-    .line 100,100 : 13,23 ''
+    .line 98,98 : 13,23 ''
     IL_0009:  ldstr      ""
     IL_000e:  stloc.1
     IL_000f:  br.s       IL_001a
-    .line 102,102 : 9,29 ''
+    .line 100,100 : 9,29 ''
     IL_0011:  ldarg.0
     IL_0012:  callvirt   instance string [mscorlib]System.Globalization.CultureInfo::get_Name()
     IL_0017:  stloc.1
     IL_0018:  br.s       IL_001a
-    .line 103,103 : 5,6 ''
+    .line 101,101 : 5,6 ''
     IL_001a:  ldloc.1
     IL_001b:  ret
   } // end of method AssemblyLoader::CultureToString
@@ -219,36 +219,36 @@
              [5] class [mscorlib]System.Reflection.AssemblyName currentName,
              [6] bool V_6,
              [7] class [mscorlib]System.Reflection.Assembly V_7)
-    .line 80,80 : 5,6 ''
+    .line 78,78 : 5,6 ''
     IL_0000:  nop
-    .line 81,81 : 9,53 ''
+    .line 79,79 : 9,53 ''
     IL_0001:  call       class [mscorlib]System.AppDomain [mscorlib]System.AppDomain::get_CurrentDomain()
     IL_0006:  stloc.0
-    .line 82,82 : 9,56 ''
+    .line 80,80 : 9,56 ''
     IL_0007:  ldloc.0
     IL_0008:  callvirt   instance class [mscorlib]System.Reflection.Assembly[] [mscorlib]System.AppDomain::GetAssemblies()
     IL_000d:  stloc.1
-    .line 83,83 : 9,16 ''
+    .line 81,81 : 9,16 ''
     IL_000e:  nop
-    .line 83,83 : 34,44 ''
+    .line 81,81 : 34,44 ''
     IL_000f:  ldloc.1
     IL_0010:  stloc.2
     IL_0011:  ldc.i4.0
     IL_0012:  stloc.3
     .line 16707566,16707566 : 0,0 ''
     IL_0013:  br.s       IL_0086
-    .line 83,83 : 18,30 ''
+    .line 81,81 : 18,30 ''
     IL_0015:  ldloc.2
     IL_0016:  ldloc.3
     IL_0017:  ldelem.ref
     IL_0018:  stloc.s    'assembly'
-    .line 84,84 : 9,10 ''
+    .line 82,82 : 9,10 ''
     IL_001a:  nop
-    .line 85,85 : 13,50 ''
+    .line 83,83 : 13,50 ''
     IL_001b:  ldloc.s    'assembly'
     IL_001d:  callvirt   instance class [mscorlib]System.Reflection.AssemblyName [mscorlib]System.Reflection.Assembly::GetName()
     IL_0022:  stloc.s    currentName
-    .line 86,87 : 13,153 ''
+    .line 84,85 : 13,153 ''
     IL_0024:  ldloc.s    currentName
     IL_0026:  callvirt   instance string [mscorlib]System.Reflection.AssemblyName::get_Name()
     IL_002b:  ldarg.0
@@ -274,9 +274,9 @@
     .line 16707566,16707566 : 0,0 ''
     IL_005b:  ldloc.s    V_6
     IL_005d:  brfalse.s  IL_0081
-    .line 88,88 : 13,14 ''
+    .line 86,86 : 13,14 ''
     IL_005f:  nop
-    .line 89,89 : 17,102 ''
+    .line 87,87 : 17,102 ''
     IL_0060:  ldstr      "Assembly '{0}' already loaded, returning existing "
     + "assembly"
     IL_0065:  ldc.i4.1
@@ -289,28 +289,28 @@
     IL_0075:  call       void Costura.AssemblyLoader::Log(string,
                                                           object[])
     IL_007a:  nop
-    .line 91,91 : 17,33 ''
+    .line 89,89 : 17,33 ''
     IL_007b:  ldloc.s    'assembly'
     IL_007d:  stloc.s    V_7
     IL_007f:  br.s       IL_0091
-    .line 93,93 : 9,10 ''
+    .line 91,91 : 9,10 ''
     IL_0081:  nop
     .line 16707566,16707566 : 0,0 ''
     IL_0082:  ldloc.3
     IL_0083:  ldc.i4.1
     IL_0084:  add
     IL_0085:  stloc.3
-    .line 83,83 : 31,33 ''
+    .line 81,81 : 31,33 ''
     IL_0086:  ldloc.3
     IL_0087:  ldloc.2
     IL_0088:  ldlen
     IL_0089:  conv.i4
     IL_008a:  blt.s      IL_0015
-    .line 94,94 : 9,21 ''
+    .line 92,92 : 9,21 ''
     IL_008c:  ldnull
     IL_008d:  stloc.s    V_7
     IL_008f:  br.s       IL_0091
-    .line 95,95 : 5,6 ''
+    .line 93,93 : 5,6 ''
     IL_0091:  ldloc.s    V_7
     IL_0093:  ret
   } // end of method AssemblyLoader::ReadExistingAssembly
@@ -375,12 +375,12 @@
              [3] class [System]System.IO.Compression.DeflateStream compressStream,
              [4] class [mscorlib]System.IO.MemoryStream memStream,
              [5] class [mscorlib]System.IO.Stream V_5)
-    .line 175,175 : 5,6 ''
+    .line 173,173 : 5,6 ''
     IL_0000:  nop
-    .line 176,176 : 9,65 ''
+    .line 174,174 : 9,65 ''
     IL_0001:  call       class [mscorlib]System.Reflection.Assembly [mscorlib]System.Reflection.Assembly::GetExecutingAssembly()
     IL_0006:  stloc.0
-    .line 178,178 : 9,39 ''
+    .line 176,176 : 9,39 ''
     IL_0007:  ldarg.0
     IL_0008:  ldstr      ".zip"
     IL_000d:  callvirt   instance bool [mscorlib]System.String::EndsWith(string)
@@ -388,14 +388,14 @@
     .line 16707566,16707566 : 0,0 ''
     IL_0013:  ldloc.1
     IL_0014:  brfalse.s  IL_005e
-    .line 179,179 : 9,10 ''
+    .line 177,177 : 9,10 ''
     IL_0016:  nop
-    .line 180,180 : 20,86 ''
+    .line 178,178 : 20,86 ''
     IL_0017:  ldloc.0
     IL_0018:  ldarg.0
     IL_0019:  callvirt   instance class [mscorlib]System.IO.Stream [mscorlib]System.Reflection.Assembly::GetManifestResourceStream(string)
     IL_001e:  stloc.2
-    .line 181,181 : 20,94 ''
+    .line 179,179 : 20,94 ''
     .try
     {
       IL_001f:  ldloc.2
@@ -403,26 +403,26 @@
       IL_0021:  newobj     instance void [System]System.IO.Compression.DeflateStream::.ctor(class [mscorlib]System.IO.Stream,
                                                                                             valuetype [System]System.IO.Compression.CompressionMode)
       IL_0026:  stloc.3
-      .line 182,182 : 13,14 ''
+      .line 180,180 : 13,14 ''
       .try
       {
         IL_0027:  nop
-        .line 183,183 : 17,52 ''
+        .line 181,181 : 17,52 ''
         IL_0028:  newobj     instance void [mscorlib]System.IO.MemoryStream::.ctor()
         IL_002d:  stloc.s    memStream
-        .line 184,184 : 17,51 ''
+        .line 182,182 : 17,51 ''
         IL_002f:  ldloc.3
         IL_0030:  ldloc.s    memStream
         IL_0032:  call       void Costura.AssemblyLoader::CopyTo(class [mscorlib]System.IO.Stream,
                                                                  class [mscorlib]System.IO.Stream)
         IL_0037:  nop
-        .line 185,185 : 17,40 ''
+        .line 183,183 : 17,40 ''
         IL_0038:  ldloc.s    memStream
         IL_003a:  ldc.i4.0
         IL_003b:  conv.i8
         IL_003c:  callvirt   instance void [mscorlib]System.IO.Stream::set_Position(int64)
         IL_0041:  nop
-        .line 186,186 : 17,34 ''
+        .line 184,184 : 17,34 ''
         IL_0042:  ldloc.s    memStream
         IL_0044:  stloc.s    V_5
         IL_0046:  leave.s    IL_0069
@@ -447,14 +447,14 @@
       IL_0057:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
       IL_005c:  nop
       IL_005d:  endfinally
-      .line 190,190 : 9,70 ''
+      .line 188,188 : 9,70 ''
     }  // end handler
     IL_005e:  ldloc.0
     IL_005f:  ldarg.0
     IL_0060:  callvirt   instance class [mscorlib]System.IO.Stream [mscorlib]System.Reflection.Assembly::GetManifestResourceStream(string)
     IL_0065:  stloc.s    V_5
     IL_0067:  br.s       IL_0069
-    .line 191,191 : 5,6 ''
+    .line 189,189 : 5,6 ''
     IL_0069:  ldloc.s    V_5
     IL_006b:  ret
   } // end of method AssemblyLoader::LoadStream
@@ -467,9 +467,9 @@
     .locals init ([0] string 'value',
              [1] bool ,
              [2] class [mscorlib]System.IO.Stream V_2)
-    .line 166,166 : 5,6 ''
+    .line 164,164 : 5,6 ''
     IL_0000:  nop
-    .line 168,168 : 9,56 ''
+    .line 166,166 : 9,56 ''
     IL_0001:  ldarg.0
     IL_0002:  ldarg.1
     IL_0003:  ldloca.s   'value'
@@ -479,16 +479,16 @@
     .line 16707566,16707566 : 0,0 ''
     IL_000b:  ldloc.1
     IL_000c:  brfalse.s  IL_0017
-    .line 169,169 : 13,38 ''
+    .line 167,167 : 13,38 ''
     IL_000e:  ldloc.0
     IL_000f:  call       class [mscorlib]System.IO.Stream Costura.AssemblyLoader::LoadStream(string)
     IL_0014:  stloc.2
     IL_0015:  br.s       IL_001b
-    .line 171,171 : 9,21 ''
+    .line 169,169 : 9,21 ''
     IL_0017:  ldnull
     IL_0018:  stloc.2
     IL_0019:  br.s       IL_001b
-    .line 172,172 : 5,6 ''
+    .line 170,170 : 5,6 ''
     IL_001b:  ldloc.2
     IL_001c:  ret
   } // end of method AssemblyLoader::LoadStream
@@ -542,14 +542,14 @@
              [6] class [mscorlib]System.IO.Stream pdbStream,
              [7] bool V_7,
              [8] uint8[] pdbData)
-    .line 137,137 : 5,6 ''
+    .line 135,135 : 5,6 ''
     IL_0000:  nop
-    .line 138,138 : 9,66 ''
+    .line 136,136 : 9,66 ''
     IL_0001:  ldarg.2
     IL_0002:  callvirt   instance string [mscorlib]System.Reflection.AssemblyName::get_Name()
     IL_0007:  callvirt   instance string [mscorlib]System.String::ToLowerInvariant()
     IL_000c:  stloc.0
-    .line 140,140 : 9,120 ''
+    .line 138,138 : 9,120 ''
     IL_000d:  ldarg.2
     IL_000e:  callvirt   instance class [mscorlib]System.Globalization.CultureInfo [mscorlib]System.Reflection.AssemblyName::get_CultureInfo()
     IL_0013:  brfalse.s  IL_002a
@@ -565,7 +565,7 @@
     .line 16707566,16707566 : 0,0 ''
     IL_002c:  ldloc.2
     IL_002d:  brfalse.s  IL_0046
-    .line 141,141 : 13,91 ''
+    .line 139,139 : 13,91 ''
     IL_002f:  ldstr      "{0}.{1}"
     IL_0034:  ldarg.2
     IL_0035:  callvirt   instance class [mscorlib]System.Globalization.CultureInfo [mscorlib]System.Reflection.AssemblyName::get_CultureInfo()
@@ -575,17 +575,17 @@
                                                                 object,
                                                                 object)
     IL_0045:  stloc.0
-    .line 144,144 : 16,68 ''
+    .line 142,142 : 16,68 ''
     IL_0046:  ldarg.0
     IL_0047:  ldloc.0
     IL_0048:  call       class [mscorlib]System.IO.Stream Costura.AssemblyLoader::LoadStream(class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>,
                                                                                              string)
     IL_004d:  stloc.3
-    .line 145,145 : 9,10 ''
+    .line 143,143 : 9,10 ''
     .try
     {
       IL_004e:  nop
-      .line 146,146 : 13,40 ''
+      .line 144,144 : 13,40 ''
       IL_004f:  ldloc.3
       IL_0050:  ldnull
       IL_0051:  ceq
@@ -593,17 +593,17 @@
       .line 16707566,16707566 : 0,0 ''
       IL_0055:  ldloc.s    V_4
       IL_0057:  brfalse.s  IL_005f
-      .line 147,147 : 13,14 ''
+      .line 145,145 : 13,14 ''
       IL_0059:  nop
-      .line 148,148 : 17,29 ''
+      .line 146,146 : 17,29 ''
       IL_005a:  ldnull
       IL_005b:  stloc.s    V_5
       IL_005d:  leave.s    IL_00b9
-      .line 150,150 : 13,55 ''
+      .line 148,148 : 13,55 ''
       IL_005f:  ldloc.3
       IL_0060:  call       uint8[] Costura.AssemblyLoader::ReadStream(class [mscorlib]System.IO.Stream)
       IL_0065:  stloc.1
-      .line 151,151 : 9,10 ''
+      .line 149,149 : 9,10 ''
       IL_0066:  nop
       IL_0067:  leave.s    IL_0074
       .line 16707566,16707566 : 0,0 ''
@@ -616,18 +616,18 @@
       IL_006d:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
       IL_0072:  nop
       IL_0073:  endfinally
-      .line 153,153 : 16,61 ''
+      .line 151,151 : 16,61 ''
     }  // end handler
     IL_0074:  ldarg.1
     IL_0075:  ldloc.0
     IL_0076:  call       class [mscorlib]System.IO.Stream Costura.AssemblyLoader::LoadStream(class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>,
                                                                                              string)
     IL_007b:  stloc.s    pdbStream
-    .line 154,154 : 9,10 ''
+    .line 152,152 : 9,10 ''
     .try
     {
       IL_007d:  nop
-      .line 155,155 : 13,35 ''
+      .line 153,153 : 13,35 ''
       IL_007e:  ldloc.s    pdbStream
       IL_0080:  ldnull
       IL_0081:  cgt.un
@@ -635,20 +635,20 @@
       .line 16707566,16707566 : 0,0 ''
       IL_0085:  ldloc.s    V_7
       IL_0087:  brfalse.s  IL_009f
-      .line 156,156 : 13,14 ''
+      .line 154,154 : 13,14 ''
       IL_0089:  nop
-      .line 157,157 : 17,53 ''
+      .line 155,155 : 17,53 ''
       IL_008a:  ldloc.s    pdbStream
       IL_008c:  call       uint8[] Costura.AssemblyLoader::ReadStream(class [mscorlib]System.IO.Stream)
       IL_0091:  stloc.s    pdbData
-      .line 158,158 : 17,61 ''
+      .line 156,156 : 17,61 ''
       IL_0093:  ldloc.1
       IL_0094:  ldloc.s    pdbData
       IL_0096:  call       class [mscorlib]System.Reflection.Assembly [mscorlib]System.Reflection.Assembly::Load(uint8[],
                                                                                                                  uint8[])
       IL_009b:  stloc.s    V_5
       IL_009d:  leave.s    IL_00b9
-      .line 160,160 : 9,10 ''
+      .line 158,158 : 9,10 ''
       IL_009f:  nop
       IL_00a0:  leave.s    IL_00af
       .line 16707566,16707566 : 0,0 ''
@@ -661,13 +661,13 @@
       IL_00a8:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
       IL_00ad:  nop
       IL_00ae:  endfinally
-      .line 162,162 : 9,44 ''
+      .line 160,160 : 9,44 ''
     }  // end handler
     IL_00af:  ldloc.1
     IL_00b0:  call       class [mscorlib]System.Reflection.Assembly [mscorlib]System.Reflection.Assembly::Load(uint8[])
     IL_00b5:  stloc.s    V_5
     IL_00b7:  br.s       IL_00b9
-    .line 163,163 : 5,6 ''
+    .line 161,161 : 5,6 ''
     IL_00b9:  ldloc.s    V_5
     IL_00bb:  ret
   } // end of method AssemblyLoader::ReadFromEmbeddedResources

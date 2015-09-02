@@ -365,17 +365,19 @@ partial class ModuleWeaver
 
             if (methodReference.DeclaringType.HasGenericParameters || methodReference.DeclaringType.IsGenericInstance)
             {
-                var resolvedMethodReference = ModuleDefinition.ImportReference(methodReference.Resolve());
-
+                // Always resolve type generics
                 var typeGenerics = originalMethodReference.DeclaringType.GetGenericInstanceArguments().Select(genericArgument => (TypeReference)ResolveMsCoreReference(genericArgument)).ToList();
+                methodReference = methodReference.MakeHostInstanceGeneric(typeGenerics.ToArray());
 
-                if (!methodReference.DeclaringType.IsGenericInstance)
+                // If this method is generic, it could have different generic arguments
+                if (methodReference.HasGenericParameters)
                 {
-                    methodReference.DeclaringType = methodReference.DeclaringType.MakeGenericInstanceType(typeGenerics.ToArray());
+                    var methodGenerics = originalMethodReference.DeclaringType.GetGenericInstanceArguments().Select(genericArgument => (TypeReference)ResolveMsCoreReference(genericArgument)).ToList();
+                    methodReference = methodReference.MakeHostInstanceGeneric(methodGenerics.ToArray());
                 }
 
-                var methodGenerics = originalMethodReference.DeclaringType.GetGenericInstanceArguments().Select(genericArgument => (TypeReference)ResolveMsCoreReference(genericArgument)).ToList();
-                return resolvedMethodReference.MakeHostInstanceGeneric(methodGenerics.ToArray());
+                var importedMethodReference = ModuleDefinition.ImportReference(methodReference);
+                return importedMethodReference;
             }
 
             var importedReference = ModuleDefinition.ImportReference(methodReference.Resolve());
@@ -539,6 +541,14 @@ partial class ModuleWeaver
                             break;
                         }
                     }
+                    else if (parameters[i].ParameterType.IsByReference)
+                    {
+                        if (!possibleParameters[i].ParameterType.IsByReference)
+                        {
+                            isValid = false;
+                            break;
+                        }
+                    }
                     else if (parameters[i].ParameterType.Name != possibleParameters[i].ParameterType.Name)
                     {
                         isValid = false;
@@ -574,6 +584,11 @@ partial class ModuleWeaver
     {
         if (IsWrongMsCoreScope(declaringType))
         {
+            if (declaringType.IsGenericInstance)
+            {
+                declaringType = declaringType.Resolve();
+            }
+
             // Always ensure the right version of mscorlib
             var msCoreType = (from type in msCoreTypes
                               where string.Equals(declaringType.FullName, type.FullName)
