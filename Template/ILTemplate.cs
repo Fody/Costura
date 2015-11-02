@@ -5,6 +5,7 @@ using System.Reflection;
 static class ILTemplate
 {
     static readonly Dictionary<string, bool> nullCache = new Dictionary<string, bool>();
+    static readonly object nullCacheLock = new object();
 
     static readonly Dictionary<string, string> assemblyNames = new Dictionary<string, string>();
     static readonly Dictionary<string, string> symbolNames = new Dictionary<string, string>();
@@ -17,9 +18,12 @@ static class ILTemplate
 
     public static Assembly ResolveAssembly(string assemblyName)
     {
-        if (nullCache.ContainsKey(assemblyName))
+        lock (nullCacheLock)
         {
-            return null;
+            if (nullCache.ContainsKey(assemblyName))
+            {
+                return null;
+            }
         }
 
         var requestedAssemblyName = new AssemblyName(assemblyName);
@@ -35,7 +39,10 @@ static class ILTemplate
         assembly = Common.ReadFromEmbeddedResources(assemblyNames, symbolNames, requestedAssemblyName);
         if (assembly == null)
         {
-            nullCache.Add(assemblyName, true);
+            lock (nullCacheLock)
+            {
+                nullCache[assemblyName] = true;
+            }
 
             // Handles retargeted assemblies like PCL
             if (requestedAssemblyName.Flags == AssemblyNameFlags.Retargetable)
