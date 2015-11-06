@@ -1,7 +1,7 @@
 configuration: Release
 
 cache:
-  - src/packages -> src/**/packages.config
+  - src\packages -> src\**\packages.config
 
 before_build:
   - nuget restore src\Costura.sln
