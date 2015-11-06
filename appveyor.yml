@@ -1,7 +1,15 @@
 configuration: Release
 
-before_build:
-  - nuget restore
+cache:
+  - src/packages -> src/**/packages.config
 
-artifacts:
-  - path: NuGetBuild\*.nupkg
+before_build:
+  - nuget restore src\Costura.sln
+
+build:
+  parallel: true
+  project: src\Costura.sln
+
+test:
+  assemblies:
+    - src\Costura.Tests\bin\Release\Costura.Tests.dll
