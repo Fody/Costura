@@ -89,6 +89,8 @@
   <ItemGroup>
     <Compile Include="AssemblyExtensions.cs" />
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="AssemblyTests.cs" />
+    <Compile Include="BaseCostura.cs" />
     <Compile Include="BaseCosturaTest.cs" />
     <Compile Include="BasicTests.cs" />
     <Compile Include="CultureResourceTests.cs" />
