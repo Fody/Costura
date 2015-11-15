@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using NuGet;
 
@@ -20,6 +21,8 @@ namespace BuildNuGetPackage
 
         static void Main(string[] args)
         {
+            Environment.CurrentDirectory = Path.GetDirectoryName(typeof(Program).Assembly.Location);
+
             var path = "";
 
             if (args.Length == 1)
