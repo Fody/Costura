@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 
 [TestFixture]
-public class InMemoryTests : BaseCosturaTest
+public class InMemoryTests : BasicTests
 {
     protected override string Suffix => "InMemory";
 
@@ -9,7 +9,9 @@ public class InMemoryTests : BaseCosturaTest
     public void CreateAssembly()
     {
         if (AppDomainRunner.IsNotInTestAppDomain)
-            CreateIsolatedAssemblyCopy("<Costura />");
+            CreateIsolatedAssemblyCopy("ExeToProcess",
+                "<Costura />",
+                new string[] { "AssemblyToReference.dll", "AssemblyToReferencePreEmbedded.dll", "ExeToReference.exe" });
     }
 
     [SetUp]

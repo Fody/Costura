@@ -90,11 +90,13 @@
     <Compile Include="AssemblyExtensions.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="BaseCosturaTest.cs" />
+    <Compile Include="BasicTests.cs" />
     <Compile Include="CultureResourceTests.cs" />
     <Compile Include="Decompiler.cs" />
     <Compile Include="InMemoryTests.cs" />
     <Compile Include="ConfigReaderTests.cs" />
     <Compile Include="MockAssemblyResolver.cs" />
+    <Compile Include="NativeTests.cs" />
     <Compile Include="TempFileTests.cs" />
     <Compile Include="Verifier.cs" />
   </ItemGroup>

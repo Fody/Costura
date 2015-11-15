@@ -11,17 +11,32 @@ public class CultureResourceTests : BaseCosturaTest
     public void CreateAssembly()
     {
         if (AppDomainRunner.IsNotInTestAppDomain)
-            CreateIsolatedAssemblyCopy("<Costura />");
+            CreateIsolatedAssemblyCopy("ExeToProcess",
+                "<Costura />",
+                new string[] {
+                    "AssemblyToReference.dll",
+                    "de\\AssemblyToReference.resources.dll",
+                    "fr\\AssemblyToReference.resources.dll",
+                    "AssemblyToReferencePreEmbedded.dll",
+                    "ExeToReference.exe"
+                });
     }
 
     [SetUp]
     public void Setup()
     {
-        Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("fr-FR");
-
         if (AppDomainRunner.IsInTestAppDomain)
         {
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("fr-FR");
+
             LoadAssemblyIntoAppDomain();
         }
+    }
+
+    [Test, RunInApplicationDomain, Category("Code")]
+    public void UsingResource()
+    {
+        var instance1 = assembly.GetInstance("ClassToTest");
+        Assert.AreEqual("Salut", instance1.InternationalFoo());
     }
 }

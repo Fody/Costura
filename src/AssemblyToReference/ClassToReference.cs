@@ -3,7 +3,7 @@ using AssemblyToReference;
 
 public static class ClassToReference
 {
-    public static string Foo() => "Hello";
+    public static string Simple() => "Hello";
 
     public static void ThrowException()
     {

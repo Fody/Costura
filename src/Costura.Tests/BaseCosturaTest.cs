@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
-using ApprovalTests;
-using ApprovalTests.Namers;
 using Mono.Cecil;
-using NUnit.Framework;
 
 public abstract class BaseCosturaTest
 {
@@ -15,14 +13,14 @@ public abstract class BaseCosturaTest
 
     protected abstract string Suffix { get; }
 
-    protected void CreateIsolatedAssemblyCopy(string config)
+    protected void CreateIsolatedAssemblyCopy(string projectName, string config, IEnumerable<string> references)
     {
-        var processingDirectory = Path.GetFullPath(@"..\..\..\ExeToProcess\bin\Debug");
+        var processingDirectory = Path.GetFullPath($@"..\..\..\{projectName}\bin\Debug");
 #if (!DEBUG)
         processingDirectory = processingDirectory.Replace("Debug", "Release");
 #endif
 
-        beforeAssemblyPath = Path.Combine(processingDirectory, "ExeToProcess.exe");
+        beforeAssemblyPath = Path.Combine(processingDirectory, $"{projectName}.exe");
 
         afterAssemblyPath = beforeAssemblyPath.Replace(".exe", $"{Suffix}.exe");
         File.Copy(beforeAssemblyPath, afterAssemblyPath, true);
@@ -32,17 +30,12 @@ public abstract class BaseCosturaTest
 
         var moduleDefinition = ModuleDefinition.ReadModule(afterAssemblyPath, readerParams);
 
-        var references = new List<string>
-        {
-            Path.Combine(processingDirectory, "AssemblyToReference.dll")
-        };
-
         var weavingTask = new ModuleWeaver
         {
             ModuleDefinition = moduleDefinition,
             AssemblyResolver = new MockAssemblyResolver(),
             Config = XElement.Parse(config),
-            ReferenceCopyLocalPaths = references,
+            ReferenceCopyLocalPaths = references.Select(r => Path.Combine(processingDirectory, r)).ToList(),
             AssemblyFilePath = beforeAssemblyPath
         };
 
@@ -61,31 +54,5 @@ public abstract class BaseCosturaTest
         var isolatedPath = Path.GetFullPath(Path.Combine(Suffix, $"Costura{Suffix}.exe"));
 
         assembly = Assembly.LoadFile(isolatedPath);
-    }
-
-#if DEBUG
-
-    [Test, Category("IL")]
-    public void TemplateHasCorrectSymbols()
-    {
-        using (ApprovalResults.ForScenario(Suffix))
-        {
-            Approvals.Verify(Decompiler.Decompile(afterAssemblyPath, "Costura.AssemblyLoader"));
-        }
-    }
-
-#endif
-
-    [Test, Category("IL")]
-    public void PeVerify()
-    {
-        Verifier.Verify(beforeAssemblyPath, afterAssemblyPath);
-    }
-
-    [Test, RunInApplicationDomain, Category("Code")]
-    public void Simple()
-    {
-        var instance2 = assembly.GetInstance("ClassToTest");
-        Assert.AreEqual("Hello", instance2.Foo());
     }
 }
