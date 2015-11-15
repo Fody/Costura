@@ -82,7 +82,7 @@ partial class ModuleWeaver : IDisposable
             }
 
             var fullPath = Path.GetFullPath(dependency);
-            var resourceName = Embed(prefix, fullPath, config.DisableCompression);
+            var resourceName = Embed(prefix, fullPath, !config.DisableCompression);
             checksums.Add(resourceName, CalculateChecksum(fullPath));
             if (!config.IncludeDebugSymbols)
             {
@@ -91,7 +91,7 @@ partial class ModuleWeaver : IDisposable
             var pdbFullPath = Path.ChangeExtension(fullPath, "pdb");
             if (File.Exists(pdbFullPath))
             {
-                resourceName = Embed(prefix, pdbFullPath, config.DisableCompression);
+                resourceName = Embed(prefix, pdbFullPath, !config.DisableCompression);
                 checksums.Add(resourceName, CalculateChecksum(pdbFullPath));
             }
         }

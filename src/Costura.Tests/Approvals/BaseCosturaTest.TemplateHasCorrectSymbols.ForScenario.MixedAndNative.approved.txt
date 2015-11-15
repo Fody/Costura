@@ -912,20 +912,20 @@
     IL_0055:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
                                                                                                                    !1)
     IL_005a:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
-    IL_005f:  ldstr      "costura32.assemblytoreferencemixed.dll"
+    IL_005f:  ldstr      "costura32.assemblytoreferencemixed.dll.zip"
     IL_0064:  ldstr      "[CHECKSUM]"
     IL_0069:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
                                                                                                                    !1)
     IL_006e:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
-    IL_0073:  ldstr      "costura32.assemblytoreferencemixed.pdb"
+    IL_0073:  ldstr      "costura32.assemblytoreferencemixed.pdb.zip"
     IL_0078:  ldstr      "[CHECKSUM]"
     IL_007d:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
                                                                                                                    !1)
     IL_0082:  ldsfld     class [mscorlib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::preload32List
-    IL_0087:  ldstr      "costura32.assemblytoreferencemixed.dll"
+    IL_0087:  ldstr      "costura32.assemblytoreferencemixed.dll.zip"
     IL_008c:  callvirt   instance void class [mscorlib]System.Collections.Generic.List`1<string>::Add(!0)
     IL_0091:  ldsfld     class [mscorlib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::preload32List
-    IL_0096:  ldstr      "costura32.assemblytoreferencemixed.pdb"
+    IL_0096:  ldstr      "costura32.assemblytoreferencemixed.pdb.zip"
     IL_009b:  callvirt   instance void class [mscorlib]System.Collections.Generic.List`1<string>::Add(!0)
     IL_00a0:  ldsfld     class [mscorlib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::preload32List
     IL_00a5:  ldstr      "costura32.assemblytoreferencenative.dll"
