@@ -4,7 +4,7 @@
 
 Embeds dependencies as resources.
 
-## The nuget package  [![NuGet Status](http://img.shields.io/nuget/v/Costura.Fody.svg?style=flat)](https://www.nuget.org/packages/Costura.Fody/)
+## The nuget package  [![NuGet Status](http://img.shields.io/nuget/v/Costura.Fody.svg?style=flat)](https://www.nuget.org/packages/Costura.Fody/) [![Build status](https://ci.appveyor.com/api/projects/status/62ur9tuwt69xap7t?svg=true)](https://ci.appveyor.com/project/Fody/costura)
 
 https://nuget.org/packages/Costura.Fody/
 
