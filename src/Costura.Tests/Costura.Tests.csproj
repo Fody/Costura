@@ -95,6 +95,7 @@
     <Compile Include="Decompiler.cs" />
     <Compile Include="InMemoryTests.cs" />
     <Compile Include="ConfigReaderTests.cs" />
+    <Compile Include="MixedAndNativeTests.cs" />
     <Compile Include="MockAssemblyResolver.cs" />
     <Compile Include="NativeTests.cs" />
     <Compile Include="TempFileTests.cs" />

@@ -2,7 +2,8 @@
 
 public class ClassToTest
 {
-    [DllImport("AssemblyToReferenceNative")]
+    [DllImport("AssemblyToReferenceNative.dll", CallingConvention = CallingConvention.Cdecl)]
+    [return: MarshalAs(UnmanagedType.BStr)]
     private static extern string SayHelloFromNative();
 
     public string NativeFoo() => SayHelloFromNative();
