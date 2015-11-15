@@ -5,6 +5,7 @@ using System.Reflection;
 
 static class ILTemplateWithTempAssembly
 {
+    static readonly object nullCacheLock = new object();
     static readonly Dictionary<string, bool> nullCache = new Dictionary<string, bool>();
 
     static string tempBasePath;
@@ -35,9 +36,12 @@ static class ILTemplateWithTempAssembly
 
     public static Assembly ResolveAssembly(object sender, ResolveEventArgs e)
     {
-        if (nullCache.ContainsKey(e.Name))
+        lock (nullCacheLock)
         {
-            return null;
+            if (nullCache.ContainsKey(e.Name))
+            {
+                return null;
+            }
         }
 
         var requestedAssemblyName = new AssemblyName(e.Name);
@@ -53,7 +57,10 @@ static class ILTemplateWithTempAssembly
         assembly = Common.ReadFromDiskCache(tempBasePath, requestedAssemblyName);
         if (assembly == null)
         {
-            nullCache.Add(e.Name, true);
+            lock (nullCacheLock)
+            {
+                nullCache[e.Name] = true;
+            }
 
             // Handles retargeted assemblies like PCL
             if (requestedAssemblyName.Flags == AssemblyNameFlags.Retargetable)
