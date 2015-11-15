@@ -6,6 +6,9 @@ cache:
 before_build:
   - nuget restore src\Costura.sln
 
+after_build:
+  - src\BuildNuGetPackage\bin\Release\BuildNuGetPackage.exe artifacts
+
 build:
   parallel: true
   project: src\Costura.sln
@@ -13,3 +16,6 @@ build:
 
 test_script:
   - nunit-console-x86 src\Costura.Tests\bin\Release\Costura.Tests.dll
+
+artifacts:
+  - path: 'artifacts\*.nupkg'
