@@ -10,7 +10,6 @@ after_build:
   - src\BuildNuGetPackage\bin\Release\BuildNuGetPackage.exe artifacts
 
 build:
-  parallel: true
   project: src\Costura.sln
   verbosity: minimal
 
