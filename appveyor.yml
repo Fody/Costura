@@ -11,6 +11,5 @@ build:
   project: src\Costura.sln
   verbosity: minimal
 
-test:
-  assemblies:
-    - src\Costura.Tests\bin\Release\Costura.Tests.dll
+test_script:
+  - nunit-console-x86 src\Costura.Tests\bin\Release\Costura.Tests.dll
