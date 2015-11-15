@@ -9,6 +9,7 @@ before_build:
 build:
   parallel: true
   project: src\Costura.sln
+  verbosity: minimal
 
 test:
   assemblies:
