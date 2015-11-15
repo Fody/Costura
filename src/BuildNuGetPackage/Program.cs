@@ -21,8 +21,6 @@ namespace BuildNuGetPackage
 
         static void Main(string[] args)
         {
-            Environment.CurrentDirectory = Path.GetDirectoryName(typeof(Program).Assembly.Location);
-
             var path = "";
 
             if (args.Length == 1)
@@ -34,6 +32,8 @@ namespace BuildNuGetPackage
                     Directory.CreateDirectory(path);
                 }
             }
+
+            Environment.CurrentDirectory = Path.GetDirectoryName(typeof(Program).Assembly.Location);
 
             var propertyProvider = new PropertyProvider()
             {
@@ -59,8 +59,12 @@ namespace BuildNuGetPackage
                 new ManifestFile { Source = "uninstall.ps1", Target = "tools" }
             });
 
-            using (var file = new FileStream(Path.Combine(path, packageBuilder.GetFullName() + ".nupkg"), FileMode.Create))
+            var packagePath = Path.Combine(path, packageBuilder.GetFullName() + ".nupkg");
+
+            using (var file = new FileStream(packagePath, FileMode.Create))
             {
+                Console.WriteLine($"Saving file {packagePath}");
+
                 packageBuilder.Save(file);
             }
         }

@@ -15,4 +15,4 @@ test_script:
   - nunit-console-x86 src\Costura.Tests\bin\Release\Costura.Tests.dll
 
 artifacts:
-  - path: 'artifacts\*.nupkg'
+  - path: artifacts\*.nupkg
