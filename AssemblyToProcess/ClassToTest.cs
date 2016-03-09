@@ -43,7 +43,12 @@ public class ClassToTest
 
     public string MixedFoo()
     {
+#if MONO
+        // Stub the response on Mono, we don't support building mixed assemblies
+        return "Hello";
+#else
         return ClassToReferenceMixed.Foo();
+#endif
     }
 
     public Assembly GetReferencedAssembly()

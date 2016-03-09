@@ -19,7 +19,15 @@ public class TempFileTests
 
     public TempFileTests()
     {
-        beforeAssemblyPath = Path.GetFullPath(@"..\..\..\AssemblyToProcess\bin\Debug\AssemblyToProcess.dll");
+        // Figure out whether we're in bin\debug, bin\release or bin\debug (mono)
+        // All projects will build in the same configuration, so we should know from the project's current
+        // configuration
+
+        var directory = Environment.CurrentDirectory;
+        var directoryParts = directory.Split(Path.DirectorySeparatorChar);
+        var suffix = string.Join(Path.DirectorySeparatorChar.ToString(), directoryParts.Reverse().Take(2).Reverse().ToArray());
+
+        beforeAssemblyPath = Path.GetFullPath(Path.Combine(@"..\..\..\AssemblyToProcess\", suffix, "AssemblyToProcess.dll"));
         var directoryName = Path.GetDirectoryName(@"..\..\..\Debug\");
 #if (!DEBUG)
         beforeAssemblyPath = beforeAssemblyPath.Replace("Debug", "Release");
@@ -36,8 +44,11 @@ public class TempFileTests
                 beforeAssemblyPath.Replace("AssemblyToProcess", "AssemblyToReference"),
                 beforeAssemblyPath.Replace("AssemblyToProcess", "AssemblyToReferencePreEmbed"),
                 Path.ChangeExtension(beforeAssemblyPath.Replace("AssemblyToProcess", "ExeToReference"), "exe"),
+#if MONO
+#else
                 Path.Combine(directoryName, "AssemblyToReferenceMixed.dll"),
-            };
+#endif
+        };
 
         var assemblyToReferenceDirectory = Path.GetDirectoryName(beforeAssemblyPath.Replace("AssemblyToProcess", "AssemblyToReference"));
         var assemblyToReferenceResources = Directory.GetFiles(assemblyToReferenceDirectory, "*.resources.dll", SearchOption.AllDirectories);
@@ -47,7 +58,10 @@ public class TempFileTests
             {
                 ModuleDefinition = moduleDefinition,
                 AssemblyResolver = new MockAssemblyResolver(),
+#if MONO
+#else
                 Config = XElement.Parse("<Costura CreateTemporaryAssemblies='true' Unmanaged32Assemblies='AssemblyToReferenceMixed' />"),
+#endif
                 ReferenceCopyLocalPaths = references,
                 AssemblyFilePath = beforeAssemblyPath
             })
@@ -97,12 +111,15 @@ public class TempFileTests
         }
     }
 
+#if MONO
+#else
     [Test]
     public void Native()
     {
         var instance1 = assembly.GetInstance("ClassToTest");
         Assert.AreEqual("Hello", instance1.NativeFoo());
     }
+#endif
 
     [Test]
     public void Mixed()
@@ -111,12 +128,15 @@ public class TempFileTests
         Assert.AreEqual("Hello", instance1.MixedFoo());
     }
 
+#if MONO
+#else
     [Test]
     public void MixedPInvoke()
     {
         var instance1 = assembly.GetInstance("ClassToTest");
         Assert.AreEqual("Hello", instance1.MixedFooPInvoke());
     }
+#endif
 
     [Test]
     public void EnsureOnly1RefToMscorLib()

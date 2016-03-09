@@ -33,6 +33,17 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug %28Mono%29|AnyCPU'">
+    <Mono>True</Mono>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug %28Mono%29\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;MONO</DefineConstants>
+    <WarningLevel>3</WarningLevel>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -45,11 +56,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AssemblyToReferenceMixed\AssemblyToReferenceMixed.vcxproj">
-      <Project>{378ddf3e-44a4-48cf-be34-f55792ae561c}</Project>
-      <Name>AssemblyToReferenceMixed</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\AssemblyToReferencePreEmbed\AssemblyToReferencePreEmbed.csproj">
       <Project>{E46EF81A-044A-43EF-82BD-F583BC4C045A}</Project>
       <Name>AssemblyToReferencePreEmbed</Name>
@@ -66,7 +72,7 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup Condition="'$(Mono)' == ''">
     <EmbeddedResource Include="..\$(Configuration)\AssemblyToReferenceNative.dll">
       <Link>costura32\AssemblyToReferenceNative.dll</Link>
     </EmbeddedResource>
