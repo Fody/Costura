@@ -113,11 +113,17 @@
       <Name>Template</Name>
     </ProjectReference>
   </ItemGroup>
+  <PropertyGroup Condition="'$(OS)' != 'Unix'">
+    <SymbolsExtension>pdb</SymbolsExtension>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(OS)' == 'Unix'">
+    <SymbolsExtension>mdb</SymbolsExtension>
+  </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(SolutionDir)Template\bin\$(ConfigurationName)\Template.dll">
       <InProject>false</InProject>
     </EmbeddedResource>
-    <EmbeddedResource Include="$(SolutionDir)Template\bin\$(ConfigurationName)\Template.pdb">
+    <EmbeddedResource Include="$(SolutionDir)Template\bin\$(ConfigurationName)\Template.$(SymbolsExtension)">
       <InProject>false</InProject>
     </EmbeddedResource>
   </ItemGroup>
