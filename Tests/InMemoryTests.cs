@@ -37,7 +37,7 @@ public class InMemoryTests
 
         afterAssemblyPath = beforeAssemblyPath.Replace(".dll", "InMemory.dll");
         File.Copy(beforeAssemblyPath, afterAssemblyPath, true);
-        File.Copy(beforeAssemblyPath.Replace(".dll", ".pdb"), afterAssemblyPath.Replace(".dll", ".pdb"), true);
+        File.Copy(beforeAssemblyPath.Replace(".dll", GetSymbolFileExtension()), afterAssemblyPath.Replace(".dll", GetSymbolFileExtension()), true);
 
         var readerParams = new ReaderParameters { ReadSymbols = true };
 
@@ -75,7 +75,7 @@ public class InMemoryTests
 
         var isolatedPath = Path.Combine(Path.GetTempPath(), "CosturaIsolatedMemory.dll");
         File.Copy(afterAssemblyPath, isolatedPath, true);
-        File.Copy(afterAssemblyPath.Replace(".dll", ".pdb"), isolatedPath.Replace(".dll", ".pdb"), true);
+        File.Copy(afterAssemblyPath.Replace(".dll", GetSymbolFileExtension()), isolatedPath.Replace(".dll", GetSymbolFileExtension()), true);
         assembly = Assembly.LoadFile(isolatedPath);
     }
 
@@ -169,5 +169,22 @@ public class InMemoryTests
         Assume.That(typeLoadedWithPartialAssemblyName, Is.Not.Null);
 
         Assert.AreSame(assemblyLoadedByCompileTimeReference, typeLoadedWithPartialAssemblyName.Assembly);
+    }
+
+    private static string GetSymbolFileExtension()
+    {
+        if (!IsRunningOnMono())
+        {
+            return ".pdb";
+        }
+        else
+        {
+            return ".mdb";
+        }
+    }
+
+    private static bool IsRunningOnMono()
+    {
+        return Type.GetType("Mono.Runtime") != null;
     }
 }

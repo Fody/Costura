@@ -70,7 +70,7 @@ public class PureDotNetAssemblyTests
 
         var isolatedPath = Path.Combine(Path.GetTempPath(), "CosturaPureDotNetIsolatedMemory.dll");
         File.Copy(afterAssemblyPath, isolatedPath, true);
-        File.Copy(afterAssemblyPath.Replace(".dll", ".pdb"), isolatedPath.Replace(".dll", ".pdb"), true);
+        File.Copy(afterAssemblyPath.Replace(".dll", GetSymbolFileExtension()), isolatedPath.Replace(".dll", GetSymbolFileExtension()), true);
         assembly = Assembly.LoadFile(isolatedPath);
     }
 
