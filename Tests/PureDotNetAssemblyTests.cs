@@ -20,8 +20,17 @@ public class PureDotNetAssemblyTests
 
     public PureDotNetAssemblyTests()
     {
-        beforeAssemblyPath = Path.GetFullPath(@"..\..\..\AssemblyToProcessWithoutUnmanaged\bin\Debug\AssemblyToProcessWithoutUnmanaged.dll");
-        var directoryName = Path.GetDirectoryName(@"..\..\..\Debug\");
+        // Figure out whether we're in bin\debug, bin\release or bin\debug (mono)
+        // All projects will build in the same configuration, so we should know from the project's current
+        // configuration
+
+        var directory = Environment.CurrentDirectory;
+        var directoryParts = directory.Split(Path.DirectorySeparatorChar);
+        var suffix = string.Join(Path.DirectorySeparatorChar.ToString(), directoryParts.Reverse().Take(2).Reverse().ToArray());
+
+        beforeAssemblyPath = Path.GetFullPath(Path.Combine("..", "..", "..", "AssemblyToProcessWithoutUnmanaged", suffix, "AssemblyToProcessWithoutUnmanaged.dll"));
+        var directoryName = Path.GetDirectoryName(Path.Combine("..", "..", "..", "Debug"));
+
 #if (!DEBUG)
         beforeAssemblyPath = beforeAssemblyPath.Replace("Debug", "Release");
         directoryName = directoryName.Replace("Debug", "Release");
