@@ -140,7 +140,7 @@ public class PureDotNetAssemblyTests
         }
         else
         {
-            return ".mdb";
+            return ".dll.mdb";
         }
     }
 

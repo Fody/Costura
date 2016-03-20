@@ -179,7 +179,7 @@ public class InMemoryTests
         }
         else
         {
-            return ".mdb";
+            return ".dll.mdb";
         }
     }
 
