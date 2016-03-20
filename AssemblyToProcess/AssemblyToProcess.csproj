@@ -3,8 +3,6 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{7DEC4E2D-F872-434E-A267-0BAD65299950}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -33,16 +31,17 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug %28Mono%29|AnyCPU'">
-    <Mono>True</Mono>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug (Mono)|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug %28Mono%29\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;MONO</DefineConstants>
-    <WarningLevel>3</WarningLevel>
     <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug (Mono)\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;MONO</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>3</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Mono>True</Mono>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -51,8 +50,11 @@
   <ItemGroup>
     <Compile Include="ClassToTest.cs" />
     <EmbeddedResource Include="..\AssemblyToReferencePreEmbed\bin\$(ConfigurationName)\AssemblyToReferencePreEmbed.dll">
-      <Visible>false</Visible>
+      <Visible>False</Visible>
       <LogicalName>Costura.AssemblyToReferencePreEmbed.dll</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\$(Configuration)\AssemblyToReferenceNative.dll" Condition="'$(Mono)' != 'True'">
+      <Link>costura32\AssemblyToReferenceNative.dll</Link>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -71,11 +73,6 @@
       <Name>ExeToReference</Name>
       <Private>False</Private>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup Condition="'$(Mono)' == ''">
-    <EmbeddedResource Include="..\$(Configuration)\AssemblyToReferenceNative.dll">
-      <Link>costura32\AssemblyToReferenceNative.dll</Link>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
