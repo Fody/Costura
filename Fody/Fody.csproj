@@ -114,16 +114,16 @@
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition="'$(OS)' != 'Unix'">
-    <SymbolsExtension>pdb</SymbolsExtension>
+    <SymbolsExtension>.pdb</SymbolsExtension>
   </PropertyGroup>
   <PropertyGroup Condition="'$(OS)' == 'Unix'">
-    <SymbolsExtension>mdb</SymbolsExtension>
+    <SymbolsExtension>.dll.mdb</SymbolsExtension>
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(SolutionDir)Template\bin\$(ConfigurationName)\Template.dll">
       <InProject>false</InProject>
     </EmbeddedResource>
-    <EmbeddedResource Include="$(SolutionDir)Template\bin\$(ConfigurationName)\Template.$(SymbolsExtension)">
+    <EmbeddedResource Include="$(SolutionDir)Template\bin\$(ConfigurationName)\Template$(SymbolsExtension)">
       <InProject>false</InProject>
     </EmbeddedResource>
   </ItemGroup>
@@ -134,7 +134,7 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\PepitaPackage.1.20.1.0\build\PepitaPackage.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\PepitaPackage.1.20.1.0\build\PepitaPackage.targets'))" />
     <Error Condition="!Exists('..\packages\Fody.1.29.3\build\portable-net+sl+win+wpa+wp\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.29.3\build\portable-net+sl+win+wpa+wp\Fody.targets'))" />
-    <Error Condition="!Exists('..\packages\GitVersionTask.3.4.1\build\portable-net+sl+win+wpa+wp\GitVersionTask.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GitVersionTask.3.4.1\build\portable-net+sl+win+wpa+wp\GitVersionTask.targets'))" />
+    <Error Condition="!Exists('..\packages\GitVersionTask.3.4.1\Build\portable-net+sl+win+wpa+wp\GitVersionTask.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GitVersionTask.3.4.1\Build\portable-net+sl+win+wpa+wp\GitVersionTask.targets'))" />
   </Target>
   <Import Project="..\packages\PepitaPackage.1.20.1.0\build\PepitaPackage.targets" Condition="Exists('..\packages\PepitaPackage.1.20.1.0\build\PepitaPackage.targets')" />
   <Target Name="AfterBuild">
@@ -145,7 +145,7 @@
     <MakeDir Directories="$(SolutionDir)NuGetBuild" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\Costura.Fody.nuspec" DestinationFolder="$(SolutionDir)NuGetBuild" />
     <Copy SourceFiles="$(OutputPath)\Costura.Fody.dll" DestinationFolder="$(SolutionDir)NuGetBuild" />
-    <Copy SourceFiles="$(OutputPath)\Costura.Fody.pdb" DestinationFolder="$(SolutionDir)NuGetBuild" />
+    <Copy SourceFiles="$(OutputPath)\Costura.Fody$(SymbolsExtension)" DestinationFolder="$(SolutionDir)NuGetBuild" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\init.ps1" DestinationFolder="$(SolutionDir)NuGetBuild\Tools" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\commands.psm1" DestinationFolder="$(SolutionDir)NuGetBuild\Tools" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\FodyWeavers.xml.install.xdt" DestinationFolder="$(SolutionDir)NuGetBuild\Content" />
@@ -153,5 +153,5 @@
     <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)NuGetBuild" MetadataAssembly="$(OutputPath)\Costura.Fody.dll" />
   </Target>
   <Import Project="..\packages\Fody.1.29.3\build\portable-net+sl+win+wpa+wp\Fody.targets" Condition="Exists('..\packages\Fody.1.29.3\build\portable-net+sl+win+wpa+wp\Fody.targets')" />
-  <Import Project="..\packages\GitVersionTask.3.4.1\build\portable-net+sl+win+wpa+wp\GitVersionTask.targets" Condition="Exists('..\packages\GitVersionTask.3.4.1\build\portable-net+sl+win+wpa+wp\GitVersionTask.targets')" />
+  <Import Project="..\packages\GitVersionTask.3.4.1\Build\portable-net+sl+win+wpa+wp\GitVersionTask.targets" Condition="Exists('..\packages\GitVersionTask.3.4.1\Build\portable-net+sl+win+wpa+wp\GitVersionTask.targets')" />
 </Project>
