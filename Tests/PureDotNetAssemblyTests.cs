@@ -38,7 +38,7 @@ public class PureDotNetAssemblyTests
 
         afterAssemblyPath = beforeAssemblyPath.Replace(".dll", "InMemory.dll");
         File.Copy(beforeAssemblyPath, afterAssemblyPath, true);
-        File.Copy(beforeAssemblyPath.Replace(".dll", ".pdb"), afterAssemblyPath.Replace(".dll", ".pdb"), true);
+        File.Copy(beforeAssemblyPath.Replace(".dll", GetSymbolFileExtension()), afterAssemblyPath.Replace(".dll", GetSymbolFileExtension()), true);
 
         var readerParams = new ReaderParameters { ReadSymbols = true };
 
@@ -55,13 +55,13 @@ public class PureDotNetAssemblyTests
 
         // This should use ILTemplate instead of ILTemplateWithUnmanagedHandler.
         using (var weavingTask = new ModuleWeaver
-            {
-                ModuleDefinition = moduleDefinition,
-                AssemblyResolver = new MockAssemblyResolver(),
-                Config = XElement.Parse("<Costura />"),
-                ReferenceCopyLocalPaths = references,
-                AssemblyFilePath = beforeAssemblyPath
-            })
+        {
+            ModuleDefinition = moduleDefinition,
+            AssemblyResolver = new MockAssemblyResolver(),
+            Config = XElement.Parse("<Costura />"),
+            ReferenceCopyLocalPaths = references,
+            AssemblyFilePath = beforeAssemblyPath
+        })
         {
             weavingTask.Execute();
             var writerParams = new WriterParameters { WriteSymbols = true };
@@ -130,5 +130,22 @@ public class PureDotNetAssemblyTests
         Assume.That(typeLoadedWithPartialAssemblyName, Is.Not.Null);
 
         Assert.AreSame(assemblyLoadedByCompileTimeReference, typeLoadedWithPartialAssemblyName.Assembly);
+    }
+
+    private static string GetSymbolFileExtension()
+    {
+        if (!IsRunningOnMono())
+        {
+            return ".pdb";
+        }
+        else
+        {
+            return ".mdb";
+        }
+    }
+
+    private static bool IsRunningOnMono()
+    {
+        return Type.GetType("Mono.Runtime") != null;
     }
 }
