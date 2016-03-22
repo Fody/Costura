@@ -1,3 +1,6 @@
+git:
+  depth: 9999999
+
 language: csharp
 
 install:
