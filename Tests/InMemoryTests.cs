@@ -24,11 +24,11 @@ public class InMemoryTests
         // All projects will build in the same configuration, so we should know from the project's current
         // configuration
 
-        var directory = Environment.CurrentDirectory;
+		var directory = Path.GetDirectoryName(typeof(InMemoryTests).Assembly.Location);
         var directoryParts = directory.Split(Path.DirectorySeparatorChar);
         var suffix = string.Join(Path.DirectorySeparatorChar.ToString(), directoryParts.Reverse().Take(2).Reverse().ToArray());
 
-        beforeAssemblyPath = Path.GetFullPath(Path.Combine("..", "..", "..", "AssemblyToProcess", suffix, "AssemblyToProcess.dll"));
+        beforeAssemblyPath = Path.GetFullPath(Path.Combine(directory, "..", "..", "..", "AssemblyToProcess", suffix, "AssemblyToProcess.dll"));
         var directoryName = Path.GetDirectoryName(Path.Combine("..", "..", "..", "Debug"));
 #if (!DEBUG)
         beforeAssemblyPath = beforeAssemblyPath.Replace("Debug", "Release");
