@@ -23,12 +23,12 @@ public class TempFileTests
         // All projects will build in the same configuration, so we should know from the project's current
         // configuration
 
-        var directory = Environment.CurrentDirectory;
+		var directory = Path.GetDirectoryName(typeof(TempFileTests).Assembly.Location);
         var directoryParts = directory.Split(Path.DirectorySeparatorChar);
         var suffix = string.Join(Path.DirectorySeparatorChar.ToString(), directoryParts.Reverse().Take(2).Reverse().ToArray());
 
-        beforeAssemblyPath = Path.GetFullPath(Path.Combine("..", "..", "..", "AssemblyToProcess", suffix, "AssemblyToProcess.dll"));
-        var directoryName = Path.GetDirectoryName(Path.Combine("..", "..", "..", "Debug"));
+        beforeAssemblyPath = Path.GetFullPath(Path.Combine(directory, "..", "..", "..", "AssemblyToProcess", suffix, "AssemblyToProcess.dll"));
+        var directoryName = Path.GetDirectoryName(Path.Combine(directory, "..", "..", "..", "Debug"));
 #if (!DEBUG)
         beforeAssemblyPath = beforeAssemblyPath.Replace("Debug", "Release");
         directoryName = directoryName.Replace("Debug", "Release");
@@ -96,6 +96,8 @@ public class TempFileTests
         Assert.AreEqual("Hello", instance2.ExeFoo());
     }
 
+#if MONO
+#else
     [Test]
     public void ThrowException()
     {
@@ -110,6 +112,7 @@ public class TempFileTests
             Assert.IsTrue(exception.StackTrace.Contains("ClassToReference.cs:line"));
         }
     }
+#endif
 
 #if MONO
 #else
@@ -121,7 +124,7 @@ public class TempFileTests
     }
 #endif
 
-    [Test]
+	[Test]
     public void Mixed()
     {
         var instance1 = assembly.GetInstance("ClassToTest");

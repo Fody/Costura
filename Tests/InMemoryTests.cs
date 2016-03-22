@@ -100,6 +100,8 @@ public class InMemoryTests
         Assert.AreEqual("Hello", instance2.ExeFoo());
     }
 
+#if MONO
+#else
     [Test]
     public void ThrowException()
     {
@@ -114,6 +116,7 @@ public class InMemoryTests
             Assert.IsTrue(exception.StackTrace.Contains("ClassToReference.cs:line"));
         }
     }
+#endif
 
 #if MONO
 #else

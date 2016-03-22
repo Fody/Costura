@@ -24,11 +24,11 @@ public class PureDotNetAssemblyTests
         // All projects will build in the same configuration, so we should know from the project's current
         // configuration
 
-        var directory = Environment.CurrentDirectory;
+		var directory = Path.GetDirectoryName(typeof(PureDotNetAssemblyTests).Assembly.Location);
         var directoryParts = directory.Split(Path.DirectorySeparatorChar);
         var suffix = string.Join(Path.DirectorySeparatorChar.ToString(), directoryParts.Reverse().Take(2).Reverse().ToArray());
 
-        beforeAssemblyPath = Path.GetFullPath(Path.Combine("..", "..", "..", "AssemblyToProcessWithoutUnmanaged", suffix, "AssemblyToProcessWithoutUnmanaged.dll"));
+        beforeAssemblyPath = Path.GetFullPath(Path.Combine(directory, "..", "..", "..", "AssemblyToProcessWithoutUnmanaged", suffix, "AssemblyToProcessWithoutUnmanaged.dll"));
         var directoryName = Path.GetDirectoryName(Path.Combine("..", "..", "..", "Debug"));
 
 #if (!DEBUG)
@@ -81,6 +81,10 @@ public class PureDotNetAssemblyTests
         Assert.AreEqual("Hello", instance2.Foo());
     }
 
+	#if MONO
+	// Resolving of symbols is currently not implemented on Mono, this would require changing
+	// the templates to take into account Mono/.NET and read the correct symbols
+	#else
     [Test]
     public void ThrowException()
     {
@@ -95,6 +99,7 @@ public class PureDotNetAssemblyTests
             Assert.IsTrue(exception.StackTrace.Contains("ClassToReference.cs:line"));
         }
     }
+	#endif
 
     [Test]
     public void EnsureOnly1RefToMscorLib()

@@ -1,4 +1,8 @@
 NuGetBuild
+*.csproj~
+*.userprefs
+TestResult.xml
+Fody/Fody_ToBeDeleted.txt
 
 #################
 ## Visual Studio

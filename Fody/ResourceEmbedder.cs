@@ -54,15 +54,26 @@ partial class ModuleWeaver : IDisposable
             {
                 continue;
             }
-            var pdbFullPath = Path.ChangeExtension(fullPath, "pdb");
-            if (File.Exists(pdbFullPath))
+
+			string symbolsPath = null;
+
+			if (Runtime.IsMono())
+			{
+				symbolsPath = fullPath + ".mdb";
+			}
+			else
+			{
+				symbolsPath = Path.ChangeExtension(fullPath, "pdb");
+			}
+
+            if (File.Exists(symbolsPath))
             {
-                resourceName = Embed("costura.", pdbFullPath, !config.DisableCompression);
+                resourceName = Embed("costura.", symbolsPath, !config.DisableCompression);
                 assembliesAdded = true;
 
                 if (config.CreateTemporaryAssemblies)
                 {
-                    checksums.Add(resourceName, CalculateChecksum(pdbFullPath));
+                    checksums.Add(resourceName, CalculateChecksum(symbolsPath));
                 }
             }
         }

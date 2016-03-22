@@ -22,12 +22,12 @@ public class CultureResourceTest
         // All projects will build in the same configuration, so we should know from the project's current
         // configuration
 
-        var directory = Environment.CurrentDirectory;
+		var directory = Path.GetDirectoryName(typeof(CultureResourceTest).Assembly.Location);
         var directoryParts = directory.Split(Path.DirectorySeparatorChar);
         var suffix = string.Join(Path.DirectorySeparatorChar.ToString(), directoryParts.Reverse().Take(2).Reverse().ToArray());
 
-        var beforeAssemblyPath = Path.GetFullPath(Path.Combine("..", "..", "..", "AssemblyToProcess", suffix, "AssemblyToProcess.dll"));
-        var directoryName = Path.GetDirectoryName(Path.Combine("..", "..", "..", "Debug"));
+        var beforeAssemblyPath = Path.GetFullPath(Path.Combine(directory, "..", "..", "..", "AssemblyToProcess", suffix, "AssemblyToProcess.dll"));
+        var directoryName = Path.GetDirectoryName(Path.Combine(directory, "..", "..", "..", "Debug"));
 #if (!DEBUG)
         beforeAssemblyPath = beforeAssemblyPath.Replace("Debug", "Release");
         directoryName = directoryName.Replace("Debug", "Release");
