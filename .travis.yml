@@ -1,0 +1,14 @@
+sudo: required
+dist: trusty
+
+git:
+  depth: 9999999
+
+language: csharp
+
+install:
+  - cd src
+  - ./install.sh
+
+script:
+  - ./build.sh

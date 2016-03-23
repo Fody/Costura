@@ -1,3 +1,15 @@
+## Temporary files
+src/GitVersion.zip
+src/GitVersion
+src/nuget.exe
+NuGetBuild
+TestResult.xml
+Fody/Fody_ToBeDeleted.txt
+
+## MonoDevelop
+*.csproj~
+*.userprefs
+
 #################
 ## Visual Studio
 #################
