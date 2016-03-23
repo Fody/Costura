@@ -2,12 +2,15 @@
 src/GitVersion.zip
 src/GitVersion
 src/nuget.exe
+src/NUnit-2.6.4
+src/NUnit-2.6.4.zip
 NuGetBuild
 TestResult.xml
 Fody/Fody_ToBeDeleted.txt
 
 ## MonoDevelop
 *.csproj~
+*.cs~
 *.userprefs
 
 #################
