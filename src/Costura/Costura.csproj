@@ -60,6 +60,7 @@
     <Compile Include="ResourceEmbedder.cs" />
     <Compile Include="ResourceNameFinder.cs" />
     <Compile Include="WeavingException.cs" />
+    <Compile Include="Runtime.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Mono.Cecil, Version=0.9.6.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
