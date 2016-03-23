@@ -15,16 +15,13 @@ public abstract class BaseCostura
 
     protected void CreateIsolatedAssemblyCopy(string projectName, string config, IEnumerable<string> references, string extension = ".exe")
     {
-        var processingDirectory = Path.GetFullPath($@"..\..\..\{projectName}\bin\Debug");
-#if (!DEBUG)
-        processingDirectory = processingDirectory.Replace("Debug", "Release");
-#endif
+		var processingDirectory = TestPaths.GetProcessingDirectory(projectName);
 
         beforeAssemblyPath = Path.Combine(processingDirectory, projectName + extension);
 
         afterAssemblyPath = beforeAssemblyPath.Replace(extension, Suffix + extension);
         File.Copy(beforeAssemblyPath, afterAssemblyPath, true);
-        File.Copy(beforeAssemblyPath.Replace(extension, ".pdb"), afterAssemblyPath.Replace(extension, ".pdb"), true);
+        File.Copy(TestPaths.GetSymbolFileName(beforeAssemblyPath), TestPaths.GetSymbolFileName(afterAssemblyPath), true);
 
         var readerParams = new ReaderParameters { ReadSymbols = true };
 
@@ -46,7 +43,7 @@ public abstract class BaseCostura
         Directory.CreateDirectory(Suffix);
         var isolatedPath = Path.GetFullPath(Path.Combine(Suffix, $"Costura{Suffix}.exe"));
         File.Copy(afterAssemblyPath, isolatedPath, true);
-        File.Copy(afterAssemblyPath.Replace(extension, ".pdb"), isolatedPath.Replace(".exe", ".pdb"), true);
+        File.Copy(TestPaths.GetSymbolFileName(afterAssemblyPath), TestPaths.GetSymbolFileName(isolatedPath), true);
     }
 
     protected void LoadAssemblyIntoAppDomain()
