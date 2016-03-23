@@ -84,7 +84,7 @@ static class Common
             if (string.Equals(currentName.Name, name.Name, StringComparison.InvariantCultureIgnoreCase) &&
                 string.Equals(CultureToString(currentName.CultureInfo), CultureToString(name.CultureInfo), StringComparison.InvariantCultureIgnoreCase))
             {
-                Log("Assembly '{0}' already loaded, returning existing assembly", assembly.FullName);
+                Log("Assembly '{0}' already loaded, returning existing assembly", currentName.FullName);
 
                 return assembly;
             }

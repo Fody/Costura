@@ -20,11 +20,11 @@ public class MockAssemblyResolver : IAssemblyResolver
         var firstOrDefault = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x => x.GetName().Name == fullName);
         if (firstOrDefault != null)
         {
-            return AssemblyDefinition.ReadAssembly(firstOrDefault.CodeBase.Replace("file:///", ""));
+            return AssemblyDefinition.ReadAssembly(firstOrDefault.Location);
         }
-        var codeBase = Assembly.Load(fullName).CodeBase.Replace("file:///","");
+        var location = Assembly.Load(fullName).Location;
 
-        return AssemblyDefinition.ReadAssembly(codeBase);
+        return AssemblyDefinition.ReadAssembly(location);
     }
 
     public AssemblyDefinition Resolve(string fullName, ReaderParameters parameters)

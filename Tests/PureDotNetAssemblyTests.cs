@@ -20,8 +20,17 @@ public class PureDotNetAssemblyTests
 
     public PureDotNetAssemblyTests()
     {
-        beforeAssemblyPath = Path.GetFullPath(@"..\..\..\AssemblyToProcessWithoutUnmanaged\bin\Debug\AssemblyToProcessWithoutUnmanaged.dll");
-        var directoryName = Path.GetDirectoryName(@"..\..\..\Debug\");
+        // Figure out whether we're in bin\debug, bin\release or bin\debug (mono)
+        // All projects will build in the same configuration, so we should know from the project's current
+        // configuration
+
+		var directory = Path.GetDirectoryName(typeof(PureDotNetAssemblyTests).Assembly.Location);
+        var directoryParts = directory.Split(Path.DirectorySeparatorChar);
+        var suffix = string.Join(Path.DirectorySeparatorChar.ToString(), directoryParts.Reverse().Take(2).Reverse().ToArray());
+
+        beforeAssemblyPath = Path.GetFullPath(Path.Combine(directory, "..", "..", "..", "AssemblyToProcessWithoutUnmanaged", suffix, "AssemblyToProcessWithoutUnmanaged.dll"));
+        var directoryName = Path.GetDirectoryName(Path.Combine("..", "..", "..", "Debug"));
+
 #if (!DEBUG)
         beforeAssemblyPath = beforeAssemblyPath.Replace("Debug", "Release");
         directoryName = directoryName.Replace("Debug", "Release");
@@ -29,7 +38,7 @@ public class PureDotNetAssemblyTests
 
         afterAssemblyPath = beforeAssemblyPath.Replace(".dll", "InMemory.dll");
         File.Copy(beforeAssemblyPath, afterAssemblyPath, true);
-        File.Copy(beforeAssemblyPath.Replace(".dll", ".pdb"), afterAssemblyPath.Replace(".dll", ".pdb"), true);
+        File.Copy(beforeAssemblyPath.Replace(".dll", GetSymbolFileExtension()), afterAssemblyPath.Replace(".dll", GetSymbolFileExtension()), true);
 
         var readerParams = new ReaderParameters { ReadSymbols = true };
 
@@ -46,13 +55,13 @@ public class PureDotNetAssemblyTests
 
         // This should use ILTemplate instead of ILTemplateWithUnmanagedHandler.
         using (var weavingTask = new ModuleWeaver
-            {
-                ModuleDefinition = moduleDefinition,
-                AssemblyResolver = new MockAssemblyResolver(),
-                Config = XElement.Parse("<Costura />"),
-                ReferenceCopyLocalPaths = references,
-                AssemblyFilePath = beforeAssemblyPath
-            })
+        {
+            ModuleDefinition = moduleDefinition,
+            AssemblyResolver = new MockAssemblyResolver(),
+            Config = XElement.Parse("<Costura />"),
+            ReferenceCopyLocalPaths = references,
+            AssemblyFilePath = beforeAssemblyPath
+        })
         {
             weavingTask.Execute();
             var writerParams = new WriterParameters { WriteSymbols = true };
@@ -61,7 +70,7 @@ public class PureDotNetAssemblyTests
 
         var isolatedPath = Path.Combine(Path.GetTempPath(), "CosturaPureDotNetIsolatedMemory.dll");
         File.Copy(afterAssemblyPath, isolatedPath, true);
-        File.Copy(afterAssemblyPath.Replace(".dll", ".pdb"), isolatedPath.Replace(".dll", ".pdb"), true);
+        File.Copy(afterAssemblyPath.Replace(".dll", GetSymbolFileExtension()), isolatedPath.Replace(".dll", GetSymbolFileExtension()), true);
         assembly = Assembly.LoadFile(isolatedPath);
     }
 
@@ -72,6 +81,10 @@ public class PureDotNetAssemblyTests
         Assert.AreEqual("Hello", instance2.Foo());
     }
 
+	#if MONO
+	// Resolving of symbols is currently not implemented on Mono, this would require changing
+	// the templates to take into account Mono/.NET and read the correct symbols
+	#else
     [Test]
     public void ThrowException()
     {
@@ -86,6 +99,7 @@ public class PureDotNetAssemblyTests
             Assert.IsTrue(exception.StackTrace.Contains("ClassToReference.cs:line"));
         }
     }
+	#endif
 
     [Test]
     public void EnsureOnly1RefToMscorLib()
@@ -105,14 +119,6 @@ public class PureDotNetAssemblyTests
         Assert.IsTrue(moduleDefinition.GetType("Costura.AssemblyLoader").Resolve().CustomAttributes.Any(attr => attr.AttributeType.Name == "CompilerGeneratedAttribute"));
     }
 
-#if DEBUG
-    [Test]
-    public void TemplateHasCorrectSymbols()
-    {
-        Approvals.Verify(Decompiler.Decompile(afterAssemblyPath, "Costura.AssemblyLoader"));
-    }
-#endif
-
     [Test]
     public void PeVerify()
     {
@@ -129,5 +135,22 @@ public class PureDotNetAssemblyTests
         Assume.That(typeLoadedWithPartialAssemblyName, Is.Not.Null);
 
         Assert.AreSame(assemblyLoadedByCompileTimeReference, typeLoadedWithPartialAssemblyName.Assembly);
+    }
+
+    private static string GetSymbolFileExtension()
+    {
+        if (!IsRunningOnMono())
+        {
+            return ".pdb";
+        }
+        else
+        {
+            return ".dll.mdb";
+        }
+    }
+
+    private static bool IsRunningOnMono()
+    {
+        return Type.GetType("Mono.Runtime") != null;
     }
 }

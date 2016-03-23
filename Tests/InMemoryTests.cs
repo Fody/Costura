@@ -20,8 +20,16 @@ public class InMemoryTests
 
     public InMemoryTests()
     {
-        beforeAssemblyPath = Path.GetFullPath(@"..\..\..\AssemblyToProcess\bin\Debug\AssemblyToProcess.dll");
-        var directoryName = Path.GetDirectoryName(@"..\..\..\Debug\");
+        // Figure out whether we're in bin\debug, bin\release or bin\debug (mono)
+        // All projects will build in the same configuration, so we should know from the project's current
+        // configuration
+
+		var directory = Path.GetDirectoryName(typeof(InMemoryTests).Assembly.Location);
+        var directoryParts = directory.Split(Path.DirectorySeparatorChar);
+        var suffix = string.Join(Path.DirectorySeparatorChar.ToString(), directoryParts.Reverse().Take(2).Reverse().ToArray());
+
+        beforeAssemblyPath = Path.GetFullPath(Path.Combine(directory, "..", "..", "..", "AssemblyToProcess", suffix, "AssemblyToProcess.dll"));
+        var directoryName = Path.GetDirectoryName(Path.Combine("..", "..", "..", "Debug"));
 #if (!DEBUG)
         beforeAssemblyPath = beforeAssemblyPath.Replace("Debug", "Release");
         directoryName = directoryName.Replace("Debug", "Release");
@@ -29,7 +37,7 @@ public class InMemoryTests
 
         afterAssemblyPath = beforeAssemblyPath.Replace(".dll", "InMemory.dll");
         File.Copy(beforeAssemblyPath, afterAssemblyPath, true);
-        File.Copy(beforeAssemblyPath.Replace(".dll", ".pdb"), afterAssemblyPath.Replace(".dll", ".pdb"), true);
+        File.Copy(beforeAssemblyPath.Replace(".dll", GetSymbolFileExtension()), afterAssemblyPath.Replace(".dll", GetSymbolFileExtension()), true);
 
         var readerParams = new ReaderParameters { ReadSymbols = true };
 
@@ -39,9 +47,13 @@ public class InMemoryTests
             {
                 beforeAssemblyPath.Replace("AssemblyToProcess", "AssemblyToReference"),
                 beforeAssemblyPath.Replace("AssemblyToProcess", "AssemblyToReferencePreEmbed"),
-                Path.ChangeExtension(beforeAssemblyPath.Replace("AssemblyToProcess", "ExeToReference"), "exe"),
-                Path.Combine(directoryName, "AssemblyToReferenceMixed.dll"),
+                Path.ChangeExtension(beforeAssemblyPath.Replace("AssemblyToProcess", "ExeToReference"), "exe")
             };
+
+#if MONO
+#else
+        references.Add(Path.Combine(directoryName, "AssemblyToReferenceMixed.dll");
+#endif
 
         var assemblyToReferenceDirectory = Path.GetDirectoryName(beforeAssemblyPath.Replace("AssemblyToProcess", "AssemblyToReference"));
         var assemblyToReferenceResources = Directory.GetFiles(assemblyToReferenceDirectory, "*.resources.dll", SearchOption.AllDirectories);
@@ -63,7 +75,7 @@ public class InMemoryTests
 
         var isolatedPath = Path.Combine(Path.GetTempPath(), "CosturaIsolatedMemory.dll");
         File.Copy(afterAssemblyPath, isolatedPath, true);
-        File.Copy(afterAssemblyPath.Replace(".dll", ".pdb"), isolatedPath.Replace(".dll", ".pdb"), true);
+        File.Copy(afterAssemblyPath.Replace(".dll", GetSymbolFileExtension()), isolatedPath.Replace(".dll", GetSymbolFileExtension()), true);
         assembly = Assembly.LoadFile(isolatedPath);
     }
 
@@ -88,6 +100,8 @@ public class InMemoryTests
         Assert.AreEqual("Hello", instance2.ExeFoo());
     }
 
+#if MONO
+#else
     [Test]
     public void ThrowException()
     {
@@ -102,13 +116,17 @@ public class InMemoryTests
             Assert.IsTrue(exception.StackTrace.Contains("ClassToReference.cs:line"));
         }
     }
+#endif
 
+#if MONO
+#else
     [Test]
     public void Native()
     {
         var instance1 = assembly.GetInstance("ClassToTest");
         Assert.AreEqual("Hello", instance1.NativeFoo());
     }
+#endif
 
     [Test]
     public void Mixed()
@@ -117,12 +135,15 @@ public class InMemoryTests
         Assert.AreEqual("Hello", instance1.MixedFoo());
     }
 
+#if MONO
+#else
     [Test]
     public void MixedPInvoke()
     {
         var instance1 = assembly.GetInstance("ClassToTest");
         Assert.AreEqual("Hello", instance1.MixedFooPInvoke());
     }
+#endif
 
     [Test]
     public void EnsureOnly1RefToMscorLib()
@@ -135,15 +156,6 @@ public class InMemoryTests
     {
         Assert.IsTrue(moduleDefinition.GetType("Costura.AssemblyLoader").Resolve().CustomAttributes.Any(attr => attr.AttributeType.Name == "CompilerGeneratedAttribute"));
     }
-
-#if DEBUG
-    [Test]
-    public void TemplateHasCorrectSymbols()
-    {
-        Approvals.Verify(Decompiler.Decompile(afterAssemblyPath, "Costura.AssemblyLoader"));
-        //Approvals.Verify(Decompiler.Decompile(Path.GetFullPath(@"..\..\..\Template\bin\Debug\Template.dll"), "Common"));
-    }
-#endif
 
     [Test]
     public void PeVerify()
@@ -160,5 +172,22 @@ public class InMemoryTests
         Assume.That(typeLoadedWithPartialAssemblyName, Is.Not.Null);
 
         Assert.AreSame(assemblyLoadedByCompileTimeReference, typeLoadedWithPartialAssemblyName.Assembly);
+    }
+
+    private static string GetSymbolFileExtension()
+    {
+        if (!IsRunningOnMono())
+        {
+            return ".pdb";
+        }
+        else
+        {
+            return ".dll.mdb";
+        }
+    }
+
+    private static bool IsRunningOnMono()
+    {
+        return Type.GetType("Mono.Runtime") != null;
     }
 }
