@@ -1,3 +1,20 @@
+## Temporary files
+src/GitVersion.zip
+src/GitVersion
+src/nuget.exe
+src/NUnit-2.6.4
+src/NUnit-2.6.4.zip
+src/NUnit.ApplicationDomain.zip
+src/nunit.applicationdomain-5.0.2
+NuGetBuild
+TestResult.xml
+Fody/Fody_ToBeDeleted.txt
+
+## MonoDevelop
+*.csproj~
+*.cs~
+*.userprefs
+
 #################
 ## Visual Studio
 #################

@@ -91,13 +91,24 @@ partial class ModuleWeaver
     }
 
     ModuleDefinition GetTemplateModuleDefinition()
-    {
-        var readerParameters = new ReaderParameters
-        {
-            AssemblyResolver = AssemblyResolver,
-            ReadSymbols = true,
-            SymbolStream = GetType().Assembly.GetManifestResourceStream("Costura.bin.Template.pdb"),
-        };
+	{
+		// Depending on the environment Costura was built with, we may have .NET or Mono symbols
+		var dotnetSymbols = GetType().Assembly.GetManifestResourceStream("Costura.Fody.Template.pdb");
+		var monoSymbols = GetType().Assembly.GetManifestResourceStream("Costura.Fody.Template.dll.mdb");
+
+		Stream symbols;
+		bool readSymbols;
+
+		// We can only load .NET symbols on .NET & mono symbols on mono
+		symbols = Runtime.IsMono() ? monoSymbols : dotnetSymbols;
+		readSymbols = symbols != null;
+
+		var readerParameters = new ReaderParameters
+		{
+			AssemblyResolver = AssemblyResolver,
+			ReadSymbols = readSymbols,
+			SymbolStream = symbols,
+		};
 
         using (var resourceStream = GetType().Assembly.GetManifestResourceStream("Costura.bin.Template.dll"))
         {

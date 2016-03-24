@@ -1,9 +1,14 @@
-﻿using ApprovalTests;
+﻿#if MONO
+#else
+using ApprovalTests;
 using ApprovalTests.Namers;
+#endif
 using NUnit.Framework;
 
 public abstract class BaseCosturaTest : BaseCostura
 {
+#if MONO
+#else
 #if DEBUG
 
     [Test, Category("IL")]
@@ -15,6 +20,7 @@ public abstract class BaseCosturaTest : BaseCostura
         }
     }
 
+#endif
 #endif
 
     [Test, Category("IL")]

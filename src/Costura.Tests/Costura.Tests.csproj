@@ -18,7 +18,8 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants Condition="'$(OS)' == 'Windows_NT'">DEBUG;TRACE</DefineConstants>
+    <DefineConstants Condition="'$(OS)' != 'Windows_NT'">DEBUG;TRACE;MONO</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -27,7 +28,8 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants Condition="'$(OS)' == 'Windows_NT'">TRACE</DefineConstants>
+    <DefineConstants Condition="'$(OS)' != 'Windows_NT'">TRACE;MONO</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -35,15 +37,15 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ApprovalTests, Version=3.0.0.0, Culture=neutral, PublicKeyToken=11bd7d124fc62e0f, processorArchitecture=MSIL">
+    <Reference Condition="'$(OS)' == 'Windows_NT'" Include="ApprovalTests, Version=3.0.0.0, Culture=neutral, PublicKeyToken=11bd7d124fc62e0f, processorArchitecture=MSIL">
       <HintPath>..\packages\ApprovalTests.3.0.10\lib\net40\ApprovalTests.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="ApprovalUtilities, Version=3.0.0.0, Culture=neutral, PublicKeyToken=11bd7d124fc62e0f, processorArchitecture=MSIL">
+    <Reference Condition="'$(OS)' == 'Windows_NT'" Include="ApprovalUtilities, Version=3.0.0.0, Culture=neutral, PublicKeyToken=11bd7d124fc62e0f, processorArchitecture=MSIL">
       <HintPath>..\packages\ApprovalUtilities.3.0.10\lib\net45\ApprovalUtilities.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="ApprovalUtilities.Net45, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Condition="'$(OS)' == 'Windows_NT'" Include="ApprovalUtilities.Net45, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ApprovalUtilities.3.0.10\lib\net45\ApprovalUtilities.Net45.dll</HintPath>
       <Private>True</Private>
     </Reference>
@@ -74,6 +76,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
@@ -102,6 +105,7 @@
     <Compile Include="NativeTests.cs" />
     <Compile Include="TempFileTests.cs" />
     <Compile Include="Verifier.cs" />
+    <Compile Include="TestPaths.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

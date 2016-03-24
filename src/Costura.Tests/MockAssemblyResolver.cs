@@ -17,14 +17,15 @@ public class MockAssemblyResolver : IAssemblyResolver
 
     public AssemblyDefinition Resolve(string fullName)
     {
-        var firstOrDefault = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x => x.GetName().Name == fullName);
-        if (firstOrDefault != null)
-        {
-            return AssemblyDefinition.ReadAssembly(firstOrDefault.CodeBase.Replace("file:///", ""));
-        }
-        var codeBase = Assembly.Load(fullName).CodeBase.Replace("file:///", "");
 
-        return AssemblyDefinition.ReadAssembly(codeBase);
+		var firstOrDefault = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x => x.GetName().Name == fullName);
+		if (firstOrDefault != null)
+		{
+			return AssemblyDefinition.ReadAssembly(firstOrDefault.Location);
+		}
+		var location = Assembly.Load(fullName).Location;
+
+		return AssemblyDefinition.ReadAssembly(location);
     }
 
     public AssemblyDefinition Resolve(string fullName, ReaderParameters parameters)

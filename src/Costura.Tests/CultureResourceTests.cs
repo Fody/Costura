@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.IO;
 using System.Threading;
 using NUnit.Framework;
 
@@ -15,8 +16,8 @@ public class CultureResourceTests : BaseCosturaTest
                 "<Costura />",
                 new string[] {
                     "AssemblyToReference.dll",
-                    "de\\AssemblyToReference.resources.dll",
-                    "fr\\AssemblyToReference.resources.dll",
+					Path.Combine("de", "AssemblyToReference.resources.dll"),
+					Path.Combine("fr", "AssemblyToReference.resources.dll"),
                     "AssemblyToReferencePreEmbedded.dll",
                     "ExeToReference.exe"
                 });
