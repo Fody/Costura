@@ -88,7 +88,7 @@ partial class ModuleWeaver : IDisposable
             {
                 continue;
             }
-            var pdbFullPath = Path.ChangeExtension(fullPath, "pdb");
+			var pdbFullPath = Runtime.GetSymbolFileName(fullPath);
             if (File.Exists(pdbFullPath))
             {
                 resourceName = Embed(prefix, pdbFullPath, !config.DisableCompression);
