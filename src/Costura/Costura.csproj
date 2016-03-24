@@ -43,7 +43,9 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
@@ -126,10 +128,8 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\GitVersionTask.3.3.0\Build\dotnet\GitVersionTask.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GitVersionTask.3.3.0\Build\dotnet\GitVersionTask.targets'))" />
     <Error Condition="!Exists('..\packages\Fody.1.29.2\build\dotnet\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.29.2\build\dotnet\Fody.targets'))" />
-    <Error Condition="!Exists('..\packages\Caseless.Fody.1.3.7\build\dotnet\Caseless.Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Caseless.Fody.1.3.7\build\dotnet\Caseless.Fody.targets'))" />
   </Target>
   <Import Project="..\packages\Fody.1.29.2\build\dotnet\Fody.targets" Condition="Exists('..\packages\Fody.1.29.2\build\dotnet\Fody.targets')" />
-  <Import Project="..\packages\Caseless.Fody.1.3.7\build\dotnet\Caseless.Fody.targets" Condition="Exists('..\packages\Caseless.Fody.1.3.7\build\dotnet\Caseless.Fody.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
