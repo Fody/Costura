@@ -31,6 +31,7 @@ public class Configuration
         ReadBool(config, "IncludeDebugSymbols", b => IncludeDebugSymbols = b);
         ReadBool(config, "DisableCompression", b => DisableCompression = b);
         ReadBool(config, "CreateTemporaryAssemblies", b => CreateTemporaryAssemblies = b);
+        ReadBool(config, "IncludeAllLocalIndirectReferences", b => IncludeAllLocalIndirectReferences = b);
 
         ReadList(config, "ExcludeAssemblies", ExcludeAssemblies);
         ReadList(config, "IncludeAssemblies", IncludeAssemblies);
@@ -53,6 +54,7 @@ public class Configuration
     public List<string> Unmanaged32Assemblies { get; private set; }
     public List<string> Unmanaged64Assemblies { get; private set; }
     public List<string> PreloadOrder { get; private set; }
+    public bool IncludeAllLocalIndirectReferences { get; private set; }
 
     public static void ReadBool(XElement config, string nodeName, Action<bool> setter)
     {

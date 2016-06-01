@@ -71,6 +71,7 @@
     <EmbeddedResource Include="..\Template\ILTemplateWithUnmanagedHandler.cs">
       <Link>template\ILTemplateWithUnmanagedHandler.cs</Link>
     </EmbeddedResource>
+    <Compile Include="AllReferencesFinder.cs" />
     <Compile Include="AssemblyLoaderImporter.cs" />
     <Compile Include="Checksums.cs" />
     <Compile Include="AssemblyInfo.cs" />

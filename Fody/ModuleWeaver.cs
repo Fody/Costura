@@ -24,6 +24,11 @@ public partial class ModuleWeaver
     {
         var config = new Configuration(Config);
 
+        if (config.IncludeAllLocalIndirectReferences)
+        {
+            FindAllLocalReferences(config);
+        }
+
         FindMsCoreReferences();
 
         FixResourceCase();
