@@ -50,6 +50,14 @@ This will copy embedded files to disk before loading them into memory. This is h
 
     <Costura CreateTemporaryAssemblies='true' />
     
+### IncludeAllLocalIndirectReferences
+
+This will make Costura embed all references, indirect ones as well. It will only embed references that are local, meaning that they must reside in the same directory as the assembly being processed.
+
+*Defaults to `false`*
+
+    <Costura IncludeAllLocalIndirectReferences='true' />
+
 ### IncludeDebugSymbols
 
 Controls if .pdbs for reference assemblies are also embedded.
