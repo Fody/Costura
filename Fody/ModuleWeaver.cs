@@ -38,5 +38,6 @@ public partial class ModuleWeaver
 
         AddChecksumsToTemplate();
         BuildUpNameDictionary(config.CreateTemporaryAssemblies, config.PreloadOrder);
+        SetBoolean(loadExistingAssemblyFromDiskField, config.LoadExistingAssemblyFromDisk);
     }
 }

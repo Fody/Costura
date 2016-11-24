@@ -65,6 +65,14 @@ Embedded assemblies are compressed by default, and uncompressed when they are lo
 *Defaults to `false`*
 
     <Costura DisableCompression='false' />
+	
+### DisableCompression
+
+When an assembly which is embedded is present on the disk it is loaded by default. You can turn disk assembly loading off with this option.
+
+*Defaults to `true`*
+
+    <Costura LoadExistingAssemblyFromDisk='false' />	
     
 ### ExcludeAssemblies
 

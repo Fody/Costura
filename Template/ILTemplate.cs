@@ -9,6 +9,8 @@ static class ILTemplate
     static readonly Dictionary<string, string> assemblyNames = new Dictionary<string, string>();
     static readonly Dictionary<string, string> symbolNames = new Dictionary<string, string>();
 
+    static readonly bool loadExistingAssemblyFromDisk;
+
     public static void Attach()
     {
         var currentDomain = AppDomain.CurrentDomain;
@@ -24,10 +26,14 @@ static class ILTemplate
 
         var requestedAssemblyName = new AssemblyName(assemblyName);
 
-        var assembly = Common.ReadExistingAssembly(requestedAssemblyName);
-        if (assembly != null)
+        Assembly assembly;
+        if (loadExistingAssemblyFromDisk)
         {
-            return assembly;
+            assembly = Common.ReadExistingAssembly(requestedAssemblyName);
+            if (assembly != null)
+            {
+                return assembly;
+            }
         }
 
         Common.Log("Loading assembly '{0}' into the AppDomain", requestedAssemblyName);

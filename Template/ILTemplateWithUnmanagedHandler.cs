@@ -17,6 +17,8 @@ static class ILTemplateWithUnmanagedHandler
 
     static readonly Dictionary<string, string> checksums = new Dictionary<string, string>();
 
+    static readonly bool loadExistingAssemblyFromDisk;
+
     public static void Attach()
     {
         //Create a unique Temp directory for the application path.
@@ -41,10 +43,14 @@ static class ILTemplateWithUnmanagedHandler
 
         var requestedAssemblyName = new AssemblyName(assemblyName);
 
-        var assembly = Common.ReadExistingAssembly(requestedAssemblyName);
-        if (assembly != null)
+        Assembly assembly;
+        if (loadExistingAssemblyFromDisk)
         {
-            return assembly;
+            assembly = Common.ReadExistingAssembly(requestedAssemblyName);
+            if (assembly != null)
+            {
+                return assembly;
+            }
         }
 
         Common.Log("Loading assembly '{0}' into the AppDomain", requestedAssemblyName);
