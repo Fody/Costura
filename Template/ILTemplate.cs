@@ -12,7 +12,21 @@ static class ILTemplate
     public static void Attach()
     {
         var currentDomain = AppDomain.CurrentDomain;
-        currentDomain.AssemblyResolve += (s, e) => ResolveAssembly(e.Name);
+	    bool reenterant = false;
+	    currentDomain.AssemblyResolve += (s, e) =>
+	    {
+		    if (reenterant)
+			    return null;
+		    try
+		    {
+			    reenterant = true;
+			    return ResolveAssembly(e.Name);
+		    }
+		    finally
+		    {
+			    reenterant = false;
+		    }
+	    };
     }
 
     public static Assembly ResolveAssembly(string assemblyName)

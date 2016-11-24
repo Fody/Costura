@@ -30,7 +30,21 @@ static class ILTemplateWithTempAssembly
         Common.PreloadUnmanagedLibraries(md5Hash, tempBasePath, libList, checksums);
 
         var currentDomain = AppDomain.CurrentDomain;
-        currentDomain.AssemblyResolve += (s, e) => ResolveAssembly(e.Name);
+		bool reenterant = false;
+		currentDomain.AssemblyResolve += (s, e) =>
+		{
+			if (reenterant)
+				return null;
+			try
+			{
+				reenterant = true;
+				return ResolveAssembly(e.Name);
+			}
+			finally
+			{
+				reenterant = false;
+			}
+		};
     }
 
     public static Assembly ResolveAssembly(string assemblyName)
