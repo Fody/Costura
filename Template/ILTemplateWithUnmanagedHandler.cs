@@ -29,7 +29,21 @@ static class ILTemplateWithUnmanagedHandler
         Common.PreloadUnmanagedLibraries(md5Hash, tempBasePath, unmanagedAssemblies, checksums);
 
         var currentDomain = AppDomain.CurrentDomain;
-        currentDomain.AssemblyResolve += (s, e) => ResolveAssembly(e.Name);
+		var reenterant = new Dictionary<string, object>();
+		currentDomain.AssemblyResolve += (s, e) =>
+		{
+			if (reenterant.ContainsKey(e.Name))
+				return null;
+			try
+			{
+				reenterant[e.Name] = null;
+				return ResolveAssembly(e.Name);
+			}
+			finally
+			{
+				reenterant.Remove(e.Name);
+			}
+		};
     }
 
     public static Assembly ResolveAssembly(string assemblyName)

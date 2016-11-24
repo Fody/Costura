@@ -12,7 +12,21 @@ static class ILTemplate
     public static void Attach()
     {
         var currentDomain = AppDomain.CurrentDomain;
-        currentDomain.AssemblyResolve += (s, e) => ResolveAssembly(e.Name);
+	    var reenterant =  new Dictionary<string, object>();
+	    currentDomain.AssemblyResolve += (s, e) =>
+	    {
+		    if (reenterant.ContainsKey(e.Name))
+			    return null;
+		    try
+		    {
+			    reenterant[e.Name] = null;
+			    return ResolveAssembly(e.Name);
+		    }
+		    finally
+		    {
+			    reenterant.Remove(e.Name);
+		    }
+	    };
     }
 
     public static Assembly ResolveAssembly(string assemblyName)
