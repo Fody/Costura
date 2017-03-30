@@ -8,6 +8,7 @@ static class ILTemplate
 
     static readonly Dictionary<string, string> assemblyNames = new Dictionary<string, string>();
     static readonly Dictionary<string, string> symbolNames = new Dictionary<string, string>();
+    static readonly Object syncRoot = new Object();
 
     public static void Attach()
     {
@@ -35,12 +36,18 @@ static class ILTemplate
         assembly = Common.ReadFromEmbeddedResources(assemblyNames, symbolNames, requestedAssemblyName);
         if (assembly == null)
         {
-            nullCache.Add(assemblyName, true);
+            lock(syncRoot){       
+                assembly = Common.ReadFromEmbeddedResources(assemblyNames, symbolNames, requestedAssemblyName);
+                if (assembly == null)
+                {
+                    nullCache.Add(assemblyName, true);
 
-            // Handles retargeted assemblies like PCL
-            if (requestedAssemblyName.Flags == AssemblyNameFlags.Retargetable)
-            {
-                assembly = Assembly.Load(requestedAssemblyName);
+                    // Handles retargeted assemblies like PCL
+                    if (requestedAssemblyName.Flags == AssemblyNameFlags.Retargetable)
+                    {
+                        assembly = Assembly.Load(requestedAssemblyName);
+                    }
+                }
             }
         }
         return assembly;
