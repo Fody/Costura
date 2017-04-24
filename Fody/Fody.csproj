@@ -38,19 +38,19 @@
   <ItemGroup>
     <Reference Include="Mono.Cecil, Version=0.9.5.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Lib\Cecil\Mono.Cecil.dll</HintPath>
+      <HintPath>$(SolutionDir)\Lib\Cecil\Mono.Cecil.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Cecil.Mdb, Version=0.9.5.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Lib\Cecil\Mono.Cecil.Mdb.dll</HintPath>
+      <HintPath>$(SolutionDir)\Lib\Cecil\Mono.Cecil.Mdb.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Cecil.Pdb, Version=0.9.5.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Lib\Cecil\Mono.Cecil.Pdb.dll</HintPath>
+      <HintPath>$(SolutionDir)\Lib\Cecil\Mono.Cecil.Pdb.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Cecil.Rocks, Version=0.9.5.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Lib\Cecil\Mono.Cecil.Rocks.dll</HintPath>
+      <HintPath>$(SolutionDir)\Lib\Cecil\Mono.Cecil.Rocks.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -59,16 +59,16 @@
     <None Include="FodyWeavers.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\Template\Common.cs">
+    <EmbeddedResource Include="$(SolutionDir)\Template\Common.cs">
       <Link>template\Common.cs</Link>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\Template\ILTemplate.cs">
+    <EmbeddedResource Include="$(SolutionDir)\Template\ILTemplate.cs">
       <Link>template\ILTemplate.cs</Link>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\Template\ILTemplateWithTempAssembly.cs">
+    <EmbeddedResource Include="$(SolutionDir)\Template\ILTemplateWithTempAssembly.cs">
       <Link>template\ILTemplateWithTempAssembly.cs</Link>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\Template\ILTemplateWithUnmanagedHandler.cs">
+    <EmbeddedResource Include="$(SolutionDir)\Template\ILTemplateWithUnmanagedHandler.cs">
       <Link>template\ILTemplateWithUnmanagedHandler.cs</Link>
     </EmbeddedResource>
     <Compile Include="AssemblyLoaderImporter.cs" />
@@ -95,7 +95,9 @@
     <None Include="NugetAssets\FodyWeavers.xml.install.xdt" />
     <None Include="NugetAssets\init.ps1" />
     <None Include="NugetAssets\commands.psm1" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Template\Template.csproj">
@@ -117,11 +119,11 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\PepitaPackage.1.20.1.0\build\PepitaPackage.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\PepitaPackage.1.20.1.0\build\PepitaPackage.targets'))" />
-    <Error Condition="!Exists('..\packages\GitVersionTask.1.3.3\Build\GitVersionTask.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GitVersionTask.1.3.3\Build\GitVersionTask.targets'))" />
-    <Error Condition="!Exists('..\packages\Fody.1.29.3\build\portable-net+sl+win+wpa+wp\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.29.3\build\portable-net+sl+win+wpa+wp\Fody.targets'))" />
+    <Error Condition="!Exists('$(SolutionDir)\packages\Fody.2.0.2\build\portable-net+sl+win+wpa+wp\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\packages\Fody.2.0.2\build\portable-net+sl+win+wpa+wp\Fody.targets'))" />
+    <Error Condition="!Exists('$(SolutionDir)\packages\GitVersionTask.3.6.5\build\portable-net+sl+win+wpa+wp\GitVersionTask.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\packages\GitVersionTask.3.6.5\build\portable-net+sl+win+wpa+wp\GitVersionTask.targets'))" />
+    <Error Condition="!Exists('$(SolutionDir)\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets'))" />
   </Target>
-  <Import Project="..\packages\PepitaPackage.1.20.1.0\build\PepitaPackage.targets" Condition="Exists('..\packages\PepitaPackage.1.20.1.0\build\PepitaPackage.targets')" />
+  <Import Project="$(SolutionDir)\packages\PepitaPackage.1.20.1.0\build\PepitaPackage.targets" Condition="Exists('$(SolutionDir)\packages\PepitaPackage.1.20.1.0\build\PepitaPackage.targets')" />
   <Target Name="AfterBuild">
     <ItemGroup>
       <FilesToDelete Include="$(SolutionDir)NuGetBuild\**\*.*" />
@@ -137,6 +139,7 @@
     <Copy SourceFiles="$(ProjectDir)NugetAssets\FodyWeavers.xml.uninstall.xdt" DestinationFolder="$(SolutionDir)NuGetBuild\Content" />
     <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)NuGetBuild" MetadataAssembly="$(OutputPath)\Costura.Fody.dll" />
   </Target>
-  <Import Project="..\packages\GitVersionTask.1.3.3\Build\GitVersionTask.targets" Condition="Exists('..\packages\GitVersionTask.1.3.3\Build\GitVersionTask.targets')" />
-  <Import Project="..\packages\Fody.1.29.3\build\portable-net+sl+win+wpa+wp\Fody.targets" Condition="Exists('..\packages\Fody.1.29.3\build\portable-net+sl+win+wpa+wp\Fody.targets')" />
+  <Import Project="$(SolutionDir)\packages\Fody.2.0.2\build\portable-net+sl+win+wpa+wp\Fody.targets" Condition="Exists('$(SolutionDir)\packages\Fody.2.0.2\build\portable-net+sl+win+wpa+wp\Fody.targets')" />
+  <Import Project="$(SolutionDir)\packages\GitVersionTask.3.6.5\build\portable-net+sl+win+wpa+wp\GitVersionTask.targets" Condition="Exists('$(SolutionDir)\packages\GitVersionTask.3.6.5\build\portable-net+sl+win+wpa+wp\GitVersionTask.targets')" />
+  <Import Project="$(SolutionDir)\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets" Condition="Exists('$(SolutionDir)\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets')" />
 </Project>
