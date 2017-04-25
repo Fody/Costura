@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
+using ApprovalTests;
 using ApprovalTests.Reporters;
 using Mono.Cecil;
 using NUnit.Framework;
@@ -50,7 +51,7 @@ public class InMemoryTests
         using (var weavingTask = new ModuleWeaver
             {
                 ModuleDefinition = moduleDefinition,
-                AssemblyResolver = new MockAssemblyResolver(),
+                //AssemblyResolver = new MockAssemblyResolver(),
                 Config = XElement.Parse("<Costura Unmanaged32Assemblies='AssemblyToReferenceMixed' PreloadOrder='AssemblyToReferenceNative' />"),
                 ReferenceCopyLocalPaths = references,
                 AssemblyFilePath = beforeAssemblyPath

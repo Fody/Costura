@@ -217,7 +217,7 @@ partial class ModuleWeaver
             foreach (var variableDefinition in sourceMethod.Body.Variables)
             {
                 var newVariableDefinition = new VariableDefinition(Resolve(variableDefinition.VariableType));
-                newVariableDefinition.Name = variableDefinition.Name;
+                //newVariableDefinition.Name = variableDefinition.Name;
                 newMethod.Body.Variables.Add(newVariableDefinition);
             }
             CopyInstructions(sourceMethod, newMethod, source, target);
@@ -298,11 +298,11 @@ partial class ModuleWeaver
             newInstruction = (Instruction)instructionConstructorInfo.Invoke(new[] { instruction.OpCode, instruction.Operand });
             newInstruction.Operand = Import(instruction.Operand, source, target);
         }
-        newInstruction.SequencePoint = TranslateSequencePoint(instruction.SequencePoint);
+        //newInstruction.SequencePoint = TranslateSequencePoint(instruction.SequencePoint);
         return newInstruction;
     }
 
-    SequencePoint TranslateSequencePoint(SequencePoint sequencePoint)
+    /*SequencePoint TranslateSequencePoint(SequencePoint sequencePoint)
     {
         if (sequencePoint == null)
             return null;
@@ -321,7 +321,7 @@ partial class ModuleWeaver
             EndLine = sequencePoint.EndLine,
             EndColumn = sequencePoint.EndColumn,
         };
-    }
+    }*/
 
     object Import(object operand, TypeDefinition source, TypeDefinition target)
     {

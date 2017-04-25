@@ -45,7 +45,7 @@
     <Compile Include="ClassToTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AssemblyToReference\AssemblyToReference.csproj">
+    <ProjectReference Include="$(SolutionDir)\AssemblyToReference\AssemblyToReference.csproj">
       <Project>{cd522993-41df-4663-8585-7a8c98f6945e}</Project>
       <Name>AssemblyToReference</Name>
     </ProjectReference>

@@ -43,7 +43,7 @@ public class CultureResourceTest
         using (var weavingTask = new ModuleWeaver
             {
                 ModuleDefinition = moduleDefinition,
-                AssemblyResolver = new MockAssemblyResolver(),
+                //AssemblyResolver = new MockAssemblyResolver(),
                 Config = XElement.Parse("<Costura Unmanaged32Assemblies='AssemblyToReferenceMixed' />"),
                 ReferenceCopyLocalPaths = references,
                 AssemblyFilePath = beforeAssemblyPath
