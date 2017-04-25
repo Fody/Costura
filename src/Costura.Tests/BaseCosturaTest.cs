@@ -1,19 +1,21 @@
-﻿using NUnit.Framework;
+﻿using ApprovalTests;
+using ApprovalTests.Namers;
+using NUnit.Framework;
 
 public abstract class BaseCosturaTest : BaseCostura
 {
-    //#if DEBUG
+#if DEBUG
 
-    //    [Test, Category("IL")]
-    //    public void TemplateHasCorrectSymbols()
-    //    {
-    //        using (ApprovalResults.ForScenario(Suffix))
-    //        {
-    //            Approvals.Verify(Decompiler.Decompile(afterAssemblyPath, "Costura.AssemblyLoader"));
-    //        }
-    //    }
+    [Test, Category("IL")]
+    public void TemplateHasCorrectSymbols()
+    {
+        using (ApprovalResults.ForScenario(Suffix))
+        {
+            Approvals.Verify(Decompiler.Decompile(afterAssemblyPath, "Costura.AssemblyLoader"));
+        }
+    }
 
-    //#endif
+#endif
 
     [Test, Category("IL")]
     public void PeVerify()

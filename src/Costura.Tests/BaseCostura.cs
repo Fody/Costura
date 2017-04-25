@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
 using Mono.Cecil;
+using Mono.Cecil.Pdb;
 
 public abstract class BaseCostura
 {
@@ -21,16 +22,14 @@ public abstract class BaseCostura
 #endif
 
         beforeAssemblyPath = Path.Combine(processingDirectory, projectName + extension);
-
         afterAssemblyPath = beforeAssemblyPath.Replace(extension, Suffix + extension);
-        File.Copy(beforeAssemblyPath, afterAssemblyPath, true);
-        File.Copy(beforeAssemblyPath.Replace(extension, ".pdb"), afterAssemblyPath.Replace(extension, ".pdb"), true);
 
-        Directory.CreateDirectory(Suffix);
-        var isolatedPath = Path.GetFullPath(Path.Combine(Suffix, $"Costura{Suffix}.exe"));
-
-        var readerParams = new ReaderParameters { ReadSymbols = true };
-        var moduleDefinition = ModuleDefinition.ReadModule(afterAssemblyPath, readerParams);
+        var readerParams = new ReaderParameters
+        {
+            ReadSymbols = true,
+            SymbolReaderProvider = new PdbReaderProvider()
+        };
+        var moduleDefinition = ModuleDefinition.ReadModule(beforeAssemblyPath, readerParams);
 
         var weavingTask = new ModuleWeaver
         {
@@ -42,8 +41,17 @@ public abstract class BaseCostura
         };
         weavingTask.Execute();
 
-        var writerParams = new WriterParameters { WriteSymbols = true };
-        moduleDefinition.Write(isolatedPath, writerParams);
+        var writerParams = new WriterParameters
+        {
+            WriteSymbols = true,
+            SymbolWriterProvider = new PdbWriterProvider()
+        };
+        moduleDefinition.Write(afterAssemblyPath, writerParams);
+
+        Directory.CreateDirectory(Suffix);
+        var isolatedPath = Path.GetFullPath(Path.Combine(Suffix, $"Costura{Suffix}.exe"));
+        File.Copy(afterAssemblyPath, isolatedPath, true);
+        File.Copy(afterAssemblyPath.Replace(extension, ".pdb"), isolatedPath.Replace(extension, ".pdb"), true);
     }
 
     protected void LoadAssemblyIntoAppDomain()

@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+using Mono.Cecil.Pdb;
 using Mono.Cecil.Rocks;
 
 partial class ModuleWeaver
@@ -28,8 +28,9 @@ partial class ModuleWeaver
         var readerParameters = new ReaderParameters
         {
             AssemblyResolver = AssemblyResolver,
-            //ReadSymbols = true,
-            //SymbolStream = GetType().Assembly.GetManifestResourceStream("Costura.bin.Template.pdb"),
+            ReadSymbols = true,
+            SymbolReaderProvider = new PdbReaderProvider(),
+            SymbolStream = GetType().Assembly.GetManifestResourceStream("Costura.bin.Template.pdb"),
         };
 
         using (var resourceStream = GetType().Assembly.GetManifestResourceStream("Costura.bin.Template.dll"))
@@ -206,7 +207,11 @@ partial class ModuleWeaver
     {
         foreach (var instruction in templateMethod.Body.Instructions)
         {
-            newMethod.Body.Instructions.Add(CloneInstruction(instruction));
+            var newInstruction = CloneInstruction(instruction);
+            newMethod.Body.Instructions.Add(newInstruction);
+            var sequencePoint = templateMethod.DebugInformation.GetSequencePoint(instruction);
+            if (sequencePoint != null)
+                newMethod.DebugInformation.SequencePoints.Add(TranslateSequencePoint(newInstruction, sequencePoint));
         }
     }
 
@@ -223,33 +228,29 @@ partial class ModuleWeaver
             newInstruction.Operand = Import(instruction.Operand);
         }
         //newInstruction.SequencePoint = TranslateSequencePoint(instruction.SequencePoint);
-
-        if (instruction.Operand != null && newInstruction.Operand == null)
-            Debugger.Break();
-
         return newInstruction;
     }
 
-    //SequencePoint TranslateSequencePoint(SequencePoint sequencePoint)
-    //{
-    //    if (sequencePoint == null)
-    //        return null;
+    SequencePoint TranslateSequencePoint(Instruction instruction, SequencePoint sequencePoint)
+    {
+        if (sequencePoint == null)
+            return null;
 
-    //    var document = new Document(Path.Combine(Path.GetDirectoryName(AssemblyFilePath), Path.GetFileName(sequencePoint.Document.Url)))
-    //    {
-    //        Language = sequencePoint.Document.Language,
-    //        LanguageVendor = sequencePoint.Document.LanguageVendor,
-    //        Type = sequencePoint.Document.Type,
-    //    };
+        var document = new Document(Path.Combine(Path.GetDirectoryName(AssemblyFilePath), Path.GetFileName(sequencePoint.Document.Url)))
+        {
+            Language = sequencePoint.Document.Language,
+            LanguageVendor = sequencePoint.Document.LanguageVendor,
+            Type = sequencePoint.Document.Type,
+        };
 
-    //    return new SequencePoint(document)
-    //    {
-    //        StartLine = sequencePoint.StartLine,
-    //        StartColumn = sequencePoint.StartColumn,
-    //        EndLine = sequencePoint.EndLine,
-    //        EndColumn = sequencePoint.EndColumn,
-    //    };
-    //}
+        return new SequencePoint(instruction, document)
+        {
+            StartLine = sequencePoint.StartLine,
+            StartColumn = sequencePoint.StartColumn,
+            EndLine = sequencePoint.EndLine,
+            EndColumn = sequencePoint.EndColumn,
+        };
+    }
 
     object Import(object operand)
     {
