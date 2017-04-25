@@ -49,7 +49,7 @@ public class PureDotNetAssemblyTests
         using (var weavingTask = new ModuleWeaver
             {
                 ModuleDefinition = moduleDefinition,
-                AssemblyResolver = new MockAssemblyResolver(),
+                //AssemblyResolver = new MockAssemblyResolver(),
                 Config = XElement.Parse("<Costura />"),
                 ReferenceCopyLocalPaths = references,
                 AssemblyFilePath = beforeAssemblyPath

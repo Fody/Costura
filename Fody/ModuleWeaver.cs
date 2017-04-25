@@ -24,7 +24,7 @@ public partial class ModuleWeaver
     {
         var config = new Configuration(Config);
 
-        FindMsCoreReferences();
+        //FindMsCoreReferences();
 
         FixResourceCase();
         ProcessNativeResources(!config.DisableCompression);

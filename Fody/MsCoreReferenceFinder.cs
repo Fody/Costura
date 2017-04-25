@@ -10,7 +10,7 @@ partial class ModuleWeaver
     MethodReference dictionaryOfStringOfStringAdd;
     MethodReference listOfStringAdd;
 
-    void FindMsCoreReferences()
+    /*void FindMsCoreReferences()
     {
         var msCoreLibDefinition = AssemblyResolver.Resolve("mscorlib");
 
@@ -37,5 +37,5 @@ partial class ModuleWeaver
 
         var compilerGeneratedAttribute = msCoreTypes.First(x => x.Name == "CompilerGeneratedAttribute");
         compilerGeneratedAttributeCtor = ModuleDefinition.ImportReference(compilerGeneratedAttribute.Methods.First(x => x.IsConstructor));
-    }
+    }*/
 }

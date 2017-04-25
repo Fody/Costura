@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using Mono.Cecil;
 
-public class MockAssemblyResolver : IAssemblyResolver
+public class MockAssemblyResolver
 {
     public AssemblyDefinition Resolve(AssemblyNameReference name)
     {
