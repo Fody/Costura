@@ -39,9 +39,7 @@ public static class Decompiler
 
     private static string GetPathToILDasm()
     {
-        var path = Path.Combine(ToolLocationHelper.GetPathToDotNetFrameworkSdk(TargetDotNetFrameworkVersion.Version40), @"bin\NETFX 4.0 Tools\ildasm.exe");
-        if (!File.Exists(path))
-            path = path.Replace("v7.0", "v8.0");
+        var path = ToolLocationHelper.GetPathToDotNetFrameworkSdkFile("ildasm.exe", TargetDotNetFrameworkVersion.VersionLatest);
         if (!File.Exists(path))
             Assert.Ignore("ILDasm could not be found");
         return path;

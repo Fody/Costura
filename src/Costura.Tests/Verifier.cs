@@ -32,9 +32,7 @@ public static class Verifier
 
     static string GetPathToPEVerify()
     {
-        var path = Path.Combine(ToolLocationHelper.GetPathToDotNetFrameworkSdk(TargetDotNetFrameworkVersion.Version40), @"bin\NETFX 4.0 Tools\peverify.exe");
-        if (!File.Exists(path))
-            path = path.Replace("v7.0", "v8.0");
+        var path = ToolLocationHelper.GetPathToDotNetFrameworkSdkFile("peverify.exe", TargetDotNetFrameworkVersion.VersionLatest);
         if (!File.Exists(path))
             Assert.Ignore("PEVerify could not be found");
         return path;
