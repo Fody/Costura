@@ -37,7 +37,7 @@ namespace BuildNuGetPackage
 
             var propertyProvider = new PropertyProvider()
             {
-                { "version", GitVersionInformation.NuGetVersionV2 + GitVersionInformation.BuildMetaDataPadded }
+                { "version", GitVersionInformation.NuGetVersionV2 }
             };
 
             var packageBuilder = new PackageBuilder();
