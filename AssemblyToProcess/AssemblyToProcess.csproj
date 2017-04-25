@@ -40,35 +40,35 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClassToTest.cs" />
-    <EmbeddedResource Include="..\AssemblyToReferencePreEmbed\bin\$(ConfigurationName)\AssemblyToReferencePreEmbed.dll">
+    <EmbeddedResource Include="$(SolutionDir)\AssemblyToReferencePreEmbed\bin\$(ConfigurationName)\AssemblyToReferencePreEmbed.dll">
       <Visible>false</Visible>
       <LogicalName>Costura.AssemblyToReferencePreEmbed.dll</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AssemblyToReferenceMixed\AssemblyToReferenceMixed.vcxproj">
+    <ProjectReference Include="$(SolutionDir)\AssemblyToReferenceMixed\AssemblyToReferenceMixed.vcxproj">
       <Project>{378ddf3e-44a4-48cf-be34-f55792ae561c}</Project>
       <Name>AssemblyToReferenceMixed</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\AssemblyToReferencePreEmbed\AssemblyToReferencePreEmbed.csproj">
+    <ProjectReference Include="$(SolutionDir)\AssemblyToReferencePreEmbed\AssemblyToReferencePreEmbed.csproj">
       <Project>{E46EF81A-044A-43EF-82BD-F583BC4C045A}</Project>
       <Name>AssemblyToReferencePreEmbed</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\AssemblyToReference\AssemblyToReference.csproj">
+    <ProjectReference Include="$(SolutionDir)\AssemblyToReference\AssemblyToReference.csproj">
       <Project>{CD522993-41DF-4663-8585-7A8C98F6945E}</Project>
       <Name>AssemblyToReference</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\ExeToReference\ExeToReference.csproj">
+    <ProjectReference Include="$(SolutionDir)\ExeToReference\ExeToReference.csproj">
       <Project>{EBB72892-E287-42DF-BB25-464B1D269069}</Project>
       <Name>ExeToReference</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\$(Configuration)\AssemblyToReferenceNative.dll">
+    <EmbeddedResource Include="$(SolutionDir)\$(Configuration)\AssemblyToReferenceNative.dll">
       <Link>costura32\AssemblyToReferenceNative.dll</Link>
     </EmbeddedResource>
   </ItemGroup>
