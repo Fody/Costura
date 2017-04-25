@@ -10,7 +10,7 @@ partial class ModuleWeaver
 
     void FindMsCoreReferences()
     {
-        var msCoreLibDefinition = AssemblyResolver.Resolve("mscorlib");
+        var msCoreLibDefinition = AssemblyResolver.Resolve(new AssemblyNameReference("mscorlib", null));
         var msCoreTypes = msCoreLibDefinition.MainModule.Types;
 
         var objectDefinition = msCoreTypes.FirstOrDefault(x => x.Name == "Object");

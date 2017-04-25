@@ -1,8 +1,8 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Xml.Linq;
 using System.Reflection;
-using System.Collections.Generic;
+using System.Xml.Linq;
 using Mono.Cecil;
 
 public abstract class BaseCostura
@@ -26,8 +26,10 @@ public abstract class BaseCostura
         File.Copy(beforeAssemblyPath, afterAssemblyPath, true);
         File.Copy(beforeAssemblyPath.Replace(extension, ".pdb"), afterAssemblyPath.Replace(extension, ".pdb"), true);
 
-        var readerParams = new ReaderParameters { ReadSymbols = true };
+        Directory.CreateDirectory(Suffix);
+        var isolatedPath = Path.GetFullPath(Path.Combine(Suffix, $"Costura{Suffix}.exe"));
 
+        var readerParams = new ReaderParameters { ReadSymbols = true };
         var moduleDefinition = ModuleDefinition.ReadModule(afterAssemblyPath, readerParams);
 
         var weavingTask = new ModuleWeaver
@@ -38,15 +40,10 @@ public abstract class BaseCostura
             ReferenceCopyLocalPaths = references.Select(r => Path.Combine(processingDirectory, r)).ToList(),
             AssemblyFilePath = beforeAssemblyPath
         };
-
         weavingTask.Execute();
-        var writerParams = new WriterParameters { WriteSymbols = true };
-        moduleDefinition.Write(afterAssemblyPath, writerParams);
 
-        Directory.CreateDirectory(Suffix);
-        var isolatedPath = Path.GetFullPath(Path.Combine(Suffix, $"Costura{Suffix}.exe"));
-        File.Copy(afterAssemblyPath, isolatedPath, true);
-        File.Copy(afterAssemblyPath.Replace(extension, ".pdb"), isolatedPath.Replace(".exe", ".pdb"), true);
+        var writerParams = new WriterParameters { WriteSymbols = true };
+        moduleDefinition.Write(isolatedPath, writerParams);
     }
 
     protected void LoadAssemblyIntoAppDomain()

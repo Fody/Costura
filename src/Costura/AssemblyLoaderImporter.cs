@@ -25,34 +25,44 @@ partial class ModuleWeaver
 
     void ImportAssemblyLoader(bool createTemporaryAssemblies)
     {
-        var moduleDefinition = GetTemplateModuleDefinition();
-
-        if (createTemporaryAssemblies)
+        var readerParameters = new ReaderParameters
         {
-            sourceType = moduleDefinition.Types.First(x => x.Name == "ILTemplateWithTempAssembly");
-            DumpSource("ILTemplateWithTempAssembly");
-        }
-        else if (hasUnmanaged)
-        {
-            sourceType = moduleDefinition.Types.First(x => x.Name == "ILTemplateWithUnmanagedHandler");
-            DumpSource("ILTemplateWithUnmanagedHandler");
-        }
-        else
-        {
-            sourceType = moduleDefinition.Types.First(x => x.Name == "ILTemplate");
-            DumpSource("ILTemplate");
-        }
-        commonType = moduleDefinition.Types.First(x => x.Name == "Common");
-        DumpSource("Common");
+            AssemblyResolver = AssemblyResolver,
+            //ReadSymbols = true,
+            //SymbolStream = GetType().Assembly.GetManifestResourceStream("Costura.bin.Template.pdb"),
+        };
 
-        targetType = new TypeDefinition("Costura", "AssemblyLoader", sourceType.Attributes, Resolve(sourceType.BaseType));
-        targetType.CustomAttributes.Add(new CustomAttribute(compilerGeneratedAttributeCtor));
-        ModuleDefinition.Types.Add(targetType);
-        CopyFields(sourceType);
-        CopyMethod(sourceType.Methods.First(x => x.Name == "ResolveAssembly"));
+        using (var resourceStream = GetType().Assembly.GetManifestResourceStream("Costura.bin.Template.dll"))
+        {
+            var moduleDefinition = ModuleDefinition.ReadModule(resourceStream, readerParameters);
 
-        loaderCctor = CopyMethod(sourceType.Methods.First(x => x.IsConstructor && x.IsStatic));
-        attachMethod = CopyMethod(sourceType.Methods.First(x => x.Name == "Attach"));
+            if (createTemporaryAssemblies)
+            {
+                sourceType = moduleDefinition.Types.First(x => x.Name == "ILTemplateWithTempAssembly");
+                DumpSource("ILTemplateWithTempAssembly");
+            }
+            else if (hasUnmanaged)
+            {
+                sourceType = moduleDefinition.Types.First(x => x.Name == "ILTemplateWithUnmanagedHandler");
+                DumpSource("ILTemplateWithUnmanagedHandler");
+            }
+            else
+            {
+                sourceType = moduleDefinition.Types.First(x => x.Name == "ILTemplate");
+                DumpSource("ILTemplate");
+            }
+            commonType = moduleDefinition.Types.First(x => x.Name == "Common");
+            DumpSource("Common");
+
+            targetType = new TypeDefinition("Costura", "AssemblyLoader", sourceType.Attributes, Resolve(sourceType.BaseType));
+            targetType.CustomAttributes.Add(new CustomAttribute(compilerGeneratedAttributeCtor));
+            ModuleDefinition.Types.Add(targetType);
+            CopyFields(sourceType);
+            CopyMethod(sourceType.Methods.First(x => x.Name == "ResolveAssembly"));
+
+            loaderCctor = CopyMethod(sourceType.Methods.First(x => x.IsConstructor && x.IsStatic));
+            attachMethod = CopyMethod(sourceType.Methods.First(x => x.Name == "Attach"));
+        }
     }
 
     void DumpSource(string file)
@@ -87,21 +97,6 @@ partial class ModuleWeaver
                 preload64ListField = newField;
             if (field.Name == "checksums")
                 checksumsField = newField;
-        }
-    }
-
-    ModuleDefinition GetTemplateModuleDefinition()
-    {
-        var readerParameters = new ReaderParameters
-        {
-            AssemblyResolver = AssemblyResolver,
-            ReadSymbols = true,
-            SymbolStream = GetType().Assembly.GetManifestResourceStream("Costura.bin.Template.pdb"),
-        };
-
-        using (var resourceStream = GetType().Assembly.GetManifestResourceStream("Costura.bin.Template.dll"))
-        {
-            return ModuleDefinition.ReadModule(resourceStream, readerParameters);
         }
     }
 
@@ -151,7 +146,7 @@ partial class ModuleWeaver
             foreach (var variableDefinition in templateMethod.Body.Variables)
             {
                 var newVariableDefinition = new VariableDefinition(Resolve(variableDefinition.VariableType));
-                newVariableDefinition.Name = variableDefinition.Name;
+                //newVariableDefinition.Name = variableDefinition.Name;
                 newMethod.Body.Variables.Add(newVariableDefinition);
             }
             CopyInstructions(templateMethod, newMethod);
@@ -227,7 +222,7 @@ partial class ModuleWeaver
             newInstruction = (Instruction)instructionConstructorInfo.Invoke(new[] { instruction.OpCode, instruction.Operand });
             newInstruction.Operand = Import(instruction.Operand);
         }
-        newInstruction.SequencePoint = TranslateSequencePoint(instruction.SequencePoint);
+        //newInstruction.SequencePoint = TranslateSequencePoint(instruction.SequencePoint);
 
         if (instruction.Operand != null && newInstruction.Operand == null)
             Debugger.Break();
@@ -235,26 +230,26 @@ partial class ModuleWeaver
         return newInstruction;
     }
 
-    SequencePoint TranslateSequencePoint(SequencePoint sequencePoint)
-    {
-        if (sequencePoint == null)
-            return null;
+    //SequencePoint TranslateSequencePoint(SequencePoint sequencePoint)
+    //{
+    //    if (sequencePoint == null)
+    //        return null;
 
-        var document = new Document(Path.Combine(Path.GetDirectoryName(AssemblyFilePath), Path.GetFileName(sequencePoint.Document.Url)))
-        {
-            Language = sequencePoint.Document.Language,
-            LanguageVendor = sequencePoint.Document.LanguageVendor,
-            Type = sequencePoint.Document.Type,
-        };
+    //    var document = new Document(Path.Combine(Path.GetDirectoryName(AssemblyFilePath), Path.GetFileName(sequencePoint.Document.Url)))
+    //    {
+    //        Language = sequencePoint.Document.Language,
+    //        LanguageVendor = sequencePoint.Document.LanguageVendor,
+    //        Type = sequencePoint.Document.Type,
+    //    };
 
-        return new SequencePoint(document)
-        {
-            StartLine = sequencePoint.StartLine,
-            StartColumn = sequencePoint.StartColumn,
-            EndLine = sequencePoint.EndLine,
-            EndColumn = sequencePoint.EndColumn,
-        };
-    }
+    //    return new SequencePoint(document)
+    //    {
+    //        StartLine = sequencePoint.StartLine,
+    //        StartColumn = sequencePoint.StartColumn,
+    //        EndLine = sequencePoint.EndLine,
+    //        EndColumn = sequencePoint.EndColumn,
+    //    };
+    //}
 
     object Import(object operand)
     {
