@@ -5,7 +5,7 @@ public class MixedAndNativeTests : BaseCosturaTest
 {
     protected override string Suffix => "MixedAndNative";
 
-    [TestFixtureSetUp]
+    [OneTimeSetUp]
     public void CreateAssembly()
     {
         if (AppDomainRunner.IsNotInTestAppDomain)

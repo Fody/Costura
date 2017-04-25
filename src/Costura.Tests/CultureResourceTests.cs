@@ -7,7 +7,7 @@ public class CultureResourceTests : BaseCosturaTest
 {
     protected override string Suffix => "Culture";
 
-    [TestFixtureSetUp]
+    [OneTimeSetUp]
     public void CreateAssembly()
     {
         if (AppDomainRunner.IsNotInTestAppDomain)

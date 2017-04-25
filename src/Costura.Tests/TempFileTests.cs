@@ -5,7 +5,7 @@ public class TempFileTests : BasicTests
 {
     protected override string Suffix => "TempFile";
 
-    [TestFixtureSetUp]
+    [OneTimeSetUp]
     public void CreateAssembly()
     {
         if (AppDomainRunner.IsNotInTestAppDomain)

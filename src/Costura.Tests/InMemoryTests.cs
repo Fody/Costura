@@ -5,7 +5,7 @@ public class InMemoryTests : BasicTests
 {
     protected override string Suffix => "InMemory";
 
-    [TestFixtureSetUp]
+    [OneTimeSetUp]
     public void CreateAssembly()
     {
         if (AppDomainRunner.IsNotInTestAppDomain)
