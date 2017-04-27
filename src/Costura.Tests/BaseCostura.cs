@@ -16,7 +16,9 @@ public abstract class BaseCostura
 
     protected void CreateIsolatedAssemblyCopy(string projectName, string config, IEnumerable<string> references, string extension = ".exe")
     {
-        var processingDirectory = Path.GetFullPath($@"..\..\..\{projectName}\bin\Debug");
+        var testPath = Assembly.GetAssembly(typeof(BaseCostura)).Location;
+
+        var processingDirectory = Path.GetFullPath(Path.Combine(testPath, $@"..\..\..\..\{projectName}\bin\Debug"));
 #if (!DEBUG)
         processingDirectory = processingDirectory.Replace("Debug", "Release");
 #endif
