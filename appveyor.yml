@@ -14,7 +14,7 @@ build:
   verbosity: minimal
 
 test_script:
-  - nunit-console-x86 src\Costura.Tests\bin\Release\Costura.Tests.dll
+  - nunit3-console src\Costura.Tests\bin\Release\Costura.Tests.dll --result=myresults.xml;format=AppVeyor
 
 artifacts:
   - path: artifacts\*.nupkg
