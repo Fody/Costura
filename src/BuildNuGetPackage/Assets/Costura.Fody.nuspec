@@ -15,7 +15,7 @@
     <language>en-AU</language>
     <tags>ILMerge, ILWeaving, Embed, Resource, Fody, Cecil</tags>
     <dependencies>
-      <dependency id="Fody" version="2.0.4" />
+      <dependency id="Fody" version="2.0.6" />
     </dependencies>
   </metadata>
 </package>
