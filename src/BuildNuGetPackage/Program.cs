@@ -54,7 +54,6 @@ namespace BuildNuGetPackage
             });
 
             packageBuilder.PopulateFiles("Assets", new[] {
-                new ManifestFile { Source = "Costura.Fody.targets", Target = "build" },
                 new ManifestFile { Source = "install.ps1", Target = "tools" },
                 new ManifestFile { Source = "uninstall.ps1", Target = "tools" }
             });
