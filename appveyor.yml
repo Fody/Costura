@@ -1,3 +1,5 @@
+skip_tags: true
+
 configuration: Release
 
 image: Visual Studio 2017
@@ -11,7 +13,6 @@ after_build:
 build:
   parallel: true
   project: src\Costura.sln
-  verbosity: minimal
 
 test_script:
   - nunit3-console src\Costura.Tests\bin\Release\Costura.Tests.dll --x86 --result=myresults.xml;format=AppVeyor
