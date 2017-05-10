@@ -21,7 +21,7 @@ partial class ModuleWeaver
     {
         using (BufferedStream bs = new BufferedStream(stream))
         {
-            using (SHA1Managed sha1 = new SHA1Managed())
+            using (SHA1CryptoServiceProvider sha1 = new SHA1CryptoServiceProvider())
             {
                 byte[] hash = sha1.ComputeHash(bs);
                 StringBuilder formatted = new StringBuilder(2 * hash.Length);
