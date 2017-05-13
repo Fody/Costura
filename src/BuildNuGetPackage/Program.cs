@@ -54,6 +54,8 @@ namespace BuildNuGetPackage
             });
 
             packageBuilder.PopulateFiles("Assets", new[] {
+                new ManifestFile { Source = "commands.psm1", Target = "tools" },
+                new ManifestFile { Source = "init.ps1", Target = "tools" },
                 new ManifestFile { Source = "install.ps1", Target = "tools" },
                 new ManifestFile { Source = "uninstall.ps1", Target = "tools" }
             });
