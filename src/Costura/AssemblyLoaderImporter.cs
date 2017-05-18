@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Reflection;
 using Mono.Cecil;
@@ -73,7 +72,7 @@ partial class ModuleWeaver
         if (File.Exists(localFile))
             return;
 
-        using (var stream = GetType().Assembly.GetManifestResourceStream(String.Format("Costura.src.{0}.cs", file)))
+        using (var stream = GetType().Assembly.GetManifestResourceStream($"Costura.src.{file}.cs"))
         {
             using (var outStream = new FileStream(localFile, FileMode.Create))
                 stream.CopyTo(outStream);

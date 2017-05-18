@@ -33,7 +33,7 @@ partial class ModuleWeaver : IDisposable
 
             if (dependency.EndsWith(".resources.dll"))
             {
-                resourceName = Embed(string.Format("costura.{0}.", Path.GetFileName(Path.GetDirectoryName(fullPath))), fullPath, !config.DisableCompression);
+                resourceName = Embed($"costura.{Path.GetFileName(Path.GetDirectoryName(fullPath))}.", fullPath, !config.DisableCompression);
                 if (config.CreateTemporaryAssemblies)
                 {
                     checksums.Add(resourceName, CalculateChecksum(fullPath));
@@ -132,7 +132,7 @@ partial class ModuleWeaver : IDisposable
                                     select splittedReference).FirstOrDefault();
                     if (string.IsNullOrEmpty(fileName))
                     {
-                        LogError(string.Format("Assembly '{0}' cannot be found (not even as CopyLocal='false'), please update the configuration", skippedAssembly));
+                        LogError($"Assembly '{skippedAssembly}' cannot be found (not even as CopyLocal='false'), please update the configuration");
                     }
 
                     yield return fileName;
@@ -174,22 +174,22 @@ partial class ModuleWeaver : IDisposable
 
     private string Embed(string prefix, string fullPath, bool compress)
     {
-        var resourceName = String.Format("{0}{1}", prefix, Path.GetFileName(fullPath).ToLowerInvariant());
+        var resourceName = $"{prefix}{Path.GetFileName(fullPath).ToLowerInvariant()}";
         if (ModuleDefinition.Resources.Any(x => x.Name == resourceName))
         {
-            LogInfo(string.Format("\tSkipping '{0}' because it is already embedded", fullPath));
+            LogInfo($"\tSkipping '{fullPath}' because it is already embedded");
             return resourceName;
         }
 
         if (compress)
         {
-            resourceName = String.Format("{0}{1}.zip", prefix, Path.GetFileName(fullPath).ToLowerInvariant());
+            resourceName = $"{prefix}{Path.GetFileName(fullPath).ToLowerInvariant()}.zip";
         }
 
-        LogInfo(string.Format("\tEmbedding '{0}'", fullPath));
+        LogInfo($"\tEmbedding '{fullPath}'");
 
         var checksum = CalculateChecksum(fullPath);
-        var cacheFile = Path.Combine(cachePath, String.Format("{0}.{1}", checksum, resourceName));
+        var cacheFile = Path.Combine(cachePath, $"{checksum}.{resourceName}");
         var memoryStream = new MemoryStream();
 
         if (File.Exists(cacheFile))

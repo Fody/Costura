@@ -105,7 +105,7 @@ static class Common
         var name = requestedAssemblyName.Name.ToLowerInvariant();
 
         if (requestedAssemblyName.CultureInfo != null && !String.IsNullOrEmpty(requestedAssemblyName.CultureInfo.Name))
-            name = String.Format("{0}.{1}", requestedAssemblyName.CultureInfo.Name, name);
+            name = $"{requestedAssemblyName.CultureInfo.Name}.{name}";
 
         var bittyness = IntPtr.Size == 8 ? "64" : "32";
         var assemblyTempFilePath = Path.Combine(tempBasePath, String.Concat(name, ".dll"));
@@ -136,7 +136,7 @@ static class Common
         var name = requestedAssemblyName.Name.ToLowerInvariant();
 
         if (requestedAssemblyName.CultureInfo != null && !String.IsNullOrEmpty(requestedAssemblyName.CultureInfo.Name))
-            name = String.Format("{0}.{1}", requestedAssemblyName.CultureInfo.Name, name);
+            name = $"{requestedAssemblyName.CultureInfo.Name}.{name}";
 
         byte[] assemblyData;
         using (var assemblyStream = LoadStream(assemblyNames, name))
@@ -191,7 +191,7 @@ static class Common
     // Mutex code from http://stackoverflow.com/questions/229565/what-is-a-good-pattern-for-using-a-global-mutex-in-c
     public static void PreloadUnmanagedLibraries(string hash, string tempBasePath, IEnumerable<string> libs, Dictionary<string, string> checksums)
     {
-        var mutexId = string.Format("Global\\Costura{0}", hash);
+        var mutexId = $"Global\\Costura{hash}";
 
         using (var mutex = new Mutex(false, mutexId))
         {
