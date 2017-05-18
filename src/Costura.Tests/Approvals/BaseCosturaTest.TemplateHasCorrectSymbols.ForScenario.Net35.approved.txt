@@ -198,7 +198,7 @@
     IL_0001:  call       class [mscorlib]System.Reflection.Assembly [mscorlib]System.Reflection.Assembly::GetExecutingAssembly()
     IL_0006:  stloc.0
     IL_0007:  ldarg.0
-    IL_0008:  ldstr      ".zip"
+    IL_0008:  ldstr      ".compressed"
     IL_000d:  callvirt   instance bool [mscorlib]System.String::EndsWith(string)
     IL_0012:  stloc.1
     IL_0013:  ldloc.1
@@ -604,12 +604,12 @@
     IL_0023:  stsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::symbolNames
     IL_0028:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::assemblyNames
     IL_002d:  ldstr      "assemblytoreference35"
-    IL_0032:  ldstr      "costura.assemblytoreference35.dll.zip"
+    IL_0032:  ldstr      "costura.assemblytoreference35.dll.compressed"
     IL_0037:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
                                                                                                                    !1)
     IL_003c:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::symbolNames
     IL_0041:  ldstr      "assemblytoreference35"
-    IL_0046:  ldstr      "costura.assemblytoreference35.pdb.zip"
+    IL_0046:  ldstr      "costura.assemblytoreference35.pdb.compressed"
     IL_004b:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
                                                                                                                    !1)
     IL_0050:  ret

@@ -198,7 +198,7 @@
     IL_0001:  call       class [mscorlib]System.Reflection.Assembly [mscorlib]System.Reflection.Assembly::GetExecutingAssembly()
     IL_0006:  stloc.0
     IL_0007:  ldarg.0
-    IL_0008:  ldstr      ".zip"
+    IL_0008:  ldstr      ".compressed"
     IL_000d:  callvirt   instance bool [mscorlib]System.String::EndsWith(string)
     IL_0012:  stloc.1
     IL_0013:  ldloc.1
@@ -604,12 +604,12 @@
     IL_0023:  stsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::symbolNames
     IL_0028:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::assemblyNames
     IL_002d:  ldstr      "assemblytoreference"
-    IL_0032:  ldstr      "costura.assemblytoreference.dll.zip"
+    IL_0032:  ldstr      "costura.assemblytoreference.dll.compressed"
     IL_0037:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
                                                                                                                    !1)
     IL_003c:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::symbolNames
     IL_0041:  ldstr      "assemblytoreference"
-    IL_0046:  ldstr      "costura.assemblytoreference.pdb.zip"
+    IL_0046:  ldstr      "costura.assemblytoreference.pdb.compressed"
     IL_004b:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
                                                                                                                    !1)
     IL_0050:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::assemblyNames
@@ -619,27 +619,30 @@
                                                                                                                    !1)
     IL_0064:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::symbolNames
     IL_0069:  ldstr      "assemblytoreferencepreembedded"
-    IL_006e:  ldstr      "costura.assemblytoreferencepreembedded.pdb.zip"
+    IL_006e:  ldstr      "costura.assemblytoreferencepreembedded.pdb.compres"
+    + "sed"
     IL_0073:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
                                                                                                                    !1)
     IL_0078:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::assemblyNames
     IL_007d:  ldstr      "de.assemblytoreference.resources"
-    IL_0082:  ldstr      "costura.de.assemblytoreference.resources.dll.zip"
+    IL_0082:  ldstr      "costura.de.assemblytoreference.resources.dll.compr"
+    + "essed"
     IL_0087:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
                                                                                                                    !1)
     IL_008c:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::assemblyNames
     IL_0091:  ldstr      "exetoreference"
-    IL_0096:  ldstr      "costura.exetoreference.exe.zip"
+    IL_0096:  ldstr      "costura.exetoreference.exe.compressed"
     IL_009b:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
                                                                                                                    !1)
     IL_00a0:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::symbolNames
     IL_00a5:  ldstr      "exetoreference"
-    IL_00aa:  ldstr      "costura.exetoreference.pdb.zip"
+    IL_00aa:  ldstr      "costura.exetoreference.pdb.compressed"
     IL_00af:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
                                                                                                                    !1)
     IL_00b4:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::assemblyNames
     IL_00b9:  ldstr      "fr.assemblytoreference.resources"
-    IL_00be:  ldstr      "costura.fr.assemblytoreference.resources.dll.zip"
+    IL_00be:  ldstr      "costura.fr.assemblytoreference.resources.dll.compr"
+    + "essed"
     IL_00c3:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
                                                                                                                    !1)
     IL_00c8:  ret

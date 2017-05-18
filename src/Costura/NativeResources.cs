@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using System.IO.Compression;
+﻿using System.IO.Compression;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Mono.Cecil;
@@ -25,7 +23,7 @@ partial class ModuleWeaver
             {
                 using (var stream = resource.GetResourceStream())
                 {
-                    if (compress && resource.Name.EndsWith(".zip"))
+                    if (compress && resource.Name.EndsWith(".compressed"))
                     {
                         using (var compressStream = new DeflateStream(stream, CompressionMode.Decompress))
                         {

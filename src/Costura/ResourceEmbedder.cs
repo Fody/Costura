@@ -183,7 +183,7 @@ partial class ModuleWeaver : IDisposable
 
         if (compress)
         {
-            resourceName = $"{prefix}{Path.GetFileName(fullPath).ToLowerInvariant()}.zip";
+            resourceName = $"{prefix}{Path.GetFileName(fullPath).ToLowerInvariant()}.compressed";
         }
 
         LogInfo($"\tEmbedding '{fullPath}'");

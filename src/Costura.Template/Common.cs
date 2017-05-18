@@ -173,7 +173,7 @@ static class Common
     {
         var executingAssembly = Assembly.GetExecutingAssembly();
 
-        if (fullname.EndsWith(".zip"))
+        if (fullname.EndsWith(".compressed"))
         {
             using (var stream = executingAssembly.GetManifestResourceStream(fullname))
             using (var compressStream = new DeflateStream(stream, CompressionMode.Decompress))
@@ -287,9 +287,9 @@ static class Common
             name = lib.Substring(8);
         }
 
-        if (name.EndsWith(".zip"))
+        if (name.EndsWith(".compressed"))
         {
-            name = name.Substring(0, name.Length - 4);
+            name = name.Substring(0, name.Length - 11);
         }
 
         return name;

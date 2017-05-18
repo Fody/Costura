@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -53,11 +52,11 @@ partial class ModuleWeaver
 
     private static void GetNameAndExt(string[] parts, out string name, out string ext)
     {
-        var isZip = parts[parts.Length - 1] == "zip";
+        var isCompressed = parts[parts.Length - 1] == "compressed";
 
-        ext = parts[parts.Length - (isZip ? 2 : 1)];
+        ext = parts[parts.Length - (isCompressed ? 2 : 1)];
 
-        name = string.Join(".", parts.Skip(1).Take(parts.Length - (isZip ? 3 : 2)));
+        name = string.Join(".", parts.Skip(1).Take(parts.Length - (isCompressed ? 3 : 2)));
     }
 
     void AddToDictionary(FieldDefinition field, string key, string name)
