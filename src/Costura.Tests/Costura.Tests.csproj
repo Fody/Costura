@@ -91,6 +91,7 @@
     <Compile Include="MixedAndNativeTests.cs" />
     <Compile Include="MockAssemblyResolver.cs" />
     <Compile Include="NativeTests.cs" />
+    <Compile Include="Net35Tests.cs" />
     <Compile Include="TempFileTests.cs" />
     <Compile Include="Verifier.cs" />
   </ItemGroup>

@@ -45,7 +45,10 @@ public abstract class BasicTests : BaseCosturaTest
     {
         var instance = assembly.GetInstance("ClassToTest");
         var assemblyLoadedByCompileTimeReference = instance.GetReferencedAssembly();
-        var typeLoadedWithPartialAssemblyName = Type.GetType("ClassToReference, AssemblyToReference");
+        var typeName = "ClassToReference, AssemblyToReference";
+        if (assembly.GetName().Name.EndsWith("35"))
+            typeName = typeName + "35";
+        var typeLoadedWithPartialAssemblyName = Type.GetType(typeName);
         Assume.That(typeLoadedWithPartialAssemblyName, Is.Not.Null);
 
         Assert.AreSame(assemblyLoadedByCompileTimeReference, typeLoadedWithPartialAssemblyName.Assembly);
