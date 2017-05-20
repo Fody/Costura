@@ -162,22 +162,6 @@ Or as a attribute with items delimited by a pipe `|`.
 
     <Costura PreloadOrder='Foo|Bar' />
 
-## Creating a clean output directory
-
-Costura only merges dependencies. It does not handle cleaning those dependencies from your output directory. So this means the resultant merged dll/exe will exist in your output directory (eg `bin\Debug`) next to all your dependencies. If you want to clean this directory you can add the following to your project file.
-
-    <Target 
-        AfterTargets="AfterBuild;NonWinFodyTarget"
-        Name="CleanReferenceCopyLocalPaths" >
-         <Delete Files="@(ReferenceCopyLocalPaths->'$(OutDir)%(DestinationSubDirectory)%(Filename)%(Extension)')" />
-    </Target>
-
-There is also a powershell cmdlet to install this target into your project automatically. In the Package Manager Console type:
-
-    PM> Install-CleanReferencesTarget
-
-Note that this does not handle `ExcludeAssemblies` or `IncludeAssemblies` options mentioned above. You will have to handle these explicitly.
-
 ## Icon
 
 <a href="http://thenounproject.com/noun/merge/#icon-No256" target="_blank">Merge</a>  from The Noun Project
