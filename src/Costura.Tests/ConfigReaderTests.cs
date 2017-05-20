@@ -8,28 +8,21 @@ public class ConfigReaderTests
     public void CanReadFalseNode()
     {
         var xElement = XElement.Parse(@"<Node attr='false'/>");
-        Configuration.ReadBool(xElement, "attr", b => Assert.IsFalse(b));
+        Assert.IsFalse(Configuration.ReadBool(xElement, "attr", true));
     }
 
     [Test]
     public void CanReadTrueNode()
     {
         var xElement = XElement.Parse(@"<Node attr='true'/>");
-        Configuration.ReadBool(xElement, "attr", b => Assert.IsTrue(b));
+        Assert.IsTrue(Configuration.ReadBool(xElement, "attr", false));
     }
 
     [Test]
     public void DoesNotReadInvalidBoolNode()
     {
         var xElement = XElement.Parse(@"<Node attr='foo'/>");
-        Assert.Throws<WeavingException>(() => Configuration.ReadBool(xElement, "attr", b => Assert.Fail()), "Could not parse 'attr' from 'foo'.");
-    }
-
-    [Test]
-    public void DoesNotSetBoolWhenNodeMissing()
-    {
-        var xElement = XElement.Parse(@"<Node attr='false'/>");
-        Configuration.ReadBool(xElement, "missing", b => Assert.Fail());
+        Assert.Throws<WeavingException>(() => Configuration.ReadBool(xElement, "attr", false), "Could not parse 'attr' from 'foo'.");
     }
 
     [Test]

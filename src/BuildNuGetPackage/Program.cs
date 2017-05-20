@@ -50,15 +50,19 @@ namespace BuildNuGetPackage
 
             packageBuilder.PopulateFiles("", new[] {
                 new ManifestFile { Source = "Costura.Fody.dll", Target = "" },
-                new ManifestFile { Source = "Costura.Fody.pdb", Target = "" }
+                new ManifestFile { Source = "Costura.Fody.pdb", Target = "" },
+                new ManifestFile { Source = "Costura.Tasks.dll", Target = "" },
+                new ManifestFile { Source = "Costura.Tasks.pdb", Target = "" }
             });
 
             packageBuilder.PopulateFiles("Assets", new[] {
                 new ManifestFile { Source = "install.ps1", Target = "tools" },
-                new ManifestFile { Source = "uninstall.ps1", Target = "tools" }
+                new ManifestFile { Source = "uninstall.ps1", Target = "tools" },
+                new ManifestFile { Source = "Costura.Fody.targets", Target = "build/dotnet" },
+                new ManifestFile { Source = "Costura.Fody.targets", Target = "build/portable-net+sl+win+wpa+wp" }
             });
 
-            var packagePath = Path.Combine(path, packageBuilder.GetFullName() + ".nupkg");
+            var packagePath = Path.Combine(path, $"{packageBuilder.Id}.{packageBuilder.Version}.nupkg");
 
             using (var file = new FileStream(packagePath, FileMode.Create))
             {

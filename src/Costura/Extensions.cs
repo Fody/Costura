@@ -1,17 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Mono.Cecil;
+﻿using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
 using Mono.Collections.Generic;
 
 public static class Extensions
 {
-    public static IEnumerable<string> NonEmpty(this IEnumerable<string> list)
-    {
-        return list.Select(x => x.Trim()).Where(x => x != string.Empty);
-    }
-
     public static Collection<TypeReference> GetGenericInstanceArguments(this TypeReference type)
     {
         return ((GenericInstanceType)type).GenericArguments;

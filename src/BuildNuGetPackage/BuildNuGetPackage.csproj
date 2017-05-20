@@ -51,6 +51,10 @@
     <None Include="Assets\Costura.Fody.nuspec">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Assets\Costura.Fody.targets">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Assets\uninstall.ps1">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -60,6 +64,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Costura.Tasks\Costura.Tasks.csproj">
+      <Project>{d16dec80-99d2-4ef3-9ceb-0ff7381cbb13}</Project>
+      <Name>Costura.Tasks</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Costura\Costura.csproj">
       <Project>{e5622b74-b6c6-46a5-9207-0872533e6c2f}</Project>
       <Name>Costura</Name>

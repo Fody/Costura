@@ -28,15 +28,15 @@ public class Configuration
             OptOut = false;
         }
 
-        ReadBool(config, "IncludeDebugSymbols", b => IncludeDebugSymbols = b);
-        ReadBool(config, "DisableCompression", b => DisableCompression = b);
-        ReadBool(config, "CreateTemporaryAssemblies", b => CreateTemporaryAssemblies = b);
+        IncludeDebugSymbols = ReadBool(config, "IncludeDebugSymbols", IncludeDebugSymbols);
+        DisableCompression = ReadBool(config, "DisableCompression", DisableCompression);
+        CreateTemporaryAssemblies = ReadBool(config, "CreateTemporaryAssemblies", CreateTemporaryAssemblies);
 
-        ReadList(config, "ExcludeAssemblies", ExcludeAssemblies);
-        ReadList(config, "IncludeAssemblies", IncludeAssemblies);
-        ReadList(config, "Unmanaged32Assemblies", Unmanaged32Assemblies);
-        ReadList(config, "Unmanaged64Assemblies", Unmanaged64Assemblies);
-        ReadList(config, "PreloadOrder", PreloadOrder);
+        ExcludeAssemblies = ReadList(config, "ExcludeAssemblies");
+        IncludeAssemblies = ReadList(config, "IncludeAssemblies");
+        Unmanaged32Assemblies = ReadList(config, "Unmanaged32Assemblies");
+        Unmanaged64Assemblies = ReadList(config, "Unmanaged64Assemblies");
+        PreloadOrder = ReadList(config, "PreloadOrder");
 
         if (IncludeAssemblies.Any() && ExcludeAssemblies.Any())
         {
@@ -44,39 +44,42 @@ public class Configuration
         }
     }
 
-    public bool OptOut { get; private set; }
-    public bool IncludeDebugSymbols { get; private set; }
-    public bool DisableCompression { get; private set; }
-    public bool CreateTemporaryAssemblies { get; private set; }
-    public List<string> IncludeAssemblies { get; private set; }
-    public List<string> ExcludeAssemblies { get; private set; }
-    public List<string> Unmanaged32Assemblies { get; private set; }
-    public List<string> Unmanaged64Assemblies { get; private set; }
-    public List<string> PreloadOrder { get; private set; }
+    public bool OptOut { get; }
+    public bool IncludeDebugSymbols { get; }
+    public bool DisableCompression { get; }
+    public bool CreateTemporaryAssemblies { get; }
+    public List<string> IncludeAssemblies { get; }
+    public List<string> ExcludeAssemblies { get; }
+    public List<string> Unmanaged32Assemblies { get; }
+    public List<string> Unmanaged64Assemblies { get; }
+    public List<string> PreloadOrder { get; }
 
-    public static void ReadBool(XElement config, string nodeName, Action<bool> setter)
+    public static bool ReadBool(XElement config, string nodeName, bool @default)
     {
         var attribute = config.Attribute(nodeName);
         if (attribute != null)
         {
-            bool value;
-            if (bool.TryParse(attribute.Value, out value))
+            if (bool.TryParse(attribute.Value, out var value))
             {
-                setter(value);
+                return value;
             }
             else
             {
                 throw new WeavingException($"Could not parse '{nodeName}' from '{attribute.Value}'.");
             }
         }
+
+        return @default;
     }
 
-    public static void ReadList(XElement config, string nodeName, List<string> list)
+    public static List<string> ReadList(XElement config, string nodeName)
     {
+        var list = new List<string>();
+
         var attribute = config.Attribute(nodeName);
         if (attribute != null)
         {
-            foreach (var item in attribute.Value.Split('|').NonEmpty())
+            foreach (var item in attribute.Value.Split('|').Where(s => !string.IsNullOrWhiteSpace(s)))
             {
                 list.Add(item);
             }
@@ -87,10 +90,12 @@ public class Configuration
         {
             foreach (var item in element.Value
                                         .Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)
-                                        .NonEmpty())
+                                        .Where(s => !string.IsNullOrWhiteSpace(s)))
             {
                 list.Add(item);
             }
         }
+
+        return list;
     }
 }
