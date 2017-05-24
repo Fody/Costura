@@ -4,7 +4,43 @@ using Mono.Cecil.Cil;
 
 partial class ModuleWeaver
 {
-    void ImportModuleLoader()
+    void CallAttach()
+    {
+        if (FindInitializeCalls())
+            return;
+
+        AddModuleInitializerCall();
+    }
+
+    bool FindInitializeCalls()
+    {
+        bool found = false;
+
+        foreach (var type in ModuleDefinition.Types)
+        {
+            if (!type.HasMethods)
+                continue;
+
+            foreach (var method in type.Methods)
+            {
+                if (!method.HasBody)
+                    continue;
+
+                for (int i = 0; i < method.Body.Instructions.Count; i++)
+                {
+                    if (method.Body.Instructions[i].Operand is MethodReference callMethod && callMethod.FullName == "System.Void CosturaUtility::Initialize()")
+                    {
+                        found = true;
+                        method.Body.Instructions[i] = Instruction.Create(OpCodes.Call, attachMethod);
+                    }
+                }
+            }
+        }
+
+        return found;
+    }
+
+    void AddModuleInitializerCall()
     {
         const MethodAttributes attributes = MethodAttributes.Private
                                             | MethodAttributes.HideBySig
