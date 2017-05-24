@@ -47,6 +47,12 @@ namespace Costura.Tasks
 
                 var config = new Configuration(configXml);
 
+                if (config.DisableCleanup)
+                {
+                    FilteredReferenceCopyLocalPaths = ReferenceCopyLocalPaths;
+                    return true;
+                }
+
                 var filtered = new List<ITaskItem>();
 
                 if (config.IncludeAssemblies.Any())

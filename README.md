@@ -64,7 +64,15 @@ Embedded assemblies are compressed by default, and uncompressed when they are lo
 
 *Defaults to `false`*
 
-    <Costura DisableCompression='false' />
+    <Costura DisableCompression='true' />
+
+### DisableCleanup
+
+As part of Costura, embedded assemblies are no longer included as part of the build. This cleanup can be turned off.
+
+*Defaults to `false`*
+
+    <Costura DisableCleanup='true' />
     
 ### ExcludeAssemblies
 

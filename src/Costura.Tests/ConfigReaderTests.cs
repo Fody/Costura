@@ -42,6 +42,14 @@ public class ConfigReaderTests
     }
 
     [Test]
+    public void TrueDisableCleanup()
+    {
+        var xElement = XElement.Parse(@"<Costura DisableCleanup='true'/>");
+        var config = new Configuration(xElement);
+        Assert.IsTrue(config.DisableCleanup);
+    }
+
+    [Test]
     public void TrueCreateTemporaryAssemblies()
     {
         var xElement = XElement.Parse(@"<Costura CreateTemporaryAssemblies='true'/>");
