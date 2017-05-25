@@ -31,7 +31,7 @@ Embeds dependencies as resources.
 - [Icon](#icon)
 - [Contributors](#contributors)
 
-# How it works [:arrow_up:](#contents)
+# How it works [:link:](#contents)
 
 ## Merge assemblies as embedded resources
 
@@ -59,7 +59,7 @@ eg
   - [ILTemplate.cs](https://github.com/Fody/Costura/blob/master/Template/ILTemplate.cs)
   - [ILTemplateWithTempAssembly.cs](https://github.com/Fody/Costura/blob/master/Template/ILTemplateWithTempAssembly.cs)
 
-# Configuration Options [:arrow_up:](#contents)
+# Configuration Options [:link:](#contents)
 
 All config options are access by modifying the `Costura` node in FodyWeavers.xml
 
@@ -199,7 +199,7 @@ Or as a attribute with items delimited by a pipe `|`.
 
     <Costura PreloadOrder='Foo|Bar' />
 
-# CosturaUtility [:arrow_up:](#contents)
+# CosturaUtility [:link:](#contents)
 
 `CosturaUtility` is a class that gives you access to initialize the Costura system manually in your own code. This is mainly for scenarios where the module initializer doesn't work, such as libraries and Mono.
 
@@ -213,11 +213,11 @@ To use, call `CosturaUtility.Initialize()` somewhere in your code, as early as p
         static void Main(string[] args) { ... }
     }
 
-# Icon [:arrow_up:](#contents)
+# Icon [:link:](#contents)
 
 <a href="http://thenounproject.com/noun/merge/#icon-No256" target="_blank">Merge</a>  from The Noun Project
 
-# Contributors [:arrow_up:](#contents)
+# Contributors [:link:](#contents)
 
  * [Cameron MacFarland](https://github.com/distantcam)
  * [Simon Cropp](https://github.com/SimonCropp) 
