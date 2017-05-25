@@ -70,6 +70,14 @@ public class ConfigReaderTests
     }
 
     [Test]
+    public void FalseLoadAtModuleInit()
+    {
+        var xElement = XElement.Parse(@"<Costura LoadAtModuleInit='false'/>");
+        var config = new Configuration(xElement);
+        Assert.IsFalse(config.LoadAtModuleInit);
+    }
+
+    [Test]
     public void TrueCreateTemporaryAssemblies()
     {
         var xElement = XElement.Parse(@"<Costura CreateTemporaryAssemblies='true'/>");

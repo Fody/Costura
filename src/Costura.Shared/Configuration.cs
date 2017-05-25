@@ -12,6 +12,7 @@ public class Configuration
         IncludeDebugSymbols = true;
         DisableCompression = false;
         DisableCleanup = false;
+        LoadAtModuleInit = true;
         CreateTemporaryAssemblies = false;
         IncludeAssemblies = new List<string>();
         ExcludeAssemblies = new List<string>();
@@ -32,6 +33,7 @@ public class Configuration
         IncludeDebugSymbols = ReadBool(config, "IncludeDebugSymbols", IncludeDebugSymbols);
         DisableCompression = ReadBool(config, "DisableCompression", DisableCompression);
         DisableCleanup = ReadBool(config, "DisableCleanup", DisableCleanup);
+        LoadAtModuleInit = ReadBool(config, "LoadAtModuleInit", LoadAtModuleInit);
         CreateTemporaryAssemblies = ReadBool(config, "CreateTemporaryAssemblies", CreateTemporaryAssemblies);
 
         ExcludeAssemblies = ReadList(config, "ExcludeAssemblies");
@@ -50,6 +52,7 @@ public class Configuration
     public bool IncludeDebugSymbols { get; }
     public bool DisableCompression { get; }
     public bool DisableCleanup { get; }
+    public bool LoadAtModuleInit { get; }
     public bool CreateTemporaryAssemblies { get; }
     public List<string> IncludeAssemblies { get; }
     public List<string> ExcludeAssemblies { get; }

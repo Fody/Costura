@@ -44,7 +44,7 @@
     <Compile Include="Checksums.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="HashCalculator.cs" />
-    <Compile Include="ModuleLoaderImporter.cs" />
+    <Compile Include="CallAttach.cs" />
     <Compile Include="ModuleWeaver.cs" />
     <Compile Include="MsCoreReferenceFinder.cs" />
     <Compile Include="NativeResources.cs" />

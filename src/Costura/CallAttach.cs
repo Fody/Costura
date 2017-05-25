@@ -4,12 +4,18 @@ using Mono.Cecil.Cil;
 
 partial class ModuleWeaver
 {
-    void CallAttach()
+    void CallAttach(Configuration config)
     {
-        if (FindInitializeCalls())
-            return;
+        var initialized = FindInitializeCalls();
 
-        AddModuleInitializerCall();
+        if (config.LoadAtModuleInit)
+        {
+            AddModuleInitializerCall();
+        }
+        else if (!initialized)
+        {
+            throw new WeavingException("Costura was not initialized. Make sure LoadAtModuleInit=true or call CosturaUtility.Initialize().");
+        }
     }
 
     bool FindInitializeCalls()

@@ -34,7 +34,7 @@ public partial class ModuleWeaver
 
         CalculateHash();
         ImportAssemblyLoader(config.CreateTemporaryAssemblies);
-        CallAttach();
+        CallAttach(config);
 
         AddChecksumsToTemplate();
         BuildUpNameDictionary(config.CreateTemporaryAssemblies, config.PreloadOrder);
