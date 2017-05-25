@@ -84,7 +84,7 @@ public class Configuration
         {
             foreach (var item in attribute.Value.Split('|').Where(s => !string.IsNullOrWhiteSpace(s)))
             {
-                list.Add(item);
+                list.Add(item.Trim());
             }
         }
 
@@ -95,7 +95,7 @@ public class Configuration
                                         .Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)
                                         .Where(s => !string.IsNullOrWhiteSpace(s)))
             {
-                list.Add(item);
+                list.Add(item.Trim());
             }
         }
 

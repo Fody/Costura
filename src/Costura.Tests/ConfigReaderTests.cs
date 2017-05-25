@@ -18,6 +18,26 @@ public class ConfigReaderTests
         Assert.IsTrue(Configuration.ReadBool(xElement, "attr", false));
     }
 
+    // These next 2 tests are because of https://github.com/Fody/Costura/issues/204
+
+    [Test]
+    public void TrimWhitespaceFromAttributeList()
+    {
+        var xElement = XElement.Parse(@"<Node attr=' Item'/>");
+        var list = Configuration.ReadList(xElement, "attr");
+        Assert.AreEqual(1, list.Count);
+        Assert.AreEqual("Item", list[0]);
+    }
+
+    [Test]
+    public void TrimWhitespaceFromElementList()
+    {
+        var xElement = XElement.Parse(@"<Node><attr>Item </attr></Node>");
+        var list = Configuration.ReadList(xElement, "attr");
+        Assert.AreEqual(1, list.Count);
+        Assert.AreEqual("Item", list[0]);
+    }
+
     [Test]
     public void DoesNotReadInvalidBoolNode()
     {
