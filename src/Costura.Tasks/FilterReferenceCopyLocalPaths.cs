@@ -30,7 +30,7 @@ namespace Costura.Tasks
             try
             {
                 var configFiles = ConfigFileFinder.FindWeaverConfigs(SolutionDir, ProjectDirectory);
-                var configXml = new XElement("Costura");
+                XElement configXml = null;
 
                 foreach (var configFile in configFiles)
                 {
@@ -45,9 +45,9 @@ namespace Costura.Tasks
                     }
                 }
 
-                var config = new Configuration(configXml);
+                var config = configXml == null ? null : new Configuration(configXml);
 
-                if (config.DisableCleanup)
+                if (config == null || config.DisableCleanup)
                 {
                     FilteredReferenceCopyLocalPaths = ReferenceCopyLocalPaths;
                     return true;
