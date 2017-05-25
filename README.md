@@ -14,10 +14,10 @@ Embeds dependencies as resources.
 
 # Contents
 
-- [How it works](#how-it-works)
+- [How it works](#how-it-works-link)
   - [Merge assemblies as embedded resources](#merge-assemblies-as-embedded-resources)
   - [Details](defails)
-- [Configuration Options](#configuration-options)
+- [Configuration Options](#configuration-options-link)
   - [CreateTemporaryAssemblies](#CreateTemporaryAssemblies)
   - [IncludeDebugSymbols](#IncludeDebugSymbols)
   - [DisableCompression](#DisableCompression)
@@ -27,9 +27,9 @@ Embeds dependencies as resources.
   - [IncludeAssemblies](#IncludeAssemblies)
   - [Unmanaged32Assemblies & Unmanaged64Assemblies](#unmanaged32assemblies--unmanaged64assemblies)
   - [Native Libraries and PreloadOrder](#native-libraries-and-preloadorder)
-- [CosturaUtility](#costurautility)
-- [Icon](#icon)
-- [Contributors](#contributors)
+- [CosturaUtility](#costurautility-link)
+- [Icon](#icon-link)
+- [Contributors](#contributors-link)
 
 # How it works [:link:](#contents)
 
