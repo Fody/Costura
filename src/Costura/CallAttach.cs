@@ -34,7 +34,9 @@ partial class ModuleWeaver
 
                 for (int i = 0; i < method.Body.Instructions.Count; i++)
                 {
-                    if (method.Body.Instructions[i].Operand is MethodReference callMethod && callMethod.FullName == "System.Void CosturaUtility::Initialize()")
+                    if (method.Body.Instructions[i].OpCode == OpCodes.Call &&
+                        method.Body.Instructions[i].Operand is MethodReference callMethod &&
+                        callMethod.FullName == "System.Void CosturaUtility::Initialize()")
                     {
                         found = true;
                         method.Body.Instructions[i] = Instruction.Create(OpCodes.Call, attachMethod);
