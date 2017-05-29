@@ -1,10 +1,14 @@
+[![Chat on Gitter](https://img.shields.io/gitter/room/fody/fody.svg?style=flat)](https://gitter.im/Fody)
+[![NuGet Status](http://img.shields.io/nuget/v/Costura.Fody.svg?style=flat)](https://www.nuget.org/packages/Costura.Fody/)
+[![Build Status](https://ci.appveyor.com/api/projects/status/62ur9tuwt69xap7t?svg=true)](https://ci.appveyor.com/project/Fody/costura)
+
 ![Icon](https://raw.github.com/Fody/Costura/master/Icons/package_icon.png)
 
 ### This is an add-in for [Fody](https://github.com/Fody/Fody/) 
 
 Embeds dependencies as resources.
 
-## The nuget package  [![NuGet Status](http://img.shields.io/nuget/v/Costura.Fody.svg?style=flat)](https://www.nuget.org/packages/Costura.Fody/) [![Build status](https://ci.appveyor.com/api/projects/status/62ur9tuwt69xap7t?svg=true)](https://ci.appveyor.com/project/Fody/costura)
+## The nuget package  
 
 https://nuget.org/packages/Costura.Fody/
 
