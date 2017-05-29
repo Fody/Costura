@@ -86,12 +86,15 @@
     <Compile Include="BasicTests.cs" />
     <Compile Include="CultureResourceTests.cs" />
     <Compile Include="Decompiler.cs" />
+    <Compile Include="InitializeCallWithoutModuleInitTest.cs" />
+    <Compile Include="InitializeCallTests.cs" />
     <Compile Include="InMemoryTests.cs" />
     <Compile Include="ConfigReaderTests.cs" />
     <Compile Include="MixedAndNativeTests.cs" />
     <Compile Include="MockAssemblyResolver.cs" />
     <Compile Include="NativeTests.cs" />
     <Compile Include="Net35Tests.cs" />
+    <Compile Include="NoInitializeTest.cs" />
     <Compile Include="TempFileTests.cs" />
     <Compile Include="Verifier.cs" />
   </ItemGroup>

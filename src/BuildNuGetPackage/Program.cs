@@ -55,6 +55,25 @@ namespace BuildNuGetPackage
                 new ManifestFile { Source = "Costura.Tasks.pdb", Target = "" }
             });
 
+#if DEBUG
+            var config = "Debug";
+#else
+            var config = "Release";
+#endif
+
+            packageBuilder.PopulateFiles("..\\..\\..\\Costura.Lib\\bin\\" + config, new[] {
+                new ManifestFile { Source = "Costura.dll", Target = "lib/dotnet" },
+                new ManifestFile { Source = "Costura.pdb", Target = "lib/dotnet" },
+                new ManifestFile { Source = "Costura.dll", Target = "lib/portable-net+sl+win+wpa+wp" },
+                new ManifestFile { Source = "Costura.pdb", Target = "lib/portable-net+sl+win+wpa+wp" }
+            });
+
+            // TODO NetStandard not supported by Costura
+            //packageBuilder.PopulateFiles($"..\\..\\..\\Costura.LibNetStandard\\bin\\{config}\\netstandard1.4", new[] {
+            //    new ManifestFile { Source = "Costura.dll", Target = "lib/netstandard1.4" },
+            //    new ManifestFile { Source = "Costura.pdb", Target = "lib/netstandard1.4" }
+            //});
+
             packageBuilder.PopulateFiles("Assets", new[] {
                 new ManifestFile { Source = "install.ps1", Target = "tools" },
                 new ManifestFile { Source = "uninstall.ps1", Target = "tools" },

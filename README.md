@@ -1,29 +1,46 @@
+![Costura Icon](https://raw.github.com/Fody/Costura/master/Icons/package_icon.png)
+
+### Costura is an add-in for [Fody](https://github.com/Fody/Fody/) 
+
+Embeds dependencies as resources.
+
 [![Chat on Gitter](https://img.shields.io/gitter/room/fody/fody.svg?style=flat)](https://gitter.im/Fody)
 [![NuGet Status](http://img.shields.io/nuget/v/Costura.Fody.svg?style=flat)](https://www.nuget.org/packages/Costura.Fody/)
 [![Build Status](https://ci.appveyor.com/api/projects/status/62ur9tuwt69xap7t?svg=true)](https://ci.appveyor.com/project/Fody/costura)
 
-![Icon](https://raw.github.com/Fody/Costura/master/Icons/package_icon.png)
-
-### This is an add-in for [Fody](https://github.com/Fody/Fody/) 
-
-Embeds dependencies as resources.
-
-## The nuget package  
-
-https://nuget.org/packages/Costura.Fody/
+### To Install
 
     PM> Install-Package Costura.Fody
 
-## How it works
+# Contents
 
-### Merge assemblies as embedded resources.
+- [How it works](#how-it-works-link)
+  - [Merge assemblies as embedded resources](#merge-assemblies-as-embedded-resources)
+  - [Details](defails)
+- [Configuration Options](#configuration-options-link)
+  - [CreateTemporaryAssemblies](#createtemporaryassemblies)
+  - [IncludeDebugSymbols](#includedebugsymbols)
+  - [DisableCompression](#disablecompression)
+  - [DisableCleanup](#disablecleanup)
+  - [LoadAtModuleInit](#loadatmoduleinit)
+  - [ExcludeAssemblies](#excludeassemblies)
+  - [IncludeAssemblies](#includeassemblies)
+  - [Unmanaged32Assemblies & Unmanaged64Assemblies](#unmanaged32assemblies--unmanaged64assemblies)
+  - [Native Libraries and PreloadOrder](#native-libraries-and-preloadorder)
+- [CosturaUtility](#costurautility-link)
+- [Icon](#icon-link)
+- [Contributors](#contributors-link)
+
+# How it works [:link:](#contents)
+
+## Merge assemblies as embedded resources
 
 This approach uses a combination of two methods
 
  * Jeffrey Richter's suggestion of using [embedded resources as a method of merging assemblies](http://blogs.msdn.com/b/microsoft_press/archive/2010/02/03/jeffrey-richter-excerpt-2-from-clr-via-c-third-edition.aspx)
  * Einar Egilsson's suggestion [using cecil to create module initializers](http://tech.einaregilsson.com/2009/12/16/module-initializers-in-csharp/)
 
-### Details 
+## Details 
 
 This Task performs the following changes
 
@@ -42,7 +59,7 @@ eg
   - [ILTemplate.cs](https://github.com/Fody/Costura/blob/master/Template/ILTemplate.cs)
   - [ILTemplateWithTempAssembly.cs](https://github.com/Fody/Costura/blob/master/Template/ILTemplateWithTempAssembly.cs)
 
-## Configuration Options
+# Configuration Options [:link:](#contents)
 
 All config options are access by modifying the `Costura` node in FodyWeavers.xml
 
@@ -77,6 +94,14 @@ As part of Costura, embedded assemblies are no longer included as part of the bu
 *Defaults to `false`*
 
     <Costura DisableCleanup='true' />
+
+### LoadAtModuleInit
+
+Costura by default will load as part of the module initialization. This flag disables that behaviour. Make sure you call `CosturaUtility.Initialize()` somewhere in your code.
+
+*Defaults to `true`*
+
+    <Costura LoadAtModuleInit='false' />
     
 ### ExcludeAssemblies
 
@@ -174,11 +199,25 @@ Or as a attribute with items delimited by a pipe `|`.
 
     <Costura PreloadOrder='Foo|Bar' />
 
-## Icon
+# CosturaUtility [:link:](#contents)
+
+`CosturaUtility` is a class that gives you access to initialize the Costura system manually in your own code. This is mainly for scenarios where the module initializer doesn't work, such as libraries and Mono.
+
+To use, call `CosturaUtility.Initialize()` somewhere in your code, as early as possible.
+
+    class Program {
+        static Program() {
+            CosturaUtility.Initialize();
+        }
+
+        static void Main(string[] args) { ... }
+    }
+
+# Icon [:link:](#contents)
 
 <a href="http://thenounproject.com/noun/merge/#icon-No256" target="_blank">Merge</a>  from The Noun Project
 
-## Contributors
+# Contributors [:link:](#contents)
 
  * [Cameron MacFarland](https://github.com/distantcam)
  * [Simon Cropp](https://github.com/SimonCropp) 

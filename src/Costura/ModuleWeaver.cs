@@ -24,6 +24,8 @@ public partial class ModuleWeaver
     {
         var config = new Configuration(Config);
 
+        CleanReferences();
+
         FindMsCoreReferences();
 
         FixResourceCase();
@@ -32,7 +34,7 @@ public partial class ModuleWeaver
 
         CalculateHash();
         ImportAssemblyLoader(config.CreateTemporaryAssemblies);
-        ImportModuleLoader();
+        CallAttach(config);
 
         AddChecksumsToTemplate();
         BuildUpNameDictionary(config.CreateTemporaryAssemblies, config.PreloadOrder);

@@ -1,10 +1,13 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 
 public class ClassToTest
 {
     static ClassToTest()
     {
-        CosturaUtility.Initialize();
+        // Produces an instruction with the method as an operand.
+        // ldftn System.Void CosturaUtility::Initialize()
+        Action initialize = CosturaUtility.Initialize;
     }
 
     public string Simple() => ClassToReference.Simple();

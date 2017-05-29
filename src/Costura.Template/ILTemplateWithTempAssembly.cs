@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 
 static class ILTemplateWithTempAssembly
 {
@@ -16,8 +17,15 @@ static class ILTemplateWithTempAssembly
 
     static readonly Dictionary<string, string> checksums = new Dictionary<string, string>();
 
+    static int isAttached = 0;
+
     public static void Attach()
     {
+        if (Interlocked.Exchange(ref isAttached, 1) == 1)
+        {
+            return;
+        }
+
         //Create a unique Temp directory for the application path.
         var md5Hash = "To be replaced at compile time";
         var prefixPath = Path.Combine(Path.GetTempPath(), "Costura");

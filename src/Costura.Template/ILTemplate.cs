@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading;
 
 static class ILTemplate
 {
@@ -10,8 +11,15 @@ static class ILTemplate
     static readonly Dictionary<string, string> assemblyNames = new Dictionary<string, string>();
     static readonly Dictionary<string, string> symbolNames = new Dictionary<string, string>();
 
+    static int isAttached = 0;
+
     public static void Attach()
     {
+        if (Interlocked.Exchange(ref isAttached, 1) == 1)
+        {
+            return;
+        }
+
         var currentDomain = AppDomain.CurrentDomain;
         currentDomain.AssemblyResolve += ResolveAssembly;
     }
