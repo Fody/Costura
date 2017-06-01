@@ -122,7 +122,7 @@ As an element with items delimited by a newline.
         </ExcludeAssemblies>
     </Costura>
     
-Or as a attribute with items delimited by a pipe `|`.
+Or as an attribute with items delimited by a pipe `|`.
 
     <Costura ExcludeAssemblies='Foo|Bar' />
     
@@ -146,7 +146,7 @@ As an element with items delimited by a newline.
         </IncludeAssemblies>
     </Costura>
     
-Or as a attribute with items delimited by a pipe `|`.
+Or as an attribute with items delimited by a pipe `|`.
 
     <Costura IncludeAssemblies='Foo|Bar' />
 
