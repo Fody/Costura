@@ -60,7 +60,7 @@ static class Common
 
     public static string CalculateChecksum(string filename)
     {
-        using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+        using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete))
         using (var bs = new BufferedStream(fs))
         using (var sha1 = new SHA1CryptoServiceProvider())
         {
