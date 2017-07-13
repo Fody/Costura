@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.AccessControl;
@@ -84,9 +85,30 @@ static class Common
             if (string.Equals(currentName.Name, name.Name, StringComparison.InvariantCultureIgnoreCase) &&
                 string.Equals(CultureToString(currentName.CultureInfo), CultureToString(name.CultureInfo), StringComparison.InvariantCultureIgnoreCase))
             {
-                Log("Assembly '{0}' already loaded, returning existing assembly", assembly.FullName);
-
-                return assembly;
+                if (HasPublicKeyToken(name))
+                {
+                    if (HasPublicKeyToken(currentName))
+                    {
+                        bool sameToken = HasSamePublicKeyToken(name, currentName);
+                        if (sameToken && name.Version == currentName.Version)
+                        {
+                            // Same name, same culture, same public key token and same version => same assembly.
+                            Log("Assembly '{0}' already loaded, returning existing assembly", assembly.FullName);
+                            return assembly;
+                        }
+                    }
+                    // Implicit continue in the foreach loop.
+                }
+                else
+                {
+                    if (!HasPublicKeyToken(currentName))
+                    {
+                        // Same name, no public key tokens => same assembly.
+                        Log("Assembly '{0}' already loaded, returning existing assembly", assembly.FullName);
+                        return assembly;
+                    }
+                    // Implicit continue in the foreach loop.
+                }
             }
         }
         return null;
@@ -98,6 +120,20 @@ static class Common
             return "";
 
         return culture.Name;
+    }
+
+    static bool HasPublicKeyToken(AssemblyName assemblyName)
+    {
+        var bytes = assemblyName.GetPublicKeyToken();
+
+        return (bytes != null && bytes.Length != 0);
+    }
+
+    static bool HasSamePublicKeyToken(AssemblyName name1, AssemblyName name2)
+    {
+        var bytes1 = name1.GetPublicKeyToken();
+        var bytes2 = name2.GetPublicKeyToken();
+        return bytes1.SequenceEqual(bytes2);
     }
 
     public static Assembly ReadFromDiskCache(string tempBasePath, AssemblyName requestedAssemblyName)
