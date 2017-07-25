@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.AccessControl;
@@ -75,6 +74,21 @@ static class Common
         }
     }
 
+    /// <summary>
+    /// Returns an already loaded assemlby, if the versions match.
+    /// </summary>
+    /// <remarks>
+    /// It is crucial, that the version number is checked, before returning an already loaded assembly for the AssemblyResolve event.
+    /// 
+    /// If the version is not checked, then potentially a non matching assembly is being associated with the version number requested.
+    /// 
+    /// For example:
+    /// Version 1.0.0.0 of assembly X is already loaded.
+    /// Version 2.0.0.0 of assembly X is requested in the AssemblyResolve event.
+    /// 
+    /// If version 1.0.0.0 is returned, then the types and code in version 1.0.0.0 get associated with version 2.0.0.0 in the type system.
+    /// Meaning that a random "version redirect" has now effectively been performed.
+    /// </remarks>
     public static Assembly ReadExistingAssembly(AssemblyName name)
     {
         var currentDomain = AppDomain.CurrentDomain;
@@ -133,7 +147,12 @@ static class Common
     {
         var bytes1 = name1.GetPublicKeyToken();
         var bytes2 = name2.GetPublicKeyToken();
-        return bytes1.SequenceEqual(bytes2);
+        if (bytes1.Length != bytes2.Length) { return false; }
+        for (int i = 0; i < bytes1.Length; i++)
+        {
+            if (bytes1[i] != bytes2[i]) { return false; }
+        }
+        return true;
     }
 
     public static Assembly ReadFromDiskCache(string tempBasePath, AssemblyName requestedAssemblyName)
