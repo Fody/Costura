@@ -61,7 +61,14 @@ eg
 
 # Configuration Options [:link:](#contents)
 
-All config options are access by modifying the `Costura` node in FodyWeavers.xml
+All config options are access by modifying the `Costura` node in FodyWeavers.xml.
+
+Default FodyWeavers.xml:
+    
+    <?xml version="1.0" encoding="utf-8"?>
+    <Weavers>
+      <Costura />
+    </Weavers>
 
 ### CreateTemporaryAssemblies
 
