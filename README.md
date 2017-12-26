@@ -56,8 +56,8 @@ eg
 
  * Injects the following class into the target assembly. This means if an assembly load fails it will be loaded from the embedded resources.
 
-  - [ILTemplate.cs](https://github.com/Fody/Costura/blob/master/Template/ILTemplate.cs)
-  - [ILTemplateWithTempAssembly.cs](https://github.com/Fody/Costura/blob/master/Template/ILTemplateWithTempAssembly.cs)
+  - [ILTemplate.cs](https://github.com/Fody/Costura/blob/master/src/Costura.Template/ILTemplate.cs)
+  - [ILTemplateWithTempAssembly.cs](https://github.com/Fody/Costura/blob/master/src/Costura.Template/ILTemplateWithTempAssembly.cs)
 
 # Configuration Options [:link:](#contents)
 
