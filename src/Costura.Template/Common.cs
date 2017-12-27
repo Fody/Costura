@@ -16,6 +16,19 @@ static class Common
 {
     private const int DelayUntilReboot = 4;
 
+    [Flags]
+    public enum ErrorModes : uint
+    {
+        SYSTEM_DEFAULT = 0x0,
+        SEM_FAILCRITICALERRORS = 0x0001,
+        SEM_NOALIGNMENTFAULTEXCEPT = 0x0004,
+        SEM_NOGPFAULTERRORBOX = 0x0002,
+        SEM_NOOPENFILEERRORBOX = 0x8000
+    }
+
+    [DllImport("kernel32.dll")]
+    static extern ErrorModes SetErrorMode(ErrorModes uMode);
+
     [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
     static extern bool MoveFileEx(string lpExistingFileName, string lpNewFileName, int dwFlags);
 
@@ -259,6 +272,14 @@ static class Common
 
         SetDllDirectory(tempBasePath);
 
+        // prevent system-generated error message when LoadLibrary is called on a dll with an unmet dependency
+        // https://msdn.microsoft.com/en-us/library/windows/desktop/ms680621(v=vs.85).aspx
+        // 
+        // SEM_FAILCRITICALERRORS - The system does not display the critical-error-handler message box. Instead, the system sends the error to the calling process.
+        // SEM_NOGPFAULTERRORBOX  - The system does not display the Windows Error Reporting dialog.
+        // SEM_NOOPENFILEERRORBOX - The OpenFile function does not display a message box when it fails to find a file. Instead, the error is returned to the caller. 
+        SetErrorMode(ErrorModes.SEM_FAILCRITICALERRORS | ErrorModes.SEM_NOGPFAULTERRORBOX | ErrorModes.SEM_NOOPENFILEERRORBOX);
+
         foreach (var lib in libs)
         {
             name = ResourceNameToPath(lib);
@@ -270,6 +291,9 @@ static class Common
                 LoadLibrary(assemblyTempFilePath);
             }
         }
+
+        // reset to default behaviour
+        SetErrorMode(0);
     }
 
     static string ResourceNameToPath(string lib)
