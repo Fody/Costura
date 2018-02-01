@@ -71,7 +71,7 @@ static class ILTemplateWithTempAssembly
             }
 
             // Handles retargeted assemblies like PCL
-            if (requestedAssemblyName.Flags == AssemblyNameFlags.Retargetable)
+            if ((requestedAssemblyName.Flags & AssemblyNameFlags.Retargetable) != 0)
             {
                 assembly = Assembly.Load(requestedAssemblyName);
             }
