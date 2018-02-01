@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Xml.Linq;
 using Mono.Cecil;
 using Mono.Cecil.Pdb;
+using System;
 
 public abstract class BaseCostura
 {
@@ -50,16 +51,29 @@ public abstract class BaseCostura
         };
         moduleDefinition.Write(afterAssemblyPath, writerParams);
 
-        Directory.CreateDirectory(Suffix);
-        var isolatedPath = Path.GetFullPath(Path.Combine(Suffix, $"Costura{Suffix}{extension}"));
+        var isolatedDirectory = GetIsolatedDirectory();
+        if (Directory.Exists(isolatedDirectory))
+        {
+            Directory.Delete(isolatedDirectory, true);
+        }
+        Directory.CreateDirectory(isolatedDirectory);
+        var isolatedPath = GetIsolatedFilePath(extension);
         File.Copy(afterAssemblyPath, isolatedPath, true);
         File.Copy(afterAssemblyPath.Replace(extension, ".pdb"), isolatedPath.Replace(extension, ".pdb"), true);
     }
 
+    private string GetIsolatedDirectory()
+    {
+        return Path.Combine(Path.GetTempPath(), $"Costura{Suffix}");
+    }
+
+    private string GetIsolatedFilePath(string extension)
+    {
+        return Path.GetFullPath(Path.Combine(GetIsolatedDirectory(), $"Costura{Suffix}{extension}"));
+    }
+
     protected void LoadAssemblyIntoAppDomain(string extension = ".exe")
     {
-        var isolatedPath = Path.GetFullPath(Path.Combine(Suffix, $"Costura{Suffix}{extension}"));
-
-        assembly = Assembly.LoadFile(isolatedPath);
+        assembly = Assembly.LoadFile(GetIsolatedFilePath(extension));
     }
 }
