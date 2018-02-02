@@ -14,8 +14,6 @@ using System.Threading;
 
 static class Common
 {
-    private const int DelayUntilReboot = 4;
-
     [Flags]
     public enum ErrorModes : uint
     {
@@ -28,9 +26,6 @@ static class Common
 
     [DllImport("kernel32.dll")]
     static extern ErrorModes SetErrorMode(ErrorModes uMode);
-
-    [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-    static extern bool MoveFileEx(string lpExistingFileName, string lpNewFileName, int dwFlags);
 
     [DllImport("kernel32", SetLastError = true, CharSet = CharSet.Unicode)]
     static extern IntPtr LoadLibrary(string dllToLoad);
@@ -262,10 +257,6 @@ static class Common
                 using (var assemblyTempFile = File.OpenWrite(assemblyTempFilePath))
                 {
                     CopyTo(copyStream, assemblyTempFile);
-                }
-                if (!MoveFileEx(assemblyTempFilePath, null, DelayUntilReboot))
-                {
-                    //TODO: for now we ignore the return value.
                 }
             }
         }
