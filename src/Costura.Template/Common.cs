@@ -278,7 +278,9 @@ static class Common
         // SEM_FAILCRITICALERRORS - The system does not display the critical-error-handler message box. Instead, the system sends the error to the calling process.
         // SEM_NOGPFAULTERRORBOX  - The system does not display the Windows Error Reporting dialog.
         // SEM_NOOPENFILEERRORBOX - The OpenFile function does not display a message box when it fails to find a file. Instead, the error is returned to the caller. 
-        SetErrorMode(ErrorModes.SEM_FAILCRITICALERRORS | ErrorModes.SEM_NOGPFAULTERRORBOX | ErrorModes.SEM_NOOPENFILEERRORBOX);
+        //
+        // return value is the previous state of the error-mode bit flags.
+        var originalErrorMode = SetErrorMode(ErrorModes.SEM_FAILCRITICALERRORS | ErrorModes.SEM_NOGPFAULTERRORBOX | ErrorModes.SEM_NOOPENFILEERRORBOX);
 
         foreach (var lib in libs)
         {
@@ -292,8 +294,8 @@ static class Common
             }
         }
 
-        // reset to default behaviour
-        SetErrorMode(0);
+        // restore to previous state
+        SetErrorMode(originalErrorMode);
     }
 
     static string ResourceNameToPath(string lib)
