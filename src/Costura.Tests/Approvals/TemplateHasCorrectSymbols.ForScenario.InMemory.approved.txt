@@ -15,7 +15,7 @@
     .locals init ([0] bool V_0,
              [1] string V_1)
     .language '{3F5162F8-07C6-11D3-9053-00C04FA302A1}', '{994B45C4-E6E9-11D2-903F-00C04FA302A1}', '{5A869D0B-6611-11D3-BD2A-0000F80849BD}'
-    .line 96,96 : 5,6 'ExeToProcess\\bin\\Debug\\Common.cs'
+    .line 91,91 : 5,6 'ExeToProcess\\bin\\Debug\\Common.cs'
     IL_0000:  nop
     IL_0001:  ldarg.0
     IL_0002:  ldnull
@@ -38,7 +38,7 @@
   {
     // Code size       25 (0x19)
     .maxstack  8
-    .line 31,31 : 5,6 ''
+    .line 26,26 : 5,6 ''
     IL_0000:  nop
     IL_0001:  ldstr      "=== COSTURA === "
     IL_0006:  ldarg.0
@@ -64,7 +64,7 @@
              [5] class [mscorlib]System.Reflection.AssemblyName V_5,
              [6] bool V_6,
              [7] class [mscorlib]System.Reflection.Assembly V_7)
-    .line 78,78 : 5,6 ''
+    .line 73,73 : 5,6 ''
     IL_0000:  nop
     IL_0001:  call       class [mscorlib]System.AppDomain [mscorlib]System.AppDomain::get_CurrentDomain()
     IL_0006:  stloc.0
@@ -149,7 +149,7 @@
     .locals init ([0] uint8[] V_0,
              [1] int32 V_1,
              [2] bool V_2)
-    .line 37,37 : 5,6 ''
+    .line 32,32 : 5,6 ''
     IL_0000:  nop
     IL_0001:  ldc.i4     0x14000
     IL_0006:  newarr     [mscorlib]System.Byte
@@ -194,7 +194,7 @@
              [3] class [System]System.IO.Compression.DeflateStream V_3,
              [4] class [mscorlib]System.IO.MemoryStream V_4,
              [5] class [mscorlib]System.IO.Stream V_5)
-    .line 173,173 : 5,6 ''
+    .line 168,168 : 5,6 ''
     IL_0000:  nop
     IL_0001:  call       class [mscorlib]System.Reflection.Assembly [mscorlib]System.Reflection.Assembly::GetExecutingAssembly()
     IL_0006:  stloc.0
@@ -271,7 +271,7 @@
     .locals init ([0] string V_0,
              [1] bool V_1,
              [2] class [mscorlib]System.IO.Stream V_2)
-    .line 164,164 : 5,6 ''
+    .line 159,159 : 5,6 ''
     IL_0000:  nop
     IL_0001:  ldarg.0
     IL_0002:  ldarg.1
@@ -298,7 +298,7 @@
     .maxstack  4
     .locals init ([0] uint8[] V_0,
              [1] uint8[] V_1)
-    .line 55,55 : 5,6 ''
+    .line 50,50 : 5,6 ''
     IL_0000:  nop
     IL_0001:  ldarg.0
     IL_0002:  callvirt   instance int64 [mscorlib]System.IO.Stream::get_Length()
@@ -337,7 +337,7 @@
              [6] class [mscorlib]System.IO.Stream V_6,
              [7] bool V_7,
              [8] uint8[] V_8)
-    .line 135,135 : 5,6 ''
+    .line 130,130 : 5,6 ''
     IL_0000:  nop
     IL_0001:  ldarg.2
     IL_0002:  callvirt   instance string [mscorlib]System.Reflection.AssemblyName::get_Name()
@@ -446,7 +446,7 @@
           ResolveAssembly(object sender,
                           class [mscorlib]System.ResolveEventArgs e) cil managed
   {
-    // Code size       225 (0xe1)
+    // Code size       227 (0xe3)
     .maxstack  5
     .locals init ([0] class [mscorlib]System.Reflection.AssemblyName V_0,
              [1] class [mscorlib]System.Reflection.Assembly V_1,
@@ -477,7 +477,7 @@
       IL_0023:  nop
       IL_0024:  ldnull
       IL_0025:  stloc.s    V_4
-      IL_0027:  leave      IL_00de
+      IL_0027:  leave      IL_00e0
       IL_002c:  nop
       IL_002d:  leave.s    IL_0037
     }  // end .try
@@ -504,7 +504,7 @@
     IL_0054:  nop
     IL_0055:  ldloc.1
     IL_0056:  stloc.s    V_4
-    IL_0058:  br         IL_00de
+    IL_0058:  br         IL_00e0
     IL_005d:  ldstr      "Loading assembly '{0}' into the AppDomain"
     IL_0062:  ldc.i4.1
     IL_0063:  newarr     [mscorlib]System.Object
@@ -527,7 +527,7 @@
     IL_0085:  ceq
     IL_0087:  stloc.s    V_6
     IL_0089:  ldloc.s    V_6
-    IL_008b:  brfalse.s  IL_00d9
+    IL_008b:  brfalse.s  IL_00db
     IL_008d:  nop
     IL_008e:  ldsfld     object Costura.AssemblyLoader::nullCacheLock
     IL_0093:  stloc.s    V_7
@@ -557,21 +557,23 @@
     IL_00bc:  ldloc.0
     IL_00bd:  callvirt   instance valuetype [mscorlib]System.Reflection.AssemblyNameFlags [mscorlib]System.Reflection.AssemblyName::get_Flags()
     IL_00c2:  ldc.i4     0x100
-    IL_00c7:  ceq
-    IL_00c9:  stloc.s    V_8
-    IL_00cb:  ldloc.s    V_8
-    IL_00cd:  brfalse.s  IL_00d8
-    IL_00cf:  nop
-    IL_00d0:  ldloc.0
-    IL_00d1:  call       class [mscorlib]System.Reflection.Assembly [mscorlib]System.Reflection.Assembly::Load(class [mscorlib]System.Reflection.AssemblyName)
-    IL_00d6:  stloc.1
-    IL_00d7:  nop
-    IL_00d8:  nop
-    IL_00d9:  ldloc.1
-    IL_00da:  stloc.s    V_4
-    IL_00dc:  br.s       IL_00de
-    IL_00de:  ldloc.s    V_4
-    IL_00e0:  ret
+    IL_00c7:  and
+    IL_00c8:  ldc.i4.0
+    IL_00c9:  cgt.un
+    IL_00cb:  stloc.s    V_8
+    IL_00cd:  ldloc.s    V_8
+    IL_00cf:  brfalse.s  IL_00da
+    IL_00d1:  nop
+    IL_00d2:  ldloc.0
+    IL_00d3:  call       class [mscorlib]System.Reflection.Assembly [mscorlib]System.Reflection.Assembly::Load(class [mscorlib]System.Reflection.AssemblyName)
+    IL_00d8:  stloc.1
+    IL_00d9:  nop
+    IL_00da:  nop
+    IL_00db:  ldloc.1
+    IL_00dc:  stloc.s    V_4
+    IL_00de:  br.s       IL_00e0
+    IL_00e0:  ldloc.s    V_4
+    IL_00e2:  ret
   } // end of method AssemblyLoader::ResolveAssembly
   .method private hidebysig specialname rtspecialname static 
           void  .cctor() cil managed

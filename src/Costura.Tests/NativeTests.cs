@@ -1,5 +1,4 @@
-﻿using System;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 public abstract class NativeTests : BaseCosturaTest
 {

@@ -5,7 +5,6 @@ using System.Reflection;
 using System.Xml.Linq;
 using Mono.Cecil;
 using Mono.Cecil.Pdb;
-using System;
 
 public abstract class BaseCostura
 {
