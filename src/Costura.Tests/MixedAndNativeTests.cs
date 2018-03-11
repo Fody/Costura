@@ -11,7 +11,7 @@ public class MixedAndNativeTests : BaseCosturaTest
         if (AppDomainRunner.IsNotInTestAppDomain)
             CreateIsolatedAssemblyCopy("ExeToProcessWithNative",
                 "<Costura Unmanaged32Assemblies='AssemblyToReferenceMixed' />",
-                new string[] { "AssemblyToReferenceMixed.dll" });
+                new[] { "AssemblyToReferenceMixed.dll" });
     }
 
     [SetUp]

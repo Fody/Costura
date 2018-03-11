@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+// ReSharper disable UnusedVariable
 
 public class ClassToTest
 {

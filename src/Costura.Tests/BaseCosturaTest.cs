@@ -23,13 +23,7 @@ public abstract class BaseCosturaTest : BaseCostura
             }
         }
 
-        public override string Name
-        {
-            get
-            {
-                return nameof(BaseCosturaTest.TemplateHasCorrectSymbols) + AdditionalInfo;
-            }
-        }
+        public override string Name => nameof(TemplateHasCorrectSymbols) + AdditionalInfo;
     }
 
     [Test, Category("IL")]

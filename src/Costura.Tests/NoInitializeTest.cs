@@ -11,7 +11,7 @@ public class NoInitializeTest : BaseCostura
         Assert.Throws<WeavingException>(() =>
             CreateIsolatedAssemblyCopy("AssemblyWithoutInitialize",
                 "<Costura LoadAtModuleInit='false' />",
-                new string[] { "AssemblyToReference.dll", "AssemblyToReferencePreEmbedded.dll", "ExeToReference.exe" },
+                new[] { "AssemblyToReference.dll", "AssemblyToReferencePreEmbedded.dll", "ExeToReference.exe" },
                 ".dll"),
             "Costura was not initialized. Make sure LoadAtModuleInit=true or call CosturaUtility.Initialize().");
     }

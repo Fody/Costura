@@ -8,12 +8,11 @@ partial class ModuleWeaver
     void BuildUpNameDictionary(bool createTemporaryAssemblies, List<string> preloadOrder)
     {
         var orderedResources = preloadOrder
-            .Join<string, Resource, string, Resource>(ModuleDefinition.Resources, p => p.ToLowerInvariant(),
+            .Join(ModuleDefinition.Resources, p => p.ToLowerInvariant(),
             r =>
             {
                 var parts = r.Name.Split('.');
-                string ext, name;
-                GetNameAndExt(parts, out name, out ext);
+                GetNameAndExt(parts, out var name, out _);
                 return name;
             }, (s, r) => r)
             .Union(ModuleDefinition.Resources.OrderBy(r => r.Name))

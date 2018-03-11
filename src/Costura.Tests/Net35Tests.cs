@@ -11,7 +11,7 @@ public class Net35Tests : BasicTests
         if (AppDomainRunner.IsNotInTestAppDomain)
             CreateIsolatedAssemblyCopy("ExeToProcess35",
                 "<Costura />",
-                new string[] { "AssemblyToReference35.dll" });
+                new[] { "AssemblyToReference35.dll" });
     }
 
     [SetUp]

@@ -11,7 +11,7 @@ public class TempFileTests : BasicTests
         if (AppDomainRunner.IsNotInTestAppDomain)
             CreateIsolatedAssemblyCopy("ExeToProcess",
                 "<Costura CreateTemporaryAssemblies='true' />",
-                new string[] { "AssemblyToReference.dll", "AssemblyToReferencePreEmbedded.dll", "ExeToReference.exe" });
+                new[] { "AssemblyToReference.dll", "AssemblyToReferencePreEmbedded.dll", "ExeToReference.exe" });
     }
 
     [SetUp]

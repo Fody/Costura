@@ -13,7 +13,7 @@ public class CultureResourceTests : BaseCosturaTest
         if (AppDomainRunner.IsNotInTestAppDomain)
             CreateIsolatedAssemblyCopy("ExeToProcess",
                 "<Costura />",
-                new string[] {
+                new[] {
                     "AssemblyToReference.dll",
                     "de\\AssemblyToReference.resources.dll",
                     "fr\\AssemblyToReference.resources.dll",

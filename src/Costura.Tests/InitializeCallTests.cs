@@ -11,7 +11,7 @@ public class InitializeCallTests : BasicTests
         if (AppDomainRunner.IsNotInTestAppDomain)
             CreateIsolatedAssemblyCopy("AssemblyToProcess",
                 "<Costura />",
-                new string[] { "AssemblyToReference.dll", "AssemblyToReferencePreEmbedded.dll", "ExeToReference.exe" },
+                new[] { "AssemblyToReference.dll", "AssemblyToReferencePreEmbedded.dll", "ExeToReference.exe" },
                 ".dll");
     }
 

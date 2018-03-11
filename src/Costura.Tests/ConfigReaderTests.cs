@@ -32,7 +32,7 @@ public class ConfigReaderTests
     [Test]
     public void TrimWhitespaceFromElementList()
     {
-        var xElement = XElement.Parse(@"<Node><attr>Item </attr></Node>");
+        var xElement = XElement.Parse("<Node><attr>Item </attr></Node>");
         var list = Configuration.ReadList(xElement, "attr");
         Assert.AreEqual(1, list.Count);
         Assert.AreEqual("Item", list[0]);

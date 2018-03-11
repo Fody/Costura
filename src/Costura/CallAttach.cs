@@ -20,19 +20,21 @@ partial class ModuleWeaver
 
     bool FindInitializeCalls()
     {
-        bool found = false;
+        var found = false;
 
         foreach (var type in ModuleDefinition.Types)
         {
             if (!type.HasMethods)
+            {
                 continue;
+            }
 
             foreach (var method in type.Methods)
             {
                 if (!method.HasBody)
                     continue;
 
-                for (int i = 0; i < method.Body.Instructions.Count; i++)
+                for (var i = 0; i < method.Body.Instructions.Count; i++)
                 {
                     if (method.Body.Instructions[i].OpCode == OpCodes.Call &&
                         method.Body.Instructions[i].Operand is MethodReference callMethod &&

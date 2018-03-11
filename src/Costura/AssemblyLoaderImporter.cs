@@ -67,7 +67,7 @@ partial class ModuleWeaver
 
     void DumpSource(string file)
     {
-        string localFile = Path.Combine(Path.GetDirectoryName(AssemblyFilePath), file + ".cs");
+        var localFile = Path.Combine(Path.GetDirectoryName(AssemblyFilePath), file + ".cs");
 
         if (File.Exists(localFile))
             return;
