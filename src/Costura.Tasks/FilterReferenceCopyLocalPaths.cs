@@ -105,9 +105,7 @@ namespace Costura.Tasks
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw new WeavingException($"Could not read '{"FodyWeavers.xml"}' because it has invalid xml. Message: '{e}'.");
-                //return false;
+                throw new WeavingException($"Execute Failed. Message: '{e}'.");
             }
         }
 
