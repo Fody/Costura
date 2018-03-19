@@ -8,6 +8,8 @@ using Microsoft.Build.Utilities;
 
 namespace Costura.Tasks
 {
+    using System;
+
     public class FilterReferenceCopyLocalPaths : Task
     {
         [Required]
@@ -101,9 +103,11 @@ namespace Costura.Tasks
 
                 return true;
             }
-            catch
+            catch (Exception e)
             {
-                return false;
+                Console.WriteLine(e);
+                throw new WeavingException($"Could not read '{"FodyWeavers.xml"}' because it has invalid xml. Message: '{e}'.");
+                //return false;
             }
         }
 
