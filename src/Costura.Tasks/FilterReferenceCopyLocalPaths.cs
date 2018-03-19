@@ -8,6 +8,8 @@ using Microsoft.Build.Utilities;
 
 namespace Costura.Tasks
 {
+    using System;
+
     public class FilterReferenceCopyLocalPaths : Task
     {
         [Required]
@@ -101,9 +103,9 @@ namespace Costura.Tasks
 
                 return true;
             }
-            catch
+            catch (Exception e)
             {
-                return false;
+                throw new WeavingException($"Execute Failed. Message: '{e}'.");
             }
         }
 
