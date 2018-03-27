@@ -82,6 +82,21 @@ static class Common
         }
     }
 
+    /// <summary>
+    /// Returns an already loaded assemlby, if the versions match.
+    /// </summary>
+    /// <remarks>
+    /// It is crucial, that the version number is checked, before returning an already loaded assembly for the AssemblyResolve event.
+    /// 
+    /// If the version is not checked, then potentially a non matching assembly is being associated with the version number requested.
+    /// 
+    /// For example:
+    /// Version 1.0.0.0 of assembly X is already loaded.
+    /// Version 2.0.0.0 of assembly X is requested in the AssemblyResolve event.
+    /// 
+    /// If version 1.0.0.0 is returned, then the types and code in version 1.0.0.0 get associated with version 2.0.0.0 in the type system.
+    /// Meaning that a random "version redirect" has now effectively been performed.
+    /// </remarks>
     public static Assembly ReadExistingAssembly(AssemblyName name)
     {
         var currentDomain = AppDomain.CurrentDomain;
@@ -92,9 +107,30 @@ static class Common
             if (string.Equals(currentName.Name, name.Name, StringComparison.InvariantCultureIgnoreCase) &&
                 string.Equals(CultureToString(currentName.CultureInfo), CultureToString(name.CultureInfo), StringComparison.InvariantCultureIgnoreCase))
             {
-                Log("Assembly '{0}' already loaded, returning existing assembly", assembly.FullName);
-
-                return assembly;
+                if (HasPublicKeyToken(name))
+                {
+                    if (HasPublicKeyToken(currentName))
+                    {
+                        bool sameToken = HasSamePublicKeyToken(name, currentName);
+                        if (sameToken && name.Version == currentName.Version)
+                        {
+                            // Same name, same culture, same public key token and same version => same assembly.
+                            Log("Assembly '{0}' already loaded, returning existing assembly", assembly.FullName);
+                            return assembly;
+                        }
+                    }
+                    // Implicit continue in the foreach loop.
+                }
+                else
+                {
+                    if (!HasPublicKeyToken(currentName))
+                    {
+                        // Same name, no public key tokens => same assembly.
+                        Log("Assembly '{0}' already loaded, returning existing assembly", assembly.FullName);
+                        return assembly;
+                    }
+                    // Implicit continue in the foreach loop.
+                }
             }
         }
         return null;
@@ -106,6 +142,25 @@ static class Common
             return "";
 
         return culture.Name;
+    }
+
+    static bool HasPublicKeyToken(AssemblyName assemblyName)
+    {
+        var bytes = assemblyName.GetPublicKeyToken();
+
+        return (bytes != null && bytes.Length != 0);
+    }
+
+    static bool HasSamePublicKeyToken(AssemblyName name1, AssemblyName name2)
+    {
+        var bytes1 = name1.GetPublicKeyToken();
+        var bytes2 = name2.GetPublicKeyToken();
+        if (bytes1.Length != bytes2.Length) { return false; }
+        for (int i = 0; i < bytes1.Length; i++)
+        {
+            if (bytes1[i] != bytes2[i]) { return false; }
+        }
+        return true;
     }
 
     public static Assembly ReadFromDiskCache(string tempBasePath, AssemblyName requestedAssemblyName)
