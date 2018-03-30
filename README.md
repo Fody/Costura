@@ -212,6 +212,14 @@ To use, call `CosturaUtility.Initialize()` somewhere in your code, as early as p
 
         static void Main(string[] args) { ... }
     }
+    
+# Unit Testing
+
+Most unit test frameworks need the `.dll`s files in order to discover and perform the unit tests.  You may need to add Costura and a configuration like the below to your testing assembly. 
+
+    <Weavers>
+        <Costura ExcludeAssemblies='TargetExe|TargetExeTest' CreateTemporaryAssemblies='true' DisableCleanup='true'/>
+    </Weavers>
 
 # Icon [:link:](#contents)
 
