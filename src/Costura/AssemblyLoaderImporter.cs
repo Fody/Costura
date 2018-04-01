@@ -73,9 +73,9 @@ partial class ModuleWeaver
             return;
 
         using (var stream = GetType().Assembly.GetManifestResourceStream($"Costura.src.{file}.cs"))
+        using (var outStream = new FileStream(localFile, FileMode.Create))
         {
-            using (var outStream = new FileStream(localFile, FileMode.Create))
-                stream.CopyTo(outStream);
+            stream.CopyTo(outStream);
         }
     }
 
@@ -86,17 +86,31 @@ partial class ModuleWeaver
             var newField = new FieldDefinition(field.Name, field.Attributes, Resolve(field.FieldType));
             targetType.Fields.Add(newField);
             if (field.Name == "assemblyNames")
+            {
                 assemblyNamesField = newField;
+            }
+
             if (field.Name == "symbolNames")
+            {
                 symbolNamesField = newField;
+            }
+
             if (field.Name == "preloadList")
+            {
                 preloadListField = newField;
+            }
             if (field.Name == "preload32List")
+            {
                 preload32ListField = newField;
+            }
             if (field.Name == "preload64List")
+            {
                 preload64ListField = newField;
+            }
             if (field.Name == "checksums")
+            {
                 checksumsField = newField;
+            }
         }
     }
 
@@ -216,16 +230,13 @@ partial class ModuleWeaver
 
     Instruction CloneInstruction(Instruction instruction)
     {
-        Instruction newInstruction;
         if (instruction.OpCode == OpCodes.Ldstr && ((string)instruction.Operand) == "To be replaced at compile time")
         {
-            newInstruction = Instruction.Create(OpCodes.Ldstr, resourcesHash);
+            return Instruction.Create(OpCodes.Ldstr, resourcesHash);
         }
-        else
-        {
-            newInstruction = (Instruction)instructionConstructorInfo.Invoke(new[] { instruction.OpCode, instruction.Operand });
-            newInstruction.Operand = Import(instruction.Operand);
-        }
+
+        var newInstruction = (Instruction)instructionConstructorInfo.Invoke(new[] { instruction.OpCode, instruction.Operand });
+        newInstruction.Operand = Import(instruction.Operand);
         //newInstruction.SequencePoint = TranslateSequencePoint(instruction.SequencePoint);
         return newInstruction;
     }
@@ -233,7 +244,9 @@ partial class ModuleWeaver
     SequencePoint TranslateSequencePoint(Instruction instruction, SequencePoint sequencePoint)
     {
         if (sequencePoint == null)
+        {
             return null;
+        }
 
         var document = new Document(Path.Combine(Path.GetDirectoryName(AssemblyFilePath), Path.GetFileName(sequencePoint.Document.Url)))
         {
@@ -253,8 +266,7 @@ partial class ModuleWeaver
 
     object Import(object operand)
     {
-        var reference = operand as MethodReference;
-        if (reference != null)
+        if (operand is MethodReference reference)
         {
             var methodReference = reference;
             if (methodReference.DeclaringType == sourceType || methodReference.DeclaringType == commonType)
@@ -276,16 +288,15 @@ partial class ModuleWeaver
             }
             return ModuleDefinition.ImportReference(methodReference.Resolve());
         }
-        var typeReference = operand as TypeReference;
-        if (typeReference != null)
+
+        if (operand is TypeReference typeReference)
         {
             return Resolve(typeReference);
         }
-        var fieldReference = operand as FieldReference;
-        if (fieldReference != null)
+
+        if (operand is FieldReference fieldReference)
         {
-            var targetField = targetType.Fields.FirstOrDefault(f => f.Name == fieldReference.Name);
-            return targetField;
+            return targetType.Fields.FirstOrDefault(f => f.Name == fieldReference.Name);
         }
         return operand;
     }

@@ -79,8 +79,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApprovalTestConfig.cs" />
     <Compile Include="AssemblyExtensions.cs" />
-    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="BaseCostura.cs" />
     <Compile Include="BaseCosturaTest.cs" />
     <Compile Include="BasicTests.cs" />
@@ -93,7 +93,6 @@
     <Compile Include="MixedAndNativeTests.cs" />
     <Compile Include="MockAssemblyResolver.cs" />
     <Compile Include="NativeTests.cs" />
-    <Compile Include="Net35Tests.cs" />
     <Compile Include="NoInitializeTest.cs" />
     <Compile Include="TempFileTests.cs" />
     <Compile Include="Verifier.cs" />
