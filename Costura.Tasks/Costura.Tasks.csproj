@@ -61,9 +61,6 @@
     <Compile Include="ConfigFileFinder.cs" />
     <Compile Include="FilterReferenceCopyLocalPaths.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
   <Import Project="..\Costura.Shared\Costura.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

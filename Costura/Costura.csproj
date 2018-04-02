@@ -2,10 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>net452</TargetFramework>
-    <AssemblyName>Costura</AssemblyName>
-    <RootNamespace>Costura</RootNamespace>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>$(SolutionDir)key.snk</AssemblyOriginatorKeyFile>
+    <Authors>Simon Cropp, Cameron MacFarland</Authors>
+    <Description>Fody add-in for embedding references as resources.</Description>
+    <PackageTags>ILMerge, ILWeaving, Embed, Resource, Fody, Cecil</PackageTags>
   </PropertyGroup>
-
+  <ItemGroup>
+    <PackageReference Include="Fody" Version="3.0.0" PrivateAssets="None" />
+    <PackageReference Include="FodyPackaging" Version="3.0.0" PrivateAssets="All" />
+  </ItemGroup>
 
 </Project>

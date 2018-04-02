@@ -1,81 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E5622B74-B6C6-46A5-9207-0872533E6C2F}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Costura</RootNamespace>
-    <AssemblyName>Costura.Fody</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <TargetFrameworkProfile />
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <TargetFrameworks>net46;netstandard2.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="AssemblyLoaderImporter.cs" />
-    <Compile Include="Checksums.cs" />
-    <Compile Include="Extensions.cs" />
-    <Compile Include="HashCalculator.cs" />
-    <Compile Include="CallAttach.cs" />
-    <Compile Include="ModuleWeaver.cs" />
-    <Compile Include="MsCoreReferenceFinder.cs" />
-    <Compile Include="NativeResources.cs" />
-    <Compile Include="ResourceCaseFixer.cs" />
-    <Compile Include="ResourceEmbedder.cs" />
-    <Compile Include="ResourceNameFinder.cs" />
+    <PackageReference Include="FodyHelpers" Version="3.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="FodyHelpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=1ca091877d12ca03, processorArchitecture=MSIL">
-      <HintPath>..\packages\FodyHelpers.3.0.0\lib\net46\FodyHelpers.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Cecil, Version=0.10.0.0, Culture=neutral, PublicKeyToken=1ca091877d12ca03, processorArchitecture=MSIL">
-      <HintPath>..\packages\FodyHelpers.3.0.0\lib\net46\Mono.Cecil.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Cecil.Mdb, Version=0.10.0.0, Culture=neutral, PublicKeyToken=1ca091877d12ca03, processorArchitecture=MSIL">
-      <HintPath>..\packages\FodyHelpers.3.0.0\lib\net46\Mono.Cecil.Mdb.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Cecil.Pdb, Version=0.10.0.0, Culture=neutral, PublicKeyToken=1ca091877d12ca03, processorArchitecture=MSIL">
-      <HintPath>..\packages\FodyHelpers.3.0.0\lib\net46\Mono.Cecil.Pdb.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Cecil.Rocks, Version=0.10.0.0, Culture=neutral, PublicKeyToken=1ca091877d12ca03, processorArchitecture=MSIL">
-      <HintPath>..\packages\FodyHelpers.3.0.0\lib\net46\Mono.Cecil.Rocks.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Xml.Linq" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="$(SolutionDir)Costura.Template\bin\$(ConfigurationName)\Costura.Template.dll">
+    <EmbeddedResource Include="$(SolutionDir)Costura.Template\bin\$(ConfigurationName)\net46\Costura.Template.dll">
       <Link>bin\Template.dll</Link>
       <InProject>false</InProject>
+      <LogicalName>Costura.Template.dll</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="$(SolutionDir)Costura.Template\bin\$(ConfigurationName)\Costura.Template.pdb">
+    <EmbeddedResource Include="$(SolutionDir)Costura.Template\bin\$(ConfigurationName)\net46\Costura.Template.pdb">
       <Link>bin\Template.pdb</Link>
       <InProject>false</InProject>
+      <LogicalName>Costura.Template.pdb</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="$(SolutionDir)Costura.Template\Common.cs">
       <Link>src\Common.cs</Link>
@@ -94,15 +34,5 @@
       <InProject>false</InProject>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Costura.Template\Costura.Template.csproj">
-      <Project>{cd9aebaa-78f4-4a78-bf06-0cb7d84d83e8}</Project>
-      <Name>Costura.Template</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
   <Import Project="..\Costura.Shared\Costura.Shared.projitems" Label="Shared" />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
