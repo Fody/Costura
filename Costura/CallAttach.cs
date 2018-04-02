@@ -32,16 +32,19 @@ partial class ModuleWeaver
             foreach (var method in type.Methods)
             {
                 if (!method.HasBody)
-                    continue;
-
-                for (var i = 0; i < method.Body.Instructions.Count; i++)
                 {
-                    if (method.Body.Instructions[i].OpCode == OpCodes.Call &&
-                        method.Body.Instructions[i].Operand is MethodReference callMethod &&
+                    continue;
+                }
+
+                var instructions = method.Body.Instructions;
+                for (var i = 0; i < instructions.Count; i++)
+                {
+                    if (instructions[i].OpCode == OpCodes.Call &&
+                        instructions[i].Operand is MethodReference callMethod &&
                         callMethod.FullName == "System.Void CosturaUtility::Initialize()")
                     {
                         found = true;
-                        method.Body.Instructions[i] = Instruction.Create(OpCodes.Call, attachMethod);
+                        instructions[i] = Instruction.Create(OpCodes.Call, attachMethod);
                     }
                 }
             }

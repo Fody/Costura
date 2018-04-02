@@ -23,7 +23,7 @@ partial class ModuleWeaver : IDisposable
             Directory.CreateDirectory(cachePath);
         }
 
-        var onlyBinaries = ReferenceCopyLocalPaths.Where(x => x.EndsWith(".dll") || x.EndsWith(".exe"));
+        var onlyBinaries = ReferenceCopyLocalPaths.Where(x => x.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) || x.EndsWith(".exe", StringComparison.OrdinalIgnoreCase));
 
         foreach (var dependency in GetFilteredReferences(onlyBinaries, config))
         {
@@ -31,7 +31,7 @@ partial class ModuleWeaver : IDisposable
 
             string resourceName;
 
-            if (dependency.EndsWith(".resources.dll"))
+            if (dependency.EndsWith(".resources.dll",StringComparison.OrdinalIgnoreCase))
             {
                 resourceName = Embed($"costura.{Path.GetFileName(Path.GetDirectoryName(fullPath))}.", fullPath, !config.DisableCompression);
                 if (config.CreateTemporaryAssemblies)
@@ -65,12 +65,12 @@ partial class ModuleWeaver : IDisposable
         {
             var prefix = "";
 
-            if (config.Unmanaged32Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(dependency)))
+            if (config.Unmanaged32Assemblies.Any(x => string.Equals(x, Path.GetFileNameWithoutExtension(dependency), StringComparison.OrdinalIgnoreCase)))
             {
                 prefix = "costura32.";
                 hasUnmanaged = true;
             }
-            if (config.Unmanaged64Assemblies.Any(x => x == Path.GetFileNameWithoutExtension(dependency)))
+            if (config.Unmanaged64Assemblies.Any(x => string.Equals(x, Path.GetFileNameWithoutExtension(dependency), StringComparison.OrdinalIgnoreCase)))
             {
                 prefix = "costura64.";
                 hasUnmanaged = true;
@@ -175,7 +175,7 @@ partial class ModuleWeaver : IDisposable
     string Embed(string prefix, string fullPath, bool compress)
     {
         var resourceName = $"{prefix}{Path.GetFileName(fullPath).ToLowerInvariant()}";
-        if (ModuleDefinition.Resources.Any(x => x.Name == resourceName))
+        if (ModuleDefinition.Resources.Any(x => string.Equals(x.Name, resourceName, StringComparison.OrdinalIgnoreCase)))
         {
             LogInfo($"\tSkipping '{fullPath}' because it is already embedded");
             return resourceName;

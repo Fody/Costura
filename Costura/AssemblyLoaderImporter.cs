@@ -38,30 +38,30 @@ partial class ModuleWeaver
 
             if (createTemporaryAssemblies)
             {
-                sourceType = moduleDefinition.Types.First(x => x.Name == "ILTemplateWithTempAssembly");
+                sourceType = moduleDefinition.Types.Single(x => x.Name == "ILTemplateWithTempAssembly");
                 DumpSource("ILTemplateWithTempAssembly");
             }
             else if (hasUnmanaged)
             {
-                sourceType = moduleDefinition.Types.First(x => x.Name == "ILTemplateWithUnmanagedHandler");
+                sourceType = moduleDefinition.Types.Single(x => x.Name == "ILTemplateWithUnmanagedHandler");
                 DumpSource("ILTemplateWithUnmanagedHandler");
             }
             else
             {
-                sourceType = moduleDefinition.Types.First(x => x.Name == "ILTemplate");
+                sourceType = moduleDefinition.Types.Single(x => x.Name == "ILTemplate");
                 DumpSource("ILTemplate");
             }
-            commonType = moduleDefinition.Types.First(x => x.Name == "Common");
+            commonType = moduleDefinition.Types.Single(x => x.Name == "Common");
             DumpSource("Common");
 
             targetType = new TypeDefinition("Costura", "AssemblyLoader", sourceType.Attributes, Resolve(sourceType.BaseType));
             targetType.CustomAttributes.Add(new CustomAttribute(compilerGeneratedAttributeCtor));
             ModuleDefinition.Types.Add(targetType);
             CopyFields(sourceType);
-            CopyMethod(sourceType.Methods.First(x => x.Name == "ResolveAssembly"));
+            CopyMethod(sourceType.Methods.Single(x => x.Name == "ResolveAssembly"));
 
-            loaderCctor = CopyMethod(sourceType.Methods.First(x => x.IsConstructor && x.IsStatic));
-            attachMethod = CopyMethod(sourceType.Methods.First(x => x.Name == "Attach"));
+            loaderCctor = CopyMethod(sourceType.Methods.Single(x => x.IsConstructor && x.IsStatic));
+            attachMethod = CopyMethod(sourceType.Methods.Single(x => x.Name == "Attach"));
         }
     }
 
