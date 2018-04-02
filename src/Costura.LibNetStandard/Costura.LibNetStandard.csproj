@@ -9,8 +9,4 @@
 
   <Import Project="..\Costura.Lib.Shared\Costura.Lib.Shared.projitems" Label="Shared" />
 
-  <ItemGroup>
-    <Compile Include="..\Costura.Lib\obj\PCL\$(Configuration)\GitVersionTaskAssemblyInfo.g.cs" Link="GitVersionTaskAssemblyInfo.g.cs" />
-  </ItemGroup>
-
 </Project>
