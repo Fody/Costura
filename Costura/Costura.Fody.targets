@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <Choose>
+    <When Condition="'$(MSBuildRuntimeType)'=='Core'">
+      <PropertyGroup>
+        <CosturaPath>$(MSBuildThisFileDirectory)..\netstandardtask</CosturaPath>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup>
+        <CosturaPath>$(MSBuildThisFileDirectory)..\netclassictask</CosturaPath>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+
+  <UsingTask
+      TaskName="Costura.Tasks.FilterReferenceCopyLocalPaths"
+      AssemblyFile="$(CosturaPath)\Costura.Tasks.dll" />
+
+  <Target Name="CosturaFilterReferenceCopyLocalPaths" BeforeTargets="_CopyFilesMarkedCopyLocal" DependsOnTargets="FodyTarget">
+
+    <Costura.Tasks.FilterReferenceCopyLocalPaths
+      ProjectDirectory="$(ProjectDir)"
+      SolutionDir="$(FodySolutionDir)"
+      References="@(ReferencePath)"
+      ReferenceCopyLocalPaths="@(ReferenceCopyLocalPaths)"
+    >
+      <Output TaskParameter="FilteredReferenceCopyLocalPaths" ItemName="FilteredReferenceCopyLocalPaths" />
+    </Costura.Tasks.FilterReferenceCopyLocalPaths>
+
+    <ItemGroup>
+      <ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)" />
+      <ReferenceCopyLocalPaths Include="@(FilteredReferenceCopyLocalPaths)" />
+    </ItemGroup>
+
+  </Target>
+</Project>

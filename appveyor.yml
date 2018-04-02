@@ -1,21 +1,16 @@
-skip_tags: true
-
-configuration: Release
-
+version: 1.0.{build}
 image: Visual Studio 2017
-
+configuration: Release
+platform: Any CPU
+install:
+- cmd: appveyor downloadfile https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
 before_build:
-  - nuget restore src\Costura.sln
-
-after_build:
-  - src\BuildNuGetPackage\bin\Release\BuildNuGetPackage.exe artifacts
-
+- ps: nuget restore
 build:
-  parallel: true
-  project: src\Costura.sln
-
+  verbosity: minimal
 test_script:
-  - nunit3-console src\Costura.Tests\bin\Release\Costura.Tests.dll --x86 --result=myresults.xml;format=AppVeyor
+- cmd: >-
+    %xunit20%\xunit.console Tests\bin\Release\net46\Tests.dll
 
 artifacts:
-  - path: artifacts\*.nupkg
+- path: nugets\**\*.nupkg
