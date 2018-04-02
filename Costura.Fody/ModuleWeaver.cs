@@ -1,30 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Xml.Linq;
+﻿using System.Collections.Generic;
+using Fody;
 using Mono.Cecil;
 
-public partial class ModuleWeaver
+public partial class ModuleWeaver: BaseModuleWeaver
 {
-    public XElement Config { get; set; }
-    public Action<string> LogInfo { get; set; }
-    public Action<string> LogError { get; set; }
-    public ModuleDefinition ModuleDefinition { get; set; }
-    public string References { get; set; }
-    public List<string> ReferenceCopyLocalPaths { get; set; }
     public IAssemblyResolver AssemblyResolver { get; set; }
-    public string AssemblyFilePath { get; set; }
 
-    public ModuleWeaver()
-    {
-        LogInfo = s => { };
-        LogError = s => { };
-    }
-
-    public void Execute()
+    public override void Execute()
     {
         var config = new Configuration(Config);
-
-        CleanReferences();
 
         FindMsCoreReferences();
 
@@ -39,4 +23,11 @@ public partial class ModuleWeaver
         AddChecksumsToTemplate();
         BuildUpNameDictionary(config.CreateTemporaryAssemblies, config.PreloadOrder);
     }
+
+    public override IEnumerable<string> GetAssembliesForScanning()
+    {
+        yield break;
+    }
+
+    public override bool ShouldCleanReference => true;
 }
