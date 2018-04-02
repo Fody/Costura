@@ -1,6 +1,7 @@
-![Costura Icon](https://raw.github.com/Fody/Costura/master/Icons/package_icon.png)
+![Costura Icon](https://raw.github.com/Fody/Costura/master/package_icon.png)
 
-### Costura is an add-in for [Fody](https://github.com/Fody/Fody/) 
+
+### Costura is an add-in for [Fody](https://github.com/Fody/Fody/)
 
 Embeds dependencies as resources.
 
@@ -11,6 +12,7 @@ Embeds dependencies as resources.
 ### To Install
 
     PM> Install-Package Costura.Fody
+
 
 # Contents
 
@@ -31,7 +33,9 @@ Embeds dependencies as resources.
 - [Icon](#icon-link)
 - [Contributors](#contributors-link)
 
+
 # How it works [:link:](#contents)
+
 
 ## Merge assemblies as embedded resources
 
@@ -40,7 +44,8 @@ This approach uses a combination of two methods
  * Jeffrey Richter's suggestion of using [embedded resources as a method of merging assemblies](http://blogs.msdn.com/b/microsoft_press/archive/2010/02/03/jeffrey-richter-excerpt-2-from-clr-via-c-third-edition.aspx)
  * Einar Egilsson's suggestion [using cecil to create module initializers](http://tech.einaregilsson.com/2009/12/16/module-initializers-in-csharp/)
 
-## Details 
+
+## Details
 
 This Task performs the following changes
 
@@ -59,9 +64,11 @@ eg
   - [ILTemplate.cs](https://github.com/Fody/Costura/blob/master/src/Costura.Template/ILTemplate.cs)
   - [ILTemplateWithTempAssembly.cs](https://github.com/Fody/Costura/blob/master/src/Costura.Template/ILTemplateWithTempAssembly.cs)
 
+
 # Configuration Options [:link:](#contents)
 
 All config options are access by modifying the `Costura` node in FodyWeavers.xml
+
 
 ### CreateTemporaryAssemblies
 
@@ -70,7 +77,8 @@ This will copy embedded files to disk before loading them into memory. This is h
 *Defaults to `false`*
 
     <Costura CreateTemporaryAssemblies='true' />
-    
+
+
 ### IncludeDebugSymbols
 
 Controls if .pdbs for reference assemblies are also embedded.
@@ -78,6 +86,7 @@ Controls if .pdbs for reference assemblies are also embedded.
 *Defaults to `true`*
 
     <Costura IncludeDebugSymbols='false' />
+
 
 ### DisableCompression
 
@@ -87,6 +96,7 @@ Embedded assemblies are compressed by default, and uncompressed when they are lo
 
     <Costura DisableCompression='true' />
 
+
 ### DisableCleanup
 
 As part of Costura, embedded assemblies are no longer included as part of the build. This cleanup can be turned off.
@@ -95,6 +105,7 @@ As part of Costura, embedded assemblies are no longer included as part of the bu
 
     <Costura DisableCleanup='true' />
 
+
 ### LoadAtModuleInit
 
 Costura by default will load as part of the module initialization. This flag disables that behaviour. Make sure you call `CosturaUtility.Initialize()` somewhere in your code.
@@ -102,7 +113,8 @@ Costura by default will load as part of the module initialization. This flag dis
 *Defaults to `true`*
 
     <Costura LoadAtModuleInit='false' />
-    
+
+
 ### ExcludeAssemblies
 
 A list of assembly names to exclude from the default action of "embed all Copy Local references".
@@ -111,7 +123,7 @@ Do not include `.exe` or `.dll` in the names.
 
 Can not be defined with `IncludeAssemblies`.
 
-Can take two forms. 
+Can take two forms.
 
 As an element with items delimited by a newline.
 
@@ -125,8 +137,8 @@ As an element with items delimited by a newline.
 Or as an attribute with items delimited by a pipe `|`.
 
     <Costura ExcludeAssemblies='Foo|Bar' />
-    
-        
+
+
 ### IncludeAssemblies
 
 A list of assembly names to include from the default action of "embed all Copy Local references".
@@ -145,7 +157,7 @@ As an element with items delimited by a newline.
             Bar
         </IncludeAssemblies>
     </Costura>
-    
+
 Or as an attribute with items delimited by a pipe `|`.
 
     <Costura IncludeAssemblies='Foo|Bar' />
@@ -180,6 +192,7 @@ Or as a attribute with items delimited by a pipe `|`.
         Unmanaged32Assemblies='Foo32|Bar32' 
         Unmanaged64Assemblies='Foo64|Bar64' />
 
+
 ### Native Libraries and PreloadOrder
 
 Native libraries can be loaded by Costura automatically. To include a native library include it in your project as an Embedded Resource in a folder called `costura32` or `costura64` depending on the bittyness of the library.
@@ -199,6 +212,7 @@ Or as a attribute with items delimited by a pipe `|`.
 
     <Costura PreloadOrder='Foo|Bar' />
 
+
 # CosturaUtility [:link:](#contents)
 
 `CosturaUtility` is a class that gives you access to initialize the Costura system manually in your own code. This is mainly for scenarios where the module initializer doesn't work, such as libraries and Mono.
@@ -213,12 +227,13 @@ To use, call `CosturaUtility.Initialize()` somewhere in your code, as early as p
         static void Main(string[] args) { ... }
     }
 
+
 # Icon [:link:](#contents)
 
 <a href="http://thenounproject.com/noun/merge/#icon-No256" target="_blank">Merge</a>  from The Noun Project
 
+
 # Contributors [:link:](#contents)
 
  * [Cameron MacFarland](https://github.com/distantcam)
- * [Simon Cropp](https://github.com/SimonCropp) 
-
+ * [Simon Cropp](https://github.com/SimonCropp)
