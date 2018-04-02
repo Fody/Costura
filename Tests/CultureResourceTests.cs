@@ -2,8 +2,6 @@
 using System.Threading;
 using ApprovalTests;
 using ApprovalTests.Namers;
-using ApprovalTests.Writers;
-using Fody;
 using NUnit.Framework;
 
 [TestFixture]

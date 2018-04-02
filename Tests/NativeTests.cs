@@ -1,7 +1,6 @@
-﻿using ApprovalTests;
+﻿#if (DEBUG)
+using ApprovalTests;
 using ApprovalTests.Namers;
-using ApprovalTests.Writers;
-using Fody;
 using NUnit.Framework;
 
 public abstract class NativeTests : BaseCosturaTest
@@ -37,3 +36,4 @@ public abstract class NativeTests : BaseCosturaTest
         }
     }
 }
+#endif

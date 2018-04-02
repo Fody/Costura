@@ -1,7 +1,6 @@
-﻿using ApprovalTests;
+﻿#if (DEBUG)
+using ApprovalTests;
 using ApprovalTests.Namers;
-using ApprovalTests.Writers;
-using Fody;
 using NUnit.Framework;
 
 [TestFixture]
@@ -54,3 +53,4 @@ public class MixedAndNativeTests : BaseCosturaTest
         }
     }
 }
+#endif

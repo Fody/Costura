@@ -33,7 +33,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AssemblyToReferenceNative",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssemblyToProcess", "AssemblyToProcess\AssemblyToProcess.csproj", "{15402ECE-AA3B-4773-82F8-9481A316F339}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Costura.Tasks", "Costura.Tasks\Costura.Tasks.csproj", "{D16DEC80-99D2-4EF3-9CEB-0FF7381CBB13}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Costura.Tasks", "Costura.Tasks\Costura.Tasks.csproj", "{D16DEC80-99D2-4EF3-9CEB-0FF7381CBB13}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Costura.Shared", "Costura.Shared\Costura.Shared.shproj", "{547616E5-7248-43E6-B17A-68B99CAA8AF3}"
 EndProject
@@ -152,7 +152,6 @@ Global
 		{8D70BAC7-C4EF-456D-9E73-777A172BCA43}.Debug|x86.ActiveCfg = Debug|Win32
 		{8D70BAC7-C4EF-456D-9E73-777A172BCA43}.Debug|x86.Build.0 = Debug|Win32
 		{8D70BAC7-C4EF-456D-9E73-777A172BCA43}.Release|Any CPU.ActiveCfg = Release|Win32
-		{8D70BAC7-C4EF-456D-9E73-777A172BCA43}.Release|Any CPU.Build.0 = Release|Win32
 		{8D70BAC7-C4EF-456D-9E73-777A172BCA43}.Release|x64.ActiveCfg = Release|x64
 		{8D70BAC7-C4EF-456D-9E73-777A172BCA43}.Release|x64.Build.0 = Release|x64
 		{8D70BAC7-C4EF-456D-9E73-777A172BCA43}.Release|x86.ActiveCfg = Release|Win32
@@ -176,7 +175,6 @@ Global
 		{85EAF811-151B-4EDC-8625-445F33C62994}.Debug|x86.ActiveCfg = Debug|Win32
 		{85EAF811-151B-4EDC-8625-445F33C62994}.Debug|x86.Build.0 = Debug|Win32
 		{85EAF811-151B-4EDC-8625-445F33C62994}.Release|Any CPU.ActiveCfg = Release|Win32
-		{85EAF811-151B-4EDC-8625-445F33C62994}.Release|Any CPU.Build.0 = Release|Win32
 		{85EAF811-151B-4EDC-8625-445F33C62994}.Release|x64.ActiveCfg = Release|x64
 		{85EAF811-151B-4EDC-8625-445F33C62994}.Release|x64.Build.0 = Release|x64
 		{85EAF811-151B-4EDC-8625-445F33C62994}.Release|x86.ActiveCfg = Release|Win32
