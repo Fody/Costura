@@ -5,15 +5,9 @@ using Mono.Cecil;
 
 public class MockAssemblyResolver : IAssemblyResolver
 {
-    public AssemblyDefinition Resolve(AssemblyNameReference name)
-    {
-        return Resolve(name.Name);
-    }
+    public AssemblyDefinition Resolve(AssemblyNameReference name) => Resolve(name.Name);
 
-    public AssemblyDefinition Resolve(AssemblyNameReference name, ReaderParameters parameters)
-    {
-        throw new NotImplementedException();
-    }
+    public AssemblyDefinition Resolve(AssemblyNameReference name, ReaderParameters parameters) => throw new NotImplementedException();
 
     public AssemblyDefinition Resolve(string fullName)
     {
@@ -27,10 +21,7 @@ public class MockAssemblyResolver : IAssemblyResolver
         return AssemblyDefinition.ReadAssembly(codeBase);
     }
 
-    public AssemblyDefinition Resolve(string fullName, ReaderParameters parameters)
-    {
-        throw new NotImplementedException();
-    }
+    public AssemblyDefinition Resolve(string fullName, ReaderParameters parameters) => throw new NotImplementedException();
 
     public void Dispose()
     {

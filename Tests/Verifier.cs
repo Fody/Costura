@@ -33,12 +33,11 @@ public static class Verifier
     {
         var path = ToolLocationHelper.GetPathToDotNetFrameworkSdkFile("peverify.exe", TargetDotNetFrameworkVersion.VersionLatest);
         if (!File.Exists(path))
+        {
             Assert.Ignore("PEVerify could not be found");
+        }
         return path;
     }
 
-    static string TrimLineNumbers(string foo)
-    {
-        return Regex.Replace(foo, "0x.*]", "");
-    }
+    static string TrimLineNumbers(string foo) => Regex.Replace(foo, "0x.*]", "");
 }
