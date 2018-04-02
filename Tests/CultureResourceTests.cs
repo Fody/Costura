@@ -1,5 +1,9 @@
 ﻿using System.Globalization;
 using System.Threading;
+using ApprovalTests;
+using ApprovalTests.Namers;
+using ApprovalTests.Writers;
+using Fody;
 using NUnit.Framework;
 
 [TestFixture]
@@ -36,6 +40,16 @@ public class CultureResourceTests : BaseCosturaTest
         finally
         {
             Thread.CurrentThread.CurrentUICulture = culture;
+        }
+    }
+
+    [Test, Category("IL")]
+    public void TemplateHasCorrectSymbols()
+    {
+        using (ApprovalResults.ForScenario(Suffix))
+        {
+            var text = Ildasm.Decompile(afterAssemblyPath, "Costura.AssemblyLoader");
+            Approvals.Verify(WriterFactory.CreateTextWriter(text));
         }
     }
 }

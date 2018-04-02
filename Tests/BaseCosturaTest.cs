@@ -1,48 +1,22 @@
-﻿using ApprovalTests;
-using ApprovalTests.Namers;
-using ApprovalTests.Writers;
+﻿using ApprovalTests.Namers;
 using Fody;
 using NUnit.Framework;
 #pragma warning disable 618
 
 public abstract class BaseCosturaTest : BaseCostura
 {
+    public BaseCosturaTest()
+    {
 #if DEBUG
-
-    class CustomNamer : UnitTestFrameworkNamer
-    {
-        public string AdditionalInfo
-        {
-            get
-            {
-                var additionalInformation = NamerFactory.AdditionalInformation;
-                if (additionalInformation != null)
-                {
-                    NamerFactory.AdditionalInformation = null;
-                    additionalInformation = "." + additionalInformation;
-                }
-                return additionalInformation;
-            }
-        }
-
-        public override string Name => nameof(TemplateHasCorrectSymbols) + AdditionalInfo;
-    }
-
-    [Test, Category("IL")]
-    public void TemplateHasCorrectSymbols()
-    {
-        using (ApprovalResults.ForScenario(Suffix))
-        {
-            var text = Ildasm.Decompile(afterAssemblyPath, "Costura.AssemblyLoader");
-            Approvals.Verify(WriterFactory.CreateTextWriter(text), new CustomNamer(), Approvals.GetReporter());
-        }
-    }
-
+        NamerFactory.AsEnvironmentSpecificTest(() => "Debug");
+#else
+        NamerFactory.AsEnvironmentSpecificTest(() => "Release");
 #endif
+    }
 
     [Test, Category("IL")]
     public void PeVerify()
     {
-        PeVerifier.ThrowIfDifferent(beforeAssemblyPath, afterAssemblyPath,ignoreCodes:new []{ "0x80131869" });
+        PeVerifier.ThrowIfDifferent(beforeAssemblyPath, afterAssemblyPath, ignoreCodes:new []{ "0x80131869" });
     }
 }

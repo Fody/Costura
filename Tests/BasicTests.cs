@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
+using ApprovalTests;
+using ApprovalTests.Namers;
+using ApprovalTests.Writers;
+using Fody;
 using NUnit.Framework;
 
 public abstract class BasicTests : BaseCosturaTest
@@ -52,5 +56,15 @@ public abstract class BasicTests : BaseCosturaTest
         Assume.That(typeLoadedWithPartialAssemblyName, Is.Not.Null);
 
         Assert.AreSame(assemblyLoadedByCompileTimeReference, typeLoadedWithPartialAssemblyName.Assembly);
+    }
+
+    [Test, Category("IL")]
+    public void TemplateHasCorrectSymbols()
+    {
+        using (ApprovalResults.ForScenario(Suffix))
+        {
+            var text = Ildasm.Decompile(afterAssemblyPath, "Costura.AssemblyLoader");
+            Approvals.Verify(WriterFactory.CreateTextWriter(text));
+        }
     }
 }
