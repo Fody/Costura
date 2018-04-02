@@ -99,6 +99,12 @@
       <InProject>false</InProject>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Costura.Template\Costura.Template.csproj">
+      <Project>{cd9aebaa-78f4-4a78-bf06-0cb7d84d83e8}</Project>
+      <Name>Costura.Template</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="..\Costura.Shared\Costura.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
@@ -108,4 +114,4 @@
     <Error Condition="!Exists('..\packages\Fody.2.0.6\build\netstandard1.4\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.2.0.6\build\netstandard1.4\Fody.targets'))" />
   </Target>
   <Import Project="..\packages\Fody.2.0.6\build\netstandard1.4\Fody.targets" Condition="Exists('..\packages\Fody.2.0.6\build\netstandard1.4\Fody.targets')" />
- </Project>
+</Project>

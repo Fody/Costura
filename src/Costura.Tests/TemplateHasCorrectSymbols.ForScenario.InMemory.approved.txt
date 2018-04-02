@@ -15,7 +15,7 @@
     .locals init ([0] bool V_0,
              [1] string V_1)
     .language '{3F5162F8-07C6-11D3-9053-00C04FA302A1}', '{994B45C4-E6E9-11D2-903F-00C04FA302A1}', '{5A869D0B-6611-11D3-BD2A-0000F80849BD}'
-    .line 104,104 : 5,6 'ExeToProcess\\bin\\Debug\\Common.cs'
+    .line 91,91 : 5,6 'ExeToProcess\\bin\\Debug\\Common.cs'
     IL_0000:  nop
     IL_0001:  ldarg.0
     IL_0002:  ldnull
@@ -38,7 +38,7 @@
   {
     // Code size       25 (0x19)
     .maxstack  8
-    .line 39,39 : 5,6 ''
+    .line 26,26 : 5,6 ''
     IL_0000:  nop
     IL_0001:  ldstr      "=== COSTURA === "
     IL_0006:  ldarg.0
@@ -64,7 +64,7 @@
              [5] class [mscorlib]System.Reflection.AssemblyName V_5,
              [6] bool V_6,
              [7] class [mscorlib]System.Reflection.Assembly V_7)
-    .line 86,86 : 5,6 ''
+    .line 73,73 : 5,6 ''
     IL_0000:  nop
     IL_0001:  call       class [mscorlib]System.AppDomain [mscorlib]System.AppDomain::get_CurrentDomain()
     IL_0006:  stloc.0
@@ -149,7 +149,7 @@
     .locals init ([0] uint8[] V_0,
              [1] int32 V_1,
              [2] bool V_2)
-    .line 45,45 : 5,6 ''
+    .line 32,32 : 5,6 ''
     IL_0000:  nop
     IL_0001:  ldc.i4     0x14000
     IL_0006:  newarr     [mscorlib]System.Byte
@@ -194,7 +194,7 @@
              [3] class [System]System.IO.Compression.DeflateStream V_3,
              [4] class [mscorlib]System.IO.MemoryStream V_4,
              [5] class [mscorlib]System.IO.Stream V_5)
-    .line 181,181 : 5,6 ''
+    .line 168,168 : 5,6 ''
     IL_0000:  nop
     IL_0001:  call       class [mscorlib]System.Reflection.Assembly [mscorlib]System.Reflection.Assembly::GetExecutingAssembly()
     IL_0006:  stloc.0
@@ -271,7 +271,7 @@
     .locals init ([0] string V_0,
              [1] bool V_1,
              [2] class [mscorlib]System.IO.Stream V_2)
-    .line 172,172 : 5,6 ''
+    .line 159,159 : 5,6 ''
     IL_0000:  nop
     IL_0001:  ldarg.0
     IL_0002:  ldarg.1
@@ -298,7 +298,7 @@
     .maxstack  4
     .locals init ([0] uint8[] V_0,
              [1] uint8[] V_1)
-    .line 63,63 : 5,6 ''
+    .line 50,50 : 5,6 ''
     IL_0000:  nop
     IL_0001:  ldarg.0
     IL_0002:  callvirt   instance int64 [mscorlib]System.IO.Stream::get_Length()
@@ -337,7 +337,7 @@
              [6] class [mscorlib]System.IO.Stream V_6,
              [7] bool V_7,
              [8] uint8[] V_8)
-    .line 143,143 : 5,6 ''
+    .line 130,130 : 5,6 ''
     IL_0000:  nop
     IL_0001:  ldarg.2
     IL_0002:  callvirt   instance string [mscorlib]System.Reflection.AssemblyName::get_Name()
