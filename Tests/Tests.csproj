@@ -73,9 +73,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Costura\Costura.csproj">
+    <ProjectReference Include="..\Costura.Fody\Costura.Fody.csproj">
       <Project>{e5622b74-b6c6-46a5-9207-0872533e6c2f}</Project>
-      <Name>Costura</Name>
+      <Name>Costura.Fody</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

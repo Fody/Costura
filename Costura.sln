@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Costura", "Costura\Costura.csproj", "{E5622B74-B6C6-46A5-9207-0872533E6C2F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Costura.Fody", "Costura.Fody\Costura.Fody.csproj", "{E5622B74-B6C6-46A5-9207-0872533E6C2F}"
 	ProjectSection(ProjectDependencies) = postProject
 		{CD9AEBAA-78F4-4A78-BF06-0CB7D84D83E8} = {CD9AEBAA-78F4-4A78-BF06-0CB7D84D83E8}
 	EndProjectSection
@@ -14,7 +14,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssemblyToReference", "Asse
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExeToProcess", "ExeToProcess\ExeToProcess.csproj", "{DB274326-3DC9-4CCB-9C49-8AD4EE3E60B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Costura.Tests", "Costura.Tests\Costura.Tests.csproj", "{F53DA537-AE82-48B7-A84B-5F2013BC272C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{F53DA537-AE82-48B7-A84B-5F2013BC272C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Costura.Template", "Costura.Template\Costura.Template.csproj", "{CD9AEBAA-78F4-4A78-BF06-0CB7D84D83E8}"
 EndProject
