@@ -8,17 +8,15 @@ public class InitializeCallWithoutModuleInitTest : BasicTests
     [OneTimeSetUp]
     public void CreateAssembly()
     {
-        if (AppDomainRunner.IsNotInTestAppDomain)
-            CreateIsolatedAssemblyCopy("AssemblyToProcess",
-                "<Costura LoadAtModuleInit='false' />",
-                new[] { "AssemblyToReference.dll", "AssemblyToReferencePreEmbedded.dll", "ExeToReference.exe" },
-                ".dll");
+        CreateIsolatedAssemblyCopy("AssemblyToProcess",
+            "<Costura LoadAtModuleInit='false' />",
+            new[] {"AssemblyToReference.dll", "AssemblyToReferencePreEmbedded.dll", "ExeToReference.exe"},
+            ".dll");
     }
 
     [SetUp]
     public void Setup()
     {
-        if (AppDomainRunner.IsInTestAppDomain)
-            LoadAssemblyIntoAppDomain(".dll");
+        LoadAssemblyIntoAppDomain(".dll");
     }
 }

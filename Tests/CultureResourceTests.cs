@@ -10,33 +10,32 @@ public class CultureResourceTests : BaseCosturaTest
     [OneTimeSetUp]
     public void CreateAssembly()
     {
-        if (AppDomainRunner.IsNotInTestAppDomain)
-            CreateIsolatedAssemblyCopy("ExeToProcess",
-                "<Costura />",
-                new[] {
-                    "AssemblyToReference.dll",
-                    "de\\AssemblyToReference.resources.dll",
-                    "fr\\AssemblyToReference.resources.dll",
-                    "AssemblyToReferencePreEmbedded.dll",
-                    "ExeToReference.exe"
-                });
+        CreateIsolatedAssemblyCopy("ExeToProcess",
+            "<Costura />",
+            new[]
+            {
+                "AssemblyToReference.dll",
+                "de\\AssemblyToReference.resources.dll",
+                "fr\\AssemblyToReference.resources.dll",
+                "AssemblyToReferencePreEmbedded.dll",
+                "ExeToReference.exe"
+            });
     }
 
-    [SetUp]
-    public void Setup()
-    {
-        if (AppDomainRunner.IsInTestAppDomain)
-        {
-            Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("fr-FR");
-
-            LoadAssemblyIntoAppDomain();
-        }
-    }
-
-    [Test, RunInApplicationDomain, Category("Code")]
+    [Test, Category("Code")]
     public void UsingResource()
     {
-        var instance1 = assembly.GetInstance("ClassToTest");
-        Assert.AreEqual("Salut", instance1.InternationalFoo());
+        var culture = Thread.CurrentThread.CurrentUICulture;
+        try
+        {
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("fr-FR");
+            LoadAssemblyIntoAppDomain();
+            var instance1 = assembly.GetInstance("ClassToTest");
+            Assert.AreEqual("Salut", instance1.InternationalFoo());
+        }
+        finally
+        {
+            Thread.CurrentThread.CurrentUICulture = culture;
+        }
     }
 }

@@ -4,28 +4,28 @@ using NUnit.Framework;
 
 public abstract class BasicTests : BaseCosturaTest
 {
-    [Test, RunInApplicationDomain, Category("Code")]
+    [Test, Category("Code")]
     public void Simple()
     {
         var instance = assembly.GetInstance("ClassToTest");
         Assert.AreEqual("Hello", instance.Simple());
     }
 
-    [Test, RunInApplicationDomain, Category("Code")]
+    [Test, Category("Code")]
     public void SimplePreEmbed()
     {
         var instance2 = assembly.GetInstance("ClassToTest");
         Assert.AreEqual("Hello", instance2.SimplePreEmbed());
     }
 
-    [Test, RunInApplicationDomain, Category("Code")]
+    [Test, Category("Code")]
     public void Exe()
     {
         var instance2 = assembly.GetInstance("ClassToTest");
         Assert.AreEqual("Hello", instance2.Exe());
     }
 
-    [Test, RunInApplicationDomain, Category("Code")]
+    [Test, Category("Code")]
     public void ThrowException()
     {
         try
@@ -40,7 +40,7 @@ public abstract class BasicTests : BaseCosturaTest
         }
     }
 
-    [Test, RunInApplicationDomain, Category("Code")]
+    [Test, Category("Code")]
     public void TypeReferencedWithPartialAssemblyNameIsLoadedFromExistingAssemblyInstance()
     {
         var instance = assembly.GetInstance("ClassToTest");

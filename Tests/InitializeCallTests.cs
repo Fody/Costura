@@ -8,7 +8,6 @@ public class InitializeCallTests : BasicTests
     [OneTimeSetUp]
     public void CreateAssembly()
     {
-        if (AppDomainRunner.IsNotInTestAppDomain)
             CreateIsolatedAssemblyCopy("AssemblyToProcess",
                 "<Costura />",
                 new[] { "AssemblyToReference.dll", "AssemblyToReferencePreEmbedded.dll", "ExeToReference.exe" },
@@ -18,7 +17,6 @@ public class InitializeCallTests : BasicTests
     [SetUp]
     public void Setup()
     {
-        if (AppDomainRunner.IsInTestAppDomain)
             LoadAssemblyIntoAppDomain(".dll");
     }
 }

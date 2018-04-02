@@ -429,33 +429,33 @@
     IL_0037:  stsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
     IL_003c:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
     IL_0041:  ldstr      "costura.assemblytoreference.dll.compressed"
-    IL_0046:  ldstr      "A8AC32A2F5ED90B635B28F34C1B34D1C34B13CCD"
+    IL_0046:  ldstr      "8A30C00B48077F7550EFC90C9A7D09A3228E1ECB"
     IL_004b:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
                                                                                                                    !1)
     IL_0050:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
     IL_0055:  ldstr      "costura.assemblytoreference.pdb.compressed"
-    IL_005a:  ldstr      "5F0BD420294081FF2CD662A062E94CC550D148CC"
+    IL_005a:  ldstr      "06C1DFD9F23C12F559B58D188E591E03F6DC8D79"
     IL_005f:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
                                                                                                                    !1)
     IL_0064:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
     IL_0069:  ldstr      "costura.assemblytoreferencepreembedded.dll"
-    IL_006e:  ldstr      "D1C866F0C1A3E0113F907FB3A4B315632B13EFE7"
+    IL_006e:  ldstr      "3D17309A749EDC408E97031CB5E1038B248F574E"
     IL_0073:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
                                                                                                                    !1)
     IL_0078:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
     IL_007d:  ldstr      "costura.assemblytoreferencepreembedded.pdb.compres"
     + "sed"
-    IL_0082:  ldstr      "D0A8FFA49EF09934A2D7FDDC251506AE4D0833F5"
+    IL_0082:  ldstr      "7010D7BBEDE4C2BB37E3E5AC9D68414F26AD13D0"
     IL_0087:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
                                                                                                                    !1)
     IL_008c:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
     IL_0091:  ldstr      "costura.exetoreference.exe.compressed"
-    IL_0096:  ldstr      "5214730423F4EA4135FBF1749FF8D43B746C2981"
+    IL_0096:  ldstr      "F4489D2A86DA023796CD228D652997E5CC2ACB08"
     IL_009b:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
                                                                                                                    !1)
     IL_00a0:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
     IL_00a5:  ldstr      "costura.exetoreference.pdb.compressed"
-    IL_00aa:  ldstr      "7F036878FD9B7D599AC882CCE1FF125BCF72888E"
+    IL_00aa:  ldstr      "EDEA6E2F729A7CF2B84CA4EDBEC551483EAC55BC"
     IL_00af:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
                                                                                                                    !1)
     IL_00b4:  ldsfld     class [mscorlib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::preloadList
@@ -1160,7 +1160,7 @@
     IL_0013:  brfalse.s  IL_0018
     IL_0015:  nop
     IL_0016:  br.s       IL_0096
-    IL_0018:  ldstr      "0308CCC2A6A5F0ECB8494D208631B0B6"
+    IL_0018:  ldstr      "35C3D02B44887E3703E3A353CBC17803"
     IL_001d:  stloc.0
     IL_001e:  call       string [mscorlib]System.IO.Path::GetTempPath()
     IL_0023:  ldstr      "Costura"

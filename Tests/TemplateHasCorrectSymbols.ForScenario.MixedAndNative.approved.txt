@@ -750,17 +750,17 @@
     IL_0041:  stsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
     IL_0046:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
     IL_004b:  ldstr      "costura32.assemblytoreferencenative.dll"
-    IL_0050:  ldstr      "7388E6BFE7EE2C4D99681A0D6E1FA183F7C855AF"
+    IL_0050:  ldstr      "0AC22CCC3AFBE2409480D6EC673F71087AEED2E0"
     IL_0055:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
                                                                                                                    !1)
     IL_005a:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
     IL_005f:  ldstr      "costura32.assemblytoreferencemixed.dll.compressed"
-    IL_0064:  ldstr      "C9DE60637F0B521C6ADCCA031BC56C5D1DC28D20"
+    IL_0064:  ldstr      "5B8409CA4D2DD9894789732798FC3911B83D183D"
     IL_0069:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
                                                                                                                    !1)
     IL_006e:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
     IL_0073:  ldstr      "costura32.assemblytoreferencemixed.pdb.compressed"
-    IL_0078:  ldstr      "C752F1EF97825C162F24C98D65E2F913FF8C2BB7"
+    IL_0078:  ldstr      "6AD268E94A04A09559CEA7C54F19EF5930C798D0"
     IL_007d:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
                                                                                                                    !1)
     IL_0082:  ldsfld     class [mscorlib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::preload32List
@@ -1335,7 +1335,7 @@
     IL_0013:  brfalse.s  IL_0018
     IL_0015:  nop
     IL_0016:  br.s       IL_007a
-    IL_0018:  ldstr      "6DBA6D86DEBA170C44F8525FF954CBDD"
+    IL_0018:  ldstr      "5DE179F8F887F852A077A13DEBFA7512"
     IL_001d:  stloc.0
     IL_001e:  call       string [mscorlib]System.IO.Path::GetTempPath()
     IL_0023:  ldstr      "Costura"

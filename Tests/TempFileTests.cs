@@ -8,16 +8,14 @@ public class TempFileTests : BasicTests
     [OneTimeSetUp]
     public void CreateAssembly()
     {
-        if (AppDomainRunner.IsNotInTestAppDomain)
-            CreateIsolatedAssemblyCopy("ExeToProcess",
-                "<Costura CreateTemporaryAssemblies='true' />",
-                new[] { "AssemblyToReference.dll", "AssemblyToReferencePreEmbedded.dll", "ExeToReference.exe" });
+        CreateIsolatedAssemblyCopy("ExeToProcess",
+            "<Costura CreateTemporaryAssemblies='true' />",
+            new[] {"AssemblyToReference.dll", "AssemblyToReferencePreEmbedded.dll", "ExeToReference.exe"});
     }
 
     [SetUp]
     public void Setup()
     {
-        if (AppDomainRunner.IsInTestAppDomain)
-            LoadAssemblyIntoAppDomain();
+        LoadAssemblyIntoAppDomain();
     }
 }

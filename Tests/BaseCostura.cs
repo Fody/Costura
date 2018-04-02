@@ -46,8 +46,9 @@ public abstract class BaseCostura
         var writerParams = new WriterParameters
         {
             WriteSymbols = true,
-            SymbolWriterProvider = new PdbWriterProvider()
+            SymbolWriterProvider = new PdbWriterProvider(),
         };
+        moduleDefinition.Assembly.Name.Name = Suffix;
         moduleDefinition.Write(afterAssemblyPath, writerParams);
 
         var isolatedDirectory = GetIsolatedDirectory();
