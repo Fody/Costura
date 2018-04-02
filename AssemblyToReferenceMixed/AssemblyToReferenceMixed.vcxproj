@@ -130,7 +130,5 @@
     <ClCompile Include="ClassToReferenceMixed.cpp" />
     <ClCompile Include="Native.cpp" />
   </ItemGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" Condition="exists('$(VCTargetsPath)\Microsoft.Cpp.targets')" />
 </Project>
