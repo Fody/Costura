@@ -8,8 +8,6 @@ install:
 
 before_build:
 - ps: nuget restore
-build_script:
-- cmd: dotnet build --configuration Release
 test_script:
 - cmd: >-
     %xunit20%\xunit.console Tests\bin\Release\net46\Tests.dll
