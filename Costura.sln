@@ -3,12 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Costura.Shared", "Costura.Shared\Costura.Shared.shproj", "{547616E5-7248-43E6-B17A-68B99CAA8AF3}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Costura.Template", "Costura.Template\Costura.Template.csproj", "{CD9AEBAA-78F4-4A78-BF06-0CB7D84D83E8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Costura.Fody", "Costura.Fody\Costura.Fody.csproj", "{E5622B74-B6C6-46A5-9207-0872533E6C2F}"
-	ProjectSection(ProjectDependencies) = postProject
-		{CD9AEBAA-78F4-4A78-BF06-0CB7D84D83E8} = {CD9AEBAA-78F4-4A78-BF06-0CB7D84D83E8}
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestAssemblies", "TestAssemblies", "{434F54AD-0845-4F63-ACB2-162105A1A741}"
 EndProject
@@ -25,9 +24,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AssemblyToReferenceMixed", "AssemblyToReferenceMixed\AssemblyToReferenceMixed.vcxproj", "{8D70BAC7-C4EF-456D-9E73-777A172BCA43}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExeToProcessWithNative", "ExeToProcessWithNative\ExeToProcessWithNative.csproj", "{CF6E186C-FDD0-4558-B41A-ACC088393C56}"
-	ProjectSection(ProjectDependencies) = postProject
-		{85EAF811-151B-4EDC-8625-445F33C62994} = {85EAF811-151B-4EDC-8625-445F33C62994}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AssemblyToReferenceNative", "AssemblyToReferenceNative\AssemblyToReferenceNative.vcxproj", "{85EAF811-151B-4EDC-8625-445F33C62994}"
 EndProject
@@ -35,14 +31,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssemblyToProcess", "Assemb
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Costura.Tasks", "Costura.Tasks\Costura.Tasks.csproj", "{D16DEC80-99D2-4EF3-9CEB-0FF7381CBB13}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Costura.Shared", "Costura.Shared\Costura.Shared.shproj", "{547616E5-7248-43E6-B17A-68B99CAA8AF3}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Costura", "Costura\Costura.csproj", "{6170BDB9-A44B-46AD-8E81-3BCEAB11813F}"
-	ProjectSection(ProjectDependencies) = postProject
-		{E5622B74-B6C6-46A5-9207-0872533E6C2F} = {E5622B74-B6C6-46A5-9207-0872533E6C2F}
-		{D16DEC80-99D2-4EF3-9CEB-0FF7381CBB13} = {D16DEC80-99D2-4EF3-9CEB-0FF7381CBB13}
-		{CD9AEBAA-78F4-4A78-BF06-0CB7D84D83E8} = {CD9AEBAA-78F4-4A78-BF06-0CB7D84D83E8}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssemblyWithoutInitialize", "AssemblyWithoutInitialize\AssemblyWithoutInitialize.csproj", "{A9543041-50D4-45C1-8F4B-23F805634D42}"
 EndProject
