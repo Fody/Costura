@@ -5,9 +5,6 @@ platform: Any CPU
 install:
 - cmd: >-
     appveyor downloadfile https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
-init:
-- cmd: >-
-    call "C:\Program Files (x86)\Microsoft Visual Studio\Preview\Community\VC\Auxiliary\Build\vcvars64.bat"
 
 before_build:
 - ps: nuget restore
