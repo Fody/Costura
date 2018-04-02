@@ -292,33 +292,33 @@
     IL_0037:  stsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
     IL_003c:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
     IL_0041:  ldstr      "costura.assemblytoreference.dll.compressed"
-    IL_0046:  ldstr      "B3FC29BD8DA9602123A4AB79AB49B9C582B89A8B"
+    IL_0046:  ldstr      "[CHECKSUM]"
     IL_004b:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
                                                                                                                    !1)
     IL_0050:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
     IL_0055:  ldstr      "costura.assemblytoreference.pdb.compressed"
-    IL_005a:  ldstr      "2F82DC0FA9DB291CDE8D869ECD5808E3BEAFFC55"
+    IL_005a:  ldstr      "[CHECKSUM]"
     IL_005f:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
                                                                                                                    !1)
     IL_0064:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
     IL_0069:  ldstr      "costura.assemblytoreferencepreembedded.dll"
-    IL_006e:  ldstr      "21EC237A16B1204C092E86725FB350F8CB9F9976"
+    IL_006e:  ldstr      "[CHECKSUM]"
     IL_0073:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
                                                                                                                    !1)
     IL_0078:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
     IL_007d:  ldstr      "costura.assemblytoreferencepreembedded.pdb.compres"
     + "sed"
-    IL_0082:  ldstr      "B86EC8365E4CBAF3FEADAF5B7D8A6176CDF6D193"
+    IL_0082:  ldstr      "[CHECKSUM]"
     IL_0087:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
                                                                                                                    !1)
     IL_008c:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
     IL_0091:  ldstr      "costura.exetoreference.exe.compressed"
-    IL_0096:  ldstr      "1502F1137CE756144135126B08846D667C4F44D4"
+    IL_0096:  ldstr      "[CHECKSUM]"
     IL_009b:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
                                                                                                                    !1)
     IL_00a0:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
     IL_00a5:  ldstr      "costura.exetoreference.pdb.compressed"
-    IL_00aa:  ldstr      "B81E7F4BE852C6087796BE1FF27FC19FBCA54234"
+    IL_00aa:  ldstr      "[CHECKSUM]"
     IL_00af:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
                                                                                                                    !1)
     IL_00b4:  ldsfld     class [mscorlib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::preloadList
@@ -884,7 +884,7 @@
     IL_000b:  ldc.i4.1
     IL_000c:  bne.un.s   IL_000f
     IL_000e:  ret
-    IL_000f:  ldstr      "CCAEB7E5EAB5E96C65A0F60DB19C8CAB"
+    IL_000f:  ldstr      "[CHECKSUM]"
     IL_0014:  stloc.0
     IL_0015:  call       string [mscorlib]System.IO.Path::GetTempPath()
     IL_001a:  ldstr      "Costura"

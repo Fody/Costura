@@ -37,7 +37,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Costura.Tasks", "Costura.Ta
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Costura.Shared", "Costura.Shared\Costura.Shared.shproj", "{547616E5-7248-43E6-B17A-68B99CAA8AF3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Costura", "Costura.LibNetStandard\Costura.csproj", "{6170BDB9-A44B-46AD-8E81-3BCEAB11813F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Costura", "Costura\Costura.csproj", "{6170BDB9-A44B-46AD-8E81-3BCEAB11813F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssemblyWithoutInitialize", "AssemblyWithoutInitialize\AssemblyWithoutInitialize.csproj", "{A9543041-50D4-45C1-8F4B-23F805634D42}"
 EndProject

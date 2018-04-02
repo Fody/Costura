@@ -49,7 +49,7 @@ public class CultureResourceTests : BaseCosturaTest
         using (ApprovalResults.ForScenario(Suffix))
         {
             var text = Ildasm.Decompile(afterAssemblyPath, "Costura.AssemblyLoader");
-            Approvals.Verify(WriterFactory.CreateTextWriter(text));
+            Approvals.Verify(text);
         }
     }
 }

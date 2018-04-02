@@ -32,9 +32,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="ApprovalTests, Version=3.0.0.0, Culture=neutral, PublicKeyToken=11bd7d124fc62e0f, processorArchitecture=MSIL">
       <HintPath>..\packages\ApprovalTests.3.0.13\lib\net40\ApprovalTests.dll</HintPath>
@@ -85,6 +82,7 @@
     <Compile Include="BaseCosturaTest.cs" />
     <Compile Include="BasicTests.cs" />
     <Compile Include="CultureResourceTests.cs" />
+    <Compile Include="Ildasm.cs" />
     <Compile Include="InitializeCallWithoutModuleInitTest.cs" />
     <Compile Include="InitializeCallTests.cs" />
     <Compile Include="InMemoryTests.cs" />

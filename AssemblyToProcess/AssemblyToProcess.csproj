@@ -32,9 +32,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
-  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\AssemblyToReferencePreEmbedded\AssemblyToReferencePreEmbedded.csproj">
       <Project>{bda26419-34ad-41e0-af5f-980a0f1dabf5}</Project>
@@ -44,7 +41,7 @@
       <Project>{161ffdeb-306d-4c68-9645-f4006a73f607}</Project>
       <Name>AssemblyToReference</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Costura.LibNetStandard\Costura.csproj">
+    <ProjectReference Include="..\Costura\Costura.csproj">
       <Project>{6170bdb9-a44b-46ad-8e81-3bceab11813f}</Project>
       <Name>Costura</Name>
     </ProjectReference>
@@ -57,11 +54,4 @@
     <Compile Include="ClassToTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
