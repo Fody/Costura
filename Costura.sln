@@ -37,24 +37,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Costura.Tasks", "Costura.Ta
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Costura.Shared", "Costura.Shared\Costura.Shared.shproj", "{547616E5-7248-43E6-B17A-68B99CAA8AF3}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Costura.Lib.Shared", "Costura.Lib.Shared\Costura.Lib.Shared.shproj", "{A86F1158-BE85-44E1-BF97-774CEB710017}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Costura.LibNetStandard", "Costura.LibNetStandard\Costura.LibNetStandard.csproj", "{6170BDB9-A44B-46AD-8E81-3BCEAB11813F}"
-	ProjectSection(ProjectDependencies) = postProject
-		{BAF33DA3-A6F7-476F-BEA5-CD2BA0BE96A5} = {BAF33DA3-A6F7-476F-BEA5-CD2BA0BE96A5}
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Costura.Lib", "Costura.Lib\Costura.Lib.csproj", "{BAF33DA3-A6F7-476F-BEA5-CD2BA0BE96A5}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{883C4D57-65B4-4D9C-8A31-7EF441A7CDDC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Costura", "Costura.LibNetStandard\Costura.csproj", "{6170BDB9-A44B-46AD-8E81-3BCEAB11813F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssemblyWithoutInitialize", "AssemblyWithoutInitialize\AssemblyWithoutInitialize.csproj", "{A9543041-50D4-45C1-8F4B-23F805634D42}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Costura.Shared\Costura.Shared.projitems*{547616e5-7248-43e6-b17a-68b99caa8af3}*SharedItemsImports = 13
-		Costura.Lib.Shared\Costura.Lib.Shared.projitems*{a86f1158-be85-44e1-bf97-774ceb710017}*SharedItemsImports = 13
-		Costura.Lib.Shared\Costura.Lib.Shared.projitems*{baf33da3-a6f7-476f-bea5-cd2ba0be96a5}*SharedItemsImports = 4
 		Costura.Shared\Costura.Shared.projitems*{d16dec80-99d2-4ef3-9ceb-0ff7381cbb13}*SharedItemsImports = 4
 		Costura.Shared\Costura.Shared.projitems*{e5622b74-b6c6-46a5-9207-0872533e6c2f}*SharedItemsImports = 4
 	EndGlobalSection
@@ -223,18 +212,6 @@ Global
 		{6170BDB9-A44B-46AD-8E81-3BCEAB11813F}.Release|x64.Build.0 = Release|Any CPU
 		{6170BDB9-A44B-46AD-8E81-3BCEAB11813F}.Release|x86.ActiveCfg = Release|Any CPU
 		{6170BDB9-A44B-46AD-8E81-3BCEAB11813F}.Release|x86.Build.0 = Release|Any CPU
-		{BAF33DA3-A6F7-476F-BEA5-CD2BA0BE96A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BAF33DA3-A6F7-476F-BEA5-CD2BA0BE96A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BAF33DA3-A6F7-476F-BEA5-CD2BA0BE96A5}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{BAF33DA3-A6F7-476F-BEA5-CD2BA0BE96A5}.Debug|x64.Build.0 = Debug|Any CPU
-		{BAF33DA3-A6F7-476F-BEA5-CD2BA0BE96A5}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{BAF33DA3-A6F7-476F-BEA5-CD2BA0BE96A5}.Debug|x86.Build.0 = Debug|Any CPU
-		{BAF33DA3-A6F7-476F-BEA5-CD2BA0BE96A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BAF33DA3-A6F7-476F-BEA5-CD2BA0BE96A5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BAF33DA3-A6F7-476F-BEA5-CD2BA0BE96A5}.Release|x64.ActiveCfg = Release|Any CPU
-		{BAF33DA3-A6F7-476F-BEA5-CD2BA0BE96A5}.Release|x64.Build.0 = Release|Any CPU
-		{BAF33DA3-A6F7-476F-BEA5-CD2BA0BE96A5}.Release|x86.ActiveCfg = Release|Any CPU
-		{BAF33DA3-A6F7-476F-BEA5-CD2BA0BE96A5}.Release|x86.Build.0 = Release|Any CPU
 		{A9543041-50D4-45C1-8F4B-23F805634D42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A9543041-50D4-45C1-8F4B-23F805634D42}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9543041-50D4-45C1-8F4B-23F805634D42}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -260,9 +237,6 @@ Global
 		{CF6E186C-FDD0-4558-B41A-ACC088393C56} = {434F54AD-0845-4F63-ACB2-162105A1A741}
 		{85EAF811-151B-4EDC-8625-445F33C62994} = {434F54AD-0845-4F63-ACB2-162105A1A741}
 		{15402ECE-AA3B-4773-82F8-9481A316F339} = {434F54AD-0845-4F63-ACB2-162105A1A741}
-		{A86F1158-BE85-44E1-BF97-774CEB710017} = {883C4D57-65B4-4D9C-8A31-7EF441A7CDDC}
-		{6170BDB9-A44B-46AD-8E81-3BCEAB11813F} = {883C4D57-65B4-4D9C-8A31-7EF441A7CDDC}
-		{BAF33DA3-A6F7-476F-BEA5-CD2BA0BE96A5} = {883C4D57-65B4-4D9C-8A31-7EF441A7CDDC}
 		{A9543041-50D4-45C1-8F4B-23F805634D42} = {434F54AD-0845-4F63-ACB2-162105A1A741}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

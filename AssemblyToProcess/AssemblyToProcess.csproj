@@ -44,9 +44,9 @@
       <Project>{161ffdeb-306d-4c68-9645-f4006a73f607}</Project>
       <Name>AssemblyToReference</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Costura.Lib\Costura.Lib.csproj">
-      <Project>{baf33da3-a6f7-476f-bea5-cd2ba0be96a5}</Project>
-      <Name>Costura.Lib</Name>
+    <ProjectReference Include="..\Costura.LibNetStandard\Costura.csproj">
+      <Project>{6170bdb9-a44b-46ad-8e81-3bceab11813f}</Project>
+      <Name>Costura</Name>
     </ProjectReference>
     <ProjectReference Include="..\ExeToReference\ExeToReference.csproj">
       <Project>{800938b6-eed3-41cc-a775-e3ee588c2857}</Project>

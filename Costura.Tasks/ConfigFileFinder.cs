@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using Fody;
 
 namespace Costura.Tasks
 {

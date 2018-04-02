@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Fody;
+using NUnit.Framework;
 
 [TestFixture]
 public class NoInitializeTest : BaseCostura

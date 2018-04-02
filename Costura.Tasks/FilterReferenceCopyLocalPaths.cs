@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
+using Fody;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
