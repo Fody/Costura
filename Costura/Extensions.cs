@@ -3,12 +3,9 @@ using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
 using Mono.Collections.Generic;
 
-public static class Extensions
+static class Extensions
 {
-    public static Collection<TypeReference> GetGenericInstanceArguments(this TypeReference type)
-    {
-        return ((GenericInstanceType)type).GenericArguments;
-    }
+    public static Collection<TypeReference> GetGenericInstanceArguments(this TypeReference type) => ((GenericInstanceType)type).GenericArguments;
 
     public static MethodReference MakeHostInstanceGeneric(this MethodReference self, params TypeReference[] args)
     {

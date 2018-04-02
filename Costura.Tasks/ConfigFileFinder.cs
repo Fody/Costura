@@ -29,6 +29,7 @@ namespace Costura.Tasks
 
             if (files.Count == 0)
             {
+                // ReSharper disable once UnusedVariable
                 var pathsSearched = string.Join("', '", solutionConfigFilePath, projectConfigFilePath);
             }
             return files;

@@ -7,10 +7,10 @@ using Mono.Cecil;
 
 partial class ModuleWeaver : IDisposable
 {
-    readonly List<Stream> streams = new List<Stream>();
+    List<Stream> streams = new List<Stream>();
     string cachePath;
 
-    private void EmbedResources(Configuration config)
+    void EmbedResources(Configuration config)
     {
         if (ReferenceCopyLocalPaths == null)
         {
@@ -76,7 +76,7 @@ partial class ModuleWeaver : IDisposable
                 hasUnmanaged = true;
             }
 
-            if (String.IsNullOrEmpty(prefix))
+            if (string.IsNullOrEmpty(prefix))
             {
                 continue;
             }
@@ -97,7 +97,7 @@ partial class ModuleWeaver : IDisposable
         }
     }
 
-    private IEnumerable<string> GetFilteredReferences(IEnumerable<string> onlyBinaries, Configuration config)
+    IEnumerable<string> GetFilteredReferences(IEnumerable<string> onlyBinaries, Configuration config)
     {
         if (config.IncludeAssemblies.Any())
         {
@@ -172,7 +172,7 @@ partial class ModuleWeaver : IDisposable
         }
     }
 
-    private string Embed(string prefix, string fullPath, bool compress)
+    string Embed(string prefix, string fullPath, bool compress)
     {
         var resourceName = $"{prefix}{Path.GetFileName(fullPath).ToLowerInvariant()}";
         if (ModuleDefinition.Resources.Any(x => x.Name == resourceName))

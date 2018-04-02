@@ -23,8 +23,7 @@ partial class ModuleWeaver
         {
             var parts = resource.Split('.');
 
-            string ext, name;
-            GetNameAndExt(parts, out name, out ext);
+            GetNameAndExt(parts, out var name, out var ext);
 
             if (parts[0] == "costura")
             {
@@ -49,7 +48,7 @@ partial class ModuleWeaver
         }
     }
 
-    private static void GetNameAndExt(string[] parts, out string name, out string ext)
+    static void GetNameAndExt(string[] parts, out string name, out string ext)
     {
         var isCompressed = parts[parts.Length - 1] == "compressed";
 

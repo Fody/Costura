@@ -61,15 +61,9 @@ public abstract class BaseCostura
         File.Copy(afterAssemblyPath.Replace(extension, ".pdb"), isolatedPath.Replace(extension, ".pdb"), true);
     }
 
-    private string GetIsolatedDirectory()
-    {
-        return Path.Combine(Path.GetTempPath(), $"Costura{Suffix}");
-    }
+    string GetIsolatedDirectory() => Path.Combine(Path.GetTempPath(), $"Costura{Suffix}");
 
-    private string GetIsolatedFilePath(string extension)
-    {
-        return Path.GetFullPath(Path.Combine(GetIsolatedDirectory(), $"Costura{Suffix}{extension}"));
-    }
+    string GetIsolatedFilePath(string extension) => Path.GetFullPath(Path.Combine(GetIsolatedDirectory(), $"Costura{Suffix}{extension}"));
 
     protected void LoadAssemblyIntoAppDomain(string extension = ".exe")
     {

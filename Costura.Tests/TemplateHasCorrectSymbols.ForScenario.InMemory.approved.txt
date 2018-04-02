@@ -2,10 +2,10 @@
        extends [mscorlib]System.Object
 {
   .custom instance void [mscorlib]System.Runtime.CompilerServices.CompilerGeneratedAttribute::.ctor() = ( 01 00 00 00 ) 
-  .field private static initonly object nullCacheLock
-  .field private static initonly class [mscorlib]System.Collections.Generic.Dictionary`2<string,bool> nullCache
-  .field private static initonly class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> assemblyNames
-  .field private static initonly class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> symbolNames
+  .field private static object nullCacheLock
+  .field private static class [mscorlib]System.Collections.Generic.Dictionary`2<string,bool> nullCache
+  .field private static class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> assemblyNames
+  .field private static class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> symbolNames
   .field private static int32 isAttached
   .method private hidebysig static string 
           CultureToString(class [mscorlib]System.Globalization.CultureInfo culture) cil managed
@@ -194,7 +194,7 @@
              [3] class [System]System.IO.Compression.DeflateStream V_3,
              [4] class [mscorlib]System.IO.MemoryStream V_4,
              [5] class [mscorlib]System.IO.Stream V_5)
-    .line 168,168 : 5,6 ''
+    .line 171,171 : 5,6 ''
     IL_0000:  nop
     IL_0001:  call       class [mscorlib]System.Reflection.Assembly [mscorlib]System.Reflection.Assembly::GetExecutingAssembly()
     IL_0006:  stloc.0
@@ -266,12 +266,12 @@
           LoadStream(class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> resourceNames,
                      string name) cil managed
   {
-    // Code size       29 (0x1d)
+    // Code size       30 (0x1e)
     .maxstack  3
     .locals init ([0] string V_0,
              [1] bool V_1,
              [2] class [mscorlib]System.IO.Stream V_2)
-    .line 159,159 : 5,6 ''
+    .line 161,161 : 5,6 ''
     IL_0000:  nop
     IL_0001:  ldarg.0
     IL_0002:  ldarg.1
@@ -280,16 +280,17 @@
                                                                                                                            !1&)
     IL_000a:  stloc.1
     IL_000b:  ldloc.1
-    IL_000c:  brfalse.s  IL_0017
-    IL_000e:  ldloc.0
-    IL_000f:  call       class [mscorlib]System.IO.Stream Costura.AssemblyLoader::LoadStream(string)
-    IL_0014:  stloc.2
-    IL_0015:  br.s       IL_001b
-    IL_0017:  ldnull
-    IL_0018:  stloc.2
-    IL_0019:  br.s       IL_001b
-    IL_001b:  ldloc.2
-    IL_001c:  ret
+    IL_000c:  brfalse.s  IL_0018
+    IL_000e:  nop
+    IL_000f:  ldloc.0
+    IL_0010:  call       class [mscorlib]System.IO.Stream Costura.AssemblyLoader::LoadStream(string)
+    IL_0015:  stloc.2
+    IL_0016:  br.s       IL_001c
+    IL_0018:  ldnull
+    IL_0019:  stloc.2
+    IL_001a:  br.s       IL_001c
+    IL_001c:  ldloc.2
+    IL_001d:  ret
   } // end of method AssemblyLoader::LoadStream
   .method private hidebysig static uint8[] 
           ReadStream(class [mscorlib]System.IO.Stream 'stream') cil managed
@@ -326,7 +327,7 @@
                                     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> symbolNames,
                                     class [mscorlib]System.Reflection.AssemblyName requestedAssemblyName) cil managed
   {
-    // Code size       188 (0xbc)
+    // Code size       190 (0xbe)
     .maxstack  3
     .locals init ([0] string V_0,
              [1] uint8[] V_1,
@@ -356,91 +357,93 @@
     IL_002a:  ldc.i4.0
     IL_002b:  stloc.2
     IL_002c:  ldloc.2
-    IL_002d:  brfalse.s  IL_0046
-    IL_002f:  ldstr      "{0}.{1}"
-    IL_0034:  ldarg.2
-    IL_0035:  callvirt   instance class [mscorlib]System.Globalization.CultureInfo [mscorlib]System.Reflection.AssemblyName::get_CultureInfo()
-    IL_003a:  callvirt   instance string [mscorlib]System.Globalization.CultureInfo::get_Name()
-    IL_003f:  ldloc.0
-    IL_0040:  call       string [mscorlib]System.String::Format(string,
+    IL_002d:  brfalse.s  IL_0048
+    IL_002f:  nop
+    IL_0030:  ldstr      "{0}.{1}"
+    IL_0035:  ldarg.2
+    IL_0036:  callvirt   instance class [mscorlib]System.Globalization.CultureInfo [mscorlib]System.Reflection.AssemblyName::get_CultureInfo()
+    IL_003b:  callvirt   instance string [mscorlib]System.Globalization.CultureInfo::get_Name()
+    IL_0040:  ldloc.0
+    IL_0041:  call       string [mscorlib]System.String::Format(string,
                                                                 object,
                                                                 object)
-    IL_0045:  stloc.0
-    IL_0046:  ldarg.0
-    IL_0047:  ldloc.0
-    IL_0048:  call       class [mscorlib]System.IO.Stream Costura.AssemblyLoader::LoadStream(class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>,
+    IL_0046:  stloc.0
+    IL_0047:  nop
+    IL_0048:  ldarg.0
+    IL_0049:  ldloc.0
+    IL_004a:  call       class [mscorlib]System.IO.Stream Costura.AssemblyLoader::LoadStream(class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>,
                                                                                              string)
-    IL_004d:  stloc.3
+    IL_004f:  stloc.3
     .try
     {
-      IL_004e:  nop
-      IL_004f:  ldloc.3
-      IL_0050:  ldnull
-      IL_0051:  ceq
-      IL_0053:  stloc.s    V_4
-      IL_0055:  ldloc.s    V_4
-      IL_0057:  brfalse.s  IL_005f
-      IL_0059:  nop
-      IL_005a:  ldnull
-      IL_005b:  stloc.s    V_5
-      IL_005d:  leave.s    IL_00b9
-      IL_005f:  ldloc.3
-      IL_0060:  call       uint8[] Costura.AssemblyLoader::ReadStream(class [mscorlib]System.IO.Stream)
-      IL_0065:  stloc.1
-      IL_0066:  nop
-      IL_0067:  leave.s    IL_0074
+      IL_0050:  nop
+      IL_0051:  ldloc.3
+      IL_0052:  ldnull
+      IL_0053:  ceq
+      IL_0055:  stloc.s    V_4
+      IL_0057:  ldloc.s    V_4
+      IL_0059:  brfalse.s  IL_0061
+      IL_005b:  nop
+      IL_005c:  ldnull
+      IL_005d:  stloc.s    V_5
+      IL_005f:  leave.s    IL_00bb
+      IL_0061:  ldloc.3
+      IL_0062:  call       uint8[] Costura.AssemblyLoader::ReadStream(class [mscorlib]System.IO.Stream)
+      IL_0067:  stloc.1
+      IL_0068:  nop
+      IL_0069:  leave.s    IL_0076
     }  // end .try
     finally
     {
-      IL_0069:  ldloc.3
-      IL_006a:  brfalse.s  IL_0073
-      IL_006c:  ldloc.3
-      IL_006d:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
-      IL_0072:  nop
-      IL_0073:  endfinally
+      IL_006b:  ldloc.3
+      IL_006c:  brfalse.s  IL_0075
+      IL_006e:  ldloc.3
+      IL_006f:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
+      IL_0074:  nop
+      IL_0075:  endfinally
     }  // end handler
-    IL_0074:  ldarg.1
-    IL_0075:  ldloc.0
-    IL_0076:  call       class [mscorlib]System.IO.Stream Costura.AssemblyLoader::LoadStream(class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>,
+    IL_0076:  ldarg.1
+    IL_0077:  ldloc.0
+    IL_0078:  call       class [mscorlib]System.IO.Stream Costura.AssemblyLoader::LoadStream(class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>,
                                                                                              string)
-    IL_007b:  stloc.s    V_6
+    IL_007d:  stloc.s    V_6
     .try
     {
-      IL_007d:  nop
-      IL_007e:  ldloc.s    V_6
-      IL_0080:  ldnull
-      IL_0081:  cgt.un
-      IL_0083:  stloc.s    V_7
-      IL_0085:  ldloc.s    V_7
-      IL_0087:  brfalse.s  IL_009f
-      IL_0089:  nop
-      IL_008a:  ldloc.s    V_6
-      IL_008c:  call       uint8[] Costura.AssemblyLoader::ReadStream(class [mscorlib]System.IO.Stream)
-      IL_0091:  stloc.s    V_8
-      IL_0093:  ldloc.1
-      IL_0094:  ldloc.s    V_8
-      IL_0096:  call       class [mscorlib]System.Reflection.Assembly [mscorlib]System.Reflection.Assembly::Load(uint8[],
+      IL_007f:  nop
+      IL_0080:  ldloc.s    V_6
+      IL_0082:  ldnull
+      IL_0083:  cgt.un
+      IL_0085:  stloc.s    V_7
+      IL_0087:  ldloc.s    V_7
+      IL_0089:  brfalse.s  IL_00a1
+      IL_008b:  nop
+      IL_008c:  ldloc.s    V_6
+      IL_008e:  call       uint8[] Costura.AssemblyLoader::ReadStream(class [mscorlib]System.IO.Stream)
+      IL_0093:  stloc.s    V_8
+      IL_0095:  ldloc.1
+      IL_0096:  ldloc.s    V_8
+      IL_0098:  call       class [mscorlib]System.Reflection.Assembly [mscorlib]System.Reflection.Assembly::Load(uint8[],
                                                                                                                  uint8[])
-      IL_009b:  stloc.s    V_5
-      IL_009d:  leave.s    IL_00b9
-      IL_009f:  nop
-      IL_00a0:  leave.s    IL_00af
+      IL_009d:  stloc.s    V_5
+      IL_009f:  leave.s    IL_00bb
+      IL_00a1:  nop
+      IL_00a2:  leave.s    IL_00b1
     }  // end .try
     finally
     {
-      IL_00a2:  ldloc.s    V_6
-      IL_00a4:  brfalse.s  IL_00ae
-      IL_00a6:  ldloc.s    V_6
-      IL_00a8:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
-      IL_00ad:  nop
-      IL_00ae:  endfinally
+      IL_00a4:  ldloc.s    V_6
+      IL_00a6:  brfalse.s  IL_00b0
+      IL_00a8:  ldloc.s    V_6
+      IL_00aa:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
+      IL_00af:  nop
+      IL_00b0:  endfinally
     }  // end handler
-    IL_00af:  ldloc.1
-    IL_00b0:  call       class [mscorlib]System.Reflection.Assembly [mscorlib]System.Reflection.Assembly::Load(uint8[])
-    IL_00b5:  stloc.s    V_5
-    IL_00b7:  br.s       IL_00b9
-    IL_00b9:  ldloc.s    V_5
-    IL_00bb:  ret
+    IL_00b1:  ldloc.1
+    IL_00b2:  call       class [mscorlib]System.Reflection.Assembly [mscorlib]System.Reflection.Assembly::Load(uint8[])
+    IL_00b7:  stloc.s    V_5
+    IL_00b9:  br.s       IL_00bb
+    IL_00bb:  ldloc.s    V_5
+    IL_00bd:  ret
   } // end of method AssemblyLoader::ReadFromEmbeddedResources
   .method public hidebysig static class [mscorlib]System.Reflection.Assembly 
           ResolveAssembly(object sender,
@@ -594,9 +597,9 @@
   .method private hidebysig specialname rtspecialname static 
           void  .cctor() cil managed
   {
-    // Code size       167 (0xa7)
+    // Code size       161 (0xa1)
     .maxstack  3
-    .line 8,8 : 5,57 ''
+    .line 8,8 : 5,48 ''
     IL_0000:  newobj     instance void [mscorlib]System.Object::.ctor()
     IL_0005:  stsfld     object Costura.AssemblyLoader::nullCacheLock
     IL_000a:  newobj     instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,bool>::.ctor()
@@ -605,40 +608,38 @@
     IL_0019:  stsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::assemblyNames
     IL_001e:  newobj     instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::.ctor()
     IL_0023:  stsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::symbolNames
-    IL_0028:  ldc.i4.0
-    IL_0029:  stsfld     int32 Costura.AssemblyLoader::isAttached
-    IL_002e:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::assemblyNames
-    IL_0033:  ldstr      "assemblytoreference"
-    IL_0038:  ldstr      "costura.assemblytoreference.dll.compressed"
-    IL_003d:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
+    IL_0028:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::assemblyNames
+    IL_002d:  ldstr      "assemblytoreference"
+    IL_0032:  ldstr      "costura.assemblytoreference.dll.compressed"
+    IL_0037:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
                                                                                                                    !1)
-    IL_0042:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::symbolNames
-    IL_0047:  ldstr      "assemblytoreference"
-    IL_004c:  ldstr      "costura.assemblytoreference.pdb.compressed"
-    IL_0051:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
+    IL_003c:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::symbolNames
+    IL_0041:  ldstr      "assemblytoreference"
+    IL_0046:  ldstr      "costura.assemblytoreference.pdb.compressed"
+    IL_004b:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
                                                                                                                    !1)
-    IL_0056:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::assemblyNames
-    IL_005b:  ldstr      "assemblytoreferencepreembedded"
-    IL_0060:  ldstr      "costura.assemblytoreferencepreembedded.dll"
-    IL_0065:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
+    IL_0050:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::assemblyNames
+    IL_0055:  ldstr      "assemblytoreferencepreembedded"
+    IL_005a:  ldstr      "costura.assemblytoreferencepreembedded.dll"
+    IL_005f:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
                                                                                                                    !1)
-    IL_006a:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::symbolNames
-    IL_006f:  ldstr      "assemblytoreferencepreembedded"
-    IL_0074:  ldstr      "costura.assemblytoreferencepreembedded.pdb.compres"
+    IL_0064:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::symbolNames
+    IL_0069:  ldstr      "assemblytoreferencepreembedded"
+    IL_006e:  ldstr      "costura.assemblytoreferencepreembedded.pdb.compres"
     + "sed"
-    IL_0079:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
+    IL_0073:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
                                                                                                                    !1)
-    IL_007e:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::assemblyNames
-    IL_0083:  ldstr      "exetoreference"
-    IL_0088:  ldstr      "costura.exetoreference.exe.compressed"
-    IL_008d:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
+    IL_0078:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::assemblyNames
+    IL_007d:  ldstr      "exetoreference"
+    IL_0082:  ldstr      "costura.exetoreference.exe.compressed"
+    IL_0087:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
                                                                                                                    !1)
-    IL_0092:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::symbolNames
-    IL_0097:  ldstr      "exetoreference"
-    IL_009c:  ldstr      "costura.exetoreference.pdb.compressed"
-    IL_00a1:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
+    IL_008c:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::symbolNames
+    IL_0091:  ldstr      "exetoreference"
+    IL_0096:  ldstr      "costura.exetoreference.pdb.compressed"
+    IL_009b:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
                                                                                                                    !1)
-    IL_00a6:  ret
+    IL_00a0:  ret
   } // end of method AssemblyLoader::.cctor
   .method public hidebysig static void  Attach() cil managed
   {

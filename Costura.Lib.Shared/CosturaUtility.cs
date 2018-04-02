@@ -8,5 +8,8 @@ public static class CosturaUtility
     /// <summary>
     /// Call this to Initialize the Costura system.
     /// </summary>
-    public static void Initialize() => throw new NotImplementedException();
+    public static void Initialize()
+    {
+        throw new NotImplementedException();
+    }
 }

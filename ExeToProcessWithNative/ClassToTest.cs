@@ -4,13 +4,13 @@ public class ClassToTest
 {
     [DllImport("AssemblyToReferenceNative.dll", CallingConvention = CallingConvention.Cdecl)]
     [return: MarshalAs(UnmanagedType.BStr)]
-    private static extern string SayHelloFromNative();
+    static extern string SayHelloFromNative();
 
     public string NativeFoo() => SayHelloFromNative();
 
     [DllImport("AssemblyToReferenceMixed.dll", CallingConvention = CallingConvention.Cdecl)]
     [return: MarshalAs(UnmanagedType.BStr)]
-    private static extern string SayHelloFromMixed();
+    static extern string SayHelloFromMixed();
 
     public string MixedFooPInvoke() => SayHelloFromMixed();
 

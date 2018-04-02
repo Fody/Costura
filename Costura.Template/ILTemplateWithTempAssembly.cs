@@ -6,18 +6,18 @@ using System.Threading;
 
 static class ILTemplateWithTempAssembly
 {
-    static readonly object nullCacheLock = new object();
-    static readonly Dictionary<string, bool> nullCache = new Dictionary<string, bool>();
+    static object nullCacheLock = new object();
+    static Dictionary<string, bool> nullCache = new Dictionary<string, bool>();
 
     static string tempBasePath;
 
-    static readonly List<string> preloadList = new List<string>();
-    static readonly List<string> preload32List = new List<string>();
-    static readonly List<string> preload64List = new List<string>();
+    static List<string> preloadList = new List<string>();
+    static List<string> preload32List = new List<string>();
+    static List<string> preload64List = new List<string>();
 
-    static readonly Dictionary<string, string> checksums = new Dictionary<string, string>();
+    static Dictionary<string, string> checksums = new Dictionary<string, string>();
 
-    static int isAttached = 0;
+    static int isAttached;
 
     public static void Attach()
     {

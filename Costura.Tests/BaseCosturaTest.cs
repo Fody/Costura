@@ -7,7 +7,7 @@ public abstract class BaseCosturaTest : BaseCostura
 {
 #if DEBUG
 
-    private class CustomNamer : UnitTestFrameworkNamer
+    class CustomNamer : UnitTestFrameworkNamer
     {
         public string AdditionalInfo
         {

@@ -23,7 +23,7 @@ public static class Decompiler
         }))
         {
             var projectFolder = Path.GetFullPath(Path.GetDirectoryName(assemblyPath) + "\\..\\..\\..").Replace("\\", "\\\\");
-            projectFolder = $"{Char.ToUpper(projectFolder[0])}{projectFolder.Substring(1)}\\\\";
+            projectFolder = $"{char.ToUpper(projectFolder[0])}{projectFolder.Substring(1)}\\\\";
 
             process.WaitForExit(10000);
 
@@ -37,11 +37,13 @@ public static class Decompiler
         }
     }
 
-    private static string GetPathToILDasm()
+    static string GetPathToILDasm()
     {
         var path = ToolLocationHelper.GetPathToDotNetFrameworkSdkFile("ildasm.exe", TargetDotNetFrameworkVersion.VersionLatest);
         if (!File.Exists(path))
+        {
             Assert.Ignore("ILDasm could not be found");
+        }
         return path;
     }
 }

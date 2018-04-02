@@ -6,20 +6,20 @@ using System.Threading;
 
 static class ILTemplateWithUnmanagedHandler
 {
-    static readonly object nullCacheLock = new object();
-    static readonly Dictionary<string, bool> nullCache = new Dictionary<string, bool>();
+    static object nullCacheLock = new object();
+    static Dictionary<string, bool> nullCache = new Dictionary<string, bool>();
 
     static string tempBasePath;
 
-    static readonly Dictionary<string, string> assemblyNames = new Dictionary<string, string>();
-    static readonly Dictionary<string, string> symbolNames = new Dictionary<string, string>();
+    static Dictionary<string, string> assemblyNames = new Dictionary<string, string>();
+    static Dictionary<string, string> symbolNames = new Dictionary<string, string>();
 
-    static readonly List<string> preload32List = new List<string>();
-    static readonly List<string> preload64List = new List<string>();
+    static List<string> preload32List = new List<string>();
+    static List<string> preload64List = new List<string>();
 
-    static readonly Dictionary<string, string> checksums = new Dictionary<string, string>();
+    static Dictionary<string, string> checksums = new Dictionary<string, string>();
 
-    static int isAttached = 0;
+    static int isAttached;
 
     public static void Attach()
     {

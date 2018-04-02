@@ -8,7 +8,7 @@ using Mono.Cecil.Rocks;
 
 partial class ModuleWeaver
 {
-    readonly ConstructorInfo instructionConstructorInfo = typeof(Instruction).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(OpCode), typeof(object) }, null);
+    ConstructorInfo instructionConstructorInfo = typeof(Instruction).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(OpCode), typeof(object) }, null);
     TypeDefinition targetType;
     TypeDefinition sourceType;
     TypeDefinition commonType;
@@ -168,8 +168,10 @@ partial class ModuleWeaver
         }
         foreach (var parameterDefinition in templateMethod.Parameters)
         {
-            var newParameterDefinition = new ParameterDefinition(Resolve(parameterDefinition.ParameterType));
-            newParameterDefinition.Name = parameterDefinition.Name;
+            var newParameterDefinition = new ParameterDefinition(Resolve(parameterDefinition.ParameterType))
+            {
+                Name = parameterDefinition.Name
+            };
             newMethod.Parameters.Add(newParameterDefinition);
         }
 
@@ -224,13 +226,15 @@ partial class ModuleWeaver
             newMethod.Body.Instructions.Add(newInstruction);
             var sequencePoint = templateMethod.DebugInformation.GetSequencePoint(instruction);
             if (sequencePoint != null)
+            {
                 newMethod.DebugInformation.SequencePoints.Add(TranslateSequencePoint(newInstruction, sequencePoint));
+            }
         }
     }
 
     Instruction CloneInstruction(Instruction instruction)
     {
-        if (instruction.OpCode == OpCodes.Ldstr && ((string)instruction.Operand) == "To be replaced at compile time")
+        if (instruction.OpCode == OpCodes.Ldstr && (string)instruction.Operand == "To be replaced at compile time")
         {
             return Instruction.Create(OpCodes.Ldstr, resourcesHash);
         }

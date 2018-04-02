@@ -48,7 +48,7 @@ static class Common
 
     static byte[] ReadStream(Stream stream)
     {
-        var data = new Byte[stream.Length];
+        var data = new byte[stream.Length];
         stream.Read(data, 0, data.Length);
         return data;
     }
@@ -99,11 +99,11 @@ static class Common
     {
         var name = requestedAssemblyName.Name.ToLowerInvariant();
 
-        if (requestedAssemblyName.CultureInfo != null && !String.IsNullOrEmpty(requestedAssemblyName.CultureInfo.Name))
+        if (requestedAssemblyName.CultureInfo != null && !string.IsNullOrEmpty(requestedAssemblyName.CultureInfo.Name))
             name = $"{requestedAssemblyName.CultureInfo.Name}.{name}";
 
         var bittyness = IntPtr.Size == 8 ? "64" : "32";
-        var assemblyTempFilePath = Path.Combine(tempBasePath, String.Concat(name, ".dll"));
+        var assemblyTempFilePath = Path.Combine(tempBasePath, string.Concat(name, ".dll"));
         if (File.Exists(assemblyTempFilePath))
         {
             return Assembly.LoadFile(assemblyTempFilePath);
@@ -113,7 +113,7 @@ static class Common
         {
             return Assembly.LoadFile(assemblyTempFilePath);
         }
-        assemblyTempFilePath = Path.Combine(Path.Combine(tempBasePath, bittyness), String.Concat(name, ".dll"));
+        assemblyTempFilePath = Path.Combine(Path.Combine(tempBasePath, bittyness), string.Concat(name, ".dll"));
         if (File.Exists(assemblyTempFilePath))
         {
             return Assembly.LoadFile(assemblyTempFilePath);
@@ -130,8 +130,10 @@ static class Common
     {
         var name = requestedAssemblyName.Name.ToLowerInvariant();
 
-        if (requestedAssemblyName.CultureInfo != null && !String.IsNullOrEmpty(requestedAssemblyName.CultureInfo.Name))
-            name = $"{requestedAssemblyName.CultureInfo.Name}.{name}";
+	    if (requestedAssemblyName.CultureInfo != null && !string.IsNullOrEmpty(requestedAssemblyName.CultureInfo.Name))
+	    {
+		    name = $"{requestedAssemblyName.CultureInfo.Name}.{name}";
+	    }
 
         byte[] assemblyData;
         using (var assemblyStream = LoadStream(assemblyNames, name))
@@ -157,9 +159,10 @@ static class Common
 
     static Stream LoadStream(Dictionary<string, string> resourceNames, string name)
     {
-        string value;
-        if (resourceNames.TryGetValue(name, out value))
+        if (resourceNames.TryGetValue(name, out var value))
+        {
             return LoadStream(value);
+        }
 
         return null;
     }
@@ -286,7 +289,7 @@ static class Common
 
         var name = lib;
 
-        if (lib.StartsWith(String.Concat("costura", bittyness, ".")))
+        if (lib.StartsWith(string.Concat("costura", bittyness, ".")))
         {
             name = Path.Combine(bittyness, lib.Substring(10));
         }

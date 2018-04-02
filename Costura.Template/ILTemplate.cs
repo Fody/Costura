@@ -5,13 +5,13 @@ using System.Threading;
 
 static class ILTemplate
 {
-    static readonly object nullCacheLock = new object();
-    static readonly Dictionary<string, bool> nullCache = new Dictionary<string, bool>();
+    static object nullCacheLock = new object();
+    static Dictionary<string, bool> nullCache = new Dictionary<string, bool>();
 
-    static readonly Dictionary<string, string> assemblyNames = new Dictionary<string, string>();
-    static readonly Dictionary<string, string> symbolNames = new Dictionary<string, string>();
+    static Dictionary<string, string> assemblyNames = new Dictionary<string, string>();
+    static Dictionary<string, string> symbolNames = new Dictionary<string, string>();
 
-    static int isAttached = 0;
+    static int isAttached;
 
     public static void Attach()
     {
