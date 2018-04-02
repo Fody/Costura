@@ -88,7 +88,6 @@
     <Compile Include="BaseCosturaTest.cs" />
     <Compile Include="BasicTests.cs" />
     <Compile Include="CultureResourceTests.cs" />
-    <Compile Include="Decompiler.cs" />
     <Compile Include="InitializeCallWithoutModuleInitTest.cs" />
     <Compile Include="InitializeCallTests.cs" />
     <Compile Include="InMemoryTests.cs" />
@@ -98,7 +97,6 @@
     <Compile Include="NativeTests.cs" />
     <Compile Include="NoInitializeTest.cs" />
     <Compile Include="TempFileTests.cs" />
-    <Compile Include="Verifier.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />

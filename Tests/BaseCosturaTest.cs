@@ -1,7 +1,9 @@
 ﻿using ApprovalTests;
 using ApprovalTests.Namers;
 using ApprovalTests.Writers;
+using Fody;
 using NUnit.Framework;
+#pragma warning disable 618
 
 public abstract class BaseCosturaTest : BaseCostura
 {
@@ -31,7 +33,7 @@ public abstract class BaseCosturaTest : BaseCostura
     {
         using (ApprovalResults.ForScenario(Suffix))
         {
-            var text = Decompiler.Decompile(afterAssemblyPath, "Costura.AssemblyLoader");
+            var text = Ildasm.Decompile(afterAssemblyPath, "Costura.AssemblyLoader");
             Approvals.Verify(WriterFactory.CreateTextWriter(text), new CustomNamer(), Approvals.GetReporter());
         }
     }
@@ -41,6 +43,6 @@ public abstract class BaseCosturaTest : BaseCostura
     [Test, Category("IL")]
     public void PeVerify()
     {
-        Verifier.Verify(beforeAssemblyPath, afterAssemblyPath);
+        PeVerifier.ThrowIfDifferent(beforeAssemblyPath, afterAssemblyPath,ignoreCodes:new []{ "0x80131869" });
     }
 }
