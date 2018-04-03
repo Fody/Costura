@@ -70,12 +70,18 @@ partial class ModuleWeaver
         var localFile = Path.Combine(Path.GetDirectoryName(AssemblyFilePath), file + ".cs");
 
         if (File.Exists(localFile))
-            return;
-
-        using (var stream = GetType().Assembly.GetManifestResourceStream($"Costura.src.{file}.cs"))
-        using (var outStream = new FileStream(localFile, FileMode.Create))
         {
-            stream.CopyTo(outStream);
+            return;
+        }
+
+        var resourceStream = GetType().Assembly.GetManifestResourceStream($"Costura.src.{file}.cs");
+        if (resourceStream != null)
+        {
+            using (resourceStream)
+            using (var outStream = new FileStream(localFile, FileMode.Create))
+            {
+                resourceStream.CopyTo(outStream);
+            }
         }
     }
 

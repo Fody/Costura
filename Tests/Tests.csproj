@@ -69,9 +69,45 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AssemblyToProcess\AssemblyToProcess.csproj">
+      <Project>{15402ece-aa3b-4773-82f8-9481a316f339}</Project>
+      <Name>AssemblyToProcess</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AssemblyToReferenceMixed\AssemblyToReferenceMixed.vcxproj">
+      <Project>{8d70bac7-c4ef-456d-9e73-777a172bca43}</Project>
+      <Name>AssemblyToReferenceMixed</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AssemblyToReferenceNative\AssemblyToReferenceNative.vcxproj">
+      <Project>{85eaf811-151b-4edc-8625-445f33c62994}</Project>
+      <Name>AssemblyToReferenceNative</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AssemblyToReferencePreEmbedded\AssemblyToReferencePreEmbedded.csproj">
+      <Project>{bda26419-34ad-41e0-af5f-980a0f1dabf5}</Project>
+      <Name>AssemblyToReferencePreEmbedded</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AssemblyToReference\AssemblyToReference.csproj">
+      <Project>{161ffdeb-306d-4c68-9645-f4006a73f607}</Project>
+      <Name>AssemblyToReference</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AssemblyWithoutInitialize\AssemblyWithoutInitialize.csproj">
+      <Project>{a9543041-50d4-45c1-8f4b-23f805634d42}</Project>
+      <Name>AssemblyWithoutInitialize</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Costura.Fody\Costura.Fody.csproj">
       <Project>{e5622b74-b6c6-46a5-9207-0872533e6c2f}</Project>
       <Name>Costura.Fody</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ExeToProcessWithNative\ExeToProcessWithNative.csproj">
+      <Project>{cf6e186c-fdd0-4558-b41a-acc088393c56}</Project>
+      <Name>ExeToProcessWithNative</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ExeToProcess\ExeToProcess.csproj">
+      <Project>{db274326-3dc9-4ccb-9c49-8ad4ee3e60b7}</Project>
+      <Name>ExeToProcess</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ExeToReference\ExeToReference.csproj">
+      <Project>{800938b6-eed3-41cc-a775-e3ee588c2857}</Project>
+      <Name>ExeToReference</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
