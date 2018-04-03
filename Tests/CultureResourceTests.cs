@@ -24,7 +24,7 @@ public class CultureResourceTests : BaseCosturaTest
             });
     }
 
-    [Test, Category("Code")]
+    [Test]
     public void UsingResource()
     {
         var culture = Thread.CurrentThread.CurrentUICulture;
@@ -41,7 +41,7 @@ public class CultureResourceTests : BaseCosturaTest
         }
     }
 
-    [Test, Category("IL")]
+    [Test]
     public void TemplateHasCorrectSymbols()
     {
         using (ApprovalResults.ForScenario(Suffix))

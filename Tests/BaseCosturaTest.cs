@@ -14,7 +14,7 @@ public abstract class BaseCosturaTest : BaseCostura
 #endif
     }
 
-    [Test, Category("IL")]
+    [Test]
     public void PeVerify()
     {
         PeVerifier.ThrowIfDifferent(beforeAssemblyPath, afterAssemblyPath, ignoreCodes:new []{ "0x80131869" });

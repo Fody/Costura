@@ -6,28 +6,28 @@ using NUnit.Framework;
 
 public abstract class BasicTests : BaseCosturaTest
 {
-    [Test, Category("Code")]
+    [Test]
     public void Simple()
     {
         var instance = assembly.GetInstance("ClassToTest");
         Assert.AreEqual("Hello", instance.Simple());
     }
 
-    [Test, Category("Code")]
+    [Test]
     public void SimplePreEmbed()
     {
         var instance2 = assembly.GetInstance("ClassToTest");
         Assert.AreEqual("Hello", instance2.SimplePreEmbed());
     }
 
-    [Test, Category("Code")]
+    [Test]
     public void Exe()
     {
         var instance2 = assembly.GetInstance("ClassToTest");
         Assert.AreEqual("Hello", instance2.Exe());
     }
 
-    [Test, Category("Code")]
+    [Test]
     public void ThrowException()
     {
         try
@@ -42,7 +42,7 @@ public abstract class BasicTests : BaseCosturaTest
         }
     }
 
-    [Test, Category("Code")]
+    [Test]
     public void TypeReferencedWithPartialAssemblyNameIsLoadedFromExistingAssemblyInstance()
     {
         var instance = assembly.GetInstance("ClassToTest");
@@ -56,7 +56,7 @@ public abstract class BasicTests : BaseCosturaTest
         Assert.AreSame(assemblyLoadedByCompileTimeReference, typeLoadedWithPartialAssemblyName.Assembly);
     }
 
-    [Test, Category("IL")]
+    [Test]
     public void TemplateHasCorrectSymbols()
     {
         using (ApprovalResults.ForScenario(Suffix))

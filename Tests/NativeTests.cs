@@ -5,28 +5,28 @@ using NUnit.Framework;
 
 public abstract class NativeTests : BaseCosturaTest
 {
-    [Test, Category("Code")]
+    [Test]
     public void Native()
     {
         var instance1 = assembly.GetInstance("ClassToTest");
         Assert.AreEqual("Hello", instance1.NativeFoo());
     }
 
-    [Test, Category("Code")]
+    [Test]
     public void Mixed()
     {
         var instance1 = assembly.GetInstance("ClassToTest");
         Assert.AreEqual("Hello", instance1.MixedFoo());
     }
 
-    [Test, Category("Code")]
+    [Test]
     public void MixedPInvoke()
     {
         var instance1 = assembly.GetInstance("ClassToTest");
         Assert.AreEqual("Hello", instance1.MixedFooPInvoke());
     }
 
-    [Test, Category("IL")]
+    [Test]
     public void TemplateHasCorrectSymbols()
     {
         using (ApprovalResults.ForScenario(Suffix))
