@@ -6,14 +6,14 @@
     <OutputType>Exe</OutputType>
   </PropertyGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\AssemblyToReferencePreEmbedded\bin\$(ConfigurationName)\AssemblyToReferencePreEmbedded.dll">
+    <EmbeddedResource Include="..\AssemblyToReferencePreEmbedded\bin\$(ConfigurationName)\net461\AssemblyToReferencePreEmbedded.dll">
       <Visible>false</Visible>
       <LogicalName>Costura.AssemblyToReferencePreEmbedded.dll</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AssemblyToReferencePreEmbedded\AssemblyToReferencePreEmbedded.csproj"/>
-    <ProjectReference Include="..\AssemblyToReference\AssemblyToReference.csproj"/>
-    <ProjectReference Include="..\ExeToReference\ExeToReference.csproj"/>
+    <ProjectReference Include="..\AssemblyToReferencePreEmbedded\AssemblyToReferencePreEmbedded.csproj" />
+    <ProjectReference Include="..\AssemblyToReference\AssemblyToReference.csproj" />
+    <ProjectReference Include="..\ExeToReference\ExeToReference.csproj" />
   </ItemGroup>
 </Project>
