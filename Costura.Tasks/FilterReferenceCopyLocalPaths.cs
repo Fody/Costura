@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
-using Fody;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
@@ -102,8 +102,9 @@ namespace Costura.Tasks
 
                 return true;
             }
-            catch
+            catch (Exception exception)
             {
+                Log.LogError(exception.ToString());
                 return false;
             }
         }
@@ -116,7 +117,7 @@ namespace Costura.Tasks
             }
             catch (XmlException exception)
             {
-                throw new WeavingException($"Could not read '{"FodyWeavers.xml"}' because it has invalid xml. Message: '{exception.Message}'.");
+                throw new Exception($"Could not read 'FodyWeavers.xml' because it has invalid xml. Message: '{exception.Message}'.");
             }
         }
     }
