@@ -26,7 +26,8 @@ public partial class ModuleWeaver: BaseModuleWeaver
 
     public override IEnumerable<string> GetAssembliesForScanning()
     {
-        yield break;
+        yield return "mscorlib";
+        yield return "System";
     }
 
     public override bool ShouldCleanReference => true;

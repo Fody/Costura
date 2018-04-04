@@ -2,17 +2,17 @@
 using System.Threading;
 using ApprovalTests;
 using ApprovalTests.Namers;
-using NUnit.Framework;
+using Fody;
+using Xunit;
+#pragma warning disable 618
 
-[TestFixture]
 public class CultureResourceTests : BaseCosturaTest
 {
-    protected override string Suffix => "Culture";
+    static TestResult testResult;
 
-    [OneTimeSetUp]
-    public void CreateAssembly()
+    static CultureResourceTests()
     {
-        CreateIsolatedAssemblyCopy("ExeToProcess",
+        testResult = WeavingHelper.CreateIsolatedAssemblyCopy("ExeToProcess.exe",
             "<Costura />",
             new[]
             {
@@ -21,19 +21,18 @@ public class CultureResourceTests : BaseCosturaTest
                 "fr\\AssemblyToReference.resources.dll",
                 "AssemblyToReferencePreEmbedded.dll",
                 "ExeToReference.exe"
-            });
+            }, "Culture");
     }
 
-    [Test]
+    [Fact]
     public void UsingResource()
     {
         var culture = Thread.CurrentThread.CurrentUICulture;
         try
         {
             Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("fr-FR");
-            LoadAssemblyIntoAppDomain();
-            var instance1 = assembly.GetInstance("ClassToTest");
-            Assert.AreEqual("Salut", instance1.InternationalFoo());
+            var instance1 = testResult.GetInstance("ClassToTest");
+            Assert.Equal("Salut", instance1.InternationalFoo());
         }
         finally
         {
@@ -41,13 +40,15 @@ public class CultureResourceTests : BaseCosturaTest
         }
     }
 
-    [Test]
+    [Fact]
     public void TemplateHasCorrectSymbols()
     {
-        using (ApprovalResults.ForScenario(Suffix))
+        using (ApprovalResults.ForScenario(nameof(CultureResourceTests)))
         {
-            var text = Ildasm.Decompile(afterAssemblyPath, "Costura.AssemblyLoader");
+            var text = Ildasm.Decompile(TestResult.AssemblyPath, "Costura.AssemblyLoader");
             Approvals.Verify(text);
         }
     }
+
+    public override TestResult TestResult => testResult;
 }

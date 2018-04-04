@@ -1,22 +1,17 @@
-﻿using NUnit.Framework;
+﻿using Fody;
+#pragma warning disable 618
 
-[TestFixture]
-public class InitializeCallWithoutModuleInitTest : BasicTests
+class InitializeCallWithoutModuleInitTest : BasicTests
 {
-    protected override string Suffix => "InitializeCallWithoutModuleInit";
+    static TestResult testResult;
 
-    [OneTimeSetUp]
-    public void CreateAssembly()
+    static InitializeCallWithoutModuleInitTest()
     {
-        CreateIsolatedAssemblyCopy("AssemblyToProcess",
+        testResult = WeavingHelper.CreateIsolatedAssemblyCopy("AssemblyToProcess.dll",
             "<Costura LoadAtModuleInit='false' />",
             new[] {"AssemblyToReference.dll", "AssemblyToReferencePreEmbedded.dll", "ExeToReference.exe"},
-            ".dll");
+            "InitializeCallWithoutModuleInit");
     }
 
-    [SetUp]
-    public void Setup()
-    {
-        LoadAssemblyIntoAppDomain(".dll");
-    }
+    public override TestResult TestResult => testResult;
 }

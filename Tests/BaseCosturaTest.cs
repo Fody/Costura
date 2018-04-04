@@ -1,11 +1,10 @@
 ﻿using ApprovalTests.Namers;
 using Fody;
-using NUnit.Framework;
 #pragma warning disable 618
 
-public abstract class BaseCosturaTest : BaseCostura
+public abstract class BaseCosturaTest
 {
-    public BaseCosturaTest()
+    static BaseCosturaTest()
     {
 #if DEBUG
         NamerFactory.AsEnvironmentSpecificTest(() => "Debug");
@@ -14,9 +13,5 @@ public abstract class BaseCosturaTest : BaseCostura
 #endif
     }
 
-    [Test]
-    public void PeVerify()
-    {
-        PeVerifier.ThrowIfDifferent(beforeAssemblyPath, afterAssemblyPath, ignoreCodes:new []{ "0x80131869" });
-    }
+    public abstract TestResult TestResult { get; }
 }

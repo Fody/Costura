@@ -2,66 +2,68 @@
 using System.Diagnostics;
 using ApprovalTests;
 using ApprovalTests.Namers;
-using NUnit.Framework;
+using Xunit;
 
 public abstract class BasicTests : BaseCosturaTest
 {
-    [Test]
+    [Fact]
     public void Simple()
     {
-        var instance = assembly.GetInstance("ClassToTest");
-        Assert.AreEqual("Hello", instance.Simple());
+        var instance = TestResult.GetInstance("ClassToTest");
+        Assert.Equal("Hello", instance.Simple());
     }
 
-    [Test]
+    [Fact]
     public void SimplePreEmbed()
     {
-        var instance2 = assembly.GetInstance("ClassToTest");
-        Assert.AreEqual("Hello", instance2.SimplePreEmbed());
+        var instance2 = TestResult.GetInstance("ClassToTest");
+        Assert.Equal("Hello", instance2.SimplePreEmbed());
     }
 
-    [Test]
+    [Fact]
     public void Exe()
     {
-        var instance2 = assembly.GetInstance("ClassToTest");
-        Assert.AreEqual("Hello", instance2.Exe());
+        var instance2 = TestResult.GetInstance("ClassToTest");
+        Assert.Equal("Hello", instance2.Exe());
     }
 
-    [Test]
+    [Fact]
     public void ThrowException()
     {
         try
         {
-            var instance = assembly.GetInstance("ClassToTest");
+            var instance = TestResult.GetInstance("ClassToTest");
             instance.ThrowException();
         }
         catch (Exception exception)
         {
             Debug.WriteLine(exception.StackTrace);
-            Assert.IsTrue(exception.StackTrace.Contains("ClassToReference.cs:line"));
+            Assert.Contains("ClassToReference.cs:line", exception.StackTrace);
         }
     }
 
-    [Test]
+    [Fact]
     public void TypeReferencedWithPartialAssemblyNameIsLoadedFromExistingAssemblyInstance()
     {
-        var instance = assembly.GetInstance("ClassToTest");
+        var instance = TestResult.GetInstance("ClassToTest");
         var assemblyLoadedByCompileTimeReference = instance.GetReferencedAssembly();
         var typeName = "ClassToReference, AssemblyToReference";
-        if (assembly.GetName().Name.EndsWith("35"))
+        if (TestResult.Assembly.GetName().Name.EndsWith("35"))
+        {
             typeName = typeName + "35";
+        }
         var typeLoadedWithPartialAssemblyName = Type.GetType(typeName);
-        Assume.That(typeLoadedWithPartialAssemblyName, Is.Not.Null);
+        Assert.NotNull(typeLoadedWithPartialAssemblyName);
 
-        Assert.AreSame(assemblyLoadedByCompileTimeReference, typeLoadedWithPartialAssemblyName.Assembly);
+        Assert.Same(assemblyLoadedByCompileTimeReference, typeLoadedWithPartialAssemblyName.Assembly);
     }
 
-    [Test]
+    [Fact]
     public void TemplateHasCorrectSymbols()
     {
-        using (ApprovalResults.ForScenario(Suffix))
+        using (ApprovalResults.ForScenario(GetType().Name))
         {
-            var text = Ildasm.Decompile(afterAssemblyPath, "Costura.AssemblyLoader");
+            var text = Ildasm.Decompile(TestResult.AssemblyPath, "Costura.AssemblyLoader");
             Approvals.Verify(text);
         }
     }

@@ -1,21 +1,15 @@
-﻿using NUnit.Framework;
+﻿using Fody;
+#pragma warning disable 618
 
-[TestFixture]
 public class TempFileTests : BasicTests
 {
-    protected override string Suffix => "TempFile";
+    static TestResult testResult;
+    public override TestResult TestResult => testResult;
 
-    [OneTimeSetUp]
-    public void CreateAssembly()
+    static TempFileTests()
     {
-        CreateIsolatedAssemblyCopy("ExeToProcess",
+        testResult = WeavingHelper.CreateIsolatedAssemblyCopy("ExeToProcess.exe",
             "<Costura CreateTemporaryAssemblies='true' />",
-            new[] {"AssemblyToReference.dll", "AssemblyToReferencePreEmbedded.dll", "ExeToReference.exe"});
-    }
-
-    [SetUp]
-    public void Setup()
-    {
-        LoadAssemblyIntoAppDomain();
+            new[] {"AssemblyToReference.dll", "AssemblyToReferencePreEmbedded.dll", "ExeToReference.exe"}, "TempFile");
     }
 }

@@ -1,39 +1,37 @@
-﻿#if (DEBUG)
-using ApprovalTests;
+﻿using ApprovalTests;
 using ApprovalTests.Namers;
-using NUnit.Framework;
+using Xunit;
 
 public abstract class NativeTests : BaseCosturaTest
 {
-    [Test]
+    [Fact]
     public void Native()
     {
-        var instance1 = assembly.GetInstance("ClassToTest");
-        Assert.AreEqual("Hello", instance1.NativeFoo());
+        var instance1 = TestResult.GetInstance("ClassToTest");
+        Assert.Equal("Hello", instance1.NativeFoo());
     }
 
-    [Test]
+    [Fact]
     public void Mixed()
     {
-        var instance1 = assembly.GetInstance("ClassToTest");
-        Assert.AreEqual("Hello", instance1.MixedFoo());
+        var instance1 = TestResult.GetInstance("ClassToTest");
+        Assert.Equal("Hello", instance1.MixedFoo());
     }
 
-    [Test]
+    [Fact]
     public void MixedPInvoke()
     {
-        var instance1 = assembly.GetInstance("ClassToTest");
-        Assert.AreEqual("Hello", instance1.MixedFooPInvoke());
+        var instance1 = TestResult.GetInstance("ClassToTest");
+        Assert.Equal("Hello", instance1.MixedFooPInvoke());
     }
 
-    [Test]
+    [Fact]
     public void TemplateHasCorrectSymbols()
     {
-        using (ApprovalResults.ForScenario(Suffix))
+        using (ApprovalResults.ForScenario(nameof(NativeTests)))
         {
-            var text = Ildasm.Decompile(afterAssemblyPath, "Costura.AssemblyLoader");
+            var text = Ildasm.Decompile(TestResult.AssemblyPath, "Costura.AssemblyLoader");
             Approvals.Verify(text);
         }
     }
 }
-#endif

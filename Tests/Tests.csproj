@@ -1,135 +1,31 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F53DA537-AE82-48B7-A84B-5F2013BC272C}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Costura.Tests</RootNamespace>
-    <AssemblyName>Costura.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
+    <TargetFrameworks>net461</TargetFrameworks>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <DisableFody>true</DisableFody>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ApprovalTests, Version=3.0.0.0, Culture=neutral, PublicKeyToken=11bd7d124fc62e0f, processorArchitecture=MSIL">
-      <HintPath>..\packages\ApprovalTests.3.0.13\lib\net40\ApprovalTests.dll</HintPath>
-    </Reference>
-    <Reference Include="ApprovalUtilities, Version=3.0.0.0, Culture=neutral, PublicKeyToken=11bd7d124fc62e0f, processorArchitecture=MSIL">
-      <HintPath>..\packages\ApprovalUtilities.3.0.13\lib\net45\ApprovalUtilities.dll</HintPath>
-    </Reference>
-    <Reference Include="ApprovalUtilities.Net45, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ApprovalUtilities.3.0.13\lib\net45\ApprovalUtilities.Net45.dll</HintPath>
-    </Reference>
-    <Reference Include="FodyHelpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=1ca091877d12ca03, processorArchitecture=MSIL">
-      <HintPath>..\packages\FodyHelpers.3.0.0\lib\net46\FodyHelpers.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Build.Utilities.Core, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <PackageReference Include="ApprovalTests" Version="3.0.14" />
+    <PackageReference Include="FodyHelpers" Version="3.0.1" />
+    <PackageReference Include="xunit" Version="2.3.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
+    <ProjectReference Include="..\AssemblyToProcess\AssemblyToProcess.csproj" />
+    <ProjectReference Include="..\AssemblyToReferenceMixed\AssemblyToReferenceMixed.vcxproj" />
+    <ProjectReference Include="..\AssemblyToReferenceNative\AssemblyToReferenceNative.vcxproj" />
+    <ProjectReference Include="..\AssemblyToReferencePreEmbedded\AssemblyToReferencePreEmbedded.csproj" />
+    <ProjectReference Include="..\AssemblyToReference\AssemblyToReference.csproj" />
+    <ProjectReference Include="..\AssemblyWithoutInitialize\AssemblyWithoutInitialize.csproj" />
+    <ProjectReference Include="..\Costura.Fody\Costura.Fody.csproj" />
+    <ProjectReference Include="..\ExeToProcessWithNative\ExeToProcessWithNative.csproj" />
+    <ProjectReference Include="..\ExeToProcess\ExeToProcess.csproj" />
+    <ProjectReference Include="..\ExeToReference\ExeToReference.csproj" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Mono.Cecil, Version=0.10.0.0, Culture=neutral, PublicKeyToken=1ca091877d12ca03, processorArchitecture=MSIL">
-      <HintPath>..\packages\FodyHelpers.3.0.0\lib\net46\Mono.Cecil.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Cecil.Mdb, Version=0.10.0.0, Culture=neutral, PublicKeyToken=1ca091877d12ca03, processorArchitecture=MSIL">
-      <HintPath>..\packages\FodyHelpers.3.0.0\lib\net46\Mono.Cecil.Mdb.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Cecil.Pdb, Version=0.10.0.0, Culture=neutral, PublicKeyToken=1ca091877d12ca03, processorArchitecture=MSIL">
-      <HintPath>..\packages\FodyHelpers.3.0.0\lib\net46\Mono.Cecil.Pdb.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Cecil.Rocks, Version=0.10.0.0, Culture=neutral, PublicKeyToken=1ca091877d12ca03, processorArchitecture=MSIL">
-      <HintPath>..\packages\FodyHelpers.3.0.0\lib\net46\Mono.Cecil.Rocks.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework, Version=3.6.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\NUnit.3.6.1\lib\net45\nunit.framework.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\AssemblyToProcess\AssemblyToProcess.csproj">
-      <Project>{15402ece-aa3b-4773-82f8-9481a316f339}</Project>
-      <Name>AssemblyToProcess</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AssemblyToReferenceMixed\AssemblyToReferenceMixed.vcxproj">
-      <Project>{8d70bac7-c4ef-456d-9e73-777a172bca43}</Project>
-      <Name>AssemblyToReferenceMixed</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AssemblyToReferenceNative\AssemblyToReferenceNative.vcxproj">
-      <Project>{85eaf811-151b-4edc-8625-445f33c62994}</Project>
-      <Name>AssemblyToReferenceNative</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AssemblyToReferencePreEmbedded\AssemblyToReferencePreEmbedded.csproj">
-      <Project>{bda26419-34ad-41e0-af5f-980a0f1dabf5}</Project>
-      <Name>AssemblyToReferencePreEmbedded</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AssemblyToReference\AssemblyToReference.csproj">
-      <Project>{161ffdeb-306d-4c68-9645-f4006a73f607}</Project>
-      <Name>AssemblyToReference</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AssemblyWithoutInitialize\AssemblyWithoutInitialize.csproj">
-      <Project>{a9543041-50d4-45c1-8f4b-23f805634d42}</Project>
-      <Name>AssemblyWithoutInitialize</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Costura.Fody\Costura.Fody.csproj">
-      <Project>{e5622b74-b6c6-46a5-9207-0872533e6c2f}</Project>
-      <Name>Costura.Fody</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ExeToProcessWithNative\ExeToProcessWithNative.csproj">
-      <Project>{cf6e186c-fdd0-4558-b41a-acc088393c56}</Project>
-      <Name>ExeToProcessWithNative</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ExeToProcess\ExeToProcess.csproj">
-      <Project>{db274326-3dc9-4ccb-9c49-8ad4ee3e60b7}</Project>
-      <Name>ExeToProcess</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ExeToReference\ExeToReference.csproj">
-      <Project>{800938b6-eed3-41cc-a775-e3ee588c2857}</Project>
-      <Name>ExeToReference</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="ApprovalTestConfig.cs" />
-    <Compile Include="AssemblyExtensions.cs" />
-    <Compile Include="BaseCostura.cs" />
-    <Compile Include="BaseCosturaTest.cs" />
-    <Compile Include="BasicTests.cs" />
-    <Compile Include="CultureResourceTests.cs" />
-    <Compile Include="Ildasm.cs" />
-    <Compile Include="InitializeCallWithoutModuleInitTest.cs" />
-    <Compile Include="InitializeCallTests.cs" />
-    <Compile Include="InMemoryTests.cs" />
-    <Compile Include="ConfigReaderTests.cs" />
-    <Compile Include="MixedAndNativeTests.cs" />
-    <Compile Include="MockAssemblyResolver.cs" />
-    <Compile Include="NativeTests.cs" />
-    <Compile Include="NoInitializeTest.cs" />
-    <Compile Include="TempFileTests.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

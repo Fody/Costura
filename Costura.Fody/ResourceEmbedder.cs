@@ -24,7 +24,7 @@ partial class ModuleWeaver : IDisposable
             Directory.CreateDirectory(cachePath);
         }
 
-        var onlyBinaries = ReferenceCopyLocalPaths.Where(x => x.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) || x.EndsWith(".exe", StringComparison.OrdinalIgnoreCase));
+        var onlyBinaries = ReferenceCopyLocalPaths.Where(x => x.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) || x.EndsWith(".exe", StringComparison.OrdinalIgnoreCase)).ToList();
 
         foreach (var dependency in GetFilteredReferences(onlyBinaries, config))
         {

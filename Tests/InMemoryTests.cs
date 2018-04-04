@@ -1,21 +1,16 @@
-﻿using NUnit.Framework;
+﻿using Fody;
+#pragma warning disable 618
 
-[TestFixture]
 public class InMemoryTests : BasicTests
 {
-    protected override string Suffix => "InMemory";
+    static TestResult testResult;
 
-    [OneTimeSetUp]
-    public void CreateAssembly()
+    static InMemoryTests()
     {
-        CreateIsolatedAssemblyCopy("ExeToProcess",
+        testResult = WeavingHelper.CreateIsolatedAssemblyCopy("ExeToProcess.exe",
             "<Costura />",
-            new[] {"AssemblyToReference.dll", "AssemblyToReferencePreEmbedded.dll", "ExeToReference.exe"});
+            new[] {"AssemblyToReference.dll", "AssemblyToReferencePreEmbedded.dll", "ExeToReference.exe"}, "InMemory");
     }
 
-    [SetUp]
-    public void Setup()
-    {
-        LoadAssemblyIntoAppDomain();
-    }
+    public override TestResult TestResult => testResult;
 }

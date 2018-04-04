@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Fody;
 using Mono.Cecil;
 
 partial class ModuleWeaver
@@ -11,29 +10,20 @@ partial class ModuleWeaver
 
     void FindMsCoreReferences()
     {
-        var msCoreLibDefinition = AssemblyResolver.Resolve(new AssemblyNameReference("mscorlib", null));
-        var msCoreTypes = msCoreLibDefinition.MainModule.Types;
-
-        var objectDefinition = msCoreTypes.FirstOrDefault(x => x.Name == "Object");
-        if (objectDefinition == null)
-        {
-            throw new WeavingException("Only compat with desktop .net");
-        }
-
-        var voidDefinition = msCoreTypes.First(x => x.Name == "Void");
+        var voidDefinition = FindType("System.Void");
         voidTypeReference = ModuleDefinition.ImportReference(voidDefinition);
 
-        var dictionary = msCoreTypes.First(x => x.Name == "Dictionary`2");
+        var dictionary = FindType("System.Collections.Generic.Dictionary`2");
         var dictionaryOfStringOfString = ModuleDefinition.ImportReference(dictionary);
         dictionaryOfStringOfStringAdd = ModuleDefinition.ImportReference(dictionaryOfStringOfString.Resolve().Methods.First(m => m.Name == "Add"))
             .MakeHostInstanceGeneric(ModuleDefinition.TypeSystem.String, ModuleDefinition.TypeSystem.String);
 
-        var list = msCoreTypes.First(x => x.Name == "List`1");
+        var list = FindType("System.Collections.Generic.List`1");
         var listOfString = ModuleDefinition.ImportReference(list);
         listOfStringAdd = ModuleDefinition.ImportReference(listOfString.Resolve().Methods.First(m => m.Name == "Add"))
             .MakeHostInstanceGeneric(ModuleDefinition.TypeSystem.String);
 
-        var compilerGeneratedAttribute = msCoreTypes.First(x => x.Name == "CompilerGeneratedAttribute");
+        var compilerGeneratedAttribute = FindType("System.Runtime.CompilerServices.CompilerGeneratedAttribute");
         compilerGeneratedAttributeCtor = ModuleDefinition.ImportReference(compilerGeneratedAttribute.Methods.First(x => x.IsConstructor));
     }
 }

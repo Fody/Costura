@@ -1,19 +1,15 @@
 ﻿using Fody;
-using NUnit.Framework;
+using Xunit;
 
-[TestFixture]
-public class NoInitializeTest : BaseCostura
+public class NoInitializeTest
 {
-    protected override string Suffix => "NoInitialize";
-
-    [Test]
+    [Fact]
     public void FailsToWeave()
     {
         Assert.Throws<WeavingException>(() =>
-            CreateIsolatedAssemblyCopy("AssemblyWithoutInitialize",
+                WeavingHelper.CreateIsolatedAssemblyCopy("AssemblyWithoutInitialize",
                 "<Costura LoadAtModuleInit='false' />",
                 new[] { "AssemblyToReference.dll", "AssemblyToReferencePreEmbedded.dll", "ExeToReference.exe" },
-                ".dll"),
-            "Costura was not initialized. Make sure LoadAtModuleInit=true or call CosturaUtility.Initialize().");
+                    "NoInitialize"));
     }
 }

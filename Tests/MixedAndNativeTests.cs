@@ -1,56 +1,49 @@
-﻿#if (DEBUG)
-using ApprovalTests;
+﻿using ApprovalTests;
 using ApprovalTests.Namers;
-using NUnit.Framework;
+using Fody;
+using Xunit;
+#pragma warning disable 618
 
-[TestFixture]
 public class MixedAndNativeTests : BaseCosturaTest
 {
-    protected override string Suffix => "MixedAndNative";
+    public override TestResult TestResult => testResult;
+    static TestResult testResult;
 
-    [OneTimeSetUp]
-    public void CreateAssembly()
+    static MixedAndNativeTests()
     {
-            CreateIsolatedAssemblyCopy("ExeToProcessWithNative",
-                "<Costura Unmanaged32Assemblies='AssemblyToReferenceMixed' />",
-                new[] { "AssemblyToReferenceMixed.dll" });
+        testResult = WeavingHelper.CreateIsolatedAssemblyCopy("ExeToProcessWithNative.exe",
+            "<Costura Unmanaged32Assemblies='AssemblyToReferenceMixed' />",
+            new[] {"AssemblyToReferenceMixed.dll"}, "MixedAndNative");
     }
 
-    [SetUp]
-    public void Setup()
-    {
-            LoadAssemblyIntoAppDomain();
-    }
-
-    [Test]
+    [Fact]
     public void Native()
     {
-        var instance1 = assembly.GetInstance("ClassToTest");
-        Assert.AreEqual("Hello", instance1.NativeFoo());
+        var instance1 = TestResult.GetInstance("ClassToTest");
+        Assert.Equal("Hello", instance1.NativeFoo());
     }
 
-    [Test]
+    [Fact]
     public void Mixed()
     {
-        var instance1 = assembly.GetInstance("ClassToTest");
-        Assert.AreEqual("Hello", instance1.MixedFoo());
+        var instance1 = TestResult.GetInstance("ClassToTest");
+        Assert.Equal("Hello", instance1.MixedFoo());
     }
 
-    [Test]
+    [Fact]
     public void MixedPInvoke()
     {
-        var instance1 = assembly.GetInstance("ClassToTest");
-        Assert.AreEqual("Hello", instance1.MixedFooPInvoke());
+        var instance1 = TestResult.GetInstance("ClassToTest");
+        Assert.Equal("Hello", instance1.MixedFooPInvoke());
     }
 
-    [Test]
+    [Fact]
     public void TemplateHasCorrectSymbols()
     {
-        using (ApprovalResults.ForScenario(Suffix))
+        using (ApprovalResults.ForScenario(nameof(MixedAndNativeTests)))
         {
-            var text = Ildasm.Decompile(afterAssemblyPath, "Costura.AssemblyLoader");
+            var text = Ildasm.Decompile(testResult.AssemblyPath, "Costura.AssemblyLoader");
             Approvals.Verify(text);
         }
     }
 }
-#endif

@@ -1,22 +1,17 @@
-﻿using NUnit.Framework;
+﻿using Fody;
+#pragma warning disable 618
 
-[TestFixture]
 public class InitializeCallTests : BasicTests
 {
-    protected override string Suffix => "InitializeCall";
+    static TestResult testResult;
 
-    [OneTimeSetUp]
-    public void CreateAssembly()
+    static InitializeCallTests()
     {
-            CreateIsolatedAssemblyCopy("AssemblyToProcess",
-                "<Costura />",
-                new[] { "AssemblyToReference.dll", "AssemblyToReferencePreEmbedded.dll", "ExeToReference.exe" },
-                ".dll");
+        testResult = WeavingHelper.CreateIsolatedAssemblyCopy("AssemblyToProcess.dll",
+            "<Costura />",
+            new[] { "AssemblyToReference.dll", "AssemblyToReferencePreEmbedded.dll", "ExeToReference.exe" },
+            "InitializeCall");
     }
 
-    [SetUp]
-    public void Setup()
-    {
-            LoadAssemblyIntoAppDomain(".dll");
-    }
+    public override TestResult TestResult => testResult;
 }
