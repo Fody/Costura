@@ -12,26 +12,26 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Costura.Fody", "Costura.Fod
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestAssemblies", "TestAssemblies", "{434F54AD-0845-4F63-ACB2-162105A1A741}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssemblyToReference", "AssemblyToReference\AssemblyToReference.csproj", "{161FFDEB-306D-4C68-9645-F4006A73F607}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssemblyToReference", "AssemblyToReference\AssemblyToReference.csproj", "{161FFDEB-306D-4C68-9645-F4006A73F607}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExeToProcess", "ExeToProcess\ExeToProcess.csproj", "{DB274326-3DC9-4CCB-9C49-8AD4EE3E60B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExeToProcess", "ExeToProcess\ExeToProcess.csproj", "{DB274326-3DC9-4CCB-9C49-8AD4EE3E60B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{F53DA537-AE82-48B7-A84B-5F2013BC272C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{F53DA537-AE82-48B7-A84B-5F2013BC272C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssemblyToReferencePreEmbedded", "AssemblyToReferencePreEmbedded\AssemblyToReferencePreEmbedded.csproj", "{BDA26419-34AD-41E0-AF5F-980A0F1DABF5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssemblyToReferencePreEmbedded", "AssemblyToReferencePreEmbedded\AssemblyToReferencePreEmbedded.csproj", "{BDA26419-34AD-41E0-AF5F-980A0F1DABF5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExeToReference", "ExeToReference\ExeToReference.csproj", "{800938B6-EED3-41CC-A775-E3EE588C2857}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExeToReference", "ExeToReference\ExeToReference.csproj", "{800938B6-EED3-41CC-A775-E3EE588C2857}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AssemblyToReferenceMixed", "AssemblyToReferenceMixed\AssemblyToReferenceMixed.vcxproj", "{8D70BAC7-C4EF-456D-9E73-777A172BCA43}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExeToProcessWithNative", "ExeToProcessWithNative\ExeToProcessWithNative.csproj", "{CF6E186C-FDD0-4558-B41A-ACC088393C56}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExeToProcessWithNative", "ExeToProcessWithNative\ExeToProcessWithNative.csproj", "{CF6E186C-FDD0-4558-B41A-ACC088393C56}"
 	ProjectSection(ProjectDependencies) = postProject
 		{85EAF811-151B-4EDC-8625-445F33C62994} = {85EAF811-151B-4EDC-8625-445F33C62994}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AssemblyToReferenceNative", "AssemblyToReferenceNative\AssemblyToReferenceNative.vcxproj", "{85EAF811-151B-4EDC-8625-445F33C62994}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssemblyToProcess", "AssemblyToProcess\AssemblyToProcess.csproj", "{15402ECE-AA3B-4773-82F8-9481A316F339}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssemblyToProcess", "AssemblyToProcess\AssemblyToProcess.csproj", "{15402ECE-AA3B-4773-82F8-9481A316F339}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Costura.Tasks", "Costura.Tasks\Costura.Tasks.csproj", "{D16DEC80-99D2-4EF3-9CEB-0FF7381CBB13}"
 EndProject
@@ -44,7 +44,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Costura", "Costura\Costura.
 		{CD9AEBAA-78F4-4A78-BF06-0CB7D84D83E8} = {CD9AEBAA-78F4-4A78-BF06-0CB7D84D83E8}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssemblyWithoutInitialize", "AssemblyWithoutInitialize\AssemblyWithoutInitialize.csproj", "{A9543041-50D4-45C1-8F4B-23F805634D42}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssemblyWithoutInitialize", "AssemblyWithoutInitialize\AssemblyWithoutInitialize.csproj", "{A9543041-50D4-45C1-8F4B-23F805634D42}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -157,18 +157,18 @@ Global
 		{8D70BAC7-C4EF-456D-9E73-777A172BCA43}.Release|x64.Build.0 = Release|x64
 		{8D70BAC7-C4EF-456D-9E73-777A172BCA43}.Release|x86.ActiveCfg = Release|Win32
 		{8D70BAC7-C4EF-456D-9E73-777A172BCA43}.Release|x86.Build.0 = Release|Win32
-		{CF6E186C-FDD0-4558-B41A-ACC088393C56}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{CF6E186C-FDD0-4558-B41A-ACC088393C56}.Debug|Any CPU.Build.0 = Debug|x86
-		{CF6E186C-FDD0-4558-B41A-ACC088393C56}.Debug|x64.ActiveCfg = Debug|x64
-		{CF6E186C-FDD0-4558-B41A-ACC088393C56}.Debug|x64.Build.0 = Debug|x64
-		{CF6E186C-FDD0-4558-B41A-ACC088393C56}.Debug|x86.ActiveCfg = Debug|x86
-		{CF6E186C-FDD0-4558-B41A-ACC088393C56}.Debug|x86.Build.0 = Debug|x86
-		{CF6E186C-FDD0-4558-B41A-ACC088393C56}.Release|Any CPU.ActiveCfg = Release|x86
-		{CF6E186C-FDD0-4558-B41A-ACC088393C56}.Release|Any CPU.Build.0 = Release|x86
-		{CF6E186C-FDD0-4558-B41A-ACC088393C56}.Release|x64.ActiveCfg = Release|x64
-		{CF6E186C-FDD0-4558-B41A-ACC088393C56}.Release|x64.Build.0 = Release|x64
-		{CF6E186C-FDD0-4558-B41A-ACC088393C56}.Release|x86.ActiveCfg = Release|x86
-		{CF6E186C-FDD0-4558-B41A-ACC088393C56}.Release|x86.Build.0 = Release|x86
+		{CF6E186C-FDD0-4558-B41A-ACC088393C56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF6E186C-FDD0-4558-B41A-ACC088393C56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF6E186C-FDD0-4558-B41A-ACC088393C56}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CF6E186C-FDD0-4558-B41A-ACC088393C56}.Debug|x64.Build.0 = Debug|Any CPU
+		{CF6E186C-FDD0-4558-B41A-ACC088393C56}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CF6E186C-FDD0-4558-B41A-ACC088393C56}.Debug|x86.Build.0 = Debug|Any CPU
+		{CF6E186C-FDD0-4558-B41A-ACC088393C56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF6E186C-FDD0-4558-B41A-ACC088393C56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF6E186C-FDD0-4558-B41A-ACC088393C56}.Release|x64.ActiveCfg = Release|Any CPU
+		{CF6E186C-FDD0-4558-B41A-ACC088393C56}.Release|x64.Build.0 = Release|Any CPU
+		{CF6E186C-FDD0-4558-B41A-ACC088393C56}.Release|x86.ActiveCfg = Release|Any CPU
+		{CF6E186C-FDD0-4558-B41A-ACC088393C56}.Release|x86.Build.0 = Release|Any CPU
 		{85EAF811-151B-4EDC-8625-445F33C62994}.Debug|Any CPU.ActiveCfg = Debug|Win32
 		{85EAF811-151B-4EDC-8625-445F33C62994}.Debug|Any CPU.Build.0 = Debug|Win32
 		{85EAF811-151B-4EDC-8625-445F33C62994}.Debug|x64.ActiveCfg = Debug|x64

@@ -43,7 +43,12 @@ public class CultureResourceTests : BaseCosturaTest
     [Fact]
     public void TemplateHasCorrectSymbols()
     {
-        using (ApprovalResults.ForScenario(nameof(CultureResourceTests)))
+#if DEBUG
+        var dataPoints =  "Debug";
+#else
+        var dataPoints = "Release";
+#endif
+        using (ApprovalResults.ForScenario(dataPoints))
         {
             var text = Ildasm.Decompile(TestResult.AssemblyPath, "Costura.AssemblyLoader");
             Approvals.Verify(text);

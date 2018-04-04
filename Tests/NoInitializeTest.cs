@@ -7,7 +7,7 @@ public class NoInitializeTest
     public void FailsToWeave()
     {
         Assert.Throws<WeavingException>(() =>
-                WeavingHelper.CreateIsolatedAssemblyCopy("AssemblyWithoutInitialize",
+                WeavingHelper.CreateIsolatedAssemblyCopy("AssemblyWithoutInitialize.dll",
                 "<Costura LoadAtModuleInit='false' />",
                 new[] { "AssemblyToReference.dll", "AssemblyToReferencePreEmbedded.dll", "ExeToReference.exe" },
                     "NoInitialize"));

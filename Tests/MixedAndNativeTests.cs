@@ -40,7 +40,12 @@ public class MixedAndNativeTests : BaseCosturaTest
     [Fact]
     public void TemplateHasCorrectSymbols()
     {
-        using (ApprovalResults.ForScenario(nameof(MixedAndNativeTests)))
+#if DEBUG
+        var dataPoints = "Debug";
+#else
+        var dataPoints = "Release";
+#endif
+        using (ApprovalResults.ForScenario(dataPoints))
         {
             var text = Ildasm.Decompile(testResult.AssemblyPath, "Costura.AssemblyLoader");
             Approvals.Verify(text);
