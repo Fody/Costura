@@ -11,29 +11,23 @@ public class ConfigFileFinder
         if (File.Exists(solutionConfigFilePath))
         {
             files.Add(solutionConfigFilePath);
-            logger.LogDebug($"Found path to weavers file '{solutionConfigFilePath}'.");
         }
 
         var projectConfigFilePath = Path.Combine(projectDirectory, "FodyWeavers.xml");
-        if (!File.Exists(projectConfigFilePath))
-        {
-            logger.LogDebug($@"Could not file a FodyWeavers.xml at the project level ({projectConfigFilePath}). Some project types do not support using NuGet to add content files e.g. netstandard projects. In these cases it is necessary to manually add a FodyWeavers.xml to the project. Example content:
-  <Weavers>
-    <WeaverName/>
-  </Weavers>
-  ");
-        }
-        else
+        if (File.Exists(projectConfigFilePath))
         {
             files.Add(projectConfigFilePath);
-            logger.LogDebug($"Found path to weavers file '{projectConfigFilePath}'.");
         }
 
         if (files.Count == 0)
         {
             // ReSharper disable once UnusedVariable
             var pathsSearched = string.Join("', '", solutionConfigFilePath, projectConfigFilePath);
-            throw new WeavingException($"Could not find path to weavers file. Searched '{pathsSearched}'.");
+            throw new WeavingException($@"Could not find path to weavers file. Searched '{pathsSearched}'. Some project types do not support using NuGet to add content files e.g. netstandard projects. In these cases it is necessary to manually add a FodyWeavers.xml to the project. Example content:
+  <Weavers>
+    <WeaverName/>
+  </Weavers>
+  ");
         }
         return files;
     }
