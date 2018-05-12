@@ -46,6 +46,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Costura", "Costura\Costura.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssemblyWithoutInitialize", "AssemblyWithoutInitialize\AssemblyWithoutInitialize.csproj", "{A9543041-50D4-45C1-8F4B-23F805634D42}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BD2A89FD-65C5-4DC9-B50F-049CA337FF20}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Costura.Shared\Costura.Shared.projitems*{547616e5-7248-43e6-b17a-68b99caa8af3}*SharedItemsImports = 13
