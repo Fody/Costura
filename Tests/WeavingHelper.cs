@@ -16,6 +16,7 @@ static class WeavingHelper
         };
         return weavingTask.ExecuteTestRun(assemblyPath,
             assemblyName: assemblyName,
-            ignoreCodes: new []{ "0x80131869" });
+            ignoreCodes: new []{ "0x80131869" },
+            runPeVerify:false);
     }
 }
