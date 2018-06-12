@@ -9,6 +9,9 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="MixedAndNativeTests.cs" Condition="$(Configuration) == 'Release'" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="ApprovalTests" Version="3.0.14" />
     <PackageReference Include="FodyHelpers" Version="3.0.4" />
     <PackageReference Include="xunit" Version="2.3.1" />
