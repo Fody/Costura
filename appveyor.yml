@@ -1,5 +1,5 @@
 version: 1.0.{build}
-image: Visual Studio 2017 Preview
+image: Visual Studio 2017
 configuration: Release
 platform: Any CPU
 install:
@@ -9,7 +9,7 @@ before_build:
 - ps: nuget restore
 test_script:
 - cmd: >-
-    %xunit20%\xunit.console Tests\bin\Release\net46\Tests.dll
+    %xunit20%\xunit.console Tests\bin\Release\net471\Tests.dll
 
 artifacts:
 - path: nugets\**\*.nupkg
