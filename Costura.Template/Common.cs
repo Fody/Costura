@@ -167,13 +167,13 @@ static class Common
         return null;
     }
 
-    static Stream LoadStream(string fullname)
+    static Stream LoadStream(string fullName)
     {
         var executingAssembly = Assembly.GetExecutingAssembly();
 
-        if (fullname.EndsWith(".compressed"))
+        if (fullName.EndsWith(".compressed"))
         {
-            using (var stream = executingAssembly.GetManifestResourceStream(fullname))
+            using (var stream = executingAssembly.GetManifestResourceStream(fullName))
             using (var compressStream = new DeflateStream(stream, CompressionMode.Decompress))
             {
                 var memStream = new MemoryStream();
@@ -183,7 +183,7 @@ static class Common
             }
         }
 
-        return executingAssembly.GetManifestResourceStream(fullname);
+        return executingAssembly.GetManifestResourceStream(fullName);
     }
 
     // Mutex code from http://stackoverflow.com/questions/229565/what-is-a-good-pattern-for-using-a-global-mutex-in-c

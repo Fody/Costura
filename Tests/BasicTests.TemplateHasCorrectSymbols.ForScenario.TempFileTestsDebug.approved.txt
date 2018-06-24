@@ -730,7 +730,7 @@
     IL_002e:  ret
   } 
   .method private hidebysig static class [mscorlib]System.IO.Stream 
-          LoadStream(string fullname) cil managed
+          LoadStream(string fullName) cil managed
   {
     // Code size       108 (0x6c)
     .maxstack  2

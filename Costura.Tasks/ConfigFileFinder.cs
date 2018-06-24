@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
+
 public class ConfigFileFinder
 {
     public static List<string> FindWeaverConfigs(string solutionDirectoryPath, string projectDirectory)

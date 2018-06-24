@@ -69,7 +69,7 @@ partial class ModuleWeaver
         var cctor = moduleClass.Methods.FirstOrDefault(x => x.Name == ".cctor");
         if (cctor == null)
         {
-            cctor = new MethodDefinition(".cctor", attributes, voidTypeReference);
+            cctor = new MethodDefinition(".cctor", attributes, TypeSystem.VoidReference);
             cctor.Body.Instructions.Add(Instruction.Create(OpCodes.Ret));
             moduleClass.Methods.Add(cctor);
         }

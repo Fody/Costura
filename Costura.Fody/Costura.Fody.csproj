@@ -4,7 +4,7 @@
     <TargetFrameworks>net46;netstandard2.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="FodyHelpers" Version="3.0.4" />
+    <PackageReference Include="FodyHelpers" Version="3.1.3" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(SolutionDir)Costura.Template\bin\$(ConfigurationName)\net46\Costura.Template.dll">
