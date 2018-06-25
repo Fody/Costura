@@ -31,14 +31,17 @@ partial class ModuleWeaver : IDisposable
 
             string resourceName;
 
-            if (dependency.EndsWith(".resources.dll",StringComparison.OrdinalIgnoreCase))
+            if (!config.IgnoreSatelliteAssemblies)
             {
-                resourceName = Embed($"costura.{Path.GetFileName(Path.GetDirectoryName(fullPath))}.", fullPath, !config.DisableCompression);
-                if (config.CreateTemporaryAssemblies)
+                if (dependency.EndsWith(".resources.dll",StringComparison.OrdinalIgnoreCase))
                 {
-                    checksums.Add(resourceName, CalculateChecksum(fullPath));
+                    resourceName = Embed($"costura.{Path.GetFileName(Path.GetDirectoryName(fullPath))}.", fullPath, !config.DisableCompression);
+                    if (config.CreateTemporaryAssemblies)
+                    {
+                        checksums.Add(resourceName, CalculateChecksum(fullPath));
+                    }
+                    continue;
                 }
-                continue;
             }
 
             resourceName = Embed("costura.", fullPath, !config.DisableCompression);

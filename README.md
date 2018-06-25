@@ -25,6 +25,7 @@ Embeds dependencies as resources.
   - [DisableCompression](#disablecompression)
   - [DisableCleanup](#disablecleanup)
   - [LoadAtModuleInit](#loadatmoduleinit)
+  - [IgnoreSatelliteAssemblies](#ignoresatelliteassemblies)
   - [ExcludeAssemblies](#excludeassemblies)
   - [IncludeAssemblies](#includeassemblies)
   - [Unmanaged32Assemblies & Unmanaged64Assemblies](#unmanaged32assemblies--unmanaged64assemblies)
@@ -121,6 +122,15 @@ Costura by default will load as part of the module initialization. This flag dis
 
     <Costura LoadAtModuleInit='false' />
 
+
+### IgnoreSatelliteAssemblies
+
+Costura will by default use assemblies with a name like 'resources.dll' as a satellite resource and prepend the output path. This flag disables that behaviour.
+
+*Defaults to `false`*
+
+    <Costura IgnoreSatelliteAssemblies='true' />
+	
 
 ### ExcludeAssemblies
 
