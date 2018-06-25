@@ -68,7 +68,14 @@ eg
 
 # Configuration Options [:link:](#contents)
 
-All config options are access by modifying the `Costura` node in FodyWeavers.xml
+All config options are access by modifying the `Costura` node in FodyWeavers.xml.
+
+Default FodyWeavers.xml:
+    
+    <?xml version="1.0" encoding="utf-8"?>
+    <Weavers>
+      <Costura />
+    </Weavers>
 
 
 ### CreateTemporaryAssemblies
@@ -236,6 +243,14 @@ To use, call `CosturaUtility.Initialize()` somewhere in your code, as early as p
 
         static void Main(string[] args) { ... }
     }
+    
+# Unit Testing
+
+Most unit test frameworks need the `.dll`s files in order to discover and perform the unit tests.  You may need to add Costura and a configuration like the below to your testing assembly. 
+
+    <Weavers>
+        <Costura ExcludeAssemblies='TargetExe|TargetExeTest' CreateTemporaryAssemblies='true' DisableCleanup='true'/>
+    </Weavers>
 
 
 # Icon [:link:](#contents)
