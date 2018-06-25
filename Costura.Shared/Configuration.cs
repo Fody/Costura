@@ -14,6 +14,7 @@ public class Configuration
         DisableCleanup = false;
         LoadAtModuleInit = true;
         CreateTemporaryAssemblies = false;
+        IgnoreSatelliteAssemblies = false;
         IncludeAssemblies = new List<string>();
         ExcludeAssemblies = new List<string>();
         Unmanaged32Assemblies = new List<string>();
@@ -35,6 +36,7 @@ public class Configuration
         DisableCleanup = ReadBool(config, "DisableCleanup", DisableCleanup);
         LoadAtModuleInit = ReadBool(config, "LoadAtModuleInit", LoadAtModuleInit);
         CreateTemporaryAssemblies = ReadBool(config, "CreateTemporaryAssemblies", CreateTemporaryAssemblies);
+        IgnoreSatelliteAssemblies = ReadBool(config, "IgnoreSatelliteAssemblies", IgnoreSatelliteAssemblies);
 
         ExcludeAssemblies = ReadList(config, "ExcludeAssemblies");
         IncludeAssemblies = ReadList(config, "IncludeAssemblies");
@@ -54,6 +56,7 @@ public class Configuration
     public bool DisableCleanup { get; }
     public bool LoadAtModuleInit { get; }
     public bool CreateTemporaryAssemblies { get; }
+    public bool IgnoreSatelliteAssemblies { get; }
     public List<string> IncludeAssemblies { get; }
     public List<string> ExcludeAssemblies { get; }
     public List<string> Unmanaged32Assemblies { get; }

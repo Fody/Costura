@@ -289,4 +289,14 @@ Bar
         Assert.Equal("Foo", config.PreloadOrder[0]);
         Assert.Equal("Bar", config.PreloadOrder[1]);
     }
+
+    [Fact]
+    public void IgnoreSatetlliteAssembliesAttribute()
+    {
+        var xElement = XElement.Parse(@"
+<Costura IgnoreSatelliteAssemblies='True'>
+</Costura>");
+        var config = new Configuration(xElement);
+        Assert.True(config.IgnoreSatelliteAssemblies);
+    }
 }
