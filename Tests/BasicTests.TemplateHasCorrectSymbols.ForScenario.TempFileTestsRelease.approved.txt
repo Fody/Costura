@@ -627,7 +627,7 @@
   {
   }
   .method private hidebysig static void  InternalPreloadUnmanagedLibraries(string tempBasePath,
-                                                                           class [mscorlib]System.Collections.Generic.IEnumerable`1<string> libs,
+                                                                           class [mscorlib]System.Collections.Generic.IList`1<string> libs,
                                                                            class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> checksums) cil managed
   {
     // Code size       246 (0xf6)
@@ -764,7 +764,7 @@
   } 
   .method private hidebysig static void  PreloadUnmanagedLibraries(string hash,
                                                                    string tempBasePath,
-                                                                   class [mscorlib]System.Collections.Generic.IEnumerable`1<string> libs,
+                                                                   class [mscorlib]System.Collections.Generic.IList`1<string> libs,
                                                                    class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> checksums) cil managed
   {
     // Code size       166 (0xa6)
@@ -847,7 +847,7 @@
         IL_0087:  ldarg.2
         IL_0088:  ldarg.3
         IL_0089:  call       void Costura.AssemblyLoader::InternalPreloadUnmanagedLibraries(string,
-                                                                                            class [mscorlib]System.Collections.Generic.IEnumerable`1<string>,
+                                                                                            class [mscorlib]System.Collections.Generic.IList`1<string>,
                                                                                             class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>)
         IL_008e:  leave.s    IL_00a5
       }  // end .try
@@ -915,7 +915,7 @@
     IL_0063:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
     IL_0068:  call       void Costura.AssemblyLoader::PreloadUnmanagedLibraries(string,
                                                                                 string,
-                                                                                class [mscorlib]System.Collections.Generic.IEnumerable`1<string>,
+                                                                                class [mscorlib]System.Collections.Generic.IList`1<string>,
                                                                                 class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>)
     IL_006d:  call       class [mscorlib]System.AppDomain [mscorlib]System.AppDomain::get_CurrentDomain()
     IL_0072:  ldnull

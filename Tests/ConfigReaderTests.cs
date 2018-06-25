@@ -290,7 +290,7 @@ Bar
     }
 
     [Fact]
-    public void IgnoreSatetlliteAssembliesAttribute()
+    public void IgnoreSatelliteAssembliesAttribute()
     {
         var xElement = XElement.Parse(@"
 <Costura IgnoreSatelliteAssemblies='True'>

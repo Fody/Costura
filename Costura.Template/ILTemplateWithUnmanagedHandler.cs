@@ -75,7 +75,7 @@ static class ILTemplateWithUnmanagedHandler
                 nullCache[e.Name] = true;
             }
 
-            // Handles retargeted assemblies like PCL
+            // Handles re-targeted assemblies like PCL
             if ((requestedAssemblyName.Flags & AssemblyNameFlags.Retargetable) != 0)
             {
                 assembly = Assembly.Load(requestedAssemblyName);

@@ -11,6 +11,7 @@ using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Text;
 using System.Threading;
+// ReSharper disable CommentTypo
 
 static class Common
 {
@@ -187,7 +188,7 @@ static class Common
     }
 
     // Mutex code from http://stackoverflow.com/questions/229565/what-is-a-good-pattern-for-using-a-global-mutex-in-c
-    public static void PreloadUnmanagedLibraries(string hash, string tempBasePath, IEnumerable<string> libs, Dictionary<string, string> checksums)
+    public static void PreloadUnmanagedLibraries(string hash, string tempBasePath, IList<string> libs, Dictionary<string, string> checksums)
     {
         var mutexId = $"Global\\Costura{hash}";
 
@@ -224,7 +225,7 @@ static class Common
         }
     }
 
-    static void InternalPreloadUnmanagedLibraries(string tempBasePath, IEnumerable<string> libs, Dictionary<string, string> checksums)
+    static void InternalPreloadUnmanagedLibraries(string tempBasePath, IList<string> libs, Dictionary<string, string> checksums)
     {
         string name;
 
