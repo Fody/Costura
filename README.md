@@ -68,7 +68,7 @@ eg
 
 # Configuration Options [:link:](#contents)
 
-All config options are access by modifying the `Costura` node in FodyWeavers.xml.
+All config options are accessed by modifying the `Costura` node in FodyWeavers.xml.
 
 Default FodyWeavers.xml:
     
