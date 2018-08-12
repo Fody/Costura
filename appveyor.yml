@@ -1,15 +1,9 @@
 version: 1.0.{build}
 image: Visual Studio 2017
-configuration: Release
-platform: Any CPU
-install:
-- cmd: >-
-    appveyor downloadfile https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
-before_build:
-- ps: nuget restore
-test_script:
-- cmd: >-
-    %xunit20%\xunit.console Tests\bin\Release\net471\Tests.dll
-
+build_script:
+- cmd: dotnet build --configuration Release
+test:
+  assemblies:
+    - '**\*Tests.dll'
 artifacts:
 - path: nugets\**\*.nupkg
