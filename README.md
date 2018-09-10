@@ -16,10 +16,10 @@ Embeds dependencies as resources.
 
 # Contents
 
-- [How it works](#how-it-works-link)
+- [How it works](#how-it-works)
   - [Merge assemblies as embedded resources](#merge-assemblies-as-embedded-resources)
   - [Details](defails)
-- [Configuration Options](#configuration-options-link)
+- [Configuration Options](#configuration-options)
   - [CreateTemporaryAssemblies](#createtemporaryassemblies)
   - [IncludeDebugSymbols](#includedebugsymbols)
   - [DisableCompression](#disablecompression)
@@ -30,12 +30,12 @@ Embeds dependencies as resources.
   - [IncludeAssemblies](#includeassemblies)
   - [Unmanaged32Assemblies & Unmanaged64Assemblies](#unmanaged32assemblies--unmanaged64assemblies)
   - [Native Libraries and PreloadOrder](#native-libraries-and-preloadorder)
-- [CosturaUtility](#costurautility-link)
-- [Icon](#icon-link)
-- [Contributors](#contributors-link)
+- [CosturaUtility](#costurautility)
+- [Icon](#icon)
+- [Contributors](#contributors)
 
 
-# How it works [:link:](#contents)
+# How it works
 
 
 ## Merge assemblies as embedded resources
@@ -66,7 +66,7 @@ eg
   - [ILTemplateWithTempAssembly.cs](https://github.com/Fody/Costura/blob/master/src/Costura.Template/ILTemplateWithTempAssembly.cs)
 
 
-# Configuration Options [:link:](#contents)
+# Configuration Options
 
 All config options are accessed by modifying the `Costura` node in FodyWeavers.xml.
 
@@ -230,7 +230,7 @@ Or as a attribute with items delimited by a pipe `|`.
     <Costura PreloadOrder='Foo|Bar' />
 
 
-# CosturaUtility [:link:](#contents)
+# CosturaUtility
 
 `CosturaUtility` is a class that gives you access to initialize the Costura system manually in your own code. This is mainly for scenarios where the module initializer doesn't work, such as libraries and Mono.
 
@@ -253,12 +253,12 @@ Most unit test frameworks need the `.dll`s files in order to discover and perfor
     </Weavers>
 
 
-# Icon [:link:](#contents)
+# Icon
 
 <a href="http://thenounproject.com/noun/merge/#icon-No256" target="_blank">Merge</a>  from The Noun Project
 
 
-# Contributors [:link:](#contents)
+# Contributors
 
  * [Cameron MacFarland](https://github.com/distantcam)
  * [Simon Cropp](https://github.com/SimonCropp)
