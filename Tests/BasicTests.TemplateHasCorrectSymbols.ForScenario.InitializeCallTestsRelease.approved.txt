@@ -242,14 +242,14 @@
     IL_001a:  callvirt   instance string [mscorlib]System.Globalization.CultureInfo::get_Name()
     IL_001f:  call       bool [mscorlib]System.String::IsNullOrEmpty(string)
     IL_0024:  brtrue.s   IL_003d
-    IL_0026:  ldstr      "{0}.{1}"
-    IL_002b:  ldarg.2
-    IL_002c:  callvirt   instance class [mscorlib]System.Globalization.CultureInfo [mscorlib]System.Reflection.AssemblyName::get_CultureInfo()
-    IL_0031:  callvirt   instance string [mscorlib]System.Globalization.CultureInfo::get_Name()
+    IL_0026:  ldarg.2
+    IL_0027:  callvirt   instance class [mscorlib]System.Globalization.CultureInfo [mscorlib]System.Reflection.AssemblyName::get_CultureInfo()
+    IL_002c:  callvirt   instance string [mscorlib]System.Globalization.CultureInfo::get_Name()
+    IL_0031:  ldstr      "."
     IL_0036:  ldloc.0
-    IL_0037:  call       string [mscorlib]System.String::Format(string,
-                                                                object,
-                                                                object)
+    IL_0037:  call       string [mscorlib]System.String::Concat(string,
+                                                                string,
+                                                                string)
     IL_003c:  stloc.0
     IL_003d:  ldarg.0
     IL_003e:  ldloc.0
