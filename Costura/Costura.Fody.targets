@@ -22,7 +22,7 @@
 
     <Costura.Tasks.FilterReferenceCopyLocalPaths
       ProjectDirectory="$(ProjectDir)"
-      SolutionDir="$(FodySolutionDir)"
+      SolutionDir="$(SolutionDir)"
       References="@(ReferencePath)"
       ReferenceCopyLocalPaths="@(ReferenceCopyLocalPaths)"
     >

@@ -17,7 +17,6 @@ namespace Costura.Tasks
         [Required]
         public ITaskItem[] References { get; set; }
 
-        [Required]
         public string SolutionDir { get; set; }
 
         [Required]
@@ -28,6 +27,7 @@ namespace Costura.Tasks
 
         public override bool Execute()
         {
+            SolutionDir = SolutionDirectoryFinder.Find(SolutionDir, ProjectDirectory);
             try
             {
                 var configFiles = ConfigFileFinder.FindWeaverConfigs(SolutionDir, ProjectDirectory);
