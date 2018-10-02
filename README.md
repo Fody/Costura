@@ -10,32 +10,6 @@ Embeds dependencies as resources.
 [![Build Status](https://ci.appveyor.com/api/projects/status/62ur9tuwt69xap7t?svg=true)](https://ci.appveyor.com/project/Fody/costura)
 
 
-### To Install
-
-    PM> Install-Package Costura.Fody
-
-
-## Contents
-
-- [How it works](#how-it-works)
-  - [Merge assemblies as embedded resources](#merge-assemblies-as-embedded-resources)
-  - [Details](defails)
-- [Configuration Options](#configuration-options)
-  - [CreateTemporaryAssemblies](#createtemporaryassemblies)
-  - [IncludeDebugSymbols](#includedebugsymbols)
-  - [DisableCompression](#disablecompression)
-  - [DisableCleanup](#disablecleanup)
-  - [LoadAtModuleInit](#loadatmoduleinit)
-  - [IgnoreSatelliteAssemblies](#ignoresatelliteassemblies)
-  - [ExcludeAssemblies](#excludeassemblies)
-  - [IncludeAssemblies](#includeassemblies)
-  - [Unmanaged32Assemblies & Unmanaged64Assemblies](#unmanaged32assemblies--unmanaged64assemblies)
-  - [Native Libraries and PreloadOrder](#native-libraries-and-preloadorder)
-- [CosturaUtility](#costurautility)
-- [Icon](#icon)
-- [Contributors](#contributors)
-
-
 ### NuGet installation
 
 Install the [Costura.Fody NuGet package](https://nuget.org/packages/Costura.Fody/) and update the [Fody NuGet package](https://nuget.org/packages/Fody/):
