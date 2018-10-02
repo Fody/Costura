@@ -9,12 +9,13 @@ Embeds dependencies as resources.
 [![NuGet Status](http://img.shields.io/nuget/v/Costura.Fody.svg?style=flat)](https://www.nuget.org/packages/Costura.Fody/)
 [![Build Status](https://ci.appveyor.com/api/projects/status/62ur9tuwt69xap7t?svg=true)](https://ci.appveyor.com/project/Fody/costura)
 
+
 ### To Install
 
     PM> Install-Package Costura.Fody
 
 
-# Contents
+## Contents
 
 - [How it works](#how-it-works)
   - [Merge assemblies as embedded resources](#merge-assemblies-as-embedded-resources)
@@ -35,10 +36,34 @@ Embeds dependencies as resources.
 - [Contributors](#contributors)
 
 
-# How it works
+### NuGet installation
+
+Install the [Costura.Fody NuGet package](https://nuget.org/packages/Costura.Fody/) and update the [Fody NuGet package](https://nuget.org/packages/Fody/):
+
+```
+PM> Install-Package Costura.Fody
+PM> Update-Package Fody
+```
+
+The `Update-Package Fody` is required since NuGet always defaults to the oldest, and most buggy, version of any dependency.
 
 
-## Merge assemblies as embedded resources
+### Add to FodyWeavers.xml
+
+Add `<Costura/>` to [FodyWeavers.xml](https://github.com/Fody/Fody#add-fodyweaversxml)
+
+```xml
+<?xml version="1.0" encoding="utf-8" ?>
+<Weavers>
+  <Costura/>
+</Weavers>
+```
+
+
+## How it works
+
+
+### Merge assemblies as embedded resources
 
 This approach uses a combination of two methods
 
@@ -46,7 +71,7 @@ This approach uses a combination of two methods
  * Einar Egilsson's suggestion [using cecil to create module initializers](http://tech.einaregilsson.com/2009/12/16/module-initializers-in-csharp/)
 
 
-## Details
+### Details
 
 This Task performs the following changes
 
@@ -55,10 +80,12 @@ This Task performs the following changes
 
 eg 
 
-    static <Module>()
-    {
-        ILTemplate.Attach();
-    }
+```csharp
+static <Module>()
+{
+    ILTemplate.Attach();
+}
+```
 
  * Injects the following class into the target assembly. This means if an assembly load fails it will be loaded from the embedded resources.
 
@@ -66,16 +93,17 @@ eg
   - [ILTemplateWithTempAssembly.cs](https://github.com/Fody/Costura/blob/master/Costura.Template/ILTemplateWithTempAssembly.cs)
 
 
-# Configuration Options
+## Configuration Options
 
 All config options are accessed by modifying the `Costura` node in FodyWeavers.xml.
 
 Default FodyWeavers.xml:
-    
-    <?xml version="1.0" encoding="utf-8"?>
-    <Weavers>
-      <Costura />
-    </Weavers>
+
+```xml
+<Weavers>
+  <Costura />
+</Weavers>
+```
 
 
 ### CreateTemporaryAssemblies
@@ -84,7 +112,9 @@ This will copy embedded files to disk before loading them into memory. This is h
 
 *Defaults to `false`*
 
-    <Costura CreateTemporaryAssemblies='true' />
+```xml
+<Costura CreateTemporaryAssemblies='true' />
+```
 
 
 ### IncludeDebugSymbols
@@ -93,7 +123,9 @@ Controls if .pdbs for reference assemblies are also embedded.
 
 *Defaults to `true`*
 
-    <Costura IncludeDebugSymbols='false' />
+```xml
+<Costura IncludeDebugSymbols='false' />
+```
 
 
 ### DisableCompression
@@ -102,7 +134,10 @@ Embedded assemblies are compressed by default, and uncompressed when they are lo
 
 *Defaults to `false`*
 
-    <Costura DisableCompression='true' />
+
+```xml
+<Costura DisableCompression='true' />
+```
 
 
 ### DisableCleanup
@@ -111,7 +146,9 @@ As part of Costura, embedded assemblies are no longer included as part of the bu
 
 *Defaults to `false`*
 
-    <Costura DisableCleanup='true' />
+```xml
+<Costura DisableCleanup='true' />
+```
 
 
 ### LoadAtModuleInit
@@ -120,7 +157,9 @@ Costura by default will load as part of the module initialization. This flag dis
 
 *Defaults to `true`*
 
-    <Costura LoadAtModuleInit='false' />
+```xml
+<Costura LoadAtModuleInit='false' />
+```
 
 
 ### IgnoreSatelliteAssemblies
@@ -129,8 +168,10 @@ Costura will by default use assemblies with a name like 'resources.dll' as a sat
 
 *Defaults to `false`*
 
-    <Costura IgnoreSatelliteAssemblies='true' />
-	
+
+```xml
+<Costura IgnoreSatelliteAssemblies='true' />
+```
 
 ### ExcludeAssemblies
 
@@ -144,16 +185,20 @@ Can take two forms.
 
 As an element with items delimited by a newline.
 
-    <Costura>
-        <ExcludeAssemblies>
-            Foo
-            Bar
-        </ExcludeAssemblies>
-    </Costura>
-    
+```xml
+<Costura>
+  <ExcludeAssemblies>
+    Foo
+    Bar
+  </ExcludeAssemblies>
+</Costura>
+```
+
 Or as an attribute with items delimited by a pipe `|`.
 
-    <Costura ExcludeAssemblies='Foo|Bar' />
+```xml
+<Costura ExcludeAssemblies='Foo|Bar' />
+```
 
 
 ### IncludeAssemblies
@@ -168,16 +213,20 @@ Can take two forms.
 
 As an element with items delimited by a newline.
 
-    <Costura>
-        <IncludeAssemblies>
-            Foo
-            Bar
-        </IncludeAssemblies>
-    </Costura>
+```xml
+<Costura>
+  <IncludeAssemblies>
+    Foo
+    Bar
+  </IncludeAssemblies>
+</Costura>
+```
 
 Or as an attribute with items delimited by a pipe `|`.
 
-    <Costura IncludeAssemblies='Foo|Bar' />
+```xml
+<Costura IncludeAssemblies='Foo|Bar' />
+```
 
 
 ### Unmanaged32Assemblies & Unmanaged64Assemblies
@@ -192,22 +241,27 @@ Can take two forms.
 
 As an element with items delimited by a newline.
 
-    <Costura>
-        <Unmanaged32Assemblies>
-            Foo32
-            Bar32
-        </Unmanaged32Assemblies>
-        <Unmanaged64Assemblies>
-            Foo64
-            Bar64
-        </Unmanaged64Assemblies>
-    </Costura>
-    
+```xml
+<Costura>
+  <Unmanaged32Assemblies>
+    Foo32
+    Bar32
+  </Unmanaged32Assemblies>
+  <Unmanaged64Assemblies>
+    Foo64
+    Bar64
+  </Unmanaged64Assemblies>
+</Costura>
+```
+
+
 Or as a attribute with items delimited by a pipe `|`.
 
-    <Costura 
-        Unmanaged32Assemblies='Foo32|Bar32' 
-        Unmanaged64Assemblies='Foo64|Bar64' />
+```xml
+<Costura
+    Unmanaged32Assemblies='Foo32|Bar32' 
+    Unmanaged64Assemblies='Foo64|Bar64' />
+```
 
 
 ### Native Libraries and PreloadOrder
@@ -218,47 +272,52 @@ Optionally you can also specify the order that preloaded libraries are loaded. W
 
 To specify the order of preloaded assemblies add a `PreloadOrder` element to the config.
 
-    <Costura>
-	    <PreloadOrder>
-		    Foo
-		    Bar
-		</PreloadOrder>
-	</Costura>
+```xml
+<Costura>
+  <PreloadOrder>
+    Foo
+    Bar
+  </PreloadOrder>
+</Costura>
+```
 
 Or as a attribute with items delimited by a pipe `|`.
 
-    <Costura PreloadOrder='Foo|Bar' />
+```xml
+<Costura PreloadOrder='Foo|Bar' />
+```
 
 
-# CosturaUtility
+## CosturaUtility
 
 `CosturaUtility` is a class that gives you access to initialize the Costura system manually in your own code. This is mainly for scenarios where the module initializer doesn't work, such as libraries and Mono.
 
 To use, call `CosturaUtility.Initialize()` somewhere in your code, as early as possible.
 
-    class Program {
-        static Program() {
-            CosturaUtility.Initialize();
-        }
-
-        static void Main(string[] args) { ... }
+```csharp
+class Program
+{
+    static Program()
+    {
+        CosturaUtility.Initialize();
     }
-    
-# Unit Testing
+
+    static void Main(string[] args) { ... }
+}
+```
+
+
+## Unit Testing
 
 Most unit test frameworks need the `.dll`s files in order to discover and perform the unit tests.  You may need to add Costura and a configuration like the below to your testing assembly. 
 
-    <Weavers>
-        <Costura ExcludeAssemblies='TargetExe|TargetExeTest' CreateTemporaryAssemblies='true' DisableCleanup='true'/>
-    </Weavers>
+```xml
+<Weavers>
+    <Costura ExcludeAssemblies='TargetExe|TargetExeTest' CreateTemporaryAssemblies='true' DisableCleanup='true'/>
+</Weavers>
+```
 
 
-# Icon
+## Icon
 
 <a href="http://thenounproject.com/noun/merge/#icon-No256" target="_blank">Merge</a>  from The Noun Project
-
-
-# Contributors
-
- * [Cameron MacFarland](https://github.com/distantcam)
- * [Simon Cropp](https://github.com/SimonCropp)
