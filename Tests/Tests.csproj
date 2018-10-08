@@ -13,7 +13,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ApprovalTests" Version="3.0.14" />
-    <PackageReference Include="FodyHelpers" Version="3.2.6" />
+    <PackageReference Include="FodyHelpers" Version="3.2.9" />
     <PackageReference Include="xunit" Version="2.4.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
     <ProjectReference Include="..\AssemblyToProcess\AssemblyToProcess.csproj" />
