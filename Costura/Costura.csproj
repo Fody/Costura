@@ -10,8 +10,8 @@
     <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);IncludeFilterTaskFiles</TargetsForTfmSpecificContentInPackage>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Fody" Version="3.2.9" PrivateAssets="None" />
-    <PackageReference Include="FodyPackaging" Version="3.2.9" PrivateAssets="All" />
+    <PackageReference Include="Fody" Version="3.2.10" PrivateAssets="None" />
+    <PackageReference Include="FodyPackaging" Version="3.2.10" PrivateAssets="All" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Costura.Fody.targets">
