@@ -4,7 +4,7 @@
     <TargetFramework>net46</TargetFramework>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(SolutionDir)key.snk</AssemblyOriginatorKeyFile>
-    <Authors>Simon Cropp, Cameron MacFarland</Authors>
+    <Authors>https://github.com/Fody/Costura/graphs/contributors</Authors>
     <Description>Fody add-in for embedding references as resources.</Description>
     <PackageTags>ILMerge, ILWeaving, Embed, Resource, Fody, Cecil</PackageTags>
   </PropertyGroup>
