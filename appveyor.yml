@@ -1,7 +1,9 @@
 version: 1.0.{build}
 image: Visual Studio 2017
-build_script:
-- cmd: dotnet build --configuration Release
+before_build:
+- cmd: nuget restore
+build:
+  verbosity: minimal
 test:
   assemblies:
     - '**\*Tests.dll'
