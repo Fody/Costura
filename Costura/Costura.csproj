@@ -7,31 +7,9 @@
     <Authors>Simon Cropp, Cameron MacFarland</Authors>
     <Description>Fody add-in for embedding references as resources.</Description>
     <PackageTags>ILMerge, ILWeaving, Embed, Resource, Fody, Cecil</PackageTags>
-    <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);IncludeFilterTaskFiles</TargetsForTfmSpecificContentInPackage>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Fody" Version="3.2.10" PrivateAssets="None" />
     <PackageReference Include="FodyPackaging" Version="3.2.10" PrivateAssets="All" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="Costura.Fody.targets">
-      <Pack>true</Pack>
-      <PackagePath>build\</PackagePath>
-    </Content>
-  </ItemGroup>
-  <Target Name="IncludeFilterTaskFiles">
-    <ItemGroup>
-      <NetClassicTaskFilesToInclude Include="..\Costura.Tasks\bin\$(Configuration)\net46\Costura.Tasks.dll" />
-      <NetClassicTaskFilesToInclude Include="..\Costura.Tasks\bin\$(Configuration)\net46\Costura.Tasks.pdb" />
-      <NetStandardTaskFilesToInclude Include="..\Costura.Tasks\bin\$(Configuration)\netstandard2.0\Costura.Tasks.dll" />
-      <NetStandardTaskFilesToInclude Include="..\Costura.Tasks\bin\$(Configuration)\netstandard2.0\Costura.Tasks.pdb" />
-    </ItemGroup>
-    <CreateItem Include="@(NetClassicTaskFilesToInclude)" AdditionalMetadata="PackagePath=netclassictask">
-      <Output TaskParameter="Include" ItemName="TfmSpecificPackageFile" />
-    </CreateItem>
-    <CreateItem Include="@(NetStandardTaskFilesToInclude)" AdditionalMetadata="PackagePath=netstandardtask">
-      <Output TaskParameter="Include" ItemName="TfmSpecificPackageFile" />
-    </CreateItem>
-  </Target>
-
 </Project>

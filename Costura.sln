@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Costura.Template", "Costura
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Costura.Fody", "Costura.Fody\Costura.Fody.csproj", "{E5622B74-B6C6-46A5-9207-0872533E6C2F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Costura.Tasks", "Costura.Tasks\Costura.Tasks.csproj", "{D16DEC80-99D2-4EF3-9CEB-0FF7381CBB13}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestAssemblies", "TestAssemblies", "{434F54AD-0845-4F63-ACB2-162105A1A741}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssemblyToReference", "AssemblyToReference\AssemblyToReference.csproj", "{161FFDEB-306D-4C68-9645-F4006A73F607}"
@@ -34,7 +32,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Costura", "Costura\Costura.csproj", "{6170BDB9-A44B-46AD-8E81-3BCEAB11813F}"
 	ProjectSection(ProjectDependencies) = postProject
 		{E5622B74-B6C6-46A5-9207-0872533E6C2F} = {E5622B74-B6C6-46A5-9207-0872533E6C2F}
-		{D16DEC80-99D2-4EF3-9CEB-0FF7381CBB13} = {D16DEC80-99D2-4EF3-9CEB-0FF7381CBB13}
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssemblyWithoutInitialize", "AssemblyWithoutInitialize\AssemblyWithoutInitialize.csproj", "{A9543041-50D4-45C1-8F4B-23F805634D42}"
@@ -44,12 +41,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests", "IntegrationTests\IntegrationTests.csproj", "{C199705D-3A21-422A-B2D5-F89A4DA7901C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationTests", "IntegrationTests\IntegrationTests.csproj", "{C199705D-3A21-422A-B2D5-F89A4DA7901C}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Costura.Shared\Costura.Shared.projitems*{547616e5-7248-43e6-b17a-68b99caa8af3}*SharedItemsImports = 13
-		Costura.Shared\Costura.Shared.projitems*{d16dec80-99d2-4ef3-9ceb-0ff7381cbb13}*SharedItemsImports = 4
 		Costura.Shared\Costura.Shared.projitems*{e5622b74-b6c6-46a5-9207-0872533e6c2f}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -85,18 +81,6 @@ Global
 		{E5622B74-B6C6-46A5-9207-0872533E6C2F}.Release|x64.Build.0 = Release|Any CPU
 		{E5622B74-B6C6-46A5-9207-0872533E6C2F}.Release|x86.ActiveCfg = Release|Any CPU
 		{E5622B74-B6C6-46A5-9207-0872533E6C2F}.Release|x86.Build.0 = Release|Any CPU
-		{D16DEC80-99D2-4EF3-9CEB-0FF7381CBB13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D16DEC80-99D2-4EF3-9CEB-0FF7381CBB13}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D16DEC80-99D2-4EF3-9CEB-0FF7381CBB13}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{D16DEC80-99D2-4EF3-9CEB-0FF7381CBB13}.Debug|x64.Build.0 = Debug|Any CPU
-		{D16DEC80-99D2-4EF3-9CEB-0FF7381CBB13}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{D16DEC80-99D2-4EF3-9CEB-0FF7381CBB13}.Debug|x86.Build.0 = Debug|Any CPU
-		{D16DEC80-99D2-4EF3-9CEB-0FF7381CBB13}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D16DEC80-99D2-4EF3-9CEB-0FF7381CBB13}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D16DEC80-99D2-4EF3-9CEB-0FF7381CBB13}.Release|x64.ActiveCfg = Release|Any CPU
-		{D16DEC80-99D2-4EF3-9CEB-0FF7381CBB13}.Release|x64.Build.0 = Release|Any CPU
-		{D16DEC80-99D2-4EF3-9CEB-0FF7381CBB13}.Release|x86.ActiveCfg = Release|Any CPU
-		{D16DEC80-99D2-4EF3-9CEB-0FF7381CBB13}.Release|x86.Build.0 = Release|Any CPU
 		{161FFDEB-306D-4C68-9645-F4006A73F607}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{161FFDEB-306D-4C68-9645-F4006A73F607}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{161FFDEB-306D-4C68-9645-F4006A73F607}.Debug|x64.ActiveCfg = Debug|Any CPU

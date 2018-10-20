@@ -8,7 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Costura.Tasks\Costura.Tasks.csproj" Condition="'$(TargetFramework)'=='dummy'" />
     <ProjectReference Include="..\Costura.Fody\Costura.Fody.csproj" Condition="'$(TargetFramework)'=='dummy'" />
 
     <PackageReference Include="Fody" Version="3.2.10" />
@@ -18,14 +17,8 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
   </ItemGroup>
 
-  <PropertyGroup>
-    <CosturaPath>$(SolutionDir)Costura.Tasks\bin\$(Configuration)\$(ReferenceFramework)</CosturaPath>
-  </PropertyGroup>
-
   <ItemGroup>
     <WeaverFiles Include="$(SolutionDir)Costura.Fody\bin\$(Configuration)\$(ReferenceFramework)\Costura.Fody.dll" />
   </ItemGroup>
-
-  <Import Project="..\Costura\Costura.Fody.targets" />
 
 </Project>
