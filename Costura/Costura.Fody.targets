@@ -4,12 +4,12 @@
   <Choose>
     <When Condition="'$(MSBuildRuntimeType)'=='Core'">
       <PropertyGroup>
-        <CosturaPath>$(MSBuildThisFileDirectory)..\netstandardtask</CosturaPath>
+        <CosturaPath Condition="'$(CosturaPath)'==''">$(MSBuildThisFileDirectory)..\netstandardtask</CosturaPath>
       </PropertyGroup>
     </When>
     <Otherwise>
       <PropertyGroup>
-        <CosturaPath>$(MSBuildThisFileDirectory)..\netclassictask</CosturaPath>
+        <CosturaPath Condition="'$(CosturaPath)'==''">$(MSBuildThisFileDirectory)..\netclassictask</CosturaPath>
       </PropertyGroup>
     </Otherwise>
   </Choose>
