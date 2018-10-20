@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
+
 using ApprovalTests;
 using ApprovalTests.Namers;
 using Xunit;
@@ -62,14 +64,21 @@ public abstract class BasicTests : BaseCosturaTest
     public void TemplateHasCorrectSymbols()
     {
 #if DEBUG
-        var dataPoints = GetType().Name+"Debug";
+        var dataPoints = GetType().Name + "Debug";
 #else
         var dataPoints = GetType().Name + "Release";
 #endif
         using (ApprovalResults.ForScenario(dataPoints))
         {
             var text = Ildasm.Decompile(TestResult.AssemblyPath, "Costura.AssemblyLoader");
-            Approvals.Verify(text);
+            Approvals.Verify(text, TrimLineEndings);
         }
+    }
+
+    private static string TrimLineEndings(string text)
+    {
+        var lines = text.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+
+        return string.Join(Environment.NewLine, lines.Select(line => line.TrimEnd()));
     }
 }
