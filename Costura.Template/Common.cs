@@ -131,10 +131,10 @@ static class Common
     {
         var name = requestedAssemblyName.Name.ToLowerInvariant();
 
-	    if (requestedAssemblyName.CultureInfo != null && !string.IsNullOrEmpty(requestedAssemblyName.CultureInfo.Name))
-	    {
-		    name = $"{requestedAssemblyName.CultureInfo.Name}.{name}";
-	    }
+        if (requestedAssemblyName.CultureInfo != null && !string.IsNullOrEmpty(requestedAssemblyName.CultureInfo.Name))
+        {
+            name = $"{requestedAssemblyName.CultureInfo.Name}.{name}";
+        }
 
         byte[] assemblyData;
         using (var assemblyStream = LoadStream(assemblyNames, name))

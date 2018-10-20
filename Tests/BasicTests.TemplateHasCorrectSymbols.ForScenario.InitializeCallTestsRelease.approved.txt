@@ -6,7 +6,7 @@
   .field private static class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> assemblyNames
   .field private static class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> symbolNames
   .field private static int32 isAttached
-  .method private hidebysig static string 
+  .method private hidebysig static string
           CultureToString(class [mscorlib]System.Globalization.CultureInfo culture) cil managed
   {
     // Code size       16 (0x10)
@@ -18,8 +18,8 @@
     IL_0009:  ldarg.0
     IL_000a:  callvirt   instance string [mscorlib]System.Globalization.CultureInfo::get_Name()
     IL_000f:  ret
-  } 
-  .method private hidebysig static class [mscorlib]System.Reflection.Assembly 
+  }
+  .method private hidebysig static class [mscorlib]System.Reflection.Assembly
           ReadExistingAssembly(class [mscorlib]System.Reflection.AssemblyName name) cil managed
   {
     // Code size       90 (0x5a)
@@ -74,7 +74,7 @@
     IL_0056:  blt.s      IL_000f
     IL_0058:  ldnull
     IL_0059:  ret
-  } 
+  }
   .method private hidebysig static void  CopyTo(class [mscorlib]System.IO.Stream source,
                                                 class [mscorlib]System.IO.Stream destination) cil managed
   {
@@ -106,8 +106,8 @@
     IL_0022:  stloc.1
     IL_0023:  brtrue.s   IL_000d
     IL_0025:  ret
-  } 
-  .method private hidebysig static class [mscorlib]System.IO.Stream 
+  }
+  .method private hidebysig static class [mscorlib]System.IO.Stream
           LoadStream(string fullName) cil managed
   {
     // Code size       92 (0x5c)
@@ -173,8 +173,8 @@
     IL_0058:  ret
     IL_0059:  ldloc.s    V_4
     IL_005b:  ret
-  } 
-  .method private hidebysig static class [mscorlib]System.IO.Stream 
+  }
+  .method private hidebysig static class [mscorlib]System.IO.Stream
           LoadStream(class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> resourceNames,
                      string name) cil managed
   {
@@ -192,8 +192,8 @@
     IL_0011:  ret
     IL_0012:  ldnull
     IL_0013:  ret
-  } 
-  .method private hidebysig static uint8[] 
+  }
+  .method private hidebysig static uint8[]
           ReadStream(class [mscorlib]System.IO.Stream 'stream') cil managed
   {
     // Code size       27 (0x1b)
@@ -216,8 +216,8 @@
     IL_0018:  pop
     IL_0019:  ldloc.0
     IL_001a:  ret
-  } 
-  .method private hidebysig static class [mscorlib]System.Reflection.Assembly 
+  }
+  .method private hidebysig static class [mscorlib]System.Reflection.Assembly
           ReadFromEmbeddedResources(class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> assemblyNames,
                                     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> symbolNames,
                                     class [mscorlib]System.Reflection.AssemblyName requestedAssemblyName) cil managed
@@ -309,8 +309,8 @@
     IL_0094:  ret
     IL_0095:  ldloc.3
     IL_0096:  ret
-  } 
-  .method public hidebysig static class [mscorlib]System.Reflection.Assembly 
+  }
+  .method public hidebysig static class [mscorlib]System.Reflection.Assembly
           ResolveAssembly(object sender,
                           class [mscorlib]System.ResolveEventArgs e) cil managed
   {
@@ -413,8 +413,8 @@
     IL_00b1:  ret
     IL_00b2:  ldloc.s    V_4
     IL_00b4:  ret
-  } 
-  .method private hidebysig specialname rtspecialname static 
+  }
+  .method private hidebysig specialname rtspecialname static
           void  .cctor() cil managed
   {
     // Code size       161 (0xa1)
@@ -460,7 +460,7 @@
     IL_009b:  callvirt   instance void class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
                                                                                                                    !1)
     IL_00a0:  ret
-  } 
+  }
   .method public hidebysig static void  Attach() cil managed
   {
     // Code size       38 (0x26)
@@ -480,5 +480,5 @@
                                                                                    native int)
     IL_0020:  callvirt   instance void [mscorlib]System.AppDomain::add_AssemblyResolve(class [mscorlib]System.ResolveEventHandler)
     IL_0025:  ret
-  } 
+  }
 }

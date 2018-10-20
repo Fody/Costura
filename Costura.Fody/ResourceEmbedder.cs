@@ -229,6 +229,8 @@ partial class ModuleWeaver : IDisposable
         var resource = new EmbeddedResource(resourceName, ManifestResourceAttributes.Private, memoryStream);
         ModuleDefinition.Resources.Add(resource);
 
+        ReferenceCopyLocalPaths.RemoveAll(item => string.Equals(item, fullPath, StringComparison.OrdinalIgnoreCase));
+
         return resourceName;
     }
 
