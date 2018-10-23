@@ -9,7 +9,7 @@
     <PackageTags>ILMerge, ILWeaving, Embed, Resource, Fody, Cecil</PackageTags>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Fody" Version="3.2.12" PrivateAssets="None" />
+    <PackageReference Include="Fody" Version="3.2.13" PrivateAssets="None" />
     <PackageReference Include="FodyPackaging" Version="3.2.13" PrivateAssets="All" />
   </ItemGroup>
 </Project>
