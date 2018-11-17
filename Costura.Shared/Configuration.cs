@@ -71,7 +71,7 @@ public class Configuration
         {
             try
             {
-                return XmlConvert.ToBoolean(attribute.Value);
+                return XmlConvert.ToBoolean(attribute.Value.ToLowerInvariant());
             }
             catch
             {
