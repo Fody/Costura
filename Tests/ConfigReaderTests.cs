@@ -54,6 +54,14 @@ public class ConfigReaderTests
     }
 
     [Fact]
+    public void False0IncludeDebugSymbols()
+    {
+        var xElement = XElement.Parse("<Costura IncludeDebugSymbols='0'/>");
+        var config = new Configuration(xElement);
+        Assert.False(config.IncludeDebugSymbols);
+    }
+
+    [Fact]
     public void TrueDisableCompression()
     {
         var xElement = XElement.Parse("<Costura DisableCompression='true'/>");
@@ -62,9 +70,25 @@ public class ConfigReaderTests
     }
 
     [Fact]
+    public void True1DisableCompression()
+    {
+        var xElement = XElement.Parse("<Costura DisableCompression='1'/>");
+        var config = new Configuration(xElement);
+        Assert.True(config.DisableCompression);
+    }
+
+    [Fact]
     public void TrueDisableCleanup()
     {
         var xElement = XElement.Parse("<Costura DisableCleanup='true'/>");
+        var config = new Configuration(xElement);
+        Assert.True(config.DisableCleanup);
+    }
+
+    [Fact]
+    public void True1DisableCleanup()
+    {
+        var xElement = XElement.Parse("<Costura DisableCleanup='1'/>");
         var config = new Configuration(xElement);
         Assert.True(config.DisableCleanup);
     }
@@ -81,6 +105,14 @@ public class ConfigReaderTests
     public void TrueCreateTemporaryAssemblies()
     {
         var xElement = XElement.Parse("<Costura CreateTemporaryAssemblies='true'/>");
+        var config = new Configuration(xElement);
+        Assert.True(config.CreateTemporaryAssemblies);
+    }
+
+    [Fact]
+    public void True1CreateTemporaryAssemblies()
+    {
+        var xElement = XElement.Parse("<Costura CreateTemporaryAssemblies='1'/>");
         var config = new Configuration(xElement);
         Assert.True(config.CreateTemporaryAssemblies);
     }

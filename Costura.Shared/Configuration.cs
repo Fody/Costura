@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml;
 using System.Xml.Linq;
 
 public class Configuration
@@ -68,11 +69,11 @@ public class Configuration
         var attribute = config.Attribute(nodeName);
         if (attribute != null)
         {
-            if (bool.TryParse(attribute.Value, out var value))
+            try
             {
-                return value;
+                return XmlConvert.ToBoolean(attribute.Value);
             }
-            else
+            catch
             {
                 throw new WeavingException($"Could not parse '{nodeName}' from '{attribute.Value}'.");
             }
