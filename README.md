@@ -147,6 +147,7 @@ Costura will by default use assemblies with a name like 'resources.dll' as a sat
 <Costura IgnoreSatelliteAssemblies='true' />
 ```
 
+
 ### ExcludeAssemblies
 
 A list of assembly names to exclude from the default action of "embed all Copy Local references".
@@ -228,7 +229,6 @@ As an element with items delimited by a newline.
 </Costura>
 ```
 
-
 Or as a attribute with items delimited by a pipe `|`.
 
 ```xml
@@ -294,4 +294,4 @@ Most unit test frameworks need the `.dll`s files in order to discover and perfor
 
 ## Icon
 
-<a href="http://thenounproject.com/noun/merge/#icon-No256" target="_blank">Merge</a>  from The Noun Project
+<a href="http://thenounproject.com/noun/merge/#icon-No256" target="_blank">Merge</a> from The Noun Project
