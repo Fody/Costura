@@ -13,9 +13,12 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ApprovalTests" Version="3.0.18" />
-    <PackageReference Include="FodyHelpers" Version="3.2.13" />
-    <PackageReference Include="xunit" Version="2.4.0" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
+    <PackageReference Include="FodyHelpers" Version="3.3.2" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
     <ProjectReference Include="..\AssemblyToProcess\AssemblyToProcess.csproj" />
     <ProjectReference Include="..\AssemblyToReferenceMixed\AssemblyToReferenceMixed.vcxproj" />
     <ProjectReference Include="..\AssemblyToReferenceNative\AssemblyToReferenceNative.vcxproj" />

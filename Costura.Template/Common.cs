@@ -91,7 +91,9 @@ static class Common
     static string CultureToString(CultureInfo culture)
     {
         if (culture == null)
+        {
             return "";
+        }
 
         return culture.Name;
     }
@@ -206,7 +208,9 @@ static class Common
                 {
                     hasHandle = mutex.WaitOne(60000, false);
                     if (hasHandle == false)
+                    {
                         throw new TimeoutException("Timeout waiting for exclusive access");
+                    }
                 }
                 catch (AbandonedMutexException)
                 {
@@ -220,7 +224,9 @@ static class Common
             finally
             {
                 if (hasHandle)
+                {
                     mutex.ReleaseMutex();
+                }
             }
         }
     }
@@ -239,7 +245,9 @@ static class Common
             {
                 var checksum = CalculateChecksum(assemblyTempFilePath);
                 if (checksum != checksums[lib])
+                {
                     File.Delete(assemblyTempFilePath);
+                }
             }
 
             if (!File.Exists(assemblyTempFilePath))
