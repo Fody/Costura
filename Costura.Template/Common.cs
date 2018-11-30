@@ -196,10 +196,11 @@ static class Common
 
         using (var mutex = new Mutex(false, mutexId))
         {
-            var allowEveryoneRule = new MutexAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null), MutexRights.FullControl, AccessControlType.Allow);
-            var securitySettings = new MutexSecurity();
-            securitySettings.AddAccessRule(allowEveryoneRule);
-            mutex.SetAccessControl(securitySettings);
+            // Disabled since this doesn't work on .NET Core, could also be wrapped in a try/catch
+            //var allowEveryoneRule = new MutexAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null), MutexRights.FullControl, AccessControlType.Allow);
+            //var securitySettings = new MutexSecurity();
+            //securitySettings.AddAccessRule(allowEveryoneRule);
+            //mutex.SetAccessControl(securitySettings);
 
             var hasHandle = false;
             try
