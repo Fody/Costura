@@ -38,7 +38,7 @@ partial class ModuleWeaver : IDisposable
                     resourceName = Embed($"costura.{Path.GetFileName(Path.GetDirectoryName(fullPath))}.", fullPath, !config.DisableCompression);
                     if (config.CreateTemporaryAssemblies)
                     {
-                        checksums.Add(resourceName, CalculateChecksum(fullPath));
+                        checksums[resourceName] = CalculateChecksum(fullPath);
                     }
                     continue;
                 }
@@ -47,7 +47,7 @@ partial class ModuleWeaver : IDisposable
             resourceName = Embed("costura.", fullPath, !config.DisableCompression);
             if (config.CreateTemporaryAssemblies)
             {
-                checksums.Add(resourceName, CalculateChecksum(fullPath));
+                checksums[resourceName] = CalculateChecksum(fullPath);
             }
             if (!config.IncludeDebugSymbols)
             {
@@ -59,7 +59,7 @@ partial class ModuleWeaver : IDisposable
                 resourceName = Embed("costura.", pdbFullPath, !config.DisableCompression);
                 if (config.CreateTemporaryAssemblies)
                 {
-                    checksums.Add(resourceName, CalculateChecksum(pdbFullPath));
+                    checksums[resourceName] = CalculateChecksum(pdbFullPath);
                 }
             }
         }
@@ -86,7 +86,7 @@ partial class ModuleWeaver : IDisposable
 
             var fullPath = Path.GetFullPath(dependency);
             var resourceName = Embed(prefix, fullPath, !config.DisableCompression);
-            checksums.Add(resourceName, CalculateChecksum(fullPath));
+            checksums[resourceName] = CalculateChecksum(fullPath);
             if (!config.IncludeDebugSymbols)
             {
                 continue;
@@ -95,7 +95,7 @@ partial class ModuleWeaver : IDisposable
             if (File.Exists(pdbFullPath))
             {
                 resourceName = Embed(prefix, pdbFullPath, !config.DisableCompression);
-                checksums.Add(resourceName, CalculateChecksum(pdbFullPath));
+                checksums[resourceName] = CalculateChecksum(pdbFullPath);
             }
         }
     }
