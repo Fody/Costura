@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Reflection;
+
 using Mono.Cecil;
 
 partial class ModuleWeaver : IDisposable
@@ -18,12 +20,11 @@ partial class ModuleWeaver : IDisposable
         }
 
         cachePath = Path.Combine(Path.GetDirectoryName(AssemblyFilePath), "Costura");
-        if (!Directory.Exists(cachePath))
-        {
-            Directory.CreateDirectory(cachePath);
-        }
+        Directory.CreateDirectory(cachePath);
 
-        var onlyBinaries = ReferenceCopyLocalPaths.Where(x => x.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) || x.EndsWith(".exe", StringComparison.OrdinalIgnoreCase)).ToList();
+        var binaryReferences = ReferenceCopyLocalPaths.Where(x => x.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) || x.EndsWith(".exe", StringComparison.OrdinalIgnoreCase));
+        
+        var onlyBinaries = Distinct(binaryReferences).ToArray();
 
         foreach (var dependency in GetFilteredReferences(onlyBinaries, config))
         {
@@ -178,15 +179,15 @@ partial class ModuleWeaver : IDisposable
     string Embed(string prefix, string fullPath, bool compress)
     {
         var resourceName = $"{prefix}{Path.GetFileName(fullPath).ToLowerInvariant()}";
-        if (ModuleDefinition.Resources.Any(x => string.Equals(x.Name, resourceName, StringComparison.OrdinalIgnoreCase)))
-        {
-            LogInfo($"\tSkipping '{fullPath}' because it is already embedded");
-            return resourceName;
-        }
 
         if (compress)
         {
-            resourceName = $"{prefix}{Path.GetFileName(fullPath).ToLowerInvariant()}.compressed";
+            resourceName += ".compressed";
+        }
+
+        if (ModuleDefinition.Resources.Any(x => string.Equals(x.Name, resourceName, StringComparison.OrdinalIgnoreCase)))
+        {
+            throw new WeavingException($"'{fullPath}' is already embedded.");
         }
 
         LogInfo($"\tEmbedding '{fullPath}'");
@@ -232,6 +233,31 @@ partial class ModuleWeaver : IDisposable
         ReferenceCopyLocalPaths.RemoveAll(item => string.Equals(item, fullPath, StringComparison.OrdinalIgnoreCase));
 
         return resourceName;
+    }
+
+    IEnumerable<string> Distinct(IEnumerable<string> assemblyFiles)
+    {
+        var assembliesByName = assemblyFiles
+            .Select(file => AssemblyName.GetAssemblyName(file))
+            .GroupBy(a => a.Name);
+
+        foreach (var group in assembliesByName)
+        {
+            if (group.Count() == 1)
+            {
+                yield return group.Single().LocalPath();
+            }
+            else
+            {
+                var target = group.OrderByDescending(a => a.Version).FirstOrDefault();
+
+                var duplicates = new HashSet<string>(group.Where(a => a != target).Select(a => a.LocalPath()), StringComparer.OrdinalIgnoreCase);
+
+                yield return target.LocalPath();
+
+                ReferenceCopyLocalPaths.RemoveAll(item => duplicates.Contains(item));
+            }
+        }
     }
 
     public void Dispose()
