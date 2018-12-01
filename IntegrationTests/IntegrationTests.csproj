@@ -43,7 +43,7 @@
     <WeaverFiles Include="$(SolutionDir)Costura.Fody\bin\$(Configuration)\$(ReferenceFramework)\Costura.Fody.dll" />
   </ItemGroup>
 
-  <Target Name="Test" AfterTargets="Build" Condition="'$(XUnit)'=='false'">
+  <Target Name="Test" AfterTargets="Build" Condition="'$(XUnit)'=='false' AND '$(IsInnerBuild)'=='true'">
     <Message Text="-!- Starting test on $(TargetFramework) -!-" />
     <Exec Command="&quot;$(TargetPath)&quot;" />
   </Target>
