@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <XUnit>true</XUnit>
+    <XUnit>false</XUnit>
     <XUnit Condition="'$(TargetFramework)'=='net40'">false</XUnit>
   </PropertyGroup>
 
@@ -26,7 +26,8 @@
     </PackageReference>
 
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
-    <PackageReference Include="TomsToolbox.Core" Version="1.0.75" />
+    <PackageReference Include="System.Windows.Interactivity.WPF" Version="2.0.20525" />
+    <PackageReference Include="TomsToolbox.Wpf" Version="1.0.75" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(XUnit)'=='true'">
@@ -43,7 +44,7 @@
   </ItemGroup>
 
   <Target Name="Test" AfterTargets="Build" Condition="'$(XUnit)'=='false'">
-    <Message Text="-!- Starting test -!-" />
+    <Message Text="-!- Starting test on $(TargetFramework) -!-" />
     <Exec Command="&quot;$(TargetPath)&quot;" />
   </Target>
 

@@ -17,7 +17,7 @@ namespace IntegrationTests
             var json = Newtonsoft.Json.JsonConvert.SerializeObject(this);
             Assert.Equal("{\"SomeProperty\":\"Test\"}", json);
 
-            // just use some code to ensure assembly is properly embedded.
+            // just use some code to ensure assemblies are properly embedded.
             var now = DateTime.Now;
             var x = TomsToolbox.Core.DateTimeOperations.Max(now, DateTime.Today);
             Assert.Equal(x, now);
@@ -27,6 +27,9 @@ namespace IntegrationTests
 
             Assert.Empty(embeddedAssembly.Location);
             // does not work on build server: Assert.Equal(embeddedAssembly.CodeBase, thisAssembly.CodeBase, StringComparer.OrdinalIgnoreCase);
+
+            var embeddedAssembly2 = typeof(System.Windows.Interactivity.DefaultTriggerAttribute).Assembly;
+            Assert.Empty(embeddedAssembly2.Location);
 
             var targetDir = Path.GetDirectoryName(new Uri(thisAssembly.CodeBase).LocalPath);
 
