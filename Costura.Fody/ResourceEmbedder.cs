@@ -26,30 +26,24 @@ partial class ModuleWeaver : IDisposable
         
         var onlyBinaries = Distinct(binaryReferences).ToArray();
 
+        var disableCompression = config.DisableCompression;
+        var createTemporaryAssemblies = config.CreateTemporaryAssemblies;
+
         foreach (var dependency in GetFilteredReferences(onlyBinaries, config))
         {
             var fullPath = Path.GetFullPath(dependency);
-
-            string resourceName;
 
             if (!config.IgnoreSatelliteAssemblies)
             {
                 if (dependency.EndsWith(".resources.dll",StringComparison.OrdinalIgnoreCase))
                 {
-                    resourceName = Embed($"costura.{Path.GetFileName(Path.GetDirectoryName(fullPath))}.", fullPath, !config.DisableCompression);
-                    if (config.CreateTemporaryAssemblies)
-                    {
-                        checksums.Add(resourceName, CalculateChecksum(fullPath));
-                    }
+                    Embed($"costura.{Path.GetFileName(Path.GetDirectoryName(fullPath))}.", fullPath, !disableCompression, createTemporaryAssemblies);
                     continue;
                 }
             }
 
-            resourceName = Embed("costura.", fullPath, !config.DisableCompression);
-            if (config.CreateTemporaryAssemblies)
-            {
-                checksums.Add(resourceName, CalculateChecksum(fullPath));
-            }
+            Embed("costura.", fullPath, !disableCompression, createTemporaryAssemblies);
+
             if (!config.IncludeDebugSymbols)
             {
                 continue;
@@ -57,11 +51,7 @@ partial class ModuleWeaver : IDisposable
             var pdbFullPath = Path.ChangeExtension(fullPath, "pdb");
             if (File.Exists(pdbFullPath))
             {
-                resourceName = Embed("costura.", pdbFullPath, !config.DisableCompression);
-                if (config.CreateTemporaryAssemblies)
-                {
-                    checksums.Add(resourceName, CalculateChecksum(pdbFullPath));
-                }
+                Embed("costura.", pdbFullPath, !disableCompression, createTemporaryAssemblies);
             }
         }
 
@@ -86,8 +76,8 @@ partial class ModuleWeaver : IDisposable
             }
 
             var fullPath = Path.GetFullPath(dependency);
-            var resourceName = Embed(prefix, fullPath, !config.DisableCompression);
-            checksums.Add(resourceName, CalculateChecksum(fullPath));
+            Embed(prefix, fullPath, !disableCompression, true);
+
             if (!config.IncludeDebugSymbols)
             {
                 continue;
@@ -95,8 +85,7 @@ partial class ModuleWeaver : IDisposable
             var pdbFullPath = Path.ChangeExtension(fullPath, "pdb");
             if (File.Exists(pdbFullPath))
             {
-                resourceName = Embed(prefix, pdbFullPath, !config.DisableCompression);
-                checksums.Add(resourceName, CalculateChecksum(pdbFullPath));
+                Embed(prefix, pdbFullPath, !disableCompression, true);
             }
         }
     }
@@ -176,18 +165,19 @@ partial class ModuleWeaver : IDisposable
         }
     }
 
-    string Embed(string prefix, string fullPath, bool compress)
+    void Embed(string prefix, string fullPath, bool compress, bool addChecksum)
     {
         var resourceName = $"{prefix}{Path.GetFileName(fullPath).ToLowerInvariant()}";
+
+        if (ModuleDefinition.Resources.Any(x => string.Equals(x.Name, resourceName, StringComparison.OrdinalIgnoreCase)))
+        {
+            // an unmanaged assembly that is already embedded uncompressed.
+            return;
+        }
 
         if (compress)
         {
             resourceName += ".compressed";
-        }
-
-        if (ModuleDefinition.Resources.Any(x => string.Equals(x.Name, resourceName, StringComparison.OrdinalIgnoreCase)))
-        {
-            throw new WeavingException($"'{fullPath}' is already embedded.");
         }
 
         LogInfo($"\tEmbedding '{fullPath}'");
@@ -229,10 +219,12 @@ partial class ModuleWeaver : IDisposable
         streams.Add(memoryStream);
         var resource = new EmbeddedResource(resourceName, ManifestResourceAttributes.Private, memoryStream);
         ModuleDefinition.Resources.Add(resource);
+        if (addChecksum)
+        {
+            checksums.Add(resourceName, checksum);
+        }
 
         ReferenceCopyLocalPaths.RemoveAll(item => string.Equals(item, fullPath, StringComparison.OrdinalIgnoreCase));
-
-        return resourceName;
     }
 
     IEnumerable<string> Distinct(IEnumerable<string> assemblyFiles)
