@@ -165,14 +165,15 @@ partial class ModuleWeaver : IDisposable
 
     void Embed(string prefix, string fullPath, bool compress, bool addChecksum)
     {
+        // in any case we can remove this from the copy local paths, because either it's already embedded, or it will be embedded.
         ReferenceCopyLocalPaths.RemoveAll(item => string.Equals(item, fullPath, StringComparison.OrdinalIgnoreCase));
 
         var resourceName = $"{prefix}{Path.GetFileName(fullPath).ToLowerInvariant()}";
 
         if (ModuleDefinition.Resources.Any(x => string.Equals(x.Name, resourceName, StringComparison.OrdinalIgnoreCase)))
         {
-            // an assembly that is already embedded uncompressed.
-
+            // - an assembly that is already embedded uncompressed, using <EmbeddedResource> in the project file
+            // - if compress == false: an assembly that appeared twice in the ReferenceCopyLocalPaths, e.g. the same library from different nuget packages (https://github.com/Fody/Costura/issues/332)
             if (addChecksum && !checksums.ContainsKey(resourceName))
             {
                 checksums.Add(resourceName, CalculateChecksum(fullPath));
