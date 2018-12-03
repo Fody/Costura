@@ -1,7 +1,4 @@
-﻿using System;
-using System.Reflection;
-
-using Mono.Cecil;
+﻿using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
 using Mono.Collections.Generic;
@@ -51,10 +48,5 @@ static class Extensions
         var data = resource.GetResourceData();
         resource.GetResourceStream().Position = 0;
         return data;
-    }
-
-    public static string LocalPath(this AssemblyName assemblyName)
-    {
-        return new Uri(assemblyName.CodeBase).LocalPath;
     }
 }
