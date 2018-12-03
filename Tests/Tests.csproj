@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net471</TargetFrameworks>
+    <TargetFrameworks>net461</TargetFrameworks>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <DisableFody>true</DisableFody>
     <Optimize>false</Optimize>
@@ -27,6 +27,7 @@
     <ProjectReference Include="..\AssemblyWithoutInitialize\AssemblyWithoutInitialize.csproj" />
     <ProjectReference Include="..\Costura.Fody\Costura.Fody.csproj" />
     <ProjectReference Include="..\ExeToProcessWithNative\ExeToProcessWithNative.csproj" />
+    <ProjectReference Include="..\ExeToProcessWithNative\ExeToProcessWithNativeAndEmbeddedMixed.csproj" />
     <ProjectReference Include="..\ExeToProcess\ExeToProcess.csproj" />
     <ProjectReference Include="..\ExeToReference\ExeToReference.csproj" />
     <Reference Include="Microsoft.CSharp" />

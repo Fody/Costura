@@ -22,9 +22,7 @@ partial class ModuleWeaver : IDisposable
         cachePath = Path.Combine(Path.GetDirectoryName(AssemblyFilePath), "Costura");
         Directory.CreateDirectory(cachePath);
 
-        var binaryReferences = ReferenceCopyLocalPaths.Where(x => x.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) || x.EndsWith(".exe", StringComparison.OrdinalIgnoreCase));
-        
-        var onlyBinaries = Distinct(binaryReferences).ToArray();
+        var onlyBinaries = ReferenceCopyLocalPaths.Where(x => x.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) || x.EndsWith(".exe", StringComparison.OrdinalIgnoreCase)).ToArray();
 
         var disableCompression = config.DisableCompression;
         var createTemporaryAssemblies = config.CreateTemporaryAssemblies;
@@ -167,17 +165,31 @@ partial class ModuleWeaver : IDisposable
 
     void Embed(string prefix, string fullPath, bool compress, bool addChecksum)
     {
+        ReferenceCopyLocalPaths.RemoveAll(item => string.Equals(item, fullPath, StringComparison.OrdinalIgnoreCase));
+
         var resourceName = $"{prefix}{Path.GetFileName(fullPath).ToLowerInvariant()}";
 
         if (ModuleDefinition.Resources.Any(x => string.Equals(x.Name, resourceName, StringComparison.OrdinalIgnoreCase)))
         {
-            // an unmanaged assembly that is already embedded uncompressed.
+            // an assembly that is already embedded uncompressed.
+
+            if (addChecksum && !checksums.ContainsKey(resourceName))
+            {
+                checksums.Add(resourceName, CalculateChecksum(fullPath));
+            }
+
             return;
         }
 
         if (compress)
         {
             resourceName += ".compressed";
+
+            if (ModuleDefinition.Resources.Any(x => string.Equals(x.Name, resourceName, StringComparison.OrdinalIgnoreCase)))
+            {
+                // an assembly that appeared twice in the ReferenceCopyLocalPaths, e.g. the same library from different nuget packages (https://github.com/Fody/Costura/issues/332)
+                return;
+            }
         }
 
         LogInfo($"\tEmbedding '{fullPath}'");
@@ -215,40 +227,15 @@ partial class ModuleWeaver : IDisposable
                 memoryStream.CopyTo(cacheFileStream);
             }
         }
+
         memoryStream.Position = 0;
         streams.Add(memoryStream);
         var resource = new EmbeddedResource(resourceName, ManifestResourceAttributes.Private, memoryStream);
         ModuleDefinition.Resources.Add(resource);
+
         if (addChecksum)
         {
             checksums.Add(resourceName, checksum);
-        }
-
-        ReferenceCopyLocalPaths.RemoveAll(item => string.Equals(item, fullPath, StringComparison.OrdinalIgnoreCase));
-    }
-
-    IEnumerable<string> Distinct(IEnumerable<string> assemblyFiles)
-    {
-        var assembliesByName = assemblyFiles
-            .Select(file => AssemblyName.GetAssemblyName(file))
-            .GroupBy(a => a.Name);
-
-        foreach (var group in assembliesByName)
-        {
-            if (group.Count() == 1)
-            {
-                yield return group.Single().LocalPath();
-            }
-            else
-            {
-                var target = group.OrderByDescending(a => a.Version).FirstOrDefault();
-
-                var duplicates = new HashSet<string>(group.Where(a => a != target).Select(a => a.LocalPath()), StringComparer.OrdinalIgnoreCase);
-
-                yield return target.LocalPath();
-
-                ReferenceCopyLocalPaths.RemoveAll(item => duplicates.Contains(item));
-            }
         }
     }
 
