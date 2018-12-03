@@ -7,14 +7,10 @@ using Xunit;
 public class MixedAndNativeTests : BaseCosturaTest
 {
     public override TestResult TestResult => testResult;
-    static TestResult testResult;
 
-    static MixedAndNativeTests()
-    {
-        testResult = WeavingHelper.CreateIsolatedAssemblyCopy("ExeToProcessWithNative.exe",
-            "<Costura Unmanaged32Assemblies='AssemblyToReferenceMixed' />",
-            new[] {"AssemblyToReferenceMixed.dll"}, "MixedAndNative");
-    }
+    static TestResult testResult = WeavingHelper.CreateIsolatedAssemblyCopy("ExeToProcessWithNative.exe",
+        "<Costura Unmanaged32Assemblies='AssemblyToReferenceMixed' />",
+        new[] {"AssemblyToReferenceMixed.dll"}, "MixedAndNative");
 
     [Fact]
     public void Native()
@@ -50,5 +46,35 @@ public class MixedAndNativeTests : BaseCosturaTest
             var text = Ildasm.Decompile(testResult.AssemblyPath, "Costura.AssemblyLoader");
             Approvals.Verify(text);
         }
+    }
+}
+
+public class MixedAndNativeTestsWithEmbeddedMixed : BaseCosturaTest
+{
+    public override TestResult TestResult => testResult;
+
+    static TestResult testResult = WeavingHelper.CreateIsolatedAssemblyCopy("ExeToProcessWithNativeAndEmbeddedMixed.exe",
+        "<Costura Unmanaged32Assemblies='AssemblyToReferenceMixed' />",
+        new[] {"AssemblyToReferenceMixed.dll"}, "MixedAndNative");
+
+    [Fact]
+    public void Native()
+    {
+        var instance1 = TestResult.GetInstance("ClassToTest");
+        Assert.Equal("Hello", instance1.NativeFoo());
+    }
+
+    [Fact]
+    public void Mixed()
+    {
+        var instance1 = TestResult.GetInstance("ClassToTest");
+        Assert.Equal("Hello", instance1.MixedFoo());
+    }
+
+    [Fact]
+    public void MixedPInvoke()
+    {
+        var instance1 = TestResult.GetInstance("ClassToTest");
+        Assert.Equal("Hello", instance1.MixedFooPInvoke());
     }
 }
