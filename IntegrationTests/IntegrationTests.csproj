@@ -1,10 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net46</TargetFrameworks>
+    <TargetFrameworks>net40;net45;net46</TargetFrameworks>
     <IsPackable>false</IsPackable>
     <ReferenceFramework>net46</ReferenceFramework>
     <ReferenceFramework Condition="'$(TargetFramework)'=='netcoreapp2.0'">netstandard2.0</ReferenceFramework>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <XUnit>false</XUnit>
+    <XUnit Condition="'$(TargetFramework)'=='net40'">false</XUnit>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(XUnit)'=='false'">
+    <OutputType>Exe</OutputType>
+    <DefineConstants>$(DefineConstants);NO_XUNIT</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,8 +24,14 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
+
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="System.Windows.Interactivity.WPF" Version="2.0.20525" />
+    <PackageReference Include="TomsToolbox.Wpf" Version="1.0.75" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(XUnit)'=='true'">
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
-    <PackageReference Include="TomsToolbox.Core" Version="1.0.75" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
       <PrivateAssets>all</PrivateAssets>
@@ -26,5 +42,10 @@
   <ItemGroup>
     <WeaverFiles Include="$(SolutionDir)Costura.Fody\bin\$(Configuration)\$(ReferenceFramework)\Costura.Fody.dll" />
   </ItemGroup>
+
+  <Target Name="Test" AfterTargets="Build" Condition="'$(XUnit)'=='false' AND '$(IsInnerBuild)'=='true'">
+    <Message Text="-!- Starting test on $(TargetFramework) -!-" />
+    <Exec Command="&quot;$(TargetPath)&quot;" />
+  </Target>
 
 </Project>
