@@ -28,12 +28,12 @@ partial class ModuleWeaver
                     {
                         using (var compressStream = new DeflateStream(stream, CompressionMode.Decompress))
                         {
-                            checksums[resource.Name] = CalculateChecksum(compressStream);
+                            checksums.Add(resource.Name, CalculateChecksum(compressStream));
                         }
                     }
                     else
                     {
-                        checksums[resource.Name] = CalculateChecksum(stream);
+                        checksums.Add(resource.Name, CalculateChecksum(stream));
                     }
                 }
             }
