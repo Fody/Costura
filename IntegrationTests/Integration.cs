@@ -76,7 +76,7 @@ namespace IntegrationTests
             if (string.IsNullOrEmpty(value))
                 return;
 
-            Console.WriteLine($"Expected: Empty String");
+            Console.WriteLine("Expected: Empty String");
             Console.WriteLine($"Actual:   {value}");
             Environment.Exit(1);
         }
