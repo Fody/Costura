@@ -191,19 +191,13 @@ static class Common
         return executingAssembly.GetManifestResourceStream(fullName);
     }
 
-    // Mutex code from http://stackoverflow.com/questions/229565/what-is-a-good-pattern-for-using-a-global-mutex-in-c
-    public static void PreloadUnmanagedLibraries(string hash, string tempBasePath, IList<string> libs, Dictionary<string, string> checksums)
+    public static void PreloadUnmanagedLibraries(string hash, string tempBasePath, List<string> libs, Dictionary<string, string> checksums)
     {
-        var mutexId = $"Global\\Costura{hash}";
+        // since tempBasePath is per user, the mutex can be per user
+        var mutexId = $"{Environment.UserName}\\Costura{hash}";
 
         using (var mutex = new Mutex(false, mutexId))
         {
-            // Disabled since this doesn't work on .NET Core, could also be wrapped in a try/catch
-            //var allowEveryoneRule = new MutexAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null), MutexRights.FullControl, AccessControlType.Allow);
-            //var securitySettings = new MutexSecurity();
-            //securitySettings.AddAccessRule(allowEveryoneRule);
-            //mutex.SetAccessControl(securitySettings);
-
             var hasHandle = false;
             try
             {
