@@ -12,7 +12,7 @@
   .method private hidebysig static string
           CultureToString(class [mscorlib]System.Globalization.CultureInfo culture) cil managed
   {
-    // Code size       28 (0x1c)
+    // Code size       29 (0x1d)
     .maxstack  2
     .locals init (bool V_0,
              string V_1)
@@ -22,16 +22,17 @@
     IL_0003:  ceq
     IL_0005:  stloc.0
     IL_0006:  ldloc.0
-    IL_0007:  brfalse.s  IL_0011
-    IL_0009:  ldstr      ""
-    IL_000e:  stloc.1
-    IL_000f:  br.s       IL_001a
-    IL_0011:  ldarg.0
-    IL_0012:  callvirt   instance string [mscorlib]System.Globalization.CultureInfo::get_Name()
-    IL_0017:  stloc.1
-    IL_0018:  br.s       IL_001a
-    IL_001a:  ldloc.1
-    IL_001b:  ret
+    IL_0007:  brfalse.s  IL_0012
+    IL_0009:  nop
+    IL_000a:  ldstr      ""
+    IL_000f:  stloc.1
+    IL_0010:  br.s       IL_001b
+    IL_0012:  ldarg.0
+    IL_0013:  callvirt   instance string [mscorlib]System.Globalization.CultureInfo::get_Name()
+    IL_0018:  stloc.1
+    IL_0019:  br.s       IL_001b
+    IL_001b:  ldloc.1
+    IL_001c:  ret
   }
   .method private hidebysig static void  Log(string format,
                                              object[] args) cil managed
@@ -823,7 +824,7 @@
                                                                            class [mscorlib]System.Collections.Generic.IList`1<string> libs,
                                                                            class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> checksums) cil managed
   {
-    // Code size       314 (0x13a)
+    // Code size       316 (0x13c)
     .maxstack  3
     .locals init (string V_0,
              uint32 V_1,
@@ -848,7 +849,7 @@
     IL_0008:  stloc.3
     .try
     {
-      IL_0009:  br         IL_00ac
+      IL_0009:  br         IL_00ae
       IL_000e:  ldloc.3
       IL_000f:  callvirt   instance !0 class [mscorlib]System.Collections.Generic.IEnumerator`1<string>::get_Current()
       IL_0014:  stloc.s    V_4
@@ -865,7 +866,7 @@
       IL_002a:  call       bool [mscorlib]System.IO.File::Exists(string)
       IL_002f:  stloc.s    V_6
       IL_0031:  ldloc.s    V_6
-      IL_0033:  brfalse.s  IL_005d
+      IL_0033:  brfalse.s  IL_005f
       IL_0035:  nop
       IL_0036:  ldloc.s    V_5
       IL_0038:  call       string Costura.AssemblyLoader::CalculateChecksum(string)
@@ -878,138 +879,140 @@
                                                                        string)
       IL_004e:  stloc.s    V_8
       IL_0050:  ldloc.s    V_8
-      IL_0052:  brfalse.s  IL_005c
-      IL_0054:  ldloc.s    V_5
-      IL_0056:  call       void [mscorlib]System.IO.File::Delete(string)
-      IL_005b:  nop
+      IL_0052:  brfalse.s  IL_005e
+      IL_0054:  nop
+      IL_0055:  ldloc.s    V_5
+      IL_0057:  call       void [mscorlib]System.IO.File::Delete(string)
       IL_005c:  nop
-      IL_005d:  ldloc.s    V_5
-      IL_005f:  call       bool [mscorlib]System.IO.File::Exists(string)
-      IL_0064:  ldc.i4.0
-      IL_0065:  ceq
-      IL_0067:  stloc.s    V_9
-      IL_0069:  ldloc.s    V_9
-      IL_006b:  brfalse.s  IL_00ab
-      IL_006d:  nop
-      IL_006e:  ldloc.s    V_4
-      IL_0070:  call       class [mscorlib]System.IO.Stream Costura.AssemblyLoader::LoadStream(string)
-      IL_0075:  stloc.s    V_10
+      IL_005d:  nop
+      IL_005e:  nop
+      IL_005f:  ldloc.s    V_5
+      IL_0061:  call       bool [mscorlib]System.IO.File::Exists(string)
+      IL_0066:  ldc.i4.0
+      IL_0067:  ceq
+      IL_0069:  stloc.s    V_9
+      IL_006b:  ldloc.s    V_9
+      IL_006d:  brfalse.s  IL_00ad
+      IL_006f:  nop
+      IL_0070:  ldloc.s    V_4
+      IL_0072:  call       class [mscorlib]System.IO.Stream Costura.AssemblyLoader::LoadStream(string)
+      IL_0077:  stloc.s    V_10
       .try
       {
-        IL_0077:  ldloc.s    V_5
-        IL_0079:  call       class [mscorlib]System.IO.FileStream [mscorlib]System.IO.File::OpenWrite(string)
-        IL_007e:  stloc.s    V_11
+        IL_0079:  ldloc.s    V_5
+        IL_007b:  call       class [mscorlib]System.IO.FileStream [mscorlib]System.IO.File::OpenWrite(string)
+        IL_0080:  stloc.s    V_11
         .try
         {
-          IL_0080:  nop
-          IL_0081:  ldloc.s    V_10
-          IL_0083:  ldloc.s    V_11
-          IL_0085:  call       void Costura.AssemblyLoader::CopyTo(class [mscorlib]System.IO.Stream,
+          IL_0082:  nop
+          IL_0083:  ldloc.s    V_10
+          IL_0085:  ldloc.s    V_11
+          IL_0087:  call       void Costura.AssemblyLoader::CopyTo(class [mscorlib]System.IO.Stream,
                                                                    class [mscorlib]System.IO.Stream)
-          IL_008a:  nop
-          IL_008b:  nop
-          IL_008c:  leave.s    IL_009b
+          IL_008c:  nop
+          IL_008d:  nop
+          IL_008e:  leave.s    IL_009d
         }  // end .try
         finally
         {
-          IL_008e:  ldloc.s    V_11
-          IL_0090:  brfalse.s  IL_009a
-          IL_0092:  ldloc.s    V_11
-          IL_0094:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
-          IL_0099:  nop
-          IL_009a:  endfinally
+          IL_0090:  ldloc.s    V_11
+          IL_0092:  brfalse.s  IL_009c
+          IL_0094:  ldloc.s    V_11
+          IL_0096:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
+          IL_009b:  nop
+          IL_009c:  endfinally
         }  // end handler
-        IL_009b:  leave.s    IL_00aa
+        IL_009d:  leave.s    IL_00ac
       }  // end .try
       finally
       {
-        IL_009d:  ldloc.s    V_10
-        IL_009f:  brfalse.s  IL_00a9
-        IL_00a1:  ldloc.s    V_10
-        IL_00a3:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
-        IL_00a8:  nop
-        IL_00a9:  endfinally
+        IL_009f:  ldloc.s    V_10
+        IL_00a1:  brfalse.s  IL_00ab
+        IL_00a3:  ldloc.s    V_10
+        IL_00a5:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
+        IL_00aa:  nop
+        IL_00ab:  endfinally
       }  // end handler
-      IL_00aa:  nop
-      IL_00ab:  nop
-      IL_00ac:  ldloc.3
-      IL_00ad:  callvirt   instance bool [mscorlib]System.Collections.IEnumerator::MoveNext()
-      IL_00b2:  brtrue     IL_000e
-      IL_00b7:  leave.s    IL_00c4
+      IL_00ac:  nop
+      IL_00ad:  nop
+      IL_00ae:  ldloc.3
+      IL_00af:  callvirt   instance bool [mscorlib]System.Collections.IEnumerator::MoveNext()
+      IL_00b4:  brtrue     IL_000e
+      IL_00b9:  leave.s    IL_00c6
     }  // end .try
     finally
     {
-      IL_00b9:  ldloc.3
-      IL_00ba:  brfalse.s  IL_00c3
-      IL_00bc:  ldloc.3
-      IL_00bd:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
-      IL_00c2:  nop
-      IL_00c3:  endfinally
+      IL_00bb:  ldloc.3
+      IL_00bc:  brfalse.s  IL_00c5
+      IL_00be:  ldloc.3
+      IL_00bf:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
+      IL_00c4:  nop
+      IL_00c5:  endfinally
     }  // end handler
-    IL_00c4:  ldarg.0
-    IL_00c5:  call       bool Costura.AssemblyLoader::SetDllDirectory(string)
-    IL_00ca:  pop
-    IL_00cb:  ldc.i4     0x8003
-    IL_00d0:  stloc.1
-    IL_00d1:  ldloc.1
-    IL_00d2:  call       uint32 Costura.AssemblyLoader::SetErrorMode(uint32)
-    IL_00d7:  stloc.2
-    IL_00d8:  nop
-    IL_00d9:  ldarg.1
-    IL_00da:  callvirt   instance class [mscorlib]System.Collections.Generic.IEnumerator`1<!0> class [mscorlib]System.Collections.Generic.IEnumerable`1<string>::GetEnumerator()
-    IL_00df:  stloc.s    V_12
+    IL_00c6:  ldarg.0
+    IL_00c7:  call       bool Costura.AssemblyLoader::SetDllDirectory(string)
+    IL_00cc:  pop
+    IL_00cd:  ldc.i4     0x8003
+    IL_00d2:  stloc.1
+    IL_00d3:  ldloc.1
+    IL_00d4:  call       uint32 Costura.AssemblyLoader::SetErrorMode(uint32)
+    IL_00d9:  stloc.2
+    IL_00da:  nop
+    IL_00db:  ldarg.1
+    IL_00dc:  callvirt   instance class [mscorlib]System.Collections.Generic.IEnumerator`1<!0> class [mscorlib]System.Collections.Generic.IEnumerable`1<string>::GetEnumerator()
+    IL_00e1:  stloc.s    V_12
     .try
     {
-      IL_00e1:  br.s       IL_011a
-      IL_00e3:  ldloc.s    V_12
-      IL_00e5:  callvirt   instance !0 class [mscorlib]System.Collections.Generic.IEnumerator`1<string>::get_Current()
-      IL_00ea:  stloc.s    V_13
-      IL_00ec:  nop
-      IL_00ed:  ldloc.s    V_13
-      IL_00ef:  call       string Costura.AssemblyLoader::ResourceNameToPath(string)
-      IL_00f4:  stloc.0
-      IL_00f5:  ldloc.0
-      IL_00f6:  ldstr      ".dll"
-      IL_00fb:  callvirt   instance bool [mscorlib]System.String::EndsWith(string)
-      IL_0100:  stloc.s    V_14
-      IL_0102:  ldloc.s    V_14
-      IL_0104:  brfalse.s  IL_0119
-      IL_0106:  nop
-      IL_0107:  ldarg.0
-      IL_0108:  ldloc.0
-      IL_0109:  call       string [mscorlib]System.IO.Path::Combine(string,
+      IL_00e3:  br.s       IL_011c
+      IL_00e5:  ldloc.s    V_12
+      IL_00e7:  callvirt   instance !0 class [mscorlib]System.Collections.Generic.IEnumerator`1<string>::get_Current()
+      IL_00ec:  stloc.s    V_13
+      IL_00ee:  nop
+      IL_00ef:  ldloc.s    V_13
+      IL_00f1:  call       string Costura.AssemblyLoader::ResourceNameToPath(string)
+      IL_00f6:  stloc.0
+      IL_00f7:  ldloc.0
+      IL_00f8:  ldstr      ".dll"
+      IL_00fd:  callvirt   instance bool [mscorlib]System.String::EndsWith(string)
+      IL_0102:  stloc.s    V_14
+      IL_0104:  ldloc.s    V_14
+      IL_0106:  brfalse.s  IL_011b
+      IL_0108:  nop
+      IL_0109:  ldarg.0
+      IL_010a:  ldloc.0
+      IL_010b:  call       string [mscorlib]System.IO.Path::Combine(string,
                                                                     string)
-      IL_010e:  stloc.s    V_15
-      IL_0110:  ldloc.s    V_15
-      IL_0112:  call       native int Costura.AssemblyLoader::LoadLibrary(string)
-      IL_0117:  pop
-      IL_0118:  nop
-      IL_0119:  nop
-      IL_011a:  ldloc.s    V_12
-      IL_011c:  callvirt   instance bool [mscorlib]System.Collections.IEnumerator::MoveNext()
-      IL_0121:  brtrue.s   IL_00e3
-      IL_0123:  leave.s    IL_0132
+      IL_0110:  stloc.s    V_15
+      IL_0112:  ldloc.s    V_15
+      IL_0114:  call       native int Costura.AssemblyLoader::LoadLibrary(string)
+      IL_0119:  pop
+      IL_011a:  nop
+      IL_011b:  nop
+      IL_011c:  ldloc.s    V_12
+      IL_011e:  callvirt   instance bool [mscorlib]System.Collections.IEnumerator::MoveNext()
+      IL_0123:  brtrue.s   IL_00e5
+      IL_0125:  leave.s    IL_0134
     }  // end .try
     finally
     {
-      IL_0125:  ldloc.s    V_12
-      IL_0127:  brfalse.s  IL_0131
-      IL_0129:  ldloc.s    V_12
-      IL_012b:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
-      IL_0130:  nop
-      IL_0131:  endfinally
+      IL_0127:  ldloc.s    V_12
+      IL_0129:  brfalse.s  IL_0133
+      IL_012b:  ldloc.s    V_12
+      IL_012d:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
+      IL_0132:  nop
+      IL_0133:  endfinally
     }  // end handler
-    IL_0132:  ldloc.2
-    IL_0133:  call       uint32 Costura.AssemblyLoader::SetErrorMode(uint32)
-    IL_0138:  pop
-    IL_0139:  ret
+    IL_0134:  ldloc.2
+    IL_0135:  call       uint32 Costura.AssemblyLoader::SetErrorMode(uint32)
+    IL_013a:  pop
+    IL_013b:  ret
   }
   .method private hidebysig static void  PreloadUnmanagedLibraries(string hash,
                                                                    string tempBasePath,
                                                                    class [mscorlib]System.Collections.Generic.IList`1<string> libs,
                                                                    class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> checksums) cil managed
   {
-    // Code size       196 (0xc4)
+    // Code size       199 (0xc7)
     .maxstack  3
     .locals init (string V_0,
              class [mscorlib]System.Threading.Mutex V_1,
@@ -1072,71 +1075,74 @@
           IL_0055:  ceq
           IL_0057:  stloc.s    V_6
           IL_0059:  ldloc.s    V_6
-          IL_005b:  brfalse.s  IL_0068
-          IL_005d:  ldstr      "Timeout waiting for exclusive access"
-          IL_0062:  newobj     instance void [mscorlib]System.TimeoutException::.ctor(string)
-          IL_0067:  throw
-          IL_0068:  nop
-          IL_0069:  leave.s    IL_0073
+          IL_005b:  brfalse.s  IL_0069
+          IL_005d:  nop
+          IL_005e:  ldstr      "Timeout waiting for exclusive access"
+          IL_0063:  newobj     instance void [mscorlib]System.TimeoutException::.ctor(string)
+          IL_0068:  throw
+          IL_0069:  nop
+          IL_006a:  leave.s    IL_0074
         }  // end .try
         catch [mscorlib]System.Threading.AbandonedMutexException
         {
-          IL_006b:  pop
-          IL_006c:  nop
-          IL_006d:  ldc.i4.1
-          IL_006e:  stloc.s    V_4
-          IL_0070:  nop
-          IL_0071:  leave.s    IL_0073
+          IL_006c:  pop
+          IL_006d:  nop
+          IL_006e:  ldc.i4.1
+          IL_006f:  stloc.s    V_4
+          IL_0071:  nop
+          IL_0072:  leave.s    IL_0074
         }  // end handler
-        IL_0073:  call       int32 [mscorlib]System.IntPtr::get_Size()
-        IL_0078:  ldc.i4.8
-        IL_0079:  beq.s      IL_0082
-        IL_007b:  ldstr      "32"
-        IL_0080:  br.s       IL_0087
-        IL_0082:  ldstr      "64"
-        IL_0087:  stloc.s    V_5
-        IL_0089:  ldarg.1
-        IL_008a:  ldloc.s    V_5
-        IL_008c:  call       string [mscorlib]System.IO.Path::Combine(string,
+        IL_0074:  call       int32 [mscorlib]System.IntPtr::get_Size()
+        IL_0079:  ldc.i4.8
+        IL_007a:  beq.s      IL_0083
+        IL_007c:  ldstr      "32"
+        IL_0081:  br.s       IL_0088
+        IL_0083:  ldstr      "64"
+        IL_0088:  stloc.s    V_5
+        IL_008a:  ldarg.1
+        IL_008b:  ldloc.s    V_5
+        IL_008d:  call       string [mscorlib]System.IO.Path::Combine(string,
                                                                       string)
-        IL_0091:  call       void Costura.AssemblyLoader::CreateDirectory(string)
-        IL_0096:  nop
-        IL_0097:  ldarg.1
-        IL_0098:  ldarg.2
-        IL_0099:  ldarg.3
-        IL_009a:  call       void Costura.AssemblyLoader::InternalPreloadUnmanagedLibraries(string,
+        IL_0092:  call       void Costura.AssemblyLoader::CreateDirectory(string)
+        IL_0097:  nop
+        IL_0098:  ldarg.1
+        IL_0099:  ldarg.2
+        IL_009a:  ldarg.3
+        IL_009b:  call       void Costura.AssemblyLoader::InternalPreloadUnmanagedLibraries(string,
                                                                                             class [mscorlib]System.Collections.Generic.IList`1<string>,
                                                                                             class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>)
-        IL_009f:  nop
         IL_00a0:  nop
-        IL_00a1:  leave.s    IL_00b5
+        IL_00a1:  nop
+        IL_00a2:  leave.s    IL_00b8
       }  // end .try
       finally
       {
-        IL_00a3:  nop
-        IL_00a4:  ldloc.s    V_4
-        IL_00a6:  stloc.s    V_7
-        IL_00a8:  ldloc.s    V_7
-        IL_00aa:  brfalse.s  IL_00b3
-        IL_00ac:  ldloc.1
-        IL_00ad:  callvirt   instance void [mscorlib]System.Threading.Mutex::ReleaseMutex()
-        IL_00b2:  nop
-        IL_00b3:  nop
-        IL_00b4:  endfinally
+        IL_00a4:  nop
+        IL_00a5:  ldloc.s    V_4
+        IL_00a7:  stloc.s    V_7
+        IL_00a9:  ldloc.s    V_7
+        IL_00ab:  brfalse.s  IL_00b6
+        IL_00ad:  nop
+        IL_00ae:  ldloc.1
+        IL_00af:  callvirt   instance void [mscorlib]System.Threading.Mutex::ReleaseMutex()
+        IL_00b4:  nop
+        IL_00b5:  nop
+        IL_00b6:  nop
+        IL_00b7:  endfinally
       }  // end handler
-      IL_00b5:  nop
-      IL_00b6:  leave.s    IL_00c3
+      IL_00b8:  nop
+      IL_00b9:  leave.s    IL_00c6
     }  // end .try
     finally
     {
-      IL_00b8:  ldloc.1
-      IL_00b9:  brfalse.s  IL_00c2
       IL_00bb:  ldloc.1
-      IL_00bc:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
-      IL_00c1:  nop
-      IL_00c2:  endfinally
+      IL_00bc:  brfalse.s  IL_00c5
+      IL_00be:  ldloc.1
+      IL_00bf:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
+      IL_00c4:  nop
+      IL_00c5:  endfinally
     }  // end handler
-    IL_00c3:  ret
+    IL_00c6:  ret
   }
   .method public hidebysig static void  Attach() cil managed
   {

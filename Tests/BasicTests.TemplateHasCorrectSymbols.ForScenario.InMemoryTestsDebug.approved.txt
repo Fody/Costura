@@ -9,7 +9,7 @@
   .method private hidebysig static string
           CultureToString(class [mscorlib]System.Globalization.CultureInfo culture) cil managed
   {
-    // Code size       28 (0x1c)
+    // Code size       29 (0x1d)
     .maxstack  2
     .locals init (bool V_0,
              string V_1)
@@ -19,16 +19,17 @@
     IL_0003:  ceq
     IL_0005:  stloc.0
     IL_0006:  ldloc.0
-    IL_0007:  brfalse.s  IL_0011
-    IL_0009:  ldstr      ""
-    IL_000e:  stloc.1
-    IL_000f:  br.s       IL_001a
-    IL_0011:  ldarg.0
-    IL_0012:  callvirt   instance string [mscorlib]System.Globalization.CultureInfo::get_Name()
-    IL_0017:  stloc.1
-    IL_0018:  br.s       IL_001a
-    IL_001a:  ldloc.1
-    IL_001b:  ret
+    IL_0007:  brfalse.s  IL_0012
+    IL_0009:  nop
+    IL_000a:  ldstr      ""
+    IL_000f:  stloc.1
+    IL_0010:  br.s       IL_001b
+    IL_0012:  ldarg.0
+    IL_0013:  callvirt   instance string [mscorlib]System.Globalization.CultureInfo::get_Name()
+    IL_0018:  stloc.1
+    IL_0019:  br.s       IL_001b
+    IL_001b:  ldloc.1
+    IL_001c:  ret
   }
   .method private hidebysig static void  Log(string format,
                                              object[] args) cil managed
