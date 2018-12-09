@@ -71,14 +71,7 @@ public abstract class BasicTests : BaseCosturaTest
         using (ApprovalResults.ForScenario(dataPoints))
         {
             var text = Ildasm.Decompile(TestResult.AssemblyPath, "Costura.AssemblyLoader");
-            Approvals.Verify(text, TrimLineEndings);
+            Approvals.Verify(text);
         }
-    }
-
-    private static string TrimLineEndings(string text)
-    {
-        var lines = text.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-
-        return string.Join(Environment.NewLine, lines.Select(line => line.TrimEnd()));
     }
 }
