@@ -103,7 +103,9 @@ static class Common
         var name = requestedAssemblyName.Name.ToLowerInvariant();
 
         if (requestedAssemblyName.CultureInfo != null && !string.IsNullOrEmpty(requestedAssemblyName.CultureInfo.Name))
+        {
             name = $"{requestedAssemblyName.CultureInfo.Name}.{name}";
+        }
 
         var bittyness = IntPtr.Size == 8 ? "64" : "32";
         var assemblyTempFilePath = Path.Combine(tempBasePath, string.Concat(name, ".dll"));
