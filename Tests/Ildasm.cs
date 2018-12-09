@@ -11,6 +11,6 @@ class Ildasm
         return string.Join(Environment.NewLine, decompile.Split(new[]{ Environment.NewLine }, StringSplitOptions.None)
             .Where(l => !l.StartsWith("// ", StringComparison.CurrentCulture) && !string.IsNullOrEmpty(l))
             .Select(l => checksumPattern.Replace(l, e => e.Groups[1].Value + "[CHECKSUM]\""))
-            .ToList()).Replace("\r\n","\r");
+            .ToList());
     }
 }
