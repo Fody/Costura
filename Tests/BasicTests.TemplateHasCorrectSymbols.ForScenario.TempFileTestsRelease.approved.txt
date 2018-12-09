@@ -764,7 +764,7 @@
   } 
   .method private hidebysig static void  PreloadUnmanagedLibraries(string hash,
                                                                    string tempBasePath,
-                                                                   class [mscorlib]System.Collections.Generic.IList`1<string> libs,
+                                                                   class [mscorlib]System.Collections.Generic.List`1<string> libs,
                                                                    class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> checksums) cil managed
   {
     // Code size       120 (0x78)
@@ -773,7 +773,7 @@
              class [mscorlib]System.Threading.Mutex V_1,
              bool V_2,
              string V_3)
-    IL_0000:  ldstr      "Global\\Costura"
+    IL_0000:  ldstr      "Costura"
     IL_0005:  ldarg.0
     IL_0006:  call       string [mscorlib]System.String::Concat(string,
                                                                 string)
@@ -895,7 +895,7 @@
     IL_0063:  ldsfld     class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
     IL_0068:  call       void Costura.AssemblyLoader::PreloadUnmanagedLibraries(string,
                                                                                 string,
-                                                                                class [mscorlib]System.Collections.Generic.IList`1<string>,
+                                                                                class [mscorlib]System.Collections.Generic.List`1<string>,
                                                                                 class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>)
     IL_006d:  call       class [mscorlib]System.AppDomain [mscorlib]System.AppDomain::get_CurrentDomain()
     IL_0072:  ldnull

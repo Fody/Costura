@@ -192,7 +192,7 @@ static class Common
     public static void PreloadUnmanagedLibraries(string hash, string tempBasePath, List<string> libs, Dictionary<string, string> checksums)
     {
         // since tempBasePath is per user, the mutex can be per user
-        var mutexId = $"{Environment.UserName}\\Costura{hash}";
+        var mutexId = $"Costura{hash}";
 
         using (var mutex = new Mutex(false, mutexId))
         {
