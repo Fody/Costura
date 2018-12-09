@@ -1012,16 +1012,14 @@
                                                                    class [mscorlib]System.Collections.Generic.IList`1<string> libs,
                                                                    class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> checksums) cil managed
   {
-    // Code size       199 (0xc7)
+    // Code size       151 (0x97)
     .maxstack  3
     .locals init (string V_0,
              class [mscorlib]System.Threading.Mutex V_1,
-             class [mscorlib]System.Security.AccessControl.MutexAccessRule V_2,
-             class [mscorlib]System.Security.AccessControl.MutexSecurity V_3,
+             bool V_2,
+             string V_3,
              bool V_4,
-             string V_5,
-             bool V_6,
-             bool V_7)
+             bool V_5)
     IL_0000:  nop
     IL_0001:  ldstr      "Global\\Costura"
     IL_0006:  ldarg.0
@@ -1036,113 +1034,93 @@
     .try
     {
       IL_0015:  nop
-      IL_0016:  ldc.i4.1
-      IL_0017:  ldnull
-      IL_0018:  newobj     instance void [mscorlib]System.Security.Principal.SecurityIdentifier::.ctor(valuetype [mscorlib]System.Security.Principal.WellKnownSidType,
-                                                                                                       class [mscorlib]System.Security.Principal.SecurityIdentifier)
-      IL_001d:  ldc.i4     0x1f0001
-      IL_0022:  ldc.i4.0
-      IL_0023:  newobj     instance void [mscorlib]System.Security.AccessControl.MutexAccessRule::.ctor(class [mscorlib]System.Security.Principal.IdentityReference,
-                                                                                                        valuetype [mscorlib]System.Security.AccessControl.MutexRights,
-                                                                                                        valuetype [mscorlib]System.Security.AccessControl.AccessControlType)
-      IL_0028:  stloc.2
-      IL_0029:  newobj     instance void [mscorlib]System.Security.AccessControl.MutexSecurity::.ctor()
-      IL_002e:  stloc.3
-      IL_002f:  ldloc.3
-      IL_0030:  ldloc.2
-      IL_0031:  callvirt   instance void [mscorlib]System.Security.AccessControl.MutexSecurity::AddAccessRule(class [mscorlib]System.Security.AccessControl.MutexAccessRule)
-      IL_0036:  nop
-      IL_0037:  ldloc.1
-      IL_0038:  ldloc.3
-      IL_0039:  callvirt   instance void [mscorlib]System.Threading.Mutex::SetAccessControl(class [mscorlib]System.Security.AccessControl.MutexSecurity)
-      IL_003e:  nop
-      IL_003f:  ldc.i4.0
-      IL_0040:  stloc.s    V_4
+      IL_0016:  ldc.i4.0
+      IL_0017:  stloc.2
       .try
       {
-        IL_0042:  nop
+        IL_0018:  nop
         .try
         {
-          IL_0043:  nop
-          IL_0044:  ldloc.1
-          IL_0045:  ldc.i4     0xea60
-          IL_004a:  ldc.i4.0
-          IL_004b:  callvirt   instance bool [mscorlib]System.Threading.WaitHandle::WaitOne(int32,
+          IL_0019:  nop
+          IL_001a:  ldloc.1
+          IL_001b:  ldc.i4     0xea60
+          IL_0020:  ldc.i4.0
+          IL_0021:  callvirt   instance bool [mscorlib]System.Threading.WaitHandle::WaitOne(int32,
                                                                                             bool)
-          IL_0050:  stloc.s    V_4
-          IL_0052:  ldloc.s    V_4
-          IL_0054:  ldc.i4.0
-          IL_0055:  ceq
-          IL_0057:  stloc.s    V_6
-          IL_0059:  ldloc.s    V_6
-          IL_005b:  brfalse.s  IL_0069
-          IL_005d:  nop
-          IL_005e:  ldstr      "Timeout waiting for exclusive access"
-          IL_0063:  newobj     instance void [mscorlib]System.TimeoutException::.ctor(string)
-          IL_0068:  throw
-          IL_0069:  nop
-          IL_006a:  leave.s    IL_0074
+          IL_0026:  stloc.2
+          IL_0027:  ldloc.2
+          IL_0028:  ldc.i4.0
+          IL_0029:  ceq
+          IL_002b:  stloc.s    V_4
+          IL_002d:  ldloc.s    V_4
+          IL_002f:  brfalse.s  IL_003d
+          IL_0031:  nop
+          IL_0032:  ldstr      "Timeout waiting for exclusive access"
+          IL_0037:  newobj     instance void [mscorlib]System.TimeoutException::.ctor(string)
+          IL_003c:  throw
+          IL_003d:  nop
+          IL_003e:  leave.s    IL_0047
         }  // end .try
         catch [mscorlib]System.Threading.AbandonedMutexException 
         {
-          IL_006c:  pop
-          IL_006d:  nop
-          IL_006e:  ldc.i4.1
-          IL_006f:  stloc.s    V_4
-          IL_0071:  nop
-          IL_0072:  leave.s    IL_0074
+          IL_0040:  pop
+          IL_0041:  nop
+          IL_0042:  ldc.i4.1
+          IL_0043:  stloc.2
+          IL_0044:  nop
+          IL_0045:  leave.s    IL_0047
         }  // end handler
-        IL_0074:  call       int32 [mscorlib]System.IntPtr::get_Size()
-        IL_0079:  ldc.i4.8
-        IL_007a:  beq.s      IL_0083
-        IL_007c:  ldstr      "32"
-        IL_0081:  br.s       IL_0088
-        IL_0083:  ldstr      "64"
-        IL_0088:  stloc.s    V_5
-        IL_008a:  ldarg.1
-        IL_008b:  ldloc.s    V_5
-        IL_008d:  call       string [mscorlib]System.IO.Path::Combine(string,
+        IL_0047:  call       int32 [mscorlib]System.IntPtr::get_Size()
+        IL_004c:  ldc.i4.8
+        IL_004d:  beq.s      IL_0056
+        IL_004f:  ldstr      "32"
+        IL_0054:  br.s       IL_005b
+        IL_0056:  ldstr      "64"
+        IL_005b:  stloc.3
+        IL_005c:  ldarg.1
+        IL_005d:  ldloc.3
+        IL_005e:  call       string [mscorlib]System.IO.Path::Combine(string,
                                                                       string)
-        IL_0092:  call       void Costura.AssemblyLoader::CreateDirectory(string)
-        IL_0097:  nop
-        IL_0098:  ldarg.1
-        IL_0099:  ldarg.2
-        IL_009a:  ldarg.3
-        IL_009b:  call       void Costura.AssemblyLoader::InternalPreloadUnmanagedLibraries(string,
+        IL_0063:  call       void Costura.AssemblyLoader::CreateDirectory(string)
+        IL_0068:  nop
+        IL_0069:  ldarg.1
+        IL_006a:  ldarg.2
+        IL_006b:  ldarg.3
+        IL_006c:  call       void Costura.AssemblyLoader::InternalPreloadUnmanagedLibraries(string,
                                                                                             class [mscorlib]System.Collections.Generic.IList`1<string>,
                                                                                             class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>)
-        IL_00a0:  nop
-        IL_00a1:  nop
-        IL_00a2:  leave.s    IL_00b8
+        IL_0071:  nop
+        IL_0072:  nop
+        IL_0073:  leave.s    IL_0088
       }  // end .try
       finally
       {
-        IL_00a4:  nop
-        IL_00a5:  ldloc.s    V_4
-        IL_00a7:  stloc.s    V_7
-        IL_00a9:  ldloc.s    V_7
-        IL_00ab:  brfalse.s  IL_00b6
-        IL_00ad:  nop
-        IL_00ae:  ldloc.1
-        IL_00af:  callvirt   instance void [mscorlib]System.Threading.Mutex::ReleaseMutex()
-        IL_00b4:  nop
-        IL_00b5:  nop
-        IL_00b6:  nop
-        IL_00b7:  endfinally
+        IL_0075:  nop
+        IL_0076:  ldloc.2
+        IL_0077:  stloc.s    V_5
+        IL_0079:  ldloc.s    V_5
+        IL_007b:  brfalse.s  IL_0086
+        IL_007d:  nop
+        IL_007e:  ldloc.1
+        IL_007f:  callvirt   instance void [mscorlib]System.Threading.Mutex::ReleaseMutex()
+        IL_0084:  nop
+        IL_0085:  nop
+        IL_0086:  nop
+        IL_0087:  endfinally
       }  // end handler
-      IL_00b8:  nop
-      IL_00b9:  leave.s    IL_00c6
+      IL_0088:  nop
+      IL_0089:  leave.s    IL_0096
     }  // end .try
     finally
     {
-      IL_00bb:  ldloc.1
-      IL_00bc:  brfalse.s  IL_00c5
-      IL_00be:  ldloc.1
-      IL_00bf:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
-      IL_00c4:  nop
-      IL_00c5:  endfinally
+      IL_008b:  ldloc.1
+      IL_008c:  brfalse.s  IL_0095
+      IL_008e:  ldloc.1
+      IL_008f:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
+      IL_0094:  nop
+      IL_0095:  endfinally
     }  // end handler
-    IL_00c6:  ret
+    IL_0096:  ret
   } 
   .method public hidebysig static void  Attach() cil managed
   {
