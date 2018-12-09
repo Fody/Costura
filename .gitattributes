@@ -20,5 +20,3 @@
 *.ico binary
 *.snk binary
 *.pdb binary
-
-*.approved.* binary
