@@ -9,7 +9,7 @@
   .field private static class [mscorlib]System.Collections.Generic.List`1<string> preload64List
   .field private static class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> checksums
   .field private static int32 isAttached
-  .method private hidebysig static string
+  .method private hidebysig static string 
           CultureToString(class [mscorlib]System.Globalization.CultureInfo culture) cil managed
   {
     // Code size       16 (0x10)
@@ -21,8 +21,8 @@
     IL_0009:  ldarg.0
     IL_000a:  callvirt   instance string [mscorlib]System.Globalization.CultureInfo::get_Name()
     IL_000f:  ret
-  }
-  .method private hidebysig static class [mscorlib]System.Reflection.Assembly
+  } 
+  .method private hidebysig static class [mscorlib]System.Reflection.Assembly 
           ReadExistingAssembly(class [mscorlib]System.Reflection.AssemblyName name) cil managed
   {
     // Code size       90 (0x5a)
@@ -77,8 +77,8 @@
     IL_0056:  blt.s      IL_000f
     IL_0058:  ldnull
     IL_0059:  ret
-  }
-  .method private hidebysig static class [mscorlib]System.Reflection.Assembly
+  } 
+  .method private hidebysig static class [mscorlib]System.Reflection.Assembly 
           ReadFromDiskCache(string tempBasePath,
                             class [mscorlib]System.Reflection.AssemblyName requestedAssemblyName) cil managed
   {
@@ -170,8 +170,8 @@
     IL_00cf:  ret
     IL_00d0:  ldnull
     IL_00d1:  ret
-  }
-  .method public hidebysig static class [mscorlib]System.Reflection.Assembly
+  } 
+  .method public hidebysig static class [mscorlib]System.Reflection.Assembly 
           ResolveAssembly(object sender,
                           class [mscorlib]System.ResolveEventArgs e) cil managed
   {
@@ -272,8 +272,8 @@
     IL_00ac:  ret
     IL_00ad:  ldloc.s    V_4
     IL_00af:  ret
-  }
-  .method private hidebysig specialname rtspecialname static
+  } 
+  .method private hidebysig specialname rtspecialname static 
           void  .cctor() cil managed
   {
     // Code size       271 (0x10f)
@@ -341,7 +341,7 @@
     IL_0104:  ldstr      "costura.exetoreference.pdb.compressed"
     IL_0109:  callvirt   instance void class [mscorlib]System.Collections.Generic.List`1<string>::Add(!0)
     IL_010e:  ret
-  }
+  } 
   .method private hidebysig static void  CreateDirectory(string tempBasePath) cil managed
   {
     // Code size       16 (0x10)
@@ -353,8 +353,8 @@
     IL_0009:  call       class [mscorlib]System.IO.DirectoryInfo [mscorlib]System.IO.Directory::CreateDirectory(string)
     IL_000e:  pop
     IL_000f:  ret
-  }
-  .method private hidebysig static string
+  } 
+  .method private hidebysig static string 
           ResourceNameToPath(string lib) cil managed
   {
     // Code size       117 (0x75)
@@ -410,8 +410,8 @@
     IL_0072:  stloc.1
     IL_0073:  ldloc.1
     IL_0074:  ret
-  }
-  .method private hidebysig static string
+  } 
+  .method private hidebysig static string 
           CalculateChecksum(string filename) cil managed
   {
     // Code size       136 (0x88)
@@ -514,7 +514,7 @@
     }  // end handler
     IL_0085:  ldloc.s    V_8
     IL_0087:  ret
-  }
+  } 
   .method private hidebysig static void  CopyTo(class [mscorlib]System.IO.Stream source,
                                                 class [mscorlib]System.IO.Stream destination) cil managed
   {
@@ -546,8 +546,8 @@
     IL_0022:  stloc.1
     IL_0023:  brtrue.s   IL_000d
     IL_0025:  ret
-  }
-  .method private hidebysig static class [mscorlib]System.IO.Stream
+  } 
+  .method private hidebysig static class [mscorlib]System.IO.Stream 
           LoadStream(string fullName) cil managed
   {
     // Code size       92 (0x5c)
@@ -613,16 +613,16 @@
     IL_0058:  ret
     IL_0059:  ldloc.s    V_4
     IL_005b:  ret
-  }
-  .method private hidebysig static pinvokeimpl("kernel32.dll" unicode lasterr winapi)
+  } 
+  .method private hidebysig static pinvokeimpl("kernel32.dll" unicode lasterr winapi) 
           bool  SetDllDirectory(string lpPathName) cil managed preservesig
   {
   }
-  .method private hidebysig static pinvokeimpl("kernel32.dll" winapi)
+  .method private hidebysig static pinvokeimpl("kernel32.dll" winapi) 
           uint32  SetErrorMode(uint32 uMode) cil managed preservesig
   {
   }
-  .method private hidebysig static pinvokeimpl("kernel32" unicode lasterr winapi)
+  .method private hidebysig static pinvokeimpl("kernel32" unicode lasterr winapi) 
           native int  LoadLibrary(string dllToLoad) cil managed preservesig
   {
   }
@@ -761,20 +761,18 @@
     IL_00ef:  call       uint32 Costura.AssemblyLoader::SetErrorMode(uint32)
     IL_00f4:  pop
     IL_00f5:  ret
-  }
+  } 
   .method private hidebysig static void  PreloadUnmanagedLibraries(string hash,
                                                                    string tempBasePath,
                                                                    class [mscorlib]System.Collections.Generic.IList`1<string> libs,
                                                                    class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> checksums) cil managed
   {
-    // Code size       166 (0xa6)
+    // Code size       120 (0x78)
     .maxstack  3
     .locals init (string V_0,
              class [mscorlib]System.Threading.Mutex V_1,
-             class [mscorlib]System.Security.AccessControl.MutexAccessRule V_2,
-             class [mscorlib]System.Security.AccessControl.MutexSecurity V_3,
-             bool V_4,
-             string V_5)
+             bool V_2,
+             string V_3)
     IL_0000:  ldstr      "Global\\Costura"
     IL_0005:  ldarg.0
     IL_0006:  call       string [mscorlib]System.String::Concat(string,
@@ -787,89 +785,71 @@
     IL_0013:  stloc.1
     .try
     {
-      IL_0014:  ldc.i4.1
-      IL_0015:  ldnull
-      IL_0016:  newobj     instance void [mscorlib]System.Security.Principal.SecurityIdentifier::.ctor(valuetype [mscorlib]System.Security.Principal.WellKnownSidType,
-                                                                                                       class [mscorlib]System.Security.Principal.SecurityIdentifier)
-      IL_001b:  ldc.i4     0x1f0001
-      IL_0020:  ldc.i4.0
-      IL_0021:  newobj     instance void [mscorlib]System.Security.AccessControl.MutexAccessRule::.ctor(class [mscorlib]System.Security.Principal.IdentityReference,
-                                                                                                        valuetype [mscorlib]System.Security.AccessControl.MutexRights,
-                                                                                                        valuetype [mscorlib]System.Security.AccessControl.AccessControlType)
-      IL_0026:  stloc.2
-      IL_0027:  newobj     instance void [mscorlib]System.Security.AccessControl.MutexSecurity::.ctor()
-      IL_002c:  stloc.3
-      IL_002d:  ldloc.3
-      IL_002e:  ldloc.2
-      IL_002f:  callvirt   instance void [mscorlib]System.Security.AccessControl.MutexSecurity::AddAccessRule(class [mscorlib]System.Security.AccessControl.MutexAccessRule)
-      IL_0034:  ldloc.1
-      IL_0035:  ldloc.3
-      IL_0036:  callvirt   instance void [mscorlib]System.Threading.Mutex::SetAccessControl(class [mscorlib]System.Security.AccessControl.MutexSecurity)
-      IL_003b:  ldc.i4.0
-      IL_003c:  stloc.s    V_4
+      IL_0014:  ldc.i4.0
+      IL_0015:  stloc.2
       .try
       {
         .try
         {
-          IL_003e:  ldloc.1
-          IL_003f:  ldc.i4     0xea60
-          IL_0044:  ldc.i4.0
-          IL_0045:  callvirt   instance bool [mscorlib]System.Threading.WaitHandle::WaitOne(int32,
+          IL_0016:  ldloc.1
+          IL_0017:  ldc.i4     0xea60
+          IL_001c:  ldc.i4.0
+          IL_001d:  callvirt   instance bool [mscorlib]System.Threading.WaitHandle::WaitOne(int32,
                                                                                             bool)
-          IL_004a:  stloc.s    V_4
-          IL_004c:  ldloc.s    V_4
-          IL_004e:  brtrue.s   IL_005b
-          IL_0050:  ldstr      "Timeout waiting for exclusive access"
-          IL_0055:  newobj     instance void [mscorlib]System.TimeoutException::.ctor(string)
-          IL_005a:  throw
-          IL_005b:  leave.s    IL_0063
+          IL_0022:  stloc.2
+          IL_0023:  ldloc.2
+          IL_0024:  brtrue.s   IL_0031
+          IL_0026:  ldstr      "Timeout waiting for exclusive access"
+          IL_002b:  newobj     instance void [mscorlib]System.TimeoutException::.ctor(string)
+          IL_0030:  throw
+          IL_0031:  leave.s    IL_0038
         }  // end .try
-        catch [mscorlib]System.Threading.AbandonedMutexException
+        catch [mscorlib]System.Threading.AbandonedMutexException 
         {
-          IL_005d:  pop
-          IL_005e:  ldc.i4.1
-          IL_005f:  stloc.s    V_4
-          IL_0061:  leave.s    IL_0063
+          IL_0033:  pop
+          IL_0034:  ldc.i4.1
+          IL_0035:  stloc.2
+          IL_0036:  leave.s    IL_0038
         }  // end handler
-        IL_0063:  call       int32 [mscorlib]System.IntPtr::get_Size()
-        IL_0068:  ldc.i4.8
-        IL_0069:  beq.s      IL_0072
-        IL_006b:  ldstr      "32"
-        IL_0070:  br.s       IL_0077
-        IL_0072:  ldstr      "64"
-        IL_0077:  stloc.s    V_5
-        IL_0079:  ldarg.1
-        IL_007a:  ldloc.s    V_5
-        IL_007c:  call       string [mscorlib]System.IO.Path::Combine(string,
+        IL_0038:  call       int32 [mscorlib]System.IntPtr::get_Size()
+        IL_003d:  ldc.i4.8
+        IL_003e:  beq.s      IL_0047
+        IL_0040:  ldstr      "32"
+        IL_0045:  br.s       IL_004c
+        IL_0047:  ldstr      "64"
+        IL_004c:  stloc.3
+        IL_004d:  ldarg.1
+        IL_004e:  ldloc.3
+        IL_004f:  call       string [mscorlib]System.IO.Path::Combine(string,
                                                                       string)
-        IL_0081:  call       void Costura.AssemblyLoader::CreateDirectory(string)
-        IL_0086:  ldarg.1
-        IL_0087:  ldarg.2
-        IL_0088:  ldarg.3
-        IL_0089:  call       void Costura.AssemblyLoader::InternalPreloadUnmanagedLibraries(string,
+        IL_0054:  call       void Costura.AssemblyLoader::CreateDirectory(string)
+        IL_0059:  ldarg.1
+        IL_005a:  ldarg.2
+        IL_005b:  ldarg.3
+        IL_005c:  call       void Costura.AssemblyLoader::InternalPreloadUnmanagedLibraries(string,
                                                                                             class [mscorlib]System.Collections.Generic.IList`1<string>,
                                                                                             class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>)
-        IL_008e:  leave.s    IL_00a5
+        IL_0061:  leave.s    IL_0077
       }  // end .try
       finally
       {
-        IL_0090:  ldloc.s    V_4
-        IL_0092:  brfalse.s  IL_009a
-        IL_0094:  ldloc.1
-        IL_0095:  callvirt   instance void [mscorlib]System.Threading.Mutex::ReleaseMutex()
-        IL_009a:  endfinally
+        IL_0063:  ldloc.2
+        IL_0064:  brfalse.s  IL_006c
+        IL_0066:  ldloc.1
+        IL_0067:  callvirt   instance void [mscorlib]System.Threading.Mutex::ReleaseMutex()
+        IL_006c:  endfinally
       }  // end handler
     }  // end .try
     finally
     {
-      IL_009b:  ldloc.1
-      IL_009c:  brfalse.s  IL_00a4
-      IL_009e:  ldloc.1
-      IL_009f:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
-      IL_00a4:  endfinally
+      IL_006d:  ldloc.1
+      IL_006e:  brfalse.s  IL_0076
+      IL_0070:  ldloc.1
+      IL_0071:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
+      IL_0076:  endfinally
     }  // end handler
-    IL_00a5:  ret
-  }
+    IL_0077:  ret
+  } 
   .method public hidebysig static void  Attach() cil managed
   {
     // Code size       132 (0x84)
@@ -925,5 +905,5 @@
                                                                                    native int)
     IL_007e:  callvirt   instance void [mscorlib]System.AppDomain::add_AssemblyResolve(class [mscorlib]System.ResolveEventHandler)
     IL_0083:  ret
-  }
+  } 
 }
