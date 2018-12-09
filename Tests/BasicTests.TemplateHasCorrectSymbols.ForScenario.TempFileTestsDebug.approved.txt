@@ -9,7 +9,7 @@
   .field private static class [mscorlib]System.Collections.Generic.List`1<string> preload64List
   .field private static class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> checksums
   .field private static int32 isAttached
-  .method private hidebysig static string 
+  .method private hidebysig static string
           CultureToString(class [mscorlib]System.Globalization.CultureInfo culture) cil managed
   {
     // Code size       29 (0x1d)
@@ -33,7 +33,7 @@
     IL_0019:  br.s       IL_001b
     IL_001b:  ldloc.1
     IL_001c:  ret
-  } 
+  }
   .method private hidebysig static void  Log(string format,
                                              object[] args) cil managed
   {
@@ -50,8 +50,8 @@
     IL_0012:  call       void [System]System.Diagnostics.Debug::WriteLine(string)
     IL_0017:  nop
     IL_0018:  ret
-  } 
-  .method private hidebysig static class [mscorlib]System.Reflection.Assembly 
+  }
+  .method private hidebysig static class [mscorlib]System.Reflection.Assembly
           ReadExistingAssembly(class [mscorlib]System.Reflection.AssemblyName name) cil managed
   {
     // Code size       148 (0x94)
@@ -139,8 +139,8 @@
     IL_008f:  br.s       IL_0091
     IL_0091:  ldloc.s    V_7
     IL_0093:  ret
-  } 
-  .method private hidebysig static class [mscorlib]System.Reflection.Assembly 
+  }
+  .method private hidebysig static class [mscorlib]System.Reflection.Assembly
           ReadFromDiskCache(string tempBasePath,
                             class [mscorlib]System.Reflection.AssemblyName requestedAssemblyName) cil managed
   {
@@ -264,8 +264,8 @@
     IL_00fc:  br.s       IL_00fe
     IL_00fe:  ldloc.s    V_5
     IL_0100:  ret
-  } 
-  .method public hidebysig static class [mscorlib]System.Reflection.Assembly 
+  }
+  .method public hidebysig static class [mscorlib]System.Reflection.Assembly
           ResolveAssembly(object sender,
                           class [mscorlib]System.ResolveEventArgs e) cil managed
   {
@@ -410,8 +410,8 @@
     IL_00f1:  br.s       IL_00f3
     IL_00f3:  ldloc.s    V_5
     IL_00f5:  ret
-  } 
-  .method private hidebysig specialname rtspecialname static 
+  }
+  .method private hidebysig specialname rtspecialname static
           void  .cctor() cil managed
   {
     // Code size       271 (0x10f)
@@ -479,7 +479,7 @@
     IL_0104:  ldstr      "costura.exetoreference.pdb.compressed"
     IL_0109:  callvirt   instance void class [mscorlib]System.Collections.Generic.List`1<string>::Add(!0)
     IL_010e:  ret
-  } 
+  }
   .method private hidebysig static void  CreateDirectory(string tempBasePath) cil managed
   {
     // Code size       24 (0x18)
@@ -499,8 +499,8 @@
     IL_0015:  pop
     IL_0016:  nop
     IL_0017:  ret
-  } 
-  .method private hidebysig static string 
+  }
+  .method private hidebysig static string
           ResourceNameToPath(string lib) cil managed
   {
     // Code size       138 (0x8a)
@@ -576,8 +576,8 @@
     IL_0085:  br.s       IL_0087
     IL_0087:  ldloc.s    V_5
     IL_0089:  ret
-  } 
-  .method private hidebysig static string 
+  }
+  .method private hidebysig static string
           CalculateChecksum(string filename) cil managed
   {
     // Code size       144 (0x90)
@@ -688,7 +688,7 @@
     }  // end handler
     IL_008d:  ldloc.s    V_8
     IL_008f:  ret
-  } 
+  }
   .method private hidebysig static void  CopyTo(class [mscorlib]System.IO.Stream source,
                                                 class [mscorlib]System.IO.Stream destination) cil managed
   {
@@ -729,8 +729,8 @@
     IL_002b:  ldloc.2
     IL_002c:  brtrue.s   IL_000e
     IL_002e:  ret
-  } 
-  .method private hidebysig static class [mscorlib]System.IO.Stream 
+  }
+  .method private hidebysig static class [mscorlib]System.IO.Stream
           LoadStream(string fullName) cil managed
   {
     // Code size       108 (0x6c)
@@ -807,16 +807,16 @@
     IL_0067:  br.s       IL_0069
     IL_0069:  ldloc.s    V_5
     IL_006b:  ret
-  } 
-  .method private hidebysig static pinvokeimpl("kernel32.dll" unicode lasterr winapi) 
+  }
+  .method private hidebysig static pinvokeimpl("kernel32.dll" unicode lasterr winapi)
           bool  SetDllDirectory(string lpPathName) cil managed preservesig
   {
   }
-  .method private hidebysig static pinvokeimpl("kernel32.dll" winapi) 
+  .method private hidebysig static pinvokeimpl("kernel32.dll" winapi)
           uint32  SetErrorMode(uint32 uMode) cil managed preservesig
   {
   }
-  .method private hidebysig static pinvokeimpl("kernel32" unicode lasterr winapi) 
+  .method private hidebysig static pinvokeimpl("kernel32" unicode lasterr winapi)
           native int  LoadLibrary(string dllToLoad) cil managed preservesig
   {
   }
@@ -1006,7 +1006,7 @@
     IL_0135:  call       uint32 Costura.AssemblyLoader::SetErrorMode(uint32)
     IL_013a:  pop
     IL_013b:  ret
-  } 
+  }
   .method private hidebysig static void  PreloadUnmanagedLibraries(string hash,
                                                                    string tempBasePath,
                                                                    class [mscorlib]System.Collections.Generic.IList`1<string> libs,
@@ -1083,7 +1083,7 @@
           IL_0069:  nop
           IL_006a:  leave.s    IL_0074
         }  // end .try
-        catch [mscorlib]System.Threading.AbandonedMutexException 
+        catch [mscorlib]System.Threading.AbandonedMutexException
         {
           IL_006c:  pop
           IL_006d:  nop
@@ -1143,7 +1143,7 @@
       IL_00c5:  endfinally
     }  // end handler
     IL_00c6:  ret
-  } 
+  }
   .method public hidebysig static void  Attach() cil managed
   {
     // Code size       151 (0x97)
@@ -1215,5 +1215,5 @@
     IL_0090:  callvirt   instance void [mscorlib]System.AppDomain::add_AssemblyResolve(class [mscorlib]System.ResolveEventHandler)
     IL_0095:  nop
     IL_0096:  ret
-  } 
+  }
 }
