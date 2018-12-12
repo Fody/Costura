@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using Mono.Cecil;
+using System.Text.RegularExpressions;
 
 partial class ModuleWeaver : IDisposable
 {
@@ -86,6 +87,16 @@ partial class ModuleWeaver : IDisposable
         }
     }
 
+    bool CompareAssemblyName(string assemblyName, string matchText)
+    {
+        if (matchText.EndsWith("*"))
+        {
+            return assemblyName.StartsWith(matchText.TrimEnd('*'));
+        }
+
+        return Regex.IsMatch(assemblyName, matchText);
+    }
+
     IEnumerable<string> GetFilteredReferences(IEnumerable<string> onlyBinaries, Configuration config)
     {
         if (config.IncludeAssemblies.Any())
@@ -96,9 +107,9 @@ partial class ModuleWeaver : IDisposable
             {
                 var assemblyName = Path.GetFileNameWithoutExtension(file);
 
-                if (config.IncludeAssemblies.Any(x => x == assemblyName) &&
-                    config.Unmanaged32Assemblies.All(x => x != assemblyName) &&
-                    config.Unmanaged64Assemblies.All(x => x != assemblyName))
+                if (config.IncludeAssemblies.Any(x => CompareAssemblyName(x, assemblyName)) &&
+                    config.Unmanaged32Assemblies.All(x => !CompareAssemblyName(x, assemblyName)) &&
+                    config.Unmanaged64Assemblies.All(x => !CompareAssemblyName(x, assemblyName)))
                 {
                     skippedAssemblies.Remove(assemblyName);
                     yield return file;
@@ -117,7 +128,7 @@ partial class ModuleWeaver : IDisposable
                 foreach (var skippedAssembly in skippedAssemblies)
                 {
                     var fileName = (from splittedReference in splittedReferences
-                                    where string.Equals(Path.GetFileNameWithoutExtension(splittedReference), skippedAssembly, StringComparison.InvariantCultureIgnoreCase)
+                                    where CompareAssemblyName(skippedAssembly, splittedReference)
                                     select splittedReference).FirstOrDefault();
                     if (string.IsNullOrEmpty(fileName))
                     {
@@ -136,9 +147,9 @@ partial class ModuleWeaver : IDisposable
             {
                 var assemblyName = Path.GetFileNameWithoutExtension(file);
 
-                if (config.ExcludeAssemblies.Any(x => x == assemblyName) ||
-                    config.Unmanaged32Assemblies.Any(x => x == assemblyName) ||
-                    config.Unmanaged64Assemblies.Any(x => x == assemblyName))
+                if (config.ExcludeAssemblies.Any(x => CompareAssemblyName(x, assemblyName)) ||
+                    config.Unmanaged32Assemblies.Any(x => CompareAssemblyName(x, assemblyName)) ||
+                    config.Unmanaged64Assemblies.Any(x => CompareAssemblyName(x, assemblyName)))
                 {
                     continue;
                 }
@@ -152,8 +163,8 @@ partial class ModuleWeaver : IDisposable
             {
                 var assemblyName = Path.GetFileNameWithoutExtension(file);
 
-                if (config.Unmanaged32Assemblies.All(x => x != assemblyName) &&
-                    config.Unmanaged64Assemblies.All(x => x != assemblyName))
+                if (config.Unmanaged32Assemblies.All(x => !CompareAssemblyName(x, assemblyName)) &&
+                    config.Unmanaged64Assemblies.All(x => !CompareAssemblyName(x, assemblyName)))
                 {
                     yield return file;
                 }
