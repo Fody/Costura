@@ -1,6 +1,6 @@
 ---
-name: Bug fix
-about: Create a bug fix to help us improve
+name: Bug/Issue
+about: Report a bug or other issue
 ---
 
 Where it is clear that the below content has not read, the issue is likely to be closed with "please read the template". Please don't take offense at this. It is simply a time management decision. When someone raises an issue, without reading the template, then often too much time is spent going back and forth to obtain information that is outlined below.
@@ -8,19 +8,19 @@ Where it is clear that the below content has not read, the issue is likely to be
 
 #### You should already be a Patron
 
-To be using Fody you should be a [Patron](https://opencollective.com/fody/order/3059). See [Licensing/Patron FAQ](https://github.com/Fody/Fody#licensingpatron-faq). With that requirement in mind, it is assumed anyone raising an issue is already a Patron.  As such your GitHub user name may be verified against the [OpenCollective contributors](https://opencollective.com/fody#contributors). This verification will depend on the issue quality, your circumstances, and the impact on the larger Fody user base.
+To be using Fody you should be a [Patron](https://opencollective.com/fody/order/3059). See [Licensing/Patron FAQ](https://github.com/Fody/Fody#licensingpatron-faq). With that in mind, it is assumed anyone raising an issue is already a Patron. As such your GitHub Id may be verified against the [OpenCollective contributors](https://opencollective.com/fody#contributors). This process will depend on the issue quality, your circumstances, and the impact on the larger user base.
 
 
 #### Preamble
 
-Questions specific to IL manipulation should be placed on [Stack Overflow](https://stackoverflow.com/) or the [Cecil mailing list](https://groups.google.com/forum/#!forum/mono-cecil).
+Questions specific to IL manipulation should be placed on [Stack Overflow](https://stackoverflow.com/) or the [Cecil Forum](https://groups.google.com/forum/#!forum/mono-cecil).
 
 General questions about Fody or weavers should be placed on [Stack Overflow](https://stackoverflow.com/) or the [Fody Gitter room](https://gitter.im/Fody/Fody)
 
 Where relevant, ensure you are using the current stable versions of the following:
 
  * Fody (note for this you need an explicit NuGet reference to Fody in your csproj)
- * Fody weavers
+ * Any Fody weavers being used
  * Visual Studio
  * [.NET Core SDK](https://www.microsoft.com/net/download)
 
