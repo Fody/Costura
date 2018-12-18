@@ -89,9 +89,12 @@ partial class ModuleWeaver : IDisposable
 
     bool CompareAssemblyName(string assemblyName, string matchText)
     {
-        if (matchText.EndsWith("*"))
+        // Check if it's a regex statement, if not, convert to one.
+        if (!matchText.StartsWith("^"))
         {
-            return assemblyName.StartsWith(matchText.TrimEnd('*'));
+            // Convert all .'s to escaped characters then replace wildcards with regex match-all's.
+            matchText = matchText.Replace(".", "\\.").Replace("*", "(.*)");
+            matchText = "^" + matchText + "$";
         }
 
         return Regex.IsMatch(assemblyName, matchText);
