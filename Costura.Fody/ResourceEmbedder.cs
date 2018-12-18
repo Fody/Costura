@@ -87,8 +87,9 @@ partial class ModuleWeaver : IDisposable
         }
     }
 
-    bool CompareAssemblyName(string assemblyName, string matchText)
+    bool CompareAssemblyName(string matchText, string assemblyName)
     {
+
         // Check if it's a regex statement, if not, convert to one.
         if (!matchText.StartsWith("^"))
         {
@@ -114,7 +115,7 @@ partial class ModuleWeaver : IDisposable
                     config.Unmanaged32Assemblies.All(x => !CompareAssemblyName(x, assemblyName)) &&
                     config.Unmanaged64Assemblies.All(x => !CompareAssemblyName(x, assemblyName)))
                 {
-                    skippedAssemblies.Remove(assemblyName);
+                    skippedAssemblies.Remove(config.IncludeAssemblies.First(x => CompareAssemblyName(x, assemblyName)));
                     yield return file;
                 }
             }
@@ -131,7 +132,7 @@ partial class ModuleWeaver : IDisposable
                 foreach (var skippedAssembly in skippedAssemblies)
                 {
                     var fileName = (from splittedReference in splittedReferences
-                                    where CompareAssemblyName(skippedAssembly, splittedReference)
+                                    where string.Equals(Path.GetFileNameWithoutExtension(skippedAssembly), splittedReference, StringComparison.InvariantCulture)
                                     select splittedReference).FirstOrDefault();
                     if (string.IsNullOrEmpty(fileName))
                     {
