@@ -4,7 +4,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using Mono.Cecil;
-using System.Text.RegularExpressions;
 
 partial class ModuleWeaver : IDisposable
 {
@@ -89,16 +88,12 @@ partial class ModuleWeaver : IDisposable
 
     bool CompareAssemblyName(string matchText, string assemblyName)
     {
-
-        // Check if it's a regex statement, if not, convert to one.
-        if (!matchText.StartsWith("^"))
+        if (matchText.EndsWith("*") && matchText.Length > 1)
         {
-            // Convert all .'s to escaped characters then replace wildcards with regex match-all's.
-            matchText = matchText.Replace(".", "\\.").Replace("*", "(.*)");
-            matchText = "^" + matchText + "$";
+            return assemblyName.StartsWith(matchText.Substring(0, matchText.Length - 1));
         }
 
-        return Regex.IsMatch(assemblyName, matchText);
+        return matchText.Equals(assemblyName);
     }
 
     IEnumerable<string> GetFilteredReferences(IEnumerable<string> onlyBinaries, Configuration config)
