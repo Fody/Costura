@@ -34,12 +34,12 @@ partial class ModuleWeaver : IDisposable
             {
                 if (dependency.EndsWith(".resources.dll",StringComparison.OrdinalIgnoreCase))
                 {
-                    Embed($"costura.{Path.GetFileName(Path.GetDirectoryName(fullPath))}.", fullPath, !disableCompression, createTemporaryAssemblies);
+                    Embed($"costura.{Path.GetFileName(Path.GetDirectoryName(fullPath))}.", fullPath, !disableCompression, createTemporaryAssemblies, config.DisableCleanup);
                     continue;
                 }
             }
 
-            Embed("costura.", fullPath, !disableCompression, createTemporaryAssemblies);
+            Embed("costura.", fullPath, !disableCompression, createTemporaryAssemblies, config.DisableCleanup);
 
             if (!config.IncludeDebugSymbols)
             {
@@ -48,7 +48,7 @@ partial class ModuleWeaver : IDisposable
             var pdbFullPath = Path.ChangeExtension(fullPath, "pdb");
             if (File.Exists(pdbFullPath))
             {
-                Embed("costura.", pdbFullPath, !disableCompression, createTemporaryAssemblies);
+                Embed("costura.", pdbFullPath, !disableCompression, createTemporaryAssemblies, config.DisableCleanup);
             }
         }
 
@@ -73,7 +73,7 @@ partial class ModuleWeaver : IDisposable
             }
 
             var fullPath = Path.GetFullPath(dependency);
-            Embed(prefix, fullPath, !disableCompression, true);
+            Embed(prefix, fullPath, !disableCompression, true, config.DisableCleanup);
 
             if (!config.IncludeDebugSymbols)
             {
@@ -82,7 +82,7 @@ partial class ModuleWeaver : IDisposable
             var pdbFullPath = Path.ChangeExtension(fullPath, "pdb");
             if (File.Exists(pdbFullPath))
             {
-                Embed(prefix, pdbFullPath, !disableCompression, true);
+                Embed(prefix, pdbFullPath, !disableCompression, true, config.DisableCleanup);
             }
         }
     }
@@ -162,10 +162,13 @@ partial class ModuleWeaver : IDisposable
         }
     }
 
-    void Embed(string prefix, string fullPath, bool compress, bool addChecksum)
+    void Embed(string prefix, string fullPath, bool compress, bool addChecksum, bool disableCleanup)
     {
-        // in any case we can remove this from the copy local paths, because either it's already embedded, or it will be embedded.
-        ReferenceCopyLocalPaths.RemoveAll(item => string.Equals(item, fullPath, StringComparison.OrdinalIgnoreCase));
+        if (!disableCleanup)
+        {
+            // in any case we can remove this from the copy local paths, because either it's already embedded, or it will be embedded.
+            ReferenceCopyLocalPaths.RemoveAll(item => string.Equals(item, fullPath, StringComparison.OrdinalIgnoreCase));
+        }
 
         var resourceName = $"{prefix}{Path.GetFileName(fullPath).ToLowerInvariant()}";
 
