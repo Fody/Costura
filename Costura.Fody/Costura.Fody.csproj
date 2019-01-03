@@ -34,5 +34,4 @@
       <InProject>false</InProject>
     </EmbeddedResource>
   </ItemGroup>
-  <Import Project="..\Costura.Shared\Costura.Shared.projitems" Label="Shared" />
 </Project>
