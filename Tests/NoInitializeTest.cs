@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using Fody;
+using Xunit;
 
 public class NoInitializeTest
 {

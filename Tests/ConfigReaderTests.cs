@@ -1,4 +1,5 @@
 ﻿using System.Xml.Linq;
+using Fody;
 using Xunit;
 
 public class ConfigReaderTests
