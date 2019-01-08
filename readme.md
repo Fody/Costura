@@ -133,10 +133,9 @@ Costura by default will load as part of the module initialization. This flag dis
 
 ### IgnoreSatelliteAssemblies
 
-Costura will by default use assemblies with a name like 'resources.dll' as a satellite resource and prepend the output path. This flag disables that behaviour.
+Costura will by default use assemblies with a name like 'resources.dll' as a satellite resource and prepend the output path. This flag disables that behavior.
 
 *Defaults to `false`*
-
 
 ```xml
 <Costura IgnoreSatelliteAssemblies='true' />
