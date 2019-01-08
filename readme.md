@@ -58,8 +58,9 @@ static <Module>()
 ```
 
  * Injects the following class into the target assembly. This means if an assembly load fails it will be loaded from the embedded resources.
-    * [ILTemplate.cs](https://github.com/Fody/Costura/blob/master/Costura.Template/ILTemplate.cs
+    * [ILTemplate.cs](https://github.com/Fody/Costura/blob/master/Costura.Template/ILTemplate.cs)
     * [ILTemplateWithTempAssembly.cs](https://github.com/Fody/Costura/blob/master/Costura.Template/ILTemplateWithTempAssembly.cs)
+
 
 ## Configuration Options
 
