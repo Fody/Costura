@@ -28,7 +28,8 @@ public class Configuration
             return;
         }
 
-        if (config.Attribute("IncludeAssemblies") != null || config.Element("IncludeAssemblies") != null)
+        if (config.Attribute("IncludeAssemblies") != null ||
+            config.Element("IncludeAssemblies") != null)
         {
             OptOut = false;
         }
