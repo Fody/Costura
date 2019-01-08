@@ -287,7 +287,9 @@ Most unit test frameworks need the `.dll`s files in order to discover and perfor
 
 ```xml
 <Weavers>
-    <Costura ExcludeAssemblies='TargetExe|TargetExeTest' CreateTemporaryAssemblies='true' DisableCleanup='true'/>
+    <Costura ExcludeAssemblies='TargetExe|TargetExeTest'
+             CreateTemporaryAssemblies='true'
+             DisableCleanup='true'/>
 </Weavers>
 ```
 
