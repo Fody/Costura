@@ -87,6 +87,16 @@ partial class ModuleWeaver : IDisposable
         }
     }
 
+    bool CompareAssemblyName(string matchText, string assemblyName)
+    {
+        if (matchText.EndsWith("*") && matchText.Length > 1)
+        {
+            return assemblyName.StartsWith(matchText.Substring(0, matchText.Length - 1));
+        }
+
+        return matchText.Equals(assemblyName);
+    }
+
     IEnumerable<string> GetFilteredReferences(IEnumerable<string> onlyBinaries, Configuration config)
     {
         if (config.IncludeAssemblies.Any())
@@ -97,11 +107,11 @@ partial class ModuleWeaver : IDisposable
             {
                 var assemblyName = Path.GetFileNameWithoutExtension(file);
 
-                if (config.IncludeAssemblies.Any(x => x == assemblyName) &&
-                    config.Unmanaged32Assemblies.All(x => x != assemblyName) &&
-                    config.Unmanaged64Assemblies.All(x => x != assemblyName))
+                if (config.IncludeAssemblies.Any(x => CompareAssemblyName(x, assemblyName)) &&
+                    config.Unmanaged32Assemblies.All(x => !CompareAssemblyName(x, assemblyName)) &&
+                    config.Unmanaged64Assemblies.All(x => !CompareAssemblyName(x, assemblyName)))
                 {
-                    skippedAssemblies.Remove(assemblyName);
+                    skippedAssemblies.Remove(config.IncludeAssemblies.First(x => CompareAssemblyName(x, assemblyName)));
                     yield return file;
                 }
             }
@@ -118,7 +128,7 @@ partial class ModuleWeaver : IDisposable
                 foreach (var skippedAssembly in skippedAssemblies)
                 {
                     var fileName = (from splittedReference in splittedReferences
-                                    where string.Equals(Path.GetFileNameWithoutExtension(splittedReference), skippedAssembly, StringComparison.InvariantCultureIgnoreCase)
+                                    where string.Equals(Path.GetFileNameWithoutExtension(skippedAssembly), splittedReference, StringComparison.InvariantCulture)
                                     select splittedReference).FirstOrDefault();
                     if (string.IsNullOrEmpty(fileName))
                     {
@@ -137,9 +147,9 @@ partial class ModuleWeaver : IDisposable
             {
                 var assemblyName = Path.GetFileNameWithoutExtension(file);
 
-                if (config.ExcludeAssemblies.Any(x => x == assemblyName) ||
-                    config.Unmanaged32Assemblies.Any(x => x == assemblyName) ||
-                    config.Unmanaged64Assemblies.Any(x => x == assemblyName))
+                if (config.ExcludeAssemblies.Any(x => CompareAssemblyName(x, assemblyName)) ||
+                    config.Unmanaged32Assemblies.Any(x => CompareAssemblyName(x, assemblyName)) ||
+                    config.Unmanaged64Assemblies.Any(x => CompareAssemblyName(x, assemblyName)))
                 {
                     continue;
                 }
@@ -153,8 +163,8 @@ partial class ModuleWeaver : IDisposable
             {
                 var assemblyName = Path.GetFileNameWithoutExtension(file);
 
-                if (config.Unmanaged32Assemblies.All(x => x != assemblyName) &&
-                    config.Unmanaged64Assemblies.All(x => x != assemblyName))
+                if (config.Unmanaged32Assemblies.All(x => !CompareAssemblyName(x, assemblyName)) &&
+                    config.Unmanaged64Assemblies.All(x => !CompareAssemblyName(x, assemblyName)))
                 {
                     yield return file;
                 }

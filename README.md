@@ -156,6 +156,8 @@ Do not include `.exe` or `.dll` in the names.
 
 Can not be defined with `IncludeAssemblies`.
 
+Can use wildcards for partial assembly name matching. For example `System.*` will exclude all assemblies that start with `System.`. Wildcards may only be used at the end of an entry so for example, `System.*.Private.*` would not work.
+
 Can take two forms.
 
 As an element with items delimited by a newline.
@@ -184,6 +186,8 @@ Do not include `.exe` or `.dll` in the names.
 
 Can not be defined with `ExcludeAssemblies`.
 
+Can use wildcards at the end of the name for partial matching.
+
 Can take two forms. 
 
 As an element with items delimited by a newline.
@@ -211,6 +215,8 @@ Mixed-mode assemblies cannot be loaded the same way as managed assemblies.
 Therefore, to help Costura identify which assemblies are mixed-mode, and in what environment to load them in you should include their names in one or both of these lists.
 
 Do not include `.exe` or `.dll` in the names.
+
+Can use wildcards at the end of the name for partial matching.
 
 Can take two forms. 
 
