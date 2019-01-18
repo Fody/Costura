@@ -12,6 +12,7 @@ static class WeavingHelper
         var weavingTask = new ModuleWeaver
         {
             Config = XElement.Parse(config),
+            References = string.Join(";", references.Select(r => Path.Combine(CodeBaseLocation.CurrentDirectory, r))),
             ReferenceCopyLocalPaths = references.Select(r => Path.Combine(CodeBaseLocation.CurrentDirectory, r)).ToList(),
         };
         return weavingTask.ExecuteTestRun(assemblyPath,
