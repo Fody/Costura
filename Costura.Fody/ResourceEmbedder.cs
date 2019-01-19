@@ -32,7 +32,7 @@ partial class ModuleWeaver : IDisposable
 
             if (!config.IgnoreSatelliteAssemblies)
             {
-                if (dependency.EndsWith(".resources.dll",StringComparison.OrdinalIgnoreCase))
+                if (dependency.EndsWith(".resources.dll", StringComparison.OrdinalIgnoreCase))
                 {
                     Embed($"costura.{Path.GetFileName(Path.GetDirectoryName(fullPath))}.", fullPath, !disableCompression, createTemporaryAssemblies, config.DisableCleanup);
                     continue;
@@ -91,10 +91,10 @@ partial class ModuleWeaver : IDisposable
     {
         if (matchText.EndsWith("*") && matchText.Length > 1)
         {
-            return assemblyName.StartsWith(matchText.Substring(0, matchText.Length - 1));
+            return assemblyName.StartsWith(matchText.Substring(0, matchText.Length - 1), StringComparison.OrdinalIgnoreCase);
         }
 
-        return matchText.Equals(assemblyName);
+        return matchText.Equals(assemblyName, StringComparison.OrdinalIgnoreCase);
     }
 
     IEnumerable<string> GetFilteredReferences(IEnumerable<string> onlyBinaries, Configuration config)
@@ -118,12 +118,14 @@ partial class ModuleWeaver : IDisposable
 
             if (skippedAssemblies.Count > 0)
             {
-                if (References == null)
+                if (References is null)
                 {
                     throw new WeavingException("To embed references with CopyLocal='false', References is required - you may need to update to the latest version of Fody.");
                 }
 
                 var splittedReferences = References.Split(';');
+
+                var hasErrors = false;
 
                 foreach (var skippedAssembly in skippedAssemblies)
                 {
@@ -132,10 +134,17 @@ partial class ModuleWeaver : IDisposable
                                     select splittedReference).FirstOrDefault();
                     if (string.IsNullOrEmpty(fileName))
                     {
+                        hasErrors = true;
                         LogError($"Assembly '{skippedAssembly}' cannot be found (not even as CopyLocal='false'), please update the configuration");
+                        continue;
                     }
 
                     yield return fileName;
+                }
+
+                if (hasErrors)
+                {
+                    throw new WeavingException("One or more errors occurred, please check the log");
                 }
             }
 
