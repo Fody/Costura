@@ -130,7 +130,7 @@ partial class ModuleWeaver : IDisposable
                 foreach (var skippedAssembly in skippedAssemblies)
                 {
                     var fileName = (from splittedReference in splittedReferences
-                                    where string.Equals(Path.GetFileNameWithoutExtension(skippedAssembly), splittedReference, StringComparison.InvariantCulture)
+                                    where string.Equals(Path.GetFileNameWithoutExtension(splittedReference), skippedAssembly, StringComparison.InvariantCulture)
                                     select splittedReference).FirstOrDefault();
                     if (string.IsNullOrEmpty(fileName))
                     {
