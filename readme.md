@@ -1,4 +1,4 @@
-### <img src="https://raw.githubusercontent.com/Fody/Costura/master/package_icon.png" height="28px"> Costura is an add-in for [Fody](https://github.com/Fody/Fody/)
+### <img src="https://raw.githubusercontent.com/Fody/Costura/master/package_icon.png" height="28px"> Costura is an add-in for [Fody](https://github.com/Fody/Home/)
 
 Embeds dependencies as resources.
 
@@ -20,7 +20,7 @@ The `Install-Package Fody` is required since NuGet always defaults to the oldest
 
 ### Add to FodyWeavers.xml
 
-Add `<Costura/>` to [FodyWeavers.xml](https://github.com/Fody/Fody#add-fodyweaversxml)
+Add `<Costura/>` to [FodyWeavers.xml](https://github.com/Fody/Home/blob/master/pages/usage.md#add-fodyweaversxml)
 
 ```xml
 <?xml version="1.0" encoding="utf-8" ?>
