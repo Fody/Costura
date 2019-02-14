@@ -7,6 +7,7 @@
     <Authors>https://github.com/Fody/Costura/graphs/contributors</Authors>
     <Description>Fody add-in for embedding references as resources.</Description>
     <PackageTags>ILMerge, ILWeaving, Embed, Resource, Fody, Cecil</PackageTags>
+    <PackageOutputPath>$(SolutionDir)nugets</PackageOutputPath>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Fody" Version="4.0.2" PrivateAssets="None" />
