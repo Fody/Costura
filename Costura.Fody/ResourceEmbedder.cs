@@ -220,6 +220,19 @@ partial class ModuleWeaver : IDisposable
 
         var checksum = CalculateChecksum(fullPath);
         var cacheFile = Path.Combine(cachePath, $"{checksum}.{resourceName}");
+        var memoryStream = BuildMemoryStream(fullPath, compress, cacheFile);
+        streams.Add(memoryStream);
+        var resource = new EmbeddedResource(resourceName, ManifestResourceAttributes.Private, memoryStream);
+        ModuleDefinition.Resources.Add(resource);
+
+        if (addChecksum)
+        {
+            checksums.Add(resourceName, checksum);
+        }
+    }
+
+    static MemoryStream BuildMemoryStream(string fullPath, bool compress, string cacheFile)
+    {
         var memoryStream = new MemoryStream();
 
         if (File.Exists(cacheFile))
@@ -247,20 +260,14 @@ partial class ModuleWeaver : IDisposable
                         fileStream.CopyTo(memoryStream);
                     }
                 }
+
                 memoryStream.Position = 0;
                 memoryStream.CopyTo(cacheFileStream);
             }
         }
 
         memoryStream.Position = 0;
-        streams.Add(memoryStream);
-        var resource = new EmbeddedResource(resourceName, ManifestResourceAttributes.Private, memoryStream);
-        ModuleDefinition.Resources.Add(resource);
-
-        if (addChecksum)
-        {
-            checksums.Add(resourceName, checksum);
-        }
+        return memoryStream;
     }
 
     public void Dispose()
