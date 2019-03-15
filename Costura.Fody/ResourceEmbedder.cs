@@ -183,6 +183,25 @@ partial class ModuleWeaver : IDisposable
 
     void Embed(string prefix, string fullPath, bool compress, bool addChecksum, bool disableCleanup)
     {
+        try
+        {
+            InnerEmbed(prefix, fullPath, compress, addChecksum, disableCleanup);
+        }
+        catch (Exception exception)
+        {
+            throw new Exception(
+                innerException: exception,
+                message: $@"Failed to embed.
+prefix: {prefix}
+fullPath: {fullPath}
+compress: {compress}
+addChecksum: {addChecksum}
+disableCleanup: {disableCleanup}");
+        }
+    }
+
+    private void InnerEmbed(string prefix, string fullPath, bool compress, bool addChecksum, bool disableCleanup)
+    {
         if (!disableCleanup)
         {
             // in any case we can remove this from the copy local paths, because either it's already embedded, or it will be embedded.
