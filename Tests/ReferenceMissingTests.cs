@@ -1,8 +1,6 @@
 ﻿#pragma warning disable 618
 
 using Fody;
-using System;
-using System.IO;
 using Xunit;
 
 public class ReferenceMissingTests

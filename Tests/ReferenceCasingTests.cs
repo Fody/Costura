@@ -1,7 +1,6 @@
 ﻿#pragma warning disable 618
 
 using Fody;
-using Xunit;
 
 public class ReferenceCasingTests : BasicTests
 {

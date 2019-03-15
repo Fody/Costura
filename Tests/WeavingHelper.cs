@@ -7,7 +7,7 @@ using Fody;
 
 static class WeavingHelper
 {
-    public static TestResult CreateIsolatedAssemblyCopy(string assemblyPath, string config, IEnumerable<string> references, string assemblyName)
+    public static TestResult CreateIsolatedAssemblyCopy(string assemblyPath, string config, string[] references, string assemblyName)
     {
         var weavingTask = new ModuleWeaver
         {
