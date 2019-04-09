@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using Fody;
@@ -11,8 +12,8 @@ static class WeavingHelper
         var weavingTask = new ModuleWeaver
         {
             Config = XElement.Parse(config),
-            References = string.Join(";", references.Select(r => Path.Combine(CodeBaseLocation.CurrentDirectory, r))),
-            ReferenceCopyLocalPaths = references.Select(r => Path.Combine(CodeBaseLocation.CurrentDirectory, r)).ToList(),
+            References = string.Join(";", references.Select(r => Path.Combine(Environment.CurrentDirectory, r))),
+            ReferenceCopyLocalPaths = references.Select(r => Path.Combine(Environment.CurrentDirectory, r)).ToList(),
         };
         return weavingTask.ExecuteTestRun(assemblyPath,
             assemblyName: assemblyName,
