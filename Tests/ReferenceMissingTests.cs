@@ -1,9 +1,9 @@
-﻿#pragma warning disable 618
-
-using Fody;
+﻿using Fody;
 using Xunit;
+using Xunit.Abstractions;
 
-public class ReferenceMissingTests
+public class ReferenceMissingTests :
+    XunitLoggingBase
 {
     [Fact]
     public void ThrowsForMissingReference()
@@ -17,5 +17,10 @@ public class ReferenceMissingTests
                 new[] { "AssemblyToReference.dll", "AssemblyToReferencePreEmbedded.dll", "ExeToReference.exe" },
                 "InitializeCall");
         });
+    }
+
+    public ReferenceMissingTests(ITestOutputHelper output) : 
+        base(output)
+    {
     }
 }
