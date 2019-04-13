@@ -1,8 +1,8 @@
-﻿#pragma warning disable 618
+﻿using Fody;
+using Xunit.Abstractions;
 
-using Fody;
-
-public class ReferenceCasingTests : BasicTests
+public class ReferenceCasingTests : 
+    BasicTests 
 {
     private static readonly TestResult testResult;
 
@@ -15,4 +15,9 @@ public class ReferenceCasingTests : BasicTests
     }
 
     public override TestResult TestResult => testResult;
+
+    public ReferenceCasingTests(ITestOutputHelper output) :
+        base(output)
+    {
+    }
 }

@@ -4,9 +4,10 @@ using ApprovalTests;
 using ApprovalTests.Namers;
 using Fody;
 using Xunit;
-#pragma warning disable 618
+using Xunit.Abstractions;
 
-public class CultureResourceTests : BaseCosturaTest
+public class CultureResourceTests : 
+    BaseCosturaTest
 {
     static TestResult testResult;
 
@@ -56,4 +57,9 @@ public class CultureResourceTests : BaseCosturaTest
     }
 
     public override TestResult TestResult => testResult;
+
+    public CultureResourceTests(ITestOutputHelper output) :
+        base(output)
+    {
+    }
 }
