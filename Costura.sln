@@ -43,10 +43,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationTests", "IntegrationTests\IntegrationTests.csproj", "{C199705D-3A21-422A-B2D5-F89A4DA7901C}"
-	ProjectSection(ProjectDependencies) = postProject
-		{E5622B74-B6C6-46A5-9207-0872533E6C2F} = {E5622B74-B6C6-46A5-9207-0872533E6C2F}
-		{6170BDB9-A44B-46AD-8E81-3BCEAB11813F} = {6170BDB9-A44B-46AD-8E81-3BCEAB11813F}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExeToProcessWithNativeAndEmbeddedMixed", "ExeToProcessWithNative\ExeToProcessWithNativeAndEmbeddedMixed.csproj", "{B593D72B-8CDA-40E0-B657-D8030283B028}"
 EndProject
