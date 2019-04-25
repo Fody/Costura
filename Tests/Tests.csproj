@@ -9,7 +9,7 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="MixedAndNativeTests.cs" Condition="$(Configuration)=='Release'" />
+    <Compile Remove="MixedAndNativeTests.cs" Condition="$(Configuration) == 'Release'" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ApprovalTests" Version="3.0.22" />
