@@ -6,9 +6,6 @@ MinimumVisualStudioVersion = 16.0.28721.148
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Costura.Template", "Costura.Template\Costura.Template.csproj", "{CD9AEBAA-78F4-4A78-BF06-0CB7D84D83E8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Costura.Fody", "Costura.Fody\Costura.Fody.csproj", "{E5622B74-B6C6-46A5-9207-0872533E6C2F}"
-	ProjectSection(ProjectDependencies) = postProject
-		{CD9AEBAA-78F4-4A78-BF06-0CB7D84D83E8} = {CD9AEBAA-78F4-4A78-BF06-0CB7D84D83E8}
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestAssemblies", "TestAssemblies", "{434F54AD-0845-4F63-ACB2-162105A1A741}"
 EndProject
