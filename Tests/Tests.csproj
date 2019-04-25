@@ -15,7 +15,7 @@
     <PackageReference Include="ApprovalTests" Version="3.0.22" />
     <PackageReference Include="FodyHelpers" Version="5.0.0-beta.11" />
     <PackageReference Include="Xunit" Version="2.4.1" />
-    <PackageReference Include="XunitLogger" Version="1.2.0" />
+    <PackageReference Include="XunitLogger" Version="1.0.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
