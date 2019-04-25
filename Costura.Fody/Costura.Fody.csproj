@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>net472;netstandard2.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="FodyHelpers" Version="5.0.0-beta.7" />
+    <PackageReference Include="FodyHelpers" Version="5.0.0-beta.4" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(SolutionDir)Costura.Template\bin\$(ConfigurationName)\net46\Costura.Template.dll">

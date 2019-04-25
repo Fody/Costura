@@ -20,7 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Costura.Fody\Costura.Fody.csproj" Condition="'$(TargetFramework)'=='dummy'" />
 
-    <PackageReference Include="Fody" Version="5.0.0-beta.7">
+    <PackageReference Include="Fody" Version="5.0.0-beta.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
