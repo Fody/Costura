@@ -3,10 +3,8 @@ using System.Diagnostics;
 using ApprovalTests;
 using ApprovalTests.Namers;
 using Xunit;
-using Xunit.Abstractions;
 
-public abstract class BasicTests :
-    BaseCosturaTest
+public abstract class BasicTests : BaseCosturaTest
 {
     [Fact]
     public void Simple()
@@ -73,10 +71,5 @@ public abstract class BasicTests :
             var text = Ildasm.Decompile(TestResult.AssemblyPath, "Costura.AssemblyLoader");
             Approvals.Verify(text);
         }
-    }
-
-    protected BasicTests(ITestOutputHelper output) :
-        base(output)
-    {
     }
 }

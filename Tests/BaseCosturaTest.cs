@@ -1,13 +1,7 @@
 ﻿using Fody;
-using Xunit.Abstractions;
+#pragma warning disable 618
 
-public abstract class BaseCosturaTest: 
-    XunitLoggingBase
+public abstract class BaseCosturaTest
 {
     public abstract TestResult TestResult { get; }
-
-    protected BaseCosturaTest(ITestOutputHelper output) :
-        base(output)
-    {
-    }
 }

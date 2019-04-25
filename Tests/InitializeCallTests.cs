@@ -1,5 +1,5 @@
 ﻿using Fody;
-using Xunit.Abstractions;
+#pragma warning disable 618
 
 public class InitializeCallTests : BasicTests
 {
@@ -14,9 +14,4 @@ public class InitializeCallTests : BasicTests
     }
 
     public override TestResult TestResult => testResult;
-
-    public InitializeCallTests(ITestOutputHelper output) :
-        base(output)
-    {
-    }
 }

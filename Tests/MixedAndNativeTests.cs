@@ -2,6 +2,7 @@
 using ApprovalTests.Namers;
 using Fody;
 using Xunit;
+#pragma warning disable 618
 
 public class MixedAndNativeTests : BaseCosturaTest
 {

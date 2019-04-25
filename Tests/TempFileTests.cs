@@ -1,8 +1,7 @@
 ﻿using Fody;
-using Xunit.Abstractions;
+#pragma warning disable 618
 
-public class TempFileTests :
-    BasicTests
+public class TempFileTests : BasicTests
 {
     static TestResult testResult;
     public override TestResult TestResult => testResult;
@@ -12,10 +11,5 @@ public class TempFileTests :
         testResult = WeavingHelper.CreateIsolatedAssemblyCopy("ExeToProcess.exe",
             "<Costura CreateTemporaryAssemblies='true' />",
             new[] {"AssemblyToReference.dll", "AssemblyToReferencePreEmbedded.dll", "ExeToReference.exe"}, "TempFile");
-    }
-
-    public TempFileTests(ITestOutputHelper output) : 
-        base(output)
-    {
     }
 }

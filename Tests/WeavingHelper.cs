@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using Fody;
+#pragma warning disable 618
 
 static class WeavingHelper
 {
@@ -13,7 +14,6 @@ static class WeavingHelper
             Config = XElement.Parse(config),
             References = string.Join(";", references.Select(r => Path.Combine(Environment.CurrentDirectory, r))),
             ReferenceCopyLocalPaths = references.Select(r => Path.Combine(Environment.CurrentDirectory, r)).ToList(),
-            AssemblyResolver = new TestAssemblyResolver()
         };
         return weavingTask.ExecuteTestRun(assemblyPath,
             assemblyName: assemblyName,

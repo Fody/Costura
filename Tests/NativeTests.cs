@@ -1,10 +1,8 @@
 ﻿using ApprovalTests;
 using ApprovalTests.Namers;
 using Xunit;
-using Xunit.Abstractions;
 
-public abstract class NativeTests :
-    BaseCosturaTest
+public abstract class NativeTests : BaseCosturaTest
 {
     [Fact]
     public void Native()
@@ -35,10 +33,5 @@ public abstract class NativeTests :
             var text = Ildasm.Decompile(TestResult.AssemblyPath, "Costura.AssemblyLoader");
             Approvals.Verify(text);
         }
-    }
-
-    protected NativeTests(ITestOutputHelper output) :
-        base(output)
-    {
     }
 }

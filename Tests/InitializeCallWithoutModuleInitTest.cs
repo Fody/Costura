@@ -1,9 +1,7 @@
 ﻿using Fody;
-using Xunit.Abstractions;
+#pragma warning disable 618
 
-class InitializeCallWithoutModuleInitTest :
-    BasicTests
-    
+class InitializeCallWithoutModuleInitTest : BasicTests
 {
     static TestResult testResult;
 
@@ -16,9 +14,4 @@ class InitializeCallWithoutModuleInitTest :
     }
 
     public override TestResult TestResult => testResult;
-
-    public InitializeCallWithoutModuleInitTest(ITestOutputHelper output) :
-        base(output)
-    {
-    }
 }

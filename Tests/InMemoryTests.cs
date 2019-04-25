@@ -1,8 +1,7 @@
 ﻿using Fody;
-using Xunit.Abstractions;
+#pragma warning disable 618
 
-public class InMemoryTests : 
-    BasicTests
+public class InMemoryTests : BasicTests
 {
     static TestResult testResult;
 
@@ -14,9 +13,4 @@ public class InMemoryTests :
     }
 
     public override TestResult TestResult => testResult;
-
-    public InMemoryTests(ITestOutputHelper output) : 
-        base(output)
-    {
-    }
 }

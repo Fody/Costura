@@ -1,10 +1,8 @@
 ﻿using System.Xml.Linq;
 using Fody;
 using Xunit;
-using Xunit.Abstractions;
 
-public class ConfigReaderTests :
-    XunitLoggingBase
+public class ConfigReaderTests
 {
     [Fact]
     public void CanReadFalseNode()
@@ -332,10 +330,5 @@ Bar
 </Costura>");
         var config = new Configuration(xElement);
         Assert.True(config.IgnoreSatelliteAssemblies);
-    }
-
-    public ConfigReaderTests(ITestOutputHelper output) :
-        base(output)
-    {
     }
 }
