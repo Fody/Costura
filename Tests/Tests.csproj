@@ -2,7 +2,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net461</TargetFrameworks>
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <DisableFody>true</DisableFody>
     <Optimize>false</Optimize>
     <DebugType>full</DebugType>
@@ -13,7 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ApprovalTests" Version="3.0.22" />
-    <PackageReference Include="FodyHelpers" Version="4.2.1" />
+    <PackageReference Include="FodyHelpers" Version="5.0.0-beta.7" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
       <PrivateAssets>all</PrivateAssets>

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>net40;net45;net46</TargetFrameworks>
     <IsPackable>false</IsPackable>
-    <ReferenceFramework>net46</ReferenceFramework>
+    <ReferenceFramework>net472</ReferenceFramework>
     <ReferenceFramework Condition="'$(TargetFramework)'=='netcoreapp2.0'">netstandard2.0</ReferenceFramework>
   </PropertyGroup>
 
@@ -20,7 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Costura.Fody\Costura.Fody.csproj" Condition="'$(TargetFramework)'=='dummy'" />
 
-    <PackageReference Include="Fody" Version="4.2.1">
+    <PackageReference Include="Fody" Version="5.0.0-beta.7">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
