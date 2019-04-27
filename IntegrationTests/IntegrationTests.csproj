@@ -16,11 +16,7 @@
     <DefineConstants>$(DefineConstants);NO_XUNIT</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Fody" Version="5.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-
+    <PackageReference Include="Fody" Version="5.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
     <PackageReference Include="System.Windows.Interactivity.WPF" Version="2.0.20525" />
     <PackageReference Include="TomsToolbox.Wpf" Version="1.0.75" />
