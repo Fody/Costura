@@ -9,7 +9,7 @@
     <PackageTags>ILMerge, ILWeaving, Embed, Resource, Fody, Cecil</PackageTags>
     <PackageOutputPath>$(SolutionDir)nugets</PackageOutputPath>
     <PackageIconUrl>https://raw.githubusercontent.com/Fody/Costura/master/package_icon.png</PackageIconUrl>
-    <PackageProjectUrl>http://github.com/Fody/Costura</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/Fody/Costura</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
   <ItemGroup>
