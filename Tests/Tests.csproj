@@ -12,7 +12,7 @@
     <Compile Remove="MixedAndNativeTests.cs" Condition="$(Configuration)=='Release'" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ApprovalTests" Version="3.0.22" />
+    <PackageReference Include="ApprovalTests" Version="4.0.0" />
     <PackageReference Include="FodyHelpers" Version="5.0.6" />
     <PackageReference Include="Xunit" Version="2.4.1" />
     <PackageReference Include="XunitLogger" Version="2.1.0" />
