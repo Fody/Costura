@@ -15,7 +15,7 @@
     <PackageReference Include="ApprovalTests" Version="3.0.22" />
     <PackageReference Include="FodyHelpers" Version="5.1.1" />
     <PackageReference Include="Xunit" Version="2.4.1" />
-    <PackageReference Include="XunitLogger" Version="2.3.2" />
+    <PackageReference Include="XunitLogger" Version="2.4.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     <ProjectReference Include="..\AssemblyToProcess\AssemblyToProcess.csproj" />
