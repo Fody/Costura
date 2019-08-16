@@ -83,7 +83,7 @@ namespace IntegrationTests
 
         public static void Contains(string[] values, Func<string, bool> predicate)
         {
-            if (values.Any(v => predicate(v)))
+            if (values.Any(predicate))
                 return;
 
             Console.WriteLine($"None of the values {string.Join(", ", values)} matches the predicate");

@@ -2,8 +2,10 @@
 using ApprovalTests.Namers;
 using Fody;
 using Xunit;
+using Xunit.Abstractions;
 
-public class MixedAndNativeTests : BaseCosturaTest
+public class MixedAndNativeTests :
+    BaseCosturaTest
 {
     public override TestResult TestResult => testResult;
 
@@ -46,9 +48,15 @@ public class MixedAndNativeTests : BaseCosturaTest
             Approvals.Verify(text);
         }
     }
+
+    public MixedAndNativeTests(ITestOutputHelper output) :
+        base(output)
+    {
+    }
 }
 
-public class MixedAndNativeTestsWithEmbeddedMixed : BaseCosturaTest
+public class MixedAndNativeTestsWithEmbeddedMixed :
+    BaseCosturaTest
 {
     public override TestResult TestResult => testResult;
 
@@ -75,5 +83,10 @@ public class MixedAndNativeTestsWithEmbeddedMixed : BaseCosturaTest
     {
         var instance1 = TestResult.GetInstance("ClassToTest");
         Assert.Equal("Hello", instance1.MixedFooPInvoke());
+    }
+
+    public MixedAndNativeTestsWithEmbeddedMixed(ITestOutputHelper output) :
+        base(output)
+    {
     }
 }
