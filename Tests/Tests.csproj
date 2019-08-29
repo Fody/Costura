@@ -10,8 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="MixedAndNativeTests.cs" Condition="$(Configuration)=='Release'" />
-  </ItemGroup>
-  <ItemGroup>
+
     <PackageReference Include="ApprovalTests" Version="4.2.0" />
     <PackageReference Include="FodyHelpers" Version="6.0.0" />
     <PackageReference Include="Xunit" Version="2.4.1" />

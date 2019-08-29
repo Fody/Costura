@@ -4,9 +4,6 @@
     <IsPackable>false</IsPackable>
     <ReferenceFramework>net46</ReferenceFramework>
     <ReferenceFramework Condition="'$(TargetFramework)'=='netcoreapp2.0'">netstandard2.0</ReferenceFramework>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <XUnit>false</XUnit>
     <XUnit Condition="'$(TargetFramework)'=='net40'">false</XUnit>
   </PropertyGroup>
