@@ -11,7 +11,7 @@
   <ItemGroup>
     <Compile Remove="MixedAndNativeTests.cs" Condition="$(Configuration)=='Release'" />
 
-    <PackageReference Include="ApprovalTests" Version="4.2.0" />
+    <PackageReference Include="ApprovalTests" Version="4.2.2" />
     <PackageReference Include="FodyHelpers" Version="6.0.0" />
     <PackageReference Include="Xunit" Version="2.4.1" />
     <PackageReference Include="XunitLogger" Version="2.5.0" />
