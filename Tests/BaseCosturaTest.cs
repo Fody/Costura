@@ -2,7 +2,7 @@
 using Xunit.Abstractions;
 
 public abstract class BaseCosturaTest: 
-    XunitLoggingBase
+    XunitApprovalBase
 {
     public abstract TestResult TestResult { get; }
 

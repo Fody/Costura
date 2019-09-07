@@ -21,7 +21,8 @@
 
   <ItemGroup Condition="'$(XUnit)'=='true'">
     <PackageReference Include="Xunit" Version="2.4.1" />
-    <PackageReference Include="XunitLogger" Version="2.5.0" />
+    <PackageReference Include="XunitLogger" Version="3.0.2" />
+    <PackageReference Include="Xunit.ApprovalTests" Version="3.0.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
   </ItemGroup>

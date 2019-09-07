@@ -3,7 +3,7 @@ using Xunit;
 using Xunit.Abstractions;
 
 public class ReferenceMissingTests :
-    XunitLoggingBase
+    XunitApprovalBase
 {
     [Fact]
     public void ThrowsForMissingReference()
