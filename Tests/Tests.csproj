@@ -17,7 +17,7 @@
     <PackageReference Include="XunitLogger" Version="3.0.6" />
     <PackageReference Include="Xunit.ApprovalTests" Version="3.0.6" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.3.0" />
     <ProjectReference Include="..\AssemblyToProcess\AssemblyToProcess.csproj" />
     <ProjectReference Include="..\AssemblyToReferenceMixed\AssemblyToReferenceMixed.vcxproj" />
     <ProjectReference Include="..\AssemblyToReferenceNative\AssemblyToReferenceNative.vcxproj" />
