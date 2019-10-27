@@ -1,16 +1,13 @@
-﻿using System.Runtime.CompilerServices;
-using Fody;
+﻿using Fody;
 using Xunit.Abstractions;
 
-public abstract class BaseCosturaTest :
-    XunitApprovalBase
+public abstract class BaseCosturaTest: 
+    XunitLoggingBase
 {
     public abstract TestResult TestResult { get; }
 
-    protected BaseCosturaTest(
-        ITestOutputHelper output,
-        [CallerFilePath] string sourceFilePath = "") :
-        base(output, sourceFilePath)
+    protected BaseCosturaTest(ITestOutputHelper output) :
+        base(output)
     {
     }
 }

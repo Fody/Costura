@@ -4,7 +4,7 @@ using Xunit;
 using Xunit.Abstractions;
 
 public class ConfigReaderTests :
-    XunitApprovalBase
+    XunitLoggingBase
 {
     [Fact]
     public void CanReadFalseNode()

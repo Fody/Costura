@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using ApprovalTests;
 using ApprovalTests.Namers;
 using Xunit;
@@ -55,7 +54,6 @@ public abstract class BasicTests :
         {
             typeName = typeName + "35";
         }
-
         var typeLoadedWithPartialAssemblyName = Type.GetType(typeName);
         Assert.NotNull(typeLoadedWithPartialAssemblyName);
 
@@ -77,9 +75,8 @@ public abstract class BasicTests :
         }
     }
 
-    protected BasicTests(ITestOutputHelper output,
-        [CallerFilePath] string sourceFilePath = "") :
-        base(output, sourceFilePath)
+    protected BasicTests(ITestOutputHelper output) :
+        base(output)
     {
     }
 }
