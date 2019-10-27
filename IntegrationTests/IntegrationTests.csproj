@@ -13,7 +13,7 @@
     <DefineConstants>$(DefineConstants);NO_XUNIT</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Fody" Version="6.0.0" />
+    <PackageReference Include="Fody" Version="6.0.2" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Include="System.Windows.Interactivity.WPF" Version="2.0.20525" />
     <PackageReference Include="TomsToolbox.Wpf" Version="1.0.75" />
