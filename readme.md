@@ -32,7 +32,7 @@ Therefore we **strongly recommend** to try out the alternatives mentioned above.
 * Windows Services
 * Non-Windows platforms
 
-**Note that this list may be updated and will become more strict over time.**
+***Note that this list may be updated and will become more strict over time.***
 
 ### NuGet installation
 
