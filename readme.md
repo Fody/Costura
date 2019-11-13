@@ -6,6 +6,32 @@ Embeds dependencies as resources.
 [![NuGet Status](https://img.shields.io/nuget/v/Costura.Fody.svg)](https://www.nuget.org/packages/Costura.Fody/)
 
 
+### !!! READ THIS !!! Package is in maintenance mode !!! READ THIS !!!
+
+In .NET Core 3 there are two new features:
+
+* Single-file executables
+* Assembly linking
+
+With these features included in the dotnet tool set, the value proposition of Costura is greatly diminished.
+
+Therefore we **strongly recommend** to try out the alternatives mentioned above. 
+
+Costura will be kept in maintenance mode for the following use-cases because they are used by the maintainers:
+
+* C# projects (we have no experience with VB.NET, nor have any intention supporting this)
+* Library linking (e.g. embed dependencies in library projects)
+* Exe linking (e.g. embed dependencies in exe projects)
+* Windows platforms
+
+What's **not** supported:
+
+* VB.NET (see above)
+* Windows Services
+* Non-Windows platforms
+
+**Note that this list may be updated and will become more strict over time.**
+
 ### NuGet installation
 
 Install the [Costura.Fody NuGet package](https://nuget.org/packages/Costura.Fody/) and update the [Fody NuGet package](https://nuget.org/packages/Fody/):
