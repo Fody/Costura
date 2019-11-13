@@ -10,21 +10,23 @@ Embeds dependencies as resources.
 
 In .NET Core 3 there are two new features:
 
-* Single-file executables
-* Assembly linking
+* [Single-file executables](https://docs.microsoft.com/en-us/dotnet/core/whats-new/dotnet-core-3-0#single-file-executables)
+* [Assembly linking](https://docs.microsoft.com/en-us/dotnet/core/whats-new/dotnet-core-3-0#assembly-linking)
 
 With these features included in the dotnet tool set, the value proposition of Costura is greatly diminished.
 
 Therefore we **strongly recommend** to try out the alternatives mentioned above. 
 
-Costura will be kept in maintenance mode for the following use-cases because they are used by the maintainers:
+#### Supported use cases
+
+**Costura will be kept in maintenance mode** for the following use-cases because they are used by the maintainers:
 
 * C# projects (we have no experience with VB.NET, nor have any intention supporting this)
 * Library linking (e.g. embed dependencies in library projects)
 * Exe linking (e.g. embed dependencies in exe projects)
 * Windows platforms
 
-What's **not** supported:
+#### Non-supported use cases
 
 * VB.NET (see above)
 * Windows Services
