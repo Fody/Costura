@@ -10,6 +10,7 @@
     <PackageTags></PackageTags>
     <SonarQubeExclude>true</SonarQubeExclude>
     <DisableFody>true</DisableFody>
+    <NoWarn>$(NoWarn);NU1201</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
