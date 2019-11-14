@@ -14,9 +14,9 @@
   
   <ItemGroup>
     <PackageReference Include="Fody" Version="6.0.5" PrivateAssets="All"/>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" PrivateAssets="All" />
     <PackageReference Include="System.Windows.Interactivity.WPF" Version="2.0.20525" />
-    <PackageReference Include="TomsToolbox.Wpf" Version="1.0.75" />
+    <PackageReference Include="TomsToolbox.Wpf" Version="1.0.75" PrivateAssets="All" />
     <PackageReference Include="NUnit" Version="3.12.0" PrivateAssets="all" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
   </ItemGroup>
