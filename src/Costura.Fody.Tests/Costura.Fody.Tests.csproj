@@ -11,6 +11,7 @@
     <SonarQubeExclude>true</SonarQubeExclude>
     <DisableFody>true</DisableFody>
     <NoWarn>$(NoWarn);NU1201</NoWarn>
+    <NoError>$(NoError);NU1201</NoError>
   </PropertyGroup>
 
   <ItemGroup>

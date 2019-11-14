@@ -14,34 +14,34 @@
     <ProjectGuid>{E5622B74-B6C6-46A5-9207-0872533E6C2F}</ProjectGuid>
   </PropertyGroup>
   
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Test|net46|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Test|net472|AnyCPU'">
     <Optimize>false</Optimize>
   </PropertyGroup>
   
   <ItemGroup>
-    <EmbeddedResource Include="$(SolutionDir)..\output\$(ConfigurationName)\Costura.Template\netstandard2.0\Costura.Template.dll">
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\output\$(ConfigurationName)\Costura.Template\netstandard2.0\Costura.Template.dll">
       <Link>bin\Template.dll</Link>
       <InProject>false</InProject>
       <LogicalName>Costura.Template.dll</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="$(SolutionDir)..\output\$(ConfigurationName)\Costura.Template\netstandard2.0\Costura.Template.pdb">
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\output\$(ConfigurationName)\Costura.Template\netstandard2.0\Costura.Template.pdb">
       <Link>bin\Template.pdb</Link>
       <InProject>false</InProject>
       <LogicalName>Costura.Template.pdb</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="$(SolutionDir)Costura.Template\Common.cs">
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\Costura.Template\Common.cs">
       <Link>src\Common.cs</Link>
       <InProject>false</InProject>
     </EmbeddedResource>
-    <EmbeddedResource Include="$(SolutionDir)Costura.Template\ILTemplate.cs">
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\Costura.Template\ILTemplate.cs">
       <Link>src\ILTemplate.cs</Link>
       <InProject>false</InProject>
     </EmbeddedResource>
-    <EmbeddedResource Include="$(SolutionDir)Costura.Template\ILTemplateWithTempAssembly.cs">
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\Costura.Template\ILTemplateWithTempAssembly.cs">
       <Link>src\ILTemplateWithTempAssembly.cs</Link>
       <InProject>false</InProject>
     </EmbeddedResource>
-    <EmbeddedResource Include="$(SolutionDir)Costura.Template\ILTemplateWithUnmanagedHandler.cs">
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\Costura.Template\ILTemplateWithUnmanagedHandler.cs">
       <Link>src\ILTemplateWithUnmanagedHandler.cs</Link>
       <InProject>false</InProject>
     </EmbeddedResource>
@@ -63,6 +63,10 @@
   <ItemGroup>
     <PackageReference Include="FodyHelpers" Version="6.0.5" />
     <PackageReference Update="NETStandard.Library" Version="2.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Costura.Template\Costura.Template.csproj" PrivateAssets="true" />
   </ItemGroup>
   
   <Import Project="$(MSBuildProjectDirectory)\..\Directory.build.shared.explicit.props" Condition="Exists('$(MSBuildProjectDirectory)\..\Directory.build.shared.explicit.props')" />
