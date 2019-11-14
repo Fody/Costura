@@ -1,8 +1,8 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
-    <AssemblyName>Costura.Template</AssemblyName>
-    <RootNamespace>Costura.Template</RootNamespace>
+    <AssemblyName>Costura</AssemblyName>
+    <RootNamespace>Costura</RootNamespace>
     <DefaultLanguage>en-US</DefaultLanguage>
     <PackageVersion>3.0.0-alpha0001</PackageVersion>
     <Description>Fody add-in for embedding references as resources.</Description>
