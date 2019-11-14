@@ -1,0 +1,66 @@
+﻿<Project Sdk="MSBuild.Sdk.Extras">
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <AssemblyName>Costura.Template</AssemblyName>
+    <RootNamespace>Costura.Template</RootNamespace>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <PackageVersion>3.0.0-alpha0001</PackageVersion>
+    <Description>Fody add-in for embedding references as resources.</Description>
+    <PackageTags>ILMerge, ILWeaving, Embed, Resource, Fody, Cecil</PackageTags>
+    <DisableFody>true</DisableFody>
+    <AssemblyOriginatorKeyFile>$(SolutionDir)key.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- SonarQube requires a project guid -->
+    <ProjectGuid>{2B508691-68E6-4AE6-8F8D-1B78F7E65F80}</ProjectGuid>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Fody" Version="6.0.5" PrivateAssets="None" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- this project targets netstandard2.0 (unnecessarily) and has the below ref to work around this bug https://github.com/Microsoft/msbuild/issues/2661 -->
+    <ProjectReference Include="..\$(PackageId)\$(PackageId).csproj" PrivateAssets="All" Condition="$(TargetFramework)=='fake'" />
+  </ItemGroup>
+  
+  <Import Project="$(MSBuildProjectDirectory)\..\Directory.build.shared.explicit.props" Condition="Exists('$(MSBuildProjectDirectory)\..\Directory.build.shared.explicit.props')" />
+
+  <!--
+  Note: the code below comes from https://raw.githubusercontent.com/Fody/Fody/master/FodyPackaging/build/FodyPackaging.targets
+  but is needed because we use 'Catel.Fody.Attributes' instead of 'Catel' as attributes project name
+  -->
+  
+  <!-- Required *after* import of explicit properties -->
+  <PropertyGroup>
+    <!-- The properties below come from the FodyPackaging.props, see explanation at end of file -->
+    <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);IncludeFodyFiles</TargetsForTfmSpecificContentInPackage>
+    <DisableFody>true</DisableFody>
+    <WeaverDirPath>$(OverridableOutputPath)\..\$(PackageId)</WeaverDirPath>
+    <Configurations>Debug;Release;Test</Configurations>
+  </PropertyGroup>
+  
+  <Target Name="IncludeFodyFiles">
+    <ItemGroup>
+      <NetClassicFilesToInclude Include="$(WeaverDirPath)\net4*\$(PackageId).dll" />
+      <NetClassicFilesToInclude Include="$(WeaverDirPath)\net4*\$(PackageId).xcf" />
+      <NetClassicFilesToInclude Include="$(WeaverDirPath)\net4*\$(PackageId).pdb" />
+      <NetStandardFilesToInclude Include="$(WeaverDirPath)\netstandard2*\$(PackageId).dll" />
+      <NetStandardFilesToInclude Include="$(WeaverDirPath)\netstandard2*\$(PackageId).xcf" />
+      <NetStandardFilesToInclude Include="$(WeaverDirPath)\netstandard2*\$(PackageId).pdb" />
+    </ItemGroup>
+    
+    <CreateItem Include="@(NetClassicFilesToInclude)" AdditionalMetadata="PackagePath=netclassicweaver">
+      <Output TaskParameter="Include" ItemName="TfmSpecificPackageFile" />
+    </CreateItem>
+    
+    <CreateItem Include="@(NetStandardFilesToInclude)" AdditionalMetadata="PackagePath=netstandardweaver">
+      <Output TaskParameter="Include" ItemName="TfmSpecificPackageFile" />
+    </CreateItem>
+    
+    <CreateItem Include="$(MSBuildThisFileDirectory)..\$(PackageId)\$(PackageId).props" AdditionalMetadata="PackagePath=build">
+      <Output TaskParameter="Include" ItemName="TfmSpecificPackageFile" />
+    </CreateItem>
+  </Target>
+</Project>

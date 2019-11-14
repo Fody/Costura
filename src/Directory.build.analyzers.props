@@ -1,0 +1,9 @@
+<Project>
+  <!-- 
+    This file applies to all projects automatically and defines all default analyzers. Project specific values should go into Directory.build.project.props
+  -->
+
+  <ItemGroup>
+    <PackageReference Include="CatenaLogic.Analyzers" Version="1.0.0-alpha0019" PrivateAssets="All" />
+  </ItemGroup>
+</Project>

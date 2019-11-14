@@ -1,8 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFrameworks>net461</TargetFrameworks>
-    <DisableFody>true</DisableFody>
-    <OutputType>Exe</OutputType>
-  </PropertyGroup>
-</Project>

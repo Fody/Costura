@@ -1,0 +1,49 @@
+﻿<Project Sdk="MSBuild.Sdk.Extras">
+  <PropertyGroup>
+    <TargetFrameworks>net472</TargetFrameworks>
+    <AssemblyName>Costura.Fody.Tests</AssemblyName>
+    <RootNamespace>Costura.Fody.Tests</RootNamespace>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <PackageId>Costura.Fody.Tests</PackageId>
+    <PackageVersion>1.0.0-alpha0001</PackageVersion>
+    <Description></Description>
+    <PackageTags></PackageTags>
+    <SonarQubeExclude>true</SonarQubeExclude>
+    <DisableFody>true</DisableFody>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Fody" Version="6.0.5" PrivateAssets="All"/>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="System.Windows.Interactivity.WPF" Version="2.0.20525" />
+    <PackageReference Include="TomsToolbox.Wpf" Version="1.0.75" />
+    <PackageReference Include="NUnit" Version="3.12.0" PrivateAssets="all" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <WeaverFiles Include="$(SolutionDir)Costura.Fody\bin\$(Configuration)\netstandard2.0\Costura.Fody.dll" />
+  </ItemGroup>
+
+  <Target Name="Test" AfterTargets="Build" Condition="'$(XUnit)'=='false' AND '$(IsInnerBuild)'=='true'">
+    <Message Text="-!- Starting test on $(TargetFramework) -!-" />
+    <Exec Command="&quot;$(TargetPath)&quot;" />
+  </Target>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <Import Project="$(MSBuildProjectDirectory)\..\Directory.build.shared.explicit.props" Condition="Exists('$(MSBuildProjectDirectory)\..\Directory.build.shared.explicit.props')" />
+</Project>

@@ -1,0 +1,23 @@
+﻿<Project Sdk="MSBuild.Sdk.Extras">
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <AssemblyName>Costura.Template</AssemblyName>
+    <RootNamespace>Costura.Template</RootNamespace>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <PackageVersion>3.0.0-alpha0001</PackageVersion>
+    <Description></Description>
+    <PackageTags></PackageTags>
+    <DisableFody>true</DisableFody>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- SonarQube requires a project guid -->
+    <ProjectGuid>{CD9AEBAA-78F4-4A78-BF06-0CB7D84D83E8}</ProjectGuid>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Fody" Version="6.0.0" PrivateAssets="None" />
+  </ItemGroup>
+
+  <Import Project="$(MSBuildProjectDirectory)\..\Directory.build.shared.explicit.props" Condition="Exists('$(MSBuildProjectDirectory)\..\Directory.build.shared.explicit.props')" />
+</Project>
