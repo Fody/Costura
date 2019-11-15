@@ -1,12 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net461</TargetFrameworks>
+    <TargetFrameworks>net472</TargetFrameworks>
     <DisableFody>true</DisableFody>
     <OutputType>Exe</OutputType>
   </PropertyGroup>
+  
   <ItemGroup>
-    <EmbeddedResource Include="..\AssemblyToReferencePreEmbedded\bin\$(ConfigurationName)\net461\AssemblyToReferencePreEmbedded.dll">
+    <EmbeddedResource Include="..\..\output\$(ConfigurationName)\AssemblyToReferencePreEmbedded\net472\AssemblyToReferencePreEmbedded.dll">
       <Visible>false</Visible>
       <LogicalName>Costura.AssemblyToReferencePreEmbedded.dll</LogicalName>
     </EmbeddedResource>
@@ -15,4 +16,6 @@
     <ProjectReference Include="..\AssemblyToReference\AssemblyToReference.csproj" />
     <ProjectReference Include="..\ExeToReference\ExeToReference.csproj" />
   </ItemGroup>
+
+  <Import Project="$(MSBuildProjectDirectory)\..\Directory.build.shared.explicit.props" Condition="Exists('$(MSBuildProjectDirectory)\..\Directory.build.shared.explicit.props')" />
 </Project>

@@ -8,7 +8,7 @@ Parameters["SolutionName"] = "Costura.Fody";
 Parameters["Company"] = "Fody";
 Parameters["RepositoryUrl"] = string.Format("https://github.com/{0}/{1}", GetBuildServerVariable("SolutionName"), GetBuildServerVariable("SolutionName"));
 Parameters["StartYear"] = "2015";
-Parameters["TestTargetFramework"] = "net462";
+Parameters["TestTargetFramework"] = "net472";
 Parameters["UseVisualStudioPrerelease"] = "true";
 
 // Note: the rest of the variables should be coming from the build server,
@@ -27,7 +27,9 @@ Parameters["UseVisualStudioPrerelease"] = "true";
 
 Components.Add("Costura.Fody");
 
-TestProjects.Add(string.Format("{0}.Tests", GetBuildServerVariable("SolutionName")));
+Dependencies.Add("Costura.Template");
+
+TestProjects.Add("Costura.Fody.Tests");
 
 //=======================================================
 // REQUIRED INITIALIZATION, DO NOT CHANGE
