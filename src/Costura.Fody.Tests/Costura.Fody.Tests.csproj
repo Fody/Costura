@@ -15,16 +15,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ApprovalTests" Version="4.2.2" />
+    <PackageReference Include="ApprovalTests" Version="4.3.0" />
     <PackageReference Include="Catel.Core" Version="5.11.2" />
     <PackageReference Include="Catel.MVVM" Version="5.11.2" />
     <PackageReference Include="Fody" Version="6.0.5" PrivateAssets="None" />
     <PackageReference Include="FodyHelpers" Version="6.0.5" />
     <PackageReference Include="Microsoft.CSharp" Version="4.6.0" />
-    <PackageReference Include="Moq" Version="4.13.0" />
+    <PackageReference Include="Moq" Version="4.13.1" />
     <PackageReference Include="NUnit" Version="3.12.0" PrivateAssets="all" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
-    <PackageReference Include="WpfAnalyzers" Version="2.4.0" PrivateAssets="all">
+    <PackageReference Include="WpfAnalyzers" Version="2.4.3" PrivateAssets="all">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
   </ItemGroup>
