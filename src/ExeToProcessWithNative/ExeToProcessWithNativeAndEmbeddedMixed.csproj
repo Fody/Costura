@@ -4,6 +4,8 @@
     <TargetFrameworks>net472</TargetFrameworks>
     <DisableFody>true</DisableFody>
     <OutputType>Exe</OutputType>
+    <NoWarn>$(NoWarn);NU1201</NoWarn>
+    <NoError>$(NoError);NU1201</NoError>
   </PropertyGroup>
   
   <ItemGroup>
