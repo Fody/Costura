@@ -26,7 +26,7 @@ public class JiraIssueTracker : IIssueTracker
     public string Username { get; set; }
     public string Password { get; set; }
     public string ProjectName { get; set; }
-    public bool IsAvailable { get; set; }
+    public bool IsAvailable { get; private set; }
 
     public async Task CreateAndReleaseVersionAsync()
     {

@@ -66,7 +66,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Costura.Template\Costura.Template.csproj" PrivateAssets="true" />
+    <ProjectReference Include="..\Costura.Template\Costura.Template.csproj" PrivateAssets="true">
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </ProjectReference>
   </ItemGroup>
   
   <Import Project="$(MSBuildProjectDirectory)\..\Directory.build.shared.explicit.props" Condition="Exists('$(MSBuildProjectDirectory)\..\Directory.build.shared.explicit.props')" />

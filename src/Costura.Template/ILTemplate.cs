@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
 
-static class ILTemplate
+internal static class ILTemplate
 {
     static object nullCacheLock = new object();
     static Dictionary<string, bool> nullCache = new Dictionary<string, bool>();

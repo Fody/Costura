@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading;
 // ReSharper disable CommentTypo
 
-static class Common
+internal static class Common
 {
     [DllImport("kernel32", SetLastError = true, CharSet = CharSet.Unicode)]
     static extern IntPtr LoadLibrary(string dllToLoad);

@@ -4,7 +4,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 
-static class ILTemplateWithTempAssembly
+internal static class ILTemplateWithTempAssembly
 {
     static object nullCacheLock = new object();
     static Dictionary<string, bool> nullCache = new Dictionary<string, bool>();
