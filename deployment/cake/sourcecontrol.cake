@@ -31,7 +31,14 @@ public class SourceControlIntegration : IntegrationBase
 
         foreach (var sourceControl in _sourceControls)
         {
-            await sourceControl.MarkBuildAsPendingAsync(context, description);
+            try
+            {
+                await sourceControl.MarkBuildAsPendingAsync(context, description);
+            }
+            catch (Exception ex)
+            {
+                BuildContext.CakeContext.Error($"Failed to update status: {ex.Message}");
+            }
         }
     }
     
@@ -44,7 +51,14 @@ public class SourceControlIntegration : IntegrationBase
 
         foreach (var sourceControl in _sourceControls)
         {
-            await sourceControl.MarkBuildAsFailedAsync(context, description);
+            try
+            {
+                await sourceControl.MarkBuildAsFailedAsync(context, description);
+            }
+            catch (Exception ex)
+            {
+                BuildContext.CakeContext.Error($"Failed to update status: {ex.Message}");
+            }
         }
     }
     
@@ -57,7 +71,14 @@ public class SourceControlIntegration : IntegrationBase
 
         foreach (var sourceControl in _sourceControls)
         {
-            await sourceControl.MarkBuildAsSucceededAsync(context, description);
+            try
+            {
+                await sourceControl.MarkBuildAsSucceededAsync(context, description);
+            }
+            catch (Exception ex)
+            {
+                BuildContext.CakeContext.Error($"Failed to update status: {ex.Message}");
+            }
         }
     }
 }
