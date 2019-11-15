@@ -52,7 +52,7 @@ public class WebProcessor : ProcessorBase
         {
             CakeContext.Information("Updating version for web app '{0}'", webApp);
 
-            var projectFileName = GetProjectFileName(webApp);
+            var projectFileName = GetProjectFileName(BuildContext, webApp);
 
             CakeContext.TransformConfig(projectFileName, new TransformationCollection 
             {
@@ -72,7 +72,7 @@ public class WebProcessor : ProcessorBase
         {
             BuildContext.CakeContext.LogSeparator("Building web app '{0}'", webApp);
 
-            var projectFileName = GetProjectFileName(webApp);
+            var projectFileName = GetProjectFileName(BuildContext, webApp);
             
             var msBuildSettings = new MSBuildSettings 
             {

@@ -76,7 +76,7 @@ public class GitHubPagesProcessor : ProcessorBase
         {
             CakeContext.Information("Updating version for GitHub page '{0}'", gitHubPage);
 
-            var projectFileName = GetProjectFileName(gitHubPage);
+            var projectFileName = GetProjectFileName(BuildContext, gitHubPage);
 
             CakeContext.TransformConfig(projectFileName, new TransformationCollection 
             {
@@ -96,7 +96,7 @@ public class GitHubPagesProcessor : ProcessorBase
         {
             BuildContext.CakeContext.LogSeparator("Building GitHub page '{0}'", gitHubPage);
 
-            var projectFileName = GetProjectFileName(gitHubPage);
+            var projectFileName = GetProjectFileName(BuildContext, gitHubPage);
             
             var msBuildSettings = new MSBuildSettings {
                 Verbosity = Verbosity.Quiet, // Verbosity.Diagnostic

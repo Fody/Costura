@@ -28,6 +28,8 @@ Parameters["UseVisualStudioPrerelease"] = "true";
 Components.Add("Costura.Fody");
 
 Dependencies.Add("Costura.Template");
+Dependencies.Add("AssemblyToReferenceMixed");
+Dependencies.Add("AssemblyToReferenceNative");
 
 TestProjects.Add("Costura.Fody.Tests");
 

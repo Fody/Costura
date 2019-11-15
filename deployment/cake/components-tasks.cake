@@ -92,7 +92,7 @@ public class ComponentsProcessor : ProcessorBase
         {
             CakeContext.Information("Updating version for component '{0}'", component);
 
-            var projectFileName = GetProjectFileName(component);
+            var projectFileName = GetProjectFileName(BuildContext, component);
 
             CakeContext.TransformConfig(projectFileName, new TransformationCollection 
             {
@@ -112,7 +112,7 @@ public class ComponentsProcessor : ProcessorBase
         {
             BuildContext.CakeContext.LogSeparator("Building component '{0}'", component);
 
-            var projectFileName = GetProjectFileName(component);
+            var projectFileName = GetProjectFileName(BuildContext, component);
             
             var msBuildSettings = new MSBuildSettings 
             {

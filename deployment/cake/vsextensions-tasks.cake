@@ -76,7 +76,7 @@ public class VsExtensionsProcessor : ProcessorBase
         {
             BuildContext.CakeContext.LogSeparator("Building vs extension '{0}'", vsExtension);
 
-            var projectFileName = GetProjectFileName(vsExtension);
+            var projectFileName = GetProjectFileName(BuildContext, vsExtension);
             
             var msBuildSettings = new MSBuildSettings {
                 Verbosity = Verbosity.Quiet,

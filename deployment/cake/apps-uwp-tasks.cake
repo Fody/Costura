@@ -147,7 +147,7 @@ public class UwpProcessor : ProcessorBase
 
             CakeContext.Information("Building project for platform {0}, artifacts directory is '{1}'", platform.Key, artifactsDirectory);
 
-            var projectFileName = GetProjectFileName(uwpApp);
+            var projectFileName = GetProjectFileName(BuildContext, uwpApp);
 
             // Note: if csproj doesn't work, use SolutionFileName instead
             //var projectFileName = SolutionFileName;

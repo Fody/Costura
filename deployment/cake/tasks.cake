@@ -350,7 +350,7 @@ Task("Build")
 {
     await buildContext.SourceControl.MarkBuildAsFailedAsync("Build");
 
-    throw;
+    throw ex;
 });
 
 //-------------------------------------------------------------
@@ -374,7 +374,7 @@ Task("Test")
 {
     await buildContext.SourceControl.MarkBuildAsFailedAsync("Test");
     
-    throw;
+    throw ex;
 });
 
 //-------------------------------------------------------------

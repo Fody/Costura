@@ -233,7 +233,7 @@ public class WpfProcessor : ProcessorBase
         {
             BuildContext.CakeContext.LogSeparator("Building WPF app '{0}'", wpfApp);
 
-            var projectFileName = GetProjectFileName(wpfApp);
+            var projectFileName = GetProjectFileName(BuildContext, wpfApp);
             
             var msBuildSettings = new MSBuildSettings {
                 Verbosity = Verbosity.Quiet, // Verbosity.Diagnostic

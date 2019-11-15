@@ -18,7 +18,7 @@ private static void BuildTestProjects(BuildContext buildContext)
     {
         buildContext.CakeContext.LogSeparator("Building test project '{0}'", testProject);
 
-        var projectFileName = GetProjectFileName(testProject);
+        var projectFileName = GetProjectFileName(buildContext, testProject);
         
         var msBuildSettings = new MSBuildSettings
         {
@@ -62,11 +62,11 @@ private static void RunUnitTests(BuildContext buildContext, string projectName)
 
     try
     {
-        if (IsDotNetCoreProject(projectName))
+        if (IsDotNetCoreProject(buildContext, projectName))
         {
             buildContext.CakeContext.Information("Project '{0}' is a .NET core project, using 'dotnet test' to run the unit tests", projectName);
 
-            var projectFileName = GetProjectFileName(projectName);
+            var projectFileName = GetProjectFileName(buildContext, projectName);
 
             buildContext.CakeContext.DotNetCoreTest(projectFileName, new DotNetCoreTestSettings
             {

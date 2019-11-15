@@ -143,7 +143,7 @@ public class ToolsProcessor : ProcessorBase
         {
             CakeContext.Information("Updating version for tool '{0}'", tool);
 
-            var projectFileName = GetProjectFileName(tool);
+            var projectFileName = GetProjectFileName(BuildContext, tool);
 
             CakeContext.TransformConfig(projectFileName, new TransformationCollection 
             {
@@ -163,7 +163,7 @@ public class ToolsProcessor : ProcessorBase
         {
             BuildContext.CakeContext.LogSeparator("Building tool '{0}'", tool);
 
-            var projectFileName = GetProjectFileName(tool);
+            var projectFileName = GetProjectFileName(BuildContext, tool);
             
             var msBuildSettings = new MSBuildSettings {
                 Verbosity = Verbosity.Quiet,

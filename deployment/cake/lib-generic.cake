@@ -453,10 +453,29 @@ private static string GetProjectOutputDirectory(BuildContext buildContext, strin
 
 //-------------------------------------------------------------
 
-private static string GetProjectFileName(string projectName)
+private static string GetProjectFileName(BuildContext buildContext, string projectName)
 {
-    var fileName = string.Format("{0}{1}.csproj", GetProjectDirectory(projectName), projectName);
-    return fileName;
+    var allowedExtensions = new [] 
+    {
+        "csproj",
+        "vcxproj"
+    };
+
+    foreach (var allowedExtension in allowedExtensions)
+    {
+        var fileName = string.Format("{0}{1}.{2}", GetProjectDirectory(projectName), projectName, allowedExtension);
+
+        //buildContext.CakeContext.Information(fileName);
+
+        if (buildContext.CakeContext.FileExists(fileName))
+        {
+            return fileName;
+        }
+    }
+
+    // Old behavior
+    var fallbackFileName = string.Format("{0}{1}.{2}", GetProjectDirectory(projectName), projectName, allowedExtensions[0]);
+    return fallbackFileName;
 }
 
 //-------------------------------------------------------------
@@ -492,9 +511,9 @@ private static string GetProjectSpecificConfigurationValue(BuildContext buildCon
 
 //-------------------------------------------------------------
 
-private static bool IsDotNetCoreProject(string projectName)
+private static bool IsDotNetCoreProject(BuildContext buildContext, string projectName)
 {
-    var projectFileName = GetProjectFileName(projectName);
+    var projectFileName = GetProjectFileName(buildContext, projectName);
 
     if (!_dotNetCoreCache.TryGetValue(projectFileName, out var isDotNetCore))
     {

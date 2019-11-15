@@ -95,7 +95,7 @@ public class DockerImagesProcessor : ProcessorBase
         // {
         //     Information("Updating version for docker image '{0}'", dockerImage);
 
-        //     var projectFileName = GetProjectFileName(dockerImage);
+        //     var projectFileName = GetProjectFileName(BuildContext, dockerImage);
 
         //     TransformConfig(projectFileName, new TransformationCollection 
         //     {
@@ -115,7 +115,7 @@ public class DockerImagesProcessor : ProcessorBase
         {
             BuildContext.CakeContext.LogSeparator("Building docker image '{0}'", dockerImage);
 
-            var projectFileName = GetProjectFileName(dockerImage);
+            var projectFileName = GetProjectFileName(BuildContext, dockerImage);
             
             var msBuildSettings = new MSBuildSettings {
                 Verbosity = Verbosity.Quiet, // Verbosity.Diagnostic

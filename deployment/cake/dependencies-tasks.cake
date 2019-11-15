@@ -48,7 +48,7 @@ public class DependenciesProcessor : ProcessorBase
         {
             CakeContext.Information("Updating version for dependency '{0}'", dependency);
 
-            var projectFileName = GetProjectFileName(dependency);
+            var projectFileName = GetProjectFileName(BuildContext, dependency);
 
             CakeContext.TransformConfig(projectFileName, new TransformationCollection 
             {
@@ -68,7 +68,7 @@ public class DependenciesProcessor : ProcessorBase
         {
             BuildContext.CakeContext.LogSeparator("Building dependency '{0}'", dependency);
 
-            var projectFileName = GetProjectFileName(dependency);
+            var projectFileName = GetProjectFileName(BuildContext, dependency);
             
             var msBuildSettings = new MSBuildSettings 
             {
