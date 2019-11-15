@@ -300,6 +300,9 @@ private static void ConfigureMsBuild(BuildContext buildContext, MSBuildSettings 
         msBuildSettings.ToolPath = toolPath;
     }
 
+    // No NuGet restore (should already be done)
+    msBuildSettings.WithProperty("ResolveNuGetPackages", "false");
+
     // Use as much CPU as possible
     msBuildSettings.MaxCpuCount = 0;
     

@@ -92,7 +92,6 @@ public class DependenciesProcessor : ProcessorBase
                 msBuildSettings.MSBuildPlatform = MSBuildPlatform.Automatic;
                 msBuildSettings.PlatformTarget = PlatformTarget.Win32;
                 msBuildSettings.Restore = false;
-                msBuildSettings.WithProperty("ResolveNuGetPackages", "false");
             }
             else
             {

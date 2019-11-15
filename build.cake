@@ -29,6 +29,8 @@ Components.Add("Costura.Fody");
 
 Dependencies.Add("AssemblyToReferenceNative");
 Dependencies.Add("AssemblyToReferenceMixed");
+Dependencies.Add("AssemblyToReferencePreEmbedded");
+Dependencies.Add("AssemblyToReference");
 Dependencies.Add("Costura.Template");
 
 TestProjects.Add("Costura.Fody.Tests");
