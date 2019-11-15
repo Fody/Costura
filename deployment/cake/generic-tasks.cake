@@ -113,16 +113,24 @@ Task("RestorePackages")
     .ContinueOnError()
     .Does<BuildContext>(buildContext =>
 {
-    var projects = GetFiles("./**/*.csproj");
-    var solutions = GetFiles("./**/*.sln");
+    // var csharpProjects = GetFiles("./**/*.csproj");
+    // var cProjects = GetFiles("./**/*.vcxproj");
+    // var solutions = GetFiles("./**/*.sln");
     
-    var allFiles = new List<FilePath>();
-    //allFiles.AddRange(projects);
-    allFiles.AddRange(solutions);
+    // var allFiles = new List<FilePath>();
+    // //allFiles.AddRange(projects);
+    // //allFiles.AddRange(cProjects);
+    // allFiles.AddRange(solutions);
 
-    foreach(var file in allFiles)
+    // foreach(var file in allFiles)
+    // {
+    //     RestoreNuGetPackages(buildContext, file);
+    // }
+
+    foreach (var project in buildContext.AllProjects)
     {
-        RestoreNuGetPackages(buildContext, file);
+        var projectFileName = GetProjectFileName(buildContext, project);
+        RestoreNuGetPackages(buildContext, projectFileName);
     }
 });
 
@@ -133,7 +141,7 @@ Task("RestorePackages")
 // some targets files that come in via packages
 
 Task("Clean")
-    .IsDependentOn("RestorePackages")
+    //.IsDependentOn("RestorePackages")
     .ContinueOnError()
     .Does<BuildContext>(buildContext => 
 {
@@ -170,14 +178,54 @@ Task("Clean")
         }
     }
 
-    var outputDirectory = buildContext.General.OutputRootDirectory;
-    if (DirectoryExists(outputDirectory))
+    var directoriesToDelete = new List<string>();
+
+    // Output directory
+    directoriesToDelete.Add(buildContext.General.OutputRootDirectory);
+
+    // obj directories
+    foreach (var project in buildContext.AllProjects)
     {
-        DeleteDirectory(outputDirectory, new DeleteDirectorySettings()
+        var projectDirectory = GetProjectDirectory(project);
+
+        Information($"Investigating paths to clean up in '{projectDirectory}'");
+
+        var binDirectory = System.IO.Path.Combine(projectDirectory, "bin");
+        directoriesToDelete.Add(binDirectory);
+
+        var objDirectory = System.IO.Path.Combine(projectDirectory, "obj");
+        directoriesToDelete.Add(objDirectory);
+
+        // Special C++ scenarios
+        var projectFileName = GetProjectFileName(buildContext, project);
+        if (IsCppProject(projectFileName))
         {
-            Force = true,
-            Recursive = true
-        });
+            var debugDirectory = System.IO.Path.Combine(projectDirectory, "Debug");
+            directoriesToDelete.Add(debugDirectory);
+
+            var releaseDirectory = System.IO.Path.Combine(projectDirectory, "Release");
+            directoriesToDelete.Add(releaseDirectory);
+
+            var x64Directory = System.IO.Path.Combine(projectDirectory, "x64");
+            directoriesToDelete.Add(x64Directory);
+
+            var x86Directory = System.IO.Path.Combine(projectDirectory, "x86");
+            directoriesToDelete.Add(x86Directory);
+        }
+    }
+
+    foreach (var directoryToDelete in directoriesToDelete)
+    {
+        if (DirectoryExists(directoryToDelete))
+        {
+            Information($"Cleaning up directory '{directoryToDelete}'");
+
+            DeleteDirectory(directoryToDelete, new DeleteDirectorySettings()
+            {
+                Force = true,
+                Recursive = true
+            });
+        }
     }
 });
 

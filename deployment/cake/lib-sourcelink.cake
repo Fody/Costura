@@ -1,7 +1,20 @@
-public static void InjectSourceLinkInProjectFile(BuildContext buildContext, string projectFileName)
+public static bool IsSourceLinkSupported(BuildContext buildContext, string projectFileName)
 {
     // Only support C# projects
     if (!projectFileName.EndsWith(".csproj"))
+    {
+        return false;
+    }
+
+    return true;
+}
+
+//-------------------------------------------------------------
+
+public static void InjectSourceLinkInProjectFile(BuildContext buildContext, string projectFileName)
+{
+    // Only support C# projects
+    if (!IsSourceLinkSupported(buildContext, projectFileName))
     {
         return;
     }

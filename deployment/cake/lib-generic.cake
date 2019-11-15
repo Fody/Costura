@@ -437,6 +437,13 @@ private static string GetVisualStudioPath(BuildContext buildContext, bool? allow
 
 //-------------------------------------------------------------
 
+private static bool IsCppProject(string projectName)
+{
+    return projectName.EndsWith(".vcxproj");
+}
+
+//-------------------------------------------------------------
+
 private static string GetProjectDirectory(string projectName)
 {
     var projectDirectory = string.Format("./src/{0}/", projectName);
