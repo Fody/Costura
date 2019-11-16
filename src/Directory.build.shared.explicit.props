@@ -242,4 +242,20 @@
     <Compile Update="Platforms\xamarin.ioandroid\**\*.xaml.cs" SubType="Code" DependentUpon="%(Filename)" />
   </ItemGroup>
   
+  <!-- WIX toolset fix, see https://github.com/wixtoolset/issues/issues/5705 -->
+  <PropertyGroup Condition=" '$(_InstallerTargetFramework)' == '' ">
+    <_InstallerTargetFramework>net451</_InstallerTargetFramework>
+  </PropertyGroup>
+  
+  <Target Name="GetTargetPath" Returns="@(_FakeOutputPath)">
+    <ItemGroup Condition="'$(OutputType)' == 'Library'">
+      <_FakeOutputPath Include="..\$(OutputPath)\$(_InstallerTargetFramework)\$(AssemblyName).dll" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(OutputType)' == 'Exe'">
+      <_FakeOutputPath Include="..\$(OutputPath)\$(_InstallerTargetFramework)\$(AssemblyName).exe" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(OutputType)' == 'WinExe'">
+      <_FakeOutputPath Include="..\$(OutputPath)\$(_InstallerTargetFramework)\$(AssemblyName).exe" />
+    </ItemGroup>
+  </Target>
 </Project>
