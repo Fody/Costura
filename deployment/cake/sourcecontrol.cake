@@ -37,7 +37,7 @@ public class SourceControlIntegration : IntegrationBase
             }
             catch (Exception ex)
             {
-                BuildContext.CakeContext.Error($"Failed to update status: {ex.Message}");
+                BuildContext.CakeContext.Warning($"Failed to update status: {ex.Message}");
             }
         }
     }
@@ -57,7 +57,7 @@ public class SourceControlIntegration : IntegrationBase
             }
             catch (Exception ex)
             {
-                BuildContext.CakeContext.Error($"Failed to update status: {ex.Message}");
+                BuildContext.CakeContext.Warning($"Failed to update status: {ex.Message}");
             }
         }
     }
@@ -77,7 +77,7 @@ public class SourceControlIntegration : IntegrationBase
             }
             catch (Exception ex)
             {
-                BuildContext.CakeContext.Error($"Failed to update status: {ex.Message}");
+                BuildContext.CakeContext.Warning($"Failed to update status: {ex.Message}");
             }
         }
     }
