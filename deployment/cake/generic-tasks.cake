@@ -115,17 +115,17 @@ Task("RestorePackages")
 {
     // var csharpProjects = GetFiles("./**/*.csproj");
     // var cProjects = GetFiles("./**/*.vcxproj");
-    // var solutions = GetFiles("./**/*.sln");
+    var solutions = GetFiles("./**/*.sln");
     
-    // var allFiles = new List<FilePath>();
+    var allFiles = new List<FilePath>();
     // //allFiles.AddRange(projects);
     // //allFiles.AddRange(cProjects);
-    // allFiles.AddRange(solutions);
+    allFiles.AddRange(solutions);
 
-    // foreach(var file in allFiles)
-    // {
-    //     RestoreNuGetPackages(buildContext, file);
-    // }
+    foreach(var file in allFiles)
+    {
+        RestoreNuGetPackages(buildContext, file);
+    }
 
     foreach (var project in buildContext.AllProjects)
     {
