@@ -130,7 +130,10 @@ Task("RestorePackages")
     foreach (var project in buildContext.AllProjects)
     {
         var projectFileName = GetProjectFileName(buildContext, project);
-        RestoreNuGetPackages(buildContext, projectFileName);
+        if (IsCppProject(projectFileName))
+        {
+            RestoreNuGetPackages(buildContext, projectFileName);
+        }
     }
 });
 
