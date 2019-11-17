@@ -3,12 +3,13 @@
     <TargetFrameworks>net472</TargetFrameworks>
     <DisableFody>true</DisableFody>
     <OutputType>Exe</OutputType>
+    <NoWarn>$(NoWarn);NU1201</NoWarn>
+    <NoError>$(NoError);NU1201</NoError>
   </PropertyGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\AssemblyToReferenceMixed\AssemblyToReferenceMixed.vcxproj"/>
-
-    <EmbeddedResource Include="$(OverridableOutputRootPath)\AssemblyToReferenceNative\AssemblyToReferenceNative.dll">
+    <ProjectReference Include="..\AssemblyToReferenceMixed\AssemblyToReferenceMixed.vcxproj" />
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\output\$(Configuration)\AssemblyToReferenceNative\AssemblyToReferenceNative.dll">
       <Link>costura32\AssemblyToReferenceNative.dll</Link>
     </EmbeddedResource>
   </ItemGroup>

@@ -29,19 +29,12 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>    <PackageReference Update="NETStandard.Library" Version="2.0.3" />
+  <ItemGroup>    
+    <PackageReference Update="NETStandard.Library" Version="2.0.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AssemblyToProcess\AssemblyToProcess.csproj" />
-    <ProjectReference Include="..\AssemblyToReferencePreEmbedded\AssemblyToReferencePreEmbedded.csproj" />
-    <ProjectReference Include="..\AssemblyToReference\AssemblyToReference.csproj" />
-    <ProjectReference Include="..\AssemblyWithoutInitialize\AssemblyWithoutInitialize.csproj" />
     <ProjectReference Include="..\Costura.Fody\Costura.Fody.csproj" />
-    <ProjectReference Include="..\ExeToProcessWithNativeAndEmbeddedMixed\ExeToProcessWithNativeAndEmbeddedMixed.csproj" />
-    <ProjectReference Include="..\ExeToProcessWithNative\ExeToProcessWithNative.csproj" />
-    <ProjectReference Include="..\ExeToProcess\ExeToProcess.csproj" />
-    <ProjectReference Include="..\ExeToReference\ExeToReference.csproj" />
   </ItemGroup>
 
   <ItemGroup>
