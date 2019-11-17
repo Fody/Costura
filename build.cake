@@ -30,7 +30,7 @@ Components.Add("Costura.Fody");
 //Dependencies.Add("AssemblyToProcess");
 Dependencies.Add("AssemblyToReferenceNative");
 Dependencies.Add("AssemblyToReferenceMixed");
-//Dependencies.Add("AssemblyToReferencePreEmbedded");
+Dependencies.Add("AssemblyToReferencePreEmbedded");
 //Dependencies.Add("AssemblyWithoutInitialize");
 //Dependencies.Add("ExeToProcess");
 //Dependencies.Add("ExeToProcessWithNative");
