@@ -6,7 +6,7 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <EmbeddedResource Include="..\..\output\$(ConfigurationName)\AssemblyToReferencePreEmbedded\net472\AssemblyToReferencePreEmbedded.dll">
+    <EmbeddedResource Include="$(OverridableOutputRootPath)\AssemblyToReferencePreEmbedded\net472\AssemblyToReferencePreEmbedded.dll">
       <Visible>false</Visible>
       <LogicalName>Costura.AssemblyToReferencePreEmbedded.dll</LogicalName>
     </EmbeddedResource>

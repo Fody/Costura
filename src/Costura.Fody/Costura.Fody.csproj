@@ -19,29 +19,13 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <!-- ..\output\$(Configuration)\Costura.Template -->
-    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\output\$(ConfigurationName)\Costura.Template\netstandard2.0\Costura.Template.dll"
-                      Condition="Exists('$(MSBuildProjectDirectory)\..\..\output\$(ConfigurationName)\Costura.Template\netstandard2.0\Costura.Template.dll')">
+    <EmbeddedResource Include="$(OverridableOutputRootPath)\Costura.Template\netstandard2.0\Costura.Template.dll">
       <Link>bin\Template.dll</Link>
       <InProject>false</InProject>
       <LogicalName>Costura.Template.dll</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\output\$(ConfigurationName)\Costura.Template\netstandard2.0\Costura.Template.pdb"
-                      Condition="Exists('$(MSBuildProjectDirectory)\..\..\output\$(ConfigurationName)\Costura.Template\netstandard2.0\Costura.Template.dll')">
-      <Link>bin\Template.pdb</Link>
-      <InProject>false</InProject>
-      <LogicalName>Costura.Template.pdb</LogicalName>
     </EmbeddedResource>
 
-    <!-- ..\output\Costura.Template -->
-    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\output\Costura.Template\netstandard2.0\Costura.Template.dll"
-                      Condition="Exists('$(MSBuildProjectDirectory)\..\..\output\Costura.Template\netstandard2.0\Costura.Template.dll')">
-      <Link>bin\Template.dll</Link>
-      <InProject>false</InProject>
-      <LogicalName>Costura.Template.dll</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\output\Costura.Template\netstandard2.0\Costura.Template.pdb"
-                      Condition="Exists('$(MSBuildProjectDirectory)\..\..\output\Costura.Template\netstandard2.0\Costura.Template.dll')">
+    <EmbeddedResource Include="$(OverridableOutputRootPath)\Costura.Template\netstandard2.0\Costura.Template.pdb">
       <Link>bin\Template.pdb</Link>
       <InProject>false</InProject>
       <LogicalName>Costura.Template.pdb</LogicalName>

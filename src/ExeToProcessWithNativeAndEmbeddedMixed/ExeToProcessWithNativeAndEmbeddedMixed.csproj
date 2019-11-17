@@ -12,10 +12,10 @@
   </ItemGroup>
   
   <ItemGroup>
-    <EmbeddedResource Include="..\..\output\$(ConfigurationName)\AssemblyToReferenceNative.dll">
+    <EmbeddedResource Include="$(OverridableOutputRootPath)\AssemblyToReferenceNative\AssemblyToReferenceNative.dll">
       <Link>costura32\AssemblyToReferenceNative.dll</Link>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\..\output\$(ConfigurationName)\AssemblyToReferenceMixed.dll">
+    <EmbeddedResource Include="$(OverridableOutputRootPath)\AssemblyToReferenceMixed\AssemblyToReferenceMixed.dll">
       <Link>costura32\AssemblyToReferenceMixed.dll</Link>
     </EmbeddedResource>
   </ItemGroup>

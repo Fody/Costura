@@ -97,6 +97,7 @@ public class DependenciesProcessor : ProcessorBase
             {
                 var outputDirectory = GetProjectOutputDirectory(BuildContext, dependency);
                 CakeContext.Information("Output directory: '{0}'", outputDirectory);
+                msBuildSettings.WithProperty("OverridableOutputRootPath", BuildContext.General.OutputRootDirectory);
                 msBuildSettings.WithProperty("OverridableOutputPath", outputDirectory);
                 msBuildSettings.WithProperty("PackageOutputPath", BuildContext.General.OutputRootDirectory);
             }

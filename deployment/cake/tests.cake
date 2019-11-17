@@ -42,6 +42,7 @@ private static void BuildTestProjects(BuildContext buildContext)
         // are properties passed in using the command line)
         var outputDirectory = string.Format("{0}/{1}/", buildContext.General.OutputRootDirectory, testProject);
         buildContext.CakeContext.Information("Output directory: '{0}'", outputDirectory);
+        msBuildSettings.WithProperty("OverridableOutputRootPath", buildContext.General.OutputRootDirectory);
         msBuildSettings.WithProperty("OverridableOutputPath", outputDirectory);
         msBuildSettings.WithProperty("PackageOutputPath", buildContext.General.OutputRootDirectory);
 

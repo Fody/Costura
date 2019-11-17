@@ -16,7 +16,8 @@
       
       If we would use AssemblyName, they would be compiled into the same directory
     -->
-    <OverridableOutputPath>$(ProjectDir)..\..\output\$(Configuration)\$(MSBuildProjectName)\</OverridableOutputPath>
+    <OverridableOutputRootPath>$(ProjectDir)..\..\output\$(Configuration)</OverridableOutputRootPath>
+    <OverridableOutputPath>$(OverridableOutputRootPath)\$(MSBuildProjectName)\</OverridableOutputPath>
     <OutputPath>$(OverridableOutputPath)</OutputPath>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>

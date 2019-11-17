@@ -22,9 +22,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <WeaverFiles Include="$(SolutionDir)Costura.Fody\bin\$(Configuration)\netstandard2.0\Costura.Fody.dll" />
+    <WeaverFiles Include="$(OverridableOutputRootPath)\Costura.Fody\netstandard2.0\Costura.Fody.dll" />
   </ItemGroup>
-
+  
   <Target Name="Test" AfterTargets="Build" Condition="'$(XUnit)'=='false' AND '$(IsInnerBuild)'=='true'">
     <Message Text="-!- Starting test on $(TargetFramework) -!-" />
     <Exec Command="&quot;$(TargetPath)&quot;" />

@@ -8,7 +8,7 @@
   <ItemGroup>
     <ProjectReference Include="..\AssemblyToReferenceMixed\AssemblyToReferenceMixed.vcxproj"/>
 
-    <EmbeddedResource Include="..\..\output\$(ConfigurationName)\AssemblyToReferenceNative.dll">
+    <EmbeddedResource Include="$(OverridableOutputRootPath)\AssemblyToReferenceNative\AssemblyToReferenceNative.dll">
       <Link>costura32\AssemblyToReferenceNative.dll</Link>
     </EmbeddedResource>
   </ItemGroup>
