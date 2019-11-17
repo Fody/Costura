@@ -27,14 +27,14 @@ Parameters["UseVisualStudioPrerelease"] = "false";
 
 Components.Add("Costura.Fody");
 
-Dependencies.Add("AssemblyToProcess");
+//Dependencies.Add("AssemblyToProcess");
 Dependencies.Add("AssemblyToReferenceNative");
 Dependencies.Add("AssemblyToReferenceMixed");
-Dependencies.Add("AssemblyToReferencePreEmbedded");
-Dependencies.Add("AssemblyWithoutInitialize");
-Dependencies.Add("ExeToProcess");
-Dependencies.Add("ExeToProcessWithNative");
-Dependencies.Add("ExeToProcessWithNativeAndEmbeddedMixed");
+//Dependencies.Add("AssemblyToReferencePreEmbedded");
+//Dependencies.Add("AssemblyWithoutInitialize");
+//Dependencies.Add("ExeToProcess");
+//Dependencies.Add("ExeToProcessWithNative");
+//Dependencies.Add("ExeToProcessWithNativeAndEmbeddedMixed");
 Dependencies.Add("Costura.Template");
 
 TestProjects.Add("Costura.Fody.Tests");
