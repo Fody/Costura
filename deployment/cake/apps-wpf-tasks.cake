@@ -24,6 +24,24 @@ public class WpfProcessor : ProcessorBase
         return BuildContext.Wpf.Items.Count > 0;
     }
 
+    private string GetDeploymentChannelSuffix(string prefix = "_", string suffix = "")
+    {
+        var channelSuffix = string.Empty;
+
+        if (BuildContext.Wpf.AppendDeploymentChannelSuffix)
+        {
+            if (BuildContext.General.IsAlphaBuild ||
+                BuildContext.General.IsBetaBuild)
+            {
+                channelSuffix = $"{prefix}{BuildContext.Wpf.Channel}{suffix}";
+            }
+
+            BuildContext.CakeContext.Information($"Using deployment channel suffix '{channelSuffix}'");
+        }
+
+        return channelSuffix; 
+    }
+
     private void PackageWpfAppUsingInnoSetup(string wpfApp, string channel)
     {
         var innoSetupTemplateDirectory = string.Format("./deployment/innosetup/{0}", wpfApp);
@@ -38,11 +56,7 @@ public class WpfProcessor : ProcessorBase
         var installersOnDeploymentsShare = string.Format("{0}/{1}/installer", BuildContext.Wpf.DeploymentsShare, wpfApp);
         CakeContext.CreateDirectory(installersOnDeploymentsShare);
 
-        var setupPostfix = string.Empty;
-        if (!string.Equals(channel, "stable", StringComparison.OrdinalIgnoreCase))
-        {
-            setupPostfix = string.Format("_{0}", channel.ToLower());
-        }
+        var setupSuffix = GetDeploymentChannelSuffix();
 
         var innoSetupOutputRoot = string.Format("{0}/innosetup/{1}", BuildContext.General.OutputRootDirectory, wpfApp);
         var innoSetupReleasesRoot = string.Format("{0}/releases", innoSetupOutputRoot);
@@ -56,9 +70,11 @@ public class WpfProcessor : ProcessorBase
 
         var innoSetupScriptFileName = string.Format("{0}/setup.iss", innoSetupOutputIntermediate);
         var fileContents = System.IO.File.ReadAllText(innoSetupScriptFileName);
+        fileContents = fileContents.Replace("[CHANNEL_SUFFIX]", setupSuffix);
+        fileContents = fileContents.Replace("[CHANNEL]", GetDeploymentChannelSuffix(" (", ")"));
         fileContents = fileContents.Replace("[VERSION]", BuildContext.General.Version.MajorMinorPatch);
         fileContents = fileContents.Replace("[VERSION_DISPLAY]", BuildContext.General.Version.FullSemVer);
-        fileContents = fileContents.Replace("[WIZARDIMAGEFILE]", string.Format("logo_large{0}", setupPostfix));
+        fileContents = fileContents.Replace("[WIZARDIMAGEFILE]", string.Format("logo_large{0}", setupSuffix));
 
         var signTool = string.Empty;
         if (!string.IsNullOrWhiteSpace(BuildContext.General.CodeSign.CertificateSubjectName))
@@ -92,9 +108,9 @@ public class WpfProcessor : ProcessorBase
             // - Setup.exe => [wpfApp]-[version].exe
             // - Setup.exe => [wpfApp]-[channel].exe
 
-            var installerSourceFile = string.Format("{0}/{1}_{2}.exe", innoSetupReleasesRoot, wpfApp, BuildContext.General.Version.FullSemVer);
+            var installerSourceFile = $"{innoSetupReleasesRoot}/{wpfApp}_{BuildContext.General.Version.FullSemVer}.exe";
             CakeContext.CopyFile(installerSourceFile, string.Format("{0}/{1}_{2}.exe", installersOnDeploymentsShare, wpfApp, BuildContext.General.Version.FullSemVer));
-            CakeContext.CopyFile(installerSourceFile, string.Format("{0}/{1}{2}.exe", installersOnDeploymentsShare, wpfApp, setupPostfix));
+            CakeContext.CopyFile(installerSourceFile, string.Format("{0}/{1}{2}.exe", installersOnDeploymentsShare, wpfApp, setupSuffix));
         }
     }
 
@@ -122,8 +138,12 @@ public class WpfProcessor : ProcessorBase
         // Set up Squirrel nuspec
         CakeContext.CopyFile(nuSpecTemplateFileName, nuSpecFileName);
 
+        var setupSuffix = GetDeploymentChannelSuffix();
+
         CakeContext.TransformConfig(nuSpecFileName,
-            new TransformationCollection {
+            new TransformationCollection 
+            {
+                { "package/metadata/id", $"{wpfApp}{setupSuffix}" },
                 { "package/metadata/version", BuildContext.General.Version.NuGet },
                 { "package/metadata/authors", BuildContext.General.Copyright.Company },
                 { "package/metadata/owners", BuildContext.General.Copyright.Company },
@@ -144,6 +164,17 @@ public class WpfProcessor : ProcessorBase
             OutputDirectory = squirrelOutputIntermediate,
         });
 
+        // Rename so we have the right nuget package file names (without the channel)
+        if (!string.IsNullOrWhiteSpace(setupSuffix))
+        {
+            var sourcePackageFileName = $"{squirrelOutputIntermediate}/{wpfApp}{setupSuffix}.{BuildContext.General.Version.NuGet}.nupkg";
+            var targetPackageFileName = $"{squirrelOutputIntermediate}/{wpfApp}.{BuildContext.General.Version.NuGet}.nupkg";
+
+            CakeContext.Information("Moving file from '{0}' => '{1}'", sourcePackageFileName, targetPackageFileName);
+
+            CakeContext.MoveFile(sourcePackageFileName, targetPackageFileName);
+        }
+        
         // Copy deployments share to the intermediate root so we can locally create the Squirrel releases
         var releasesSourceDirectory = string.Format("{0}/{1}/{2}", BuildContext.Wpf.DeploymentsShare, wpfApp, channel);
         var releasesTargetDirectory = squirrelReleasesRoot;
@@ -160,7 +191,7 @@ public class WpfProcessor : ProcessorBase
 
         // Note: this is not really generic, but this is where we store our icons file, we can
         // always change this in the future
-        var iconFileName = "./design/logo/logo.ico";
+        var iconFileName = $"./design/logo/logo{setupSuffix}.ico";
         squirrelSettings.Icon = iconFileName;
         squirrelSettings.SetupIcon = iconFileName;
 
@@ -185,7 +216,7 @@ public class WpfProcessor : ProcessorBase
             // - Setup.msi
             // - RELEASES
 
-            var squirrelFiles = CakeContext.GetFiles(string.Format("{0}/{1}-{2}*.nupkg", squirrelReleasesRoot, wpfApp, BuildContext.General.Version.NuGet));
+            var squirrelFiles = CakeContext.GetFiles($"{squirrelReleasesRoot}/{wpfApp}{setupSuffix}-{BuildContext.General.Version.NuGet}*.nupkg");
             CakeContext.CopyFiles(squirrelFiles, releasesSourceDirectory);
             CakeContext.CopyFile(string.Format("{0}/Setup.exe", squirrelReleasesRoot), string.Format("{0}/Setup.exe", releasesSourceDirectory));
             CakeContext.CopyFile(string.Format("{0}/Setup.exe", squirrelReleasesRoot), string.Format("{0}/{1}.exe", releasesSourceDirectory, wpfApp));
@@ -235,7 +266,21 @@ public class WpfProcessor : ProcessorBase
 
             var projectFileName = GetProjectFileName(BuildContext, wpfApp);
             
-            var msBuildSettings = new MSBuildSettings {
+            var channelSuffix = GetDeploymentChannelSuffix();
+
+            var sourceFileName = $"./design/logo/logo{channelSuffix}.ico";
+            if (BuildContext.CakeContext.FileExists(sourceFileName))
+            {
+                CakeContext.Information("Enforcing channel specific icon '{0}'", sourceFileName);
+
+                var projectDirectory = GetProjectDirectory(wpfApp);
+                var targetFileName = $"{projectDirectory}/Resources/Icons/logo.ico";
+
+                BuildContext.CakeContext.CopyFile(sourceFileName, targetFileName);
+            }
+
+            var msBuildSettings = new MSBuildSettings 
+            {
                 Verbosity = Verbosity.Quiet, // Verbosity.Diagnostic
                 ToolVersion = MSBuildToolVersion.Default,
                 Configuration = BuildContext.General.Solution.ConfigurationName,
@@ -311,7 +356,7 @@ public class WpfProcessor : ProcessorBase
             
             foreach (var extensionToDelete in extensionsToDelete)
             {
-                var searchPattern = string.Format("{0}**/*{1}", outputDirectory, extensionToDelete);
+                var searchPattern = $"{outputDirectory}/**/*{extensionToDelete}";
                 var filesToDelete = CakeContext.GetFiles(searchPattern);
 
                 CakeContext.Information("Deleting '{0}' files using search pattern '{1}'", filesToDelete.Count, searchPattern);

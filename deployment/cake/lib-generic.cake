@@ -400,6 +400,13 @@ private static string GetVisualStudioDirectory(BuildContext buildContext, bool? 
        buildContext.CakeContext.Information("Using Visual Studio 2019");
        return pathFor2019;
     }
+	
+	var pathFor2019Community = @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\";
+    if (System.IO.Directory.Exists(pathFor2019Community))
+    {
+       buildContext.CakeContext.Information("Using Visual Studio 2019 CE");
+       return pathFor2019Community;
+    }
 
     buildContext.CakeContext.Debug("Checking for installation of Visual Studio 2017");
 
