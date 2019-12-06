@@ -150,6 +150,11 @@ public class WpfProcessor : ProcessorBase
                 { "package/metadata/copyright", string.Format("Copyright © {0} {1} - {2}", BuildContext.General.Copyright.Company, BuildContext.General.Copyright.StartYear, DateTime.Now.Year) },
             });
 
+        var fileContents = System.IO.File.ReadAllText(nuSpecFileName);
+        fileContents = fileContents.Replace("[CHANNEL_SUFFIX]", setupSuffix);
+        fileContents = fileContents.Replace("[CHANNEL]", GetDeploymentChannelSuffix(" (", ")"));
+        System.IO.File.WriteAllText(nuSpecFileName, fileContents);
+
         // Copy all files to the lib so Squirrel knows what to do
         var appSourceDirectory = string.Format("{0}/{1}", BuildContext.General.OutputRootDirectory, wpfApp);
         var appTargetDirectory = string.Format("{0}/lib", squirrelOutputIntermediate);
