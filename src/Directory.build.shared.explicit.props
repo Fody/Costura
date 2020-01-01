@@ -194,7 +194,40 @@
     <DefineConstants>$(DefineConstants);NET;NET47;NET470</DefineConstants>
   </PropertyGroup>
   
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net47' ">
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net471' ">
+    <EnableWpfProjectSetup>true</EnableWpfProjectSetup>   
+    <DefineConstants>$(DefineConstants);NET;NET47;NET471</DefineConstants>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net472' ">
+    <EnableWpfProjectSetup>true</EnableWpfProjectSetup>
+    <DefineConstants>$(DefineConstants);NET;NET47;NET472</DefineConstants>
+  </PropertyGroup>
+  
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net47' OR '$(TargetFramework)' == 'net471' OR '$(TargetFramework)' == 'net472'">
+    <None Remove="Platforms\net\**\*.cs;Platforms\net\**\*.xaml;Platforms\net\**\*.xaml.cs" />
+    <Compile Include="Platforms\net\**\*.cs" DependentUpon="%(Filename)" />
+    <Page Include="Platforms\net\**\*.xaml" SubType="Designer" Generator="MSBuild:Compile" />
+    <Compile Update="Platforms\net\**\*.xaml.cs" SubType="Code" DependentUpon="%(Filename)" />
+  </ItemGroup>
+  
+  <!-- .NET 4.8 -->
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net48' ">
+    <EnableWpfProjectSetup>true</EnableWpfProjectSetup>
+    <DefineConstants>$(DefineConstants);NET;NET48;NET480</DefineConstants>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net481' ">
+    <EnableWpfProjectSetup>true</EnableWpfProjectSetup>   
+    <DefineConstants>$(DefineConstants);NET;NET48;NET481</DefineConstants>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net482' ">
+    <EnableWpfProjectSetup>true</EnableWpfProjectSetup>
+    <DefineConstants>$(DefineConstants);NET;NET48;NET482</DefineConstants>
+  </PropertyGroup>
+  
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' OR '$(TargetFramework)' == 'net481' OR '$(TargetFramework)' == 'net482'">
     <None Remove="Platforms\net\**\*.cs;Platforms\net\**\*.xaml;Platforms\net\**\*.xaml.cs" />
     <Compile Include="Platforms\net\**\*.cs" DependentUpon="%(Filename)" />
     <Page Include="Platforms\net\**\*.xaml" SubType="Designer" Generator="MSBuild:Compile" />
