@@ -16,7 +16,7 @@
 
   <ItemGroup>
     <PackageReference Include="ApprovalTests" Version="4.4.0" />
-    <PackageReference Include="Catel.Core" Version="5.12.1" />
+    <PackageReference Include="Catel.Core" Version="5.12.2" />
     <PackageReference Include="Catel.MVVM" Version="5.12.1" />
     <PackageReference Include="Fody" Version="6.0.6" PrivateAssets="None" />
     <PackageReference Include="FodyHelpers" Version="6.0.6" />
