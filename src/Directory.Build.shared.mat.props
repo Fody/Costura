@@ -2,7 +2,7 @@
   <!-- 
     This file applies to projects when it gets imported explicitly using the line below:
 
-    <Import Project="$(MSBuildProjectDirectory)\..\Directory.build.shared.mat.props" Condition="Exists('$(MSBuildProjectDirectory)\..\Directory.build.shared.mat.props')" />
+    <Import Project="$(MSBuildProjectDirectory)\..\Directory.Build.shared.mat.props" Condition="Exists('$(MSBuildProjectDirectory)\..\Directory.Build.shared.mat.props')" />
   -->
 
   <PropertyGroup Label="MultilingualAppToolkit">
