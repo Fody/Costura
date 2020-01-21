@@ -2,7 +2,7 @@
   <!-- 
     This file applies to projects when it gets imported explicitly using the line below:
 
-    <Import Project="$(MSBuildProjectDirectory)\..\Directory.build.shared.explicit.props" Condition="Exists('$(MSBuildProjectDirectory)\..\Directory.build.shared.explicit.props')" />
+    <Import Project="$(MSBuildProjectDirectory)\..\Directory.Build.shared.explicit.props" Condition="Exists('$(MSBuildProjectDirectory)\..\Directory.Build.shared.explicit.props')" />
   -->
 
   <!-- Explicit additional project properties that require stuff set before -->

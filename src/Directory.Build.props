@@ -1,22 +1,22 @@
 <Project>
   <!-- 
-    This file applies to all projects automatically. Project specific values should go into Directory.build.project.props
+    This file applies to all projects automatically. Project specific values should go into Directory.Build.project.props
   -->
 
   <!-- ..\ -->
-  <Import Project="$(MSBuildProjectDirectory)\..\Directory.build.shared.implicit.props" 
-          Condition="Exists('$(MSBuildProjectDirectory)\..\Directory.build.shared.implicit.props')" />
-  <Import Project="$(MSBuildProjectDirectory)\..\Directory.build.project.props"
-          Condition="Exists('$(MSBuildProjectDirectory)\..\Directory.build.project.props')" />
-  <Import Project="$(MSBuildProjectDirectory)\..\Directory.build.analyzers.props"
-          Condition="Exists('$(MSBuildProjectDirectory)\..\Directory.build.analyzers.props')" />
+  <Import Project="$(MSBuildProjectDirectory)\..\Directory.Build.shared.implicit.props" 
+          Condition="Exists('$(MSBuildProjectDirectory)\..\Directory.Build.shared.implicit.props')" />
+  <Import Project="$(MSBuildProjectDirectory)\..\Directory.Build.project.props"
+          Condition="Exists('$(MSBuildProjectDirectory)\..\Directory.Build.project.props')" />
+  <Import Project="$(MSBuildProjectDirectory)\..\Directory.Build.analyzers.props"
+          Condition="Exists('$(MSBuildProjectDirectory)\..\Directory.Build.analyzers.props')" />
           
 
   <!-- ..\..\ -->
-  <Import Project="$(MSBuildProjectDirectory)\..\..\Directory.build.shared.implicit.props" 
-          Condition="Exists('$(MSBuildProjectDirectory)\..\..\Directory.build.shared.implicit.props')" />
-  <Import Project="$(MSBuildProjectDirectory)\..\..\Directory.build.project.props"
-          Condition="Exists('$(MSBuildProjectDirectory)\..\..\Directory.build.project.props')" />
-  <Import Project="$(MSBuildProjectDirectory)\..\..\Directory.build.analyzers.props"
-          Condition="Exists('$(MSBuildProjectDirectory)\..\..\Directory.build.analyzers.props')" />
+  <Import Project="$(MSBuildProjectDirectory)\..\..\Directory.Build.shared.implicit.props" 
+          Condition="Exists('$(MSBuildProjectDirectory)\..\..\Directory.Build.shared.implicit.props')" />
+  <Import Project="$(MSBuildProjectDirectory)\..\..\Directory.Build.project.props"
+          Condition="Exists('$(MSBuildProjectDirectory)\..\..\Directory.Build.project.props')" />
+  <Import Project="$(MSBuildProjectDirectory)\..\..\Directory.Build.analyzers.props"
+          Condition="Exists('$(MSBuildProjectDirectory)\..\..\Directory.Build.analyzers.props')" />
 </Project>

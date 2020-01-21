@@ -1,6 +1,6 @@
 <Project>
   <!-- 
-    This file applies to all projects automatically and defines all default analyzers. Project specific values should go into Directory.build.project.props
+    This file applies to all projects automatically and defines all default analyzers. Project specific values should go into Directory.Build.project.props
   -->
 
   <ItemGroup>
