@@ -4,7 +4,7 @@ skip_commits:
 configuration: Release
 platform: Any CPU
 before_build:
-- cmd: nuget restore
+- cmd: nuget restore src
 build:
   verbosity: minimal
 test:
