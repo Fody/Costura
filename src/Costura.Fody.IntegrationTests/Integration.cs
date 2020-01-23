@@ -6,7 +6,7 @@ using NUnit.Framework;
 [TestFixture]
 public class Integration
 {
-    [Test]
+    [Test, Explicit]
     public void Test()
     {
         // just use some code from Newtonsoft.Json to ensure it's referenced.

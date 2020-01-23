@@ -9,7 +9,6 @@
     <Description></Description>
     <PackageTags></PackageTags>
     <SonarQubeExclude>true</SonarQubeExclude>
-    <DisableFody>true</DisableFody>
   </PropertyGroup>
   
   <ItemGroup>
