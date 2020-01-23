@@ -361,6 +361,8 @@ Task("Build")
     BuildTestProjects(buildContext);
 
     await buildContext.SourceControl.MarkBuildAsSucceededAsync("Build");
+
+    Information("Completed build for version '{0}'", buildContext.General.Version.NuGet);
 })
 .OnError<BuildContext>((ex, buildContext) => 
 {
@@ -385,6 +387,8 @@ Task("Test")
     }
 
     await buildContext.SourceControl.MarkBuildAsSucceededAsync("Test");
+
+    Information("Completed tests for version '{0}'", buildContext.General.Version.NuGet);
 })
 .OnError<BuildContext>((ex, buildContext) => 
 {
@@ -408,6 +412,8 @@ Task("Package")
     {
         await processor.PackageAsync();
     }
+
+    Information("Completed packaging for version '{0}'", buildContext.General.Version.NuGet);
 });
 
 //-------------------------------------------------------------
@@ -445,6 +451,8 @@ Task("PackageLocal")
             Warning("Failed to copy build artifacts for '{0}'", component);
         }
     }
+
+    Information("Copied build artifacts for version '{0}'", buildContext.General.Version.NuGet);
 });
 
 //-------------------------------------------------------------
