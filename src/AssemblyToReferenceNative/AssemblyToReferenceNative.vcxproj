@@ -22,6 +22,7 @@
     <ClCompile Include="Native.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
+    <ProjectName>AssemblyToReferenceNative</ProjectName>
     <ProjectGuid>{85EAF811-151B-4EDC-8625-445F33C62994}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>AssemblyToReferenceNative</RootNamespace>

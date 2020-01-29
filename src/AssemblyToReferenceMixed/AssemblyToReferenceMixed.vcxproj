@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
+    <ProjectName>AssemblyToReferenceMixed</ProjectName>
     <ProjectGuid>{8D70BAC7-C4EF-456D-9E73-777A172BCA43}</ProjectGuid>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <Keyword>ManagedCProj</Keyword>
