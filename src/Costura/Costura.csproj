@@ -6,6 +6,7 @@
     <DefaultLanguage>en-US</DefaultLanguage>
     <PackageVersion>3.0.0-alpha0001</PackageVersion>
     <Description>Fody add-in for embedding references as resources.</Description>
+    <DevelopmentDependency>true</DevelopmentDependency>
     <PackageTags>ILMerge, ILWeaving, Embed, Resource, Fody, Cecil</PackageTags>
     <DisableFody>true</DisableFody>
     <AssemblyOriginatorKeyFile>$(SolutionDir)key.snk</AssemblyOriginatorKeyFile>
