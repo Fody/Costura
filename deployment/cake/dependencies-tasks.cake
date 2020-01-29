@@ -92,14 +92,12 @@ public class DependenciesProcessor : ProcessorBase
                 msBuildSettings.MSBuildPlatform = MSBuildPlatform.Automatic;
                 msBuildSettings.PlatformTarget = PlatformTarget.Win32;
             }
-            else
-            {
-                var outputDirectory = GetProjectOutputDirectory(BuildContext, dependency);
-                CakeContext.Information("Output directory: '{0}'", outputDirectory);
-                msBuildSettings.WithProperty("OverridableOutputRootPath", BuildContext.General.OutputRootDirectory);
-                msBuildSettings.WithProperty("OverridableOutputPath", outputDirectory);
-                msBuildSettings.WithProperty("PackageOutputPath", BuildContext.General.OutputRootDirectory);
-            }
+
+            var outputDirectory = GetProjectOutputDirectory(BuildContext, dependency);
+            CakeContext.Information("Output directory: '{0}'", outputDirectory);
+            msBuildSettings.WithProperty("OverridableOutputRootPath", BuildContext.General.OutputRootDirectory);
+            msBuildSettings.WithProperty("OverridableOutputPath", outputDirectory);
+            msBuildSettings.WithProperty("PackageOutputPath", BuildContext.General.OutputRootDirectory);
 
             // SourceLink specific stuff
             if (IsSourceLinkSupported(BuildContext, projectFileName))
