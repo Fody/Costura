@@ -91,7 +91,6 @@ public class DependenciesProcessor : ProcessorBase
                 // Special C++ exceptions
                 msBuildSettings.MSBuildPlatform = MSBuildPlatform.Automatic;
                 msBuildSettings.PlatformTarget = PlatformTarget.Win32;
-                msBuildSettings.Restore = false;
             }
             else
             {

@@ -183,7 +183,28 @@ public class SolutionContext : BuildContextBase
     public string Name { get; set; }
     public string AssemblyInfoFileName { get; set; }
     public string FileName { get; set; }
+    public string Directory
+    {
+        get
+        {
+            var directory = System.IO.Directory.GetParent(FileName).FullName;
+            if (!directory.EndsWith("/") && !directory.EndsWith("\\"))
+            {
+                if (directory.Contains("\\"))
+                {
+                    directory += "\\";
+                }
+                else
+                {
+                    directory += "/";
+                }
+            }
 
+            return directory;
+        }
+    }
+
+    public bool BuildSolution { get; set; }
     public string PublishType { get; set; }
     public string ConfigurationName { get; set; }
 
@@ -341,7 +362,8 @@ private GeneralContext InitializeGeneralContext(BuildContext buildContext, IBuil
         AssemblyInfoFileName = "./src/SolutionAssemblyInfo.cs",
         FileName = string.Format("./src/{0}", string.Format("{0}.sln", solutionName)),
         PublishType = buildContext.BuildServer.GetVariable("PublishType", "Unknown", showValue: true),
-        ConfigurationName = buildContext.BuildServer.GetVariable("ConfigurationName", "Release", showValue: true)
+        ConfigurationName = buildContext.BuildServer.GetVariable("ConfigurationName", "Release", showValue: true),
+        BuildSolution = buildContext.BuildServer.GetVariableAsBool("BuildSolution", false, showValue: true)
     };
 
     data.IsCiBuild = buildContext.BuildServer.GetVariableAsBool("IsCiBuild", false, showValue: true);

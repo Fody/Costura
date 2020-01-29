@@ -289,6 +289,30 @@ private static void RestoreNuGetPackages(BuildContext buildContext, Cake.Core.IO
 
 //-------------------------------------------------------------
 
+private static void BuildSolution(BuildContext buildContext)
+{
+    var solutionName = buildContext.General.Solution.Name;
+    var solutionFileName = buildContext.General.Solution.FileName;
+
+    buildContext.CakeContext.LogSeparator("Building solution '{0}'", solutionName);
+
+    var msBuildSettings = new MSBuildSettings 
+    {
+        Verbosity = Verbosity.Quiet,
+        //Verbosity = Verbosity.Diagnostic,
+        ToolVersion = MSBuildToolVersion.Default,
+        Configuration = buildContext.General.Solution.ConfigurationName,
+        MSBuildPlatform = MSBuildPlatform.x86, // Always require x86, see platform for actual target platform,
+        PlatformTarget = PlatformTarget.MSIL
+    };
+
+    //ConfigureMsBuild(buildContext, msBuildSettings, dependency);
+
+    buildContext.CakeContext.MSBuild(solutionFileName, msBuildSettings);
+}
+
+//-------------------------------------------------------------
+
 private static void ConfigureMsBuild(BuildContext buildContext, MSBuildSettings msBuildSettings, 
     string projectName, string action = "build", bool? allowVsPrerelease = null)
 {
@@ -302,6 +326,15 @@ private static void ConfigureMsBuild(BuildContext buildContext, MSBuildSettings 
 
     // No NuGet restore (should already be done)
     msBuildSettings.WithProperty("ResolveNuGetPackages", "false");
+    msBuildSettings.Restore = false;
+
+    // Solution info
+    msBuildSettings.WithProperty("SolutionFileName", System.IO.Path.GetFileName(buildContext.General.Solution.FileName));
+    msBuildSettings.WithProperty("SolutionPath", System.IO.Path.GetFullPath(buildContext.General.Solution.FileName));
+    msBuildSettings.WithProperty("SolutionDir", System.IO.Path.GetFullPath(buildContext.General.Solution.Directory));
+    msBuildSettings.WithProperty("SolutionName", buildContext.General.Solution.Name);
+    msBuildSettings.WithProperty("SolutionExt", ".sln");
+    msBuildSettings.WithProperty("DefineExplicitDefaults", "true");
 
     // Use as much CPU as possible
     msBuildSettings.MaxCpuCount = 0;
@@ -335,6 +368,18 @@ private static void ConfigureMsBuildForDotNetCore(BuildContext buildContext, Dot
 
         msBuildSettings.ToolPath = toolPath;
     }
+
+    // No NuGet restore (should already be done)
+    msBuildSettings.WithProperty("ResolveNuGetPackages", "false");
+    //msBuildSettings.Restore = false;
+
+    // Solution info
+    msBuildSettings.WithProperty("SolutionFileName", System.IO.Path.GetFileName(buildContext.General.Solution.FileName));
+    msBuildSettings.WithProperty("SolutionPath", System.IO.Path.GetFullPath(buildContext.General.Solution.FileName));
+    msBuildSettings.WithProperty("SolutionDir", System.IO.Path.GetFullPath(buildContext.General.Solution.Directory));
+    msBuildSettings.WithProperty("SolutionName", buildContext.General.Solution.Name);
+    msBuildSettings.WithProperty("SolutionExt", ".sln");
+    msBuildSettings.WithProperty("DefineExplicitDefaults", "true");
 
     // Use as much CPU as possible
     msBuildSettings.MaxCpuCount = 0;
@@ -524,6 +569,63 @@ private static string GetProjectSpecificConfigurationValue(BuildContext buildCon
 
     var value = buildContext.BuildServer.GetVariable(keyToCheck, fallbackValue);
     return value;
+}
+
+//-------------------------------------------------------------
+
+private static void CleanProject(BuildContext buildContext, string projectName)
+{
+    buildContext.CakeContext.LogSeparator("Cleaning project '{0}'", projectName);
+
+    var projectDirectory = GetProjectDirectory(projectName);
+
+    buildContext.CakeContext.Information($"Investigating paths to clean up in '{projectDirectory}'");
+
+    var directoriesToDelete = new List<string>();
+
+    var binDirectory = System.IO.Path.Combine(projectDirectory, "bin");
+    directoriesToDelete.Add(binDirectory);
+
+    var objDirectory = System.IO.Path.Combine(projectDirectory, "obj");
+    directoriesToDelete.Add(objDirectory);
+
+    // Special C++ scenarios
+    var projectFileName = GetProjectFileName(buildContext, projectName);
+    if (IsCppProject(projectFileName))
+    {
+        var debugDirectory = System.IO.Path.Combine(projectDirectory, "Debug");
+        directoriesToDelete.Add(debugDirectory);
+
+        var releaseDirectory = System.IO.Path.Combine(projectDirectory, "Release");
+        directoriesToDelete.Add(releaseDirectory);
+
+        var x64Directory = System.IO.Path.Combine(projectDirectory, "x64");
+        directoriesToDelete.Add(x64Directory);
+
+        var x86Directory = System.IO.Path.Combine(projectDirectory, "x86");
+        directoriesToDelete.Add(x86Directory);
+    }
+
+    foreach (var directoryToDelete in directoriesToDelete)
+    {
+        DeleteDirectoryWithLogging(buildContext, directoryToDelete);
+    }
+}
+
+//-------------------------------------------------------------
+
+private static void DeleteDirectoryWithLogging(BuildContext buildContext, string directoryToDelete)
+{
+    if (buildContext.CakeContext.DirectoryExists(directoryToDelete))
+    {
+        buildContext.CakeContext.Information($"Cleaning up directory '{directoryToDelete}'");
+
+        buildContext.CakeContext.DeleteDirectory(directoryToDelete, new DeleteDirectorySettings
+        {
+            Force = true,
+            Recursive = true
+        });
+    }
 }
 
 //-------------------------------------------------------------

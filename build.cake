@@ -10,6 +10,7 @@ Parameters["RepositoryUrl"] = string.Format("https://github.com/{0}/{1}", GetBui
 Parameters["StartYear"] = "2015";
 Parameters["TestTargetFramework"] = "net472";
 Parameters["UseVisualStudioPrerelease"] = "false";
+//Parameters["BuildSolution"] = "true";
 
 // Note: the rest of the variables should be coming from the build server,
 // see `/deployment/cake/*-variables.cake` for customization options
@@ -27,14 +28,15 @@ Parameters["UseVisualStudioPrerelease"] = "false";
 
 Components.Add("Costura.Fody");
 
-//Dependencies.Add("AssemblyToProcess");
+Dependencies.Add("AssemblyToReference");
 Dependencies.Add("AssemblyToReferenceNative");
 Dependencies.Add("AssemblyToReferenceMixed");
 Dependencies.Add("AssemblyToReferencePreEmbedded");
-//Dependencies.Add("AssemblyWithoutInitialize");
-//Dependencies.Add("ExeToProcess");
-//Dependencies.Add("ExeToProcessWithNative");
-//Dependencies.Add("ExeToProcessWithNativeAndEmbeddedMixed");
+Dependencies.Add("AssemblyWithoutInitialize");
+Dependencies.Add("AssemblyToProcess");
+Dependencies.Add("ExeToProcess");
+Dependencies.Add("ExeToProcessWithNative");
+Dependencies.Add("ExeToProcessWithNativeAndEmbeddedMixed");
 Dependencies.Add("Costura.Template");
 
 TestProjects.Add("Costura.Fody.Tests");

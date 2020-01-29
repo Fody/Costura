@@ -276,6 +276,11 @@ Task("Build")
 
     try
     {
+        if (buildContext.General.Solution.BuildSolution)
+        {
+            BuildSolution(buildContext);
+        }
+
         foreach (var processor in buildContext.Processors)
         {
             await processor.BuildAsync();
