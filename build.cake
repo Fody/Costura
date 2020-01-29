@@ -10,6 +10,7 @@ Parameters["RepositoryUrl"] = string.Format("https://github.com/{0}/{1}", GetBui
 Parameters["StartYear"] = "2015";
 Parameters["TestTargetFramework"] = "net472";
 Parameters["UseVisualStudioPrerelease"] = "false";
+Parameters["ProjectName"] = "Costura.Fody";
 //Parameters["BuildSolution"] = "true";
 
 // Note: the rest of the variables should be coming from the build server,

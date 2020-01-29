@@ -329,12 +329,12 @@ private static void ConfigureMsBuild(BuildContext buildContext, MSBuildSettings 
     msBuildSettings.Restore = false;
 
     // Solution info
-    msBuildSettings.WithProperty("SolutionFileName", System.IO.Path.GetFileName(buildContext.General.Solution.FileName));
-    msBuildSettings.WithProperty("SolutionPath", System.IO.Path.GetFullPath(buildContext.General.Solution.FileName));
-    msBuildSettings.WithProperty("SolutionDir", System.IO.Path.GetFullPath(buildContext.General.Solution.Directory));
-    msBuildSettings.WithProperty("SolutionName", buildContext.General.Solution.Name);
-    msBuildSettings.WithProperty("SolutionExt", ".sln");
-    msBuildSettings.WithProperty("DefineExplicitDefaults", "true");
+    // msBuildSettings.WithProperty("SolutionFileName", System.IO.Path.GetFileName(buildContext.General.Solution.FileName));
+    // msBuildSettings.WithProperty("SolutionPath", System.IO.Path.GetFullPath(buildContext.General.Solution.FileName));
+    // msBuildSettings.WithProperty("SolutionDir", System.IO.Path.GetFullPath(buildContext.General.Solution.Directory));
+    // msBuildSettings.WithProperty("SolutionName", buildContext.General.Solution.Name);
+    // msBuildSettings.WithProperty("SolutionExt", ".sln");
+    // msBuildSettings.WithProperty("DefineExplicitDefaults", "true");
 
     // Use as much CPU as possible
     msBuildSettings.MaxCpuCount = 0;
@@ -374,12 +374,12 @@ private static void ConfigureMsBuildForDotNetCore(BuildContext buildContext, Dot
     //msBuildSettings.Restore = false;
 
     // Solution info
-    msBuildSettings.WithProperty("SolutionFileName", System.IO.Path.GetFileName(buildContext.General.Solution.FileName));
-    msBuildSettings.WithProperty("SolutionPath", System.IO.Path.GetFullPath(buildContext.General.Solution.FileName));
-    msBuildSettings.WithProperty("SolutionDir", System.IO.Path.GetFullPath(buildContext.General.Solution.Directory));
-    msBuildSettings.WithProperty("SolutionName", buildContext.General.Solution.Name);
-    msBuildSettings.WithProperty("SolutionExt", ".sln");
-    msBuildSettings.WithProperty("DefineExplicitDefaults", "true");
+    // msBuildSettings.WithProperty("SolutionFileName", System.IO.Path.GetFileName(buildContext.General.Solution.FileName));
+    // msBuildSettings.WithProperty("SolutionPath", System.IO.Path.GetFullPath(buildContext.General.Solution.FileName));
+    // msBuildSettings.WithProperty("SolutionDir", System.IO.Path.GetFullPath(buildContext.General.Solution.Directory));
+    // msBuildSettings.WithProperty("SolutionName", buildContext.General.Solution.Name);
+    // msBuildSettings.WithProperty("SolutionExt", ".sln");
+    // msBuildSettings.WithProperty("DefineExplicitDefaults", "true");
 
     // Use as much CPU as possible
     msBuildSettings.MaxCpuCount = 0;
