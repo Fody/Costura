@@ -19,7 +19,7 @@
     <PackageReference Include="Catel.Core" Version="5.12.2" />
     <PackageReference Include="Catel.MVVM" Version="5.12.2" />
     <PackageReference Include="Fody" Version="6.1.0" PrivateAssets="None" />
-    <PackageReference Include="FodyHelpers" Version="6.0.8" />
+    <PackageReference Include="FodyHelpers" Version="6.1.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Moq" Version="4.13.1" />
     <PackageReference Include="NUnit" Version="3.12.0" PrivateAssets="all" />
