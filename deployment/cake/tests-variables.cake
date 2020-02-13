@@ -25,11 +25,6 @@ public class TestsContext : BuildContextWithItemsBase
             throw new Exception("Framework is required, specify via 'TestFramework'");
         }
 
-        if (string.IsNullOrWhiteSpace(TargetFramework))
-        {
-            throw new Exception("TestFramework is required, specify via 'TestTargetFramework'");
-        }
-
         if (string.IsNullOrWhiteSpace(ProcessBit))
         {
             throw new Exception("ProcessBit is required, specify via 'TestProcessBit'");
@@ -51,7 +46,7 @@ private TestsContext InitializeTestsContext(BuildContext buildContext, IBuildCon
         Items = TestProjects,
 
         Framework = buildContext.BuildServer.GetVariable("TestFramework", "nunit", showValue: true),
-        TargetFramework = buildContext.BuildServer.GetVariable("TestTargetFramework", "net47", showValue: true),
+        TargetFramework = buildContext.BuildServer.GetVariable("TestTargetFramework", "", showValue: true),
         ProcessBit = buildContext.BuildServer.GetVariable("TestProcessBit", "X86", showValue: true)
     };
 
