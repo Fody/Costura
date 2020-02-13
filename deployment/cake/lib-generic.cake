@@ -550,6 +550,46 @@ private static string GetProjectSlug(string projectName)
 
 //-------------------------------------------------------------
 
+private static string[] GetTargetFrameworks(BuildContext buildContext, string projectName)
+{
+    var targetFrameworks = new List<string>();
+
+    var projectFileName = GetProjectFileName(buildContext, projectName);
+    var projectFileContents = System.IO.File.ReadAllText(projectFileName);
+
+    var xmlDocument = XDocument.Parse(projectFileContents);
+    var projectElement = xmlDocument.Root;
+
+    foreach (var propertyGroupElement in projectElement.Elements("PropertyGroup"))
+    {
+        // Step 1: check TargetFramework
+        var targetFrameworkElement = projectElement.Element("TargetFramework");
+        if (targetFrameworkElement != null)
+        {
+            targetFrameworks.Add(targetFrameworkElement.Value);
+            break;
+        }
+
+        // Step 2: check TargetFrameworks
+        var targetFrameworksElement = propertyGroupElement.Element("TargetFrameworks");
+        if (targetFrameworksElement != null)
+        {
+            var value = targetFrameworksElement.Value;
+            targetFrameworks.AddRange(value.Split(new [] { ';' }));
+            break;
+        }
+    }
+
+    if (targetFrameworks.Count == 0)
+    {
+        throw new Exception(string.Format("No target frameworks could be detected for project '{0}'", projectName));
+    }
+
+    return targetFrameworks.ToArray();
+}
+
+//-------------------------------------------------------------
+
 private static string GetTargetSpecificConfigurationValue(BuildContext buildContext, TargetType targetType, string configurationPrefix, string fallbackValue)
 {
     // Allow per project overrides via "[configurationPrefix][targetType]"

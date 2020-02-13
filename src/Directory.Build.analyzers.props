@@ -5,5 +5,6 @@
 
   <ItemGroup>
     <PackageReference Include="CatenaLogic.Analyzers" Version="1.0.0-alpha0019" PrivateAssets="All" />
+    <!-- <PackageReference Include="ClrHeapAllocationAnalyzer" Version="3.0.0" PrivateAssets="All" /> -->
   </ItemGroup>
 </Project>

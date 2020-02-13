@@ -58,6 +58,14 @@
     <Title Condition=" '$(Title)' == '' ">$(PackageId)</Title>
   </PropertyGroup>
 
+  <PropertyGroup Condition="Exists('$(MSBuildProjectDirectory)\..\..\design\Package\icon.png')">
+    <PackageIcon>icon.png</PackageIcon>
+  </PropertyGroup>
+
+  <ItemGroup Condition="Exists('$(MSBuildProjectDirectory)\..\..\design\Package\icon.png')">
+    <None Include="$(MSBuildProjectDirectory)\..\..\design\Package\icon.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
   <!-- This will include LICENSE.txt and VERIFICATION.txt for Chocolatey -->
   <ItemGroup>
     <None Include="$(OverridableOutputPath)\LICENSE.txt"
@@ -124,6 +132,18 @@
   </PropertyGroup>
   
   <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.0' ">
+    <None Remove="Platforms\net\**\*.cs;Platforms\net\**\*.xaml;Platforms\net\**\*.xaml.cs" />
+    <Compile Include="Platforms\net\**\*.cs" DependentUpon="%(Filename)" />
+    <Page Include="Platforms\net\**\*.xaml" SubType="Designer" Generator="MSBuild:Compile" />
+    <Compile Update="Platforms\net\**\*.xaml.cs" SubType="Code" DependentUpon="%(Filename)" />
+  </ItemGroup>
+    
+  <!-- .NET Core app 3.1 -->
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
+    <DefineConstants>$(DefineConstants);NETCORE;NETCORE3_0;NETCOREAPP;NETCOREAPP3_0</DefineConstants>
+  </PropertyGroup>
+  
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
     <None Remove="Platforms\net\**\*.cs;Platforms\net\**\*.xaml;Platforms\net\**\*.xaml.cs" />
     <Compile Include="Platforms\net\**\*.cs" DependentUpon="%(Filename)" />
     <Page Include="Platforms\net\**\*.xaml" SubType="Designer" Generator="MSBuild:Compile" />
