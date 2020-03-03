@@ -167,6 +167,8 @@ Costura by default will load as part of the module initialization. This flag dis
 
 Costura will by default use assemblies with a name like 'resources.dll' as a satellite resource and prepend the output path. This flag disables that behavior.
 
+Be advised, that **DLL** project assembly names ending with '.resources' (resulting in `*.resources.dll` will lead to errors when this flag set to `false`.
+
 *Defaults to `false`*
 
 ```xml
