@@ -307,6 +307,7 @@ public class SonarQubeContext : BuildContextBase
     }
 
     public bool IsDisabled { get; set; }
+    public bool SupportBranches { get; set; }
     public string Url { get; set; }
     public string Username { get; set; }
     public string Password { get; set; }
@@ -409,6 +410,7 @@ private GeneralContext InitializeGeneralContext(BuildContext buildContext, IBuil
     data.SonarQube = new SonarQubeContext(data)
     {
         IsDisabled = buildContext.BuildServer.GetVariableAsBool("SonarDisabled", false, showValue: true),
+        SupportBranches = buildContext.BuildServer.GetVariableAsBool("SonarSupportBranches", true, showValue: true),
         Url = buildContext.BuildServer.GetVariable("SonarUrl", showValue: true),
         Username = buildContext.BuildServer.GetVariable("SonarUsername", showValue: false),
         Password = buildContext.BuildServer.GetVariable("SonarPassword", showValue: false),

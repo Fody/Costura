@@ -251,7 +251,7 @@ Task("Build")
                       !string.IsNullOrWhiteSpace(sonarUrl);
     if (enableSonar)
     {
-        SonarBegin(new SonarBeginSettings 
+        var sonarSettings = new SonarBeginSettings 
         {
             // SonarQube info
             Url = sonarUrl,
@@ -260,14 +260,31 @@ Task("Build")
 
             // Project info
             Key = buildContext.General.SonarQube.Project,
-            // Branch only works with the branch plugin
-            //Branch = RepositoryBranchName,
             Version = buildContext.General.Version.FullSemVer,
             
+            // TODO: How to determine if this is a .NET Core project / solution? We cannot
+            // use IsDotNetCoreProject() because it's project based, not solution based
+            UseCoreClr = true,
+
             // Minimize extreme logging
             Verbose = false,
             Silent = true,
-        });
+        };
+
+        // see https://cakebuild.net/api/Cake.Sonar/SonarBeginSettings/ for more information on
+        // what to set for SonarCloud
+
+        // Branch only works with the branch plugin. Documentation A says it's outdated, but
+        // B still mentions it:
+        // A: https://docs.sonarqube.org/latest/branches/overview/
+        // B: https://docs.sonarqube.org/latest/analysis/analysis-parameters/
+        if (buildContext.General.SonarQube.SupportBranches)
+        {
+            // TODO: How to support PR?
+            sonarSettings.Branch = buildContext.General.Repository.BranchName;
+        }
+
+        SonarBegin(sonarSettings);
     }
     else
     {
