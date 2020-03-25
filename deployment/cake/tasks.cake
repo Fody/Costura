@@ -269,6 +269,10 @@ Task("Build")
             // Minimize extreme logging
             Verbose = false,
             Silent = true,
+
+            // Support waiting for the quality gate
+            ArgumentCustomization = args => args
+                .Append("/d:sonar.qualitygate.wait=true")
         };
 
         // see https://cakebuild.net/api/Cake.Sonar/SonarBeginSettings/ for more information on
