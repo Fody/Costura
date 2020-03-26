@@ -340,10 +340,22 @@ Task("Build")
         }
     }
 
+    var buildTestProjects = true;
+
+    if (buildContext.General.IsLocalBuild && buildContext.General.MaximizePerformance)
+    {
+        Information("Local build with maximized performance detected, skipping test project(s) build");
+
+        buildTestProjects = false;
+    }
+
     // Build test projects *after* SonarQube (not part of SQ analysis). Unfortunately, because of this, we cannot yet mark
     // the build as succeeded once we end the SQ session. Therefore, if SQ fails, both the SQ *and* build checks
     // will be marked as failed if SQ fails.
-    BuildTestProjects(buildContext);
+    if (buildTestProjects)
+    {
+        BuildTestProjects(buildContext);
+    }
 
     await buildContext.SourceControl.MarkBuildAsSucceededAsync("Build");
 
