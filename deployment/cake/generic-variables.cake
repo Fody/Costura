@@ -18,6 +18,7 @@ public class GeneralContext : BuildContextWithItemsBase
     public bool IsBetaBuild { get; set; }
     public bool IsOfficialBuild { get; set; }
     public bool IsLocalBuild { get; set; }
+    public bool MaximizePerformance { get; set; }
     public bool UseVisualStudioPrerelease { get; set; }
     public bool VerifyDependencies { get; set; }
 
@@ -88,6 +89,17 @@ public class VersionContext : BuildContextBase
                     }
                 }
           
+                // Validate first
+                if (string.IsNullOrWhiteSpace(generalContext.Repository.BranchName))
+                {
+                    throw new Exception("No local .git directory was found, but repository branch was not specified either. Make sure to specify the branch");
+                }
+
+                if (string.IsNullOrWhiteSpace(generalContext.Repository.Url))
+                {
+                    throw new Exception("No local .git directory was found, but repository url was not specified either. Make sure to specify the branch");
+                }
+
                 // Dynamic repository
                 gitVersionSettings.UserName = generalContext.Repository.Username;
                 gitVersionSettings.Password = generalContext.Repository.Password;
@@ -372,6 +384,7 @@ private GeneralContext InitializeGeneralContext(BuildContext buildContext, IBuil
     data.IsBetaBuild = buildContext.BuildServer.GetVariableAsBool("IsBetaBuild", false, showValue: true);
     data.IsOfficialBuild = buildContext.BuildServer.GetVariableAsBool("IsOfficialBuild", false, showValue: true);
     data.IsLocalBuild = data.Target.ToLower().Contains("local");
+    data.MaximizePerformance = buildContext.BuildServer.GetVariableAsBool("MaximizePerformance", true, showValue: true);
     data.UseVisualStudioPrerelease = buildContext.BuildServer.GetVariableAsBool("UseVisualStudioPrerelease", false, showValue: true);
     data.VerifyDependencies = !buildContext.BuildServer.GetVariableAsBool("DependencyCheckDisabled", false, showValue: true);
 
@@ -444,7 +457,17 @@ private GeneralContext InitializeGeneralContext(BuildContext buildContext, IBuil
 
         var gitVersion = versionContext.GetGitVersionContext(data);
         
+        data.Repository.BranchName = gitVersion.BranchName;
         data.Repository.CommitId = gitVersion.Sha;
+    }
+
+    if (string.IsNullOrWhiteSpace(data.Repository.BranchName))
+    {
+        parentBuildContext.CakeContext.Information("No branch name specified, falling back to GitVersion");
+
+        var gitVersion = versionContext.GetGitVersionContext(data);
+        
+        data.Repository.BranchName = gitVersion.BranchName;
     }
 
     var versionToCheck = versionContext.FullSemVer;
