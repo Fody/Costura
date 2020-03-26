@@ -93,6 +93,12 @@ Task("UpdateNuGet")
 {
     Information("Making sure NuGet is using the latest version");
 
+    if (buildContext.General.IsLocalBuild && buildContext.General.MaximizePerformance)
+    {
+        Information("Local build with maximized performance detected, skipping NuGet update check");
+        return;
+    }
+
     var nuGetExecutable = buildContext.General.NuGet.Executable;
 
     var exitCode = StartProcess(nuGetExecutable, new ProcessSettings
@@ -113,6 +119,12 @@ Task("RestorePackages")
     .ContinueOnError()
     .Does<BuildContext>(buildContext =>
 {
+    if (buildContext.General.IsLocalBuild && buildContext.General.MaximizePerformance)
+    {
+        Information("Local build with maximized performance detected, skipping package restore");
+        return;
+    }
+
     // var csharpProjects = GetFiles("./**/*.csproj");
     // var cProjects = GetFiles("./**/*.vcxproj");
     var solutions = GetFiles("./**/*.sln");
@@ -154,6 +166,12 @@ Task("Clean")
     .ContinueOnError()
     .Does<BuildContext>(buildContext => 
 {
+    if (buildContext.General.IsLocalBuild && buildContext.General.MaximizePerformance)
+    {
+        Information("Local build with maximized performance detected, skipping solution clean");
+        return;
+    }
+
     var platforms = new Dictionary<string, PlatformTarget>();
     platforms["AnyCPU"] = PlatformTarget.MSIL;
     platforms["x86"] = PlatformTarget.x86;
@@ -234,7 +252,7 @@ Task("CodeSign")
 
     if (buildContext.General.IsLocalBuild)
     {
-        Information("Skipping code signing because this is a local package build");
+        Information("Local build detected, skipping code signing");
         return;
     }
 

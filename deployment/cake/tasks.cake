@@ -18,9 +18,9 @@
 
 #addin "nuget:?package=System.Net.Http&version=4.3.3"
 #addin "nuget:?package=Newtonsoft.Json&version=11.0.2"
-#addin "nuget:?package=Cake.Sonar&version=1.1.22"
+#addin "nuget:?package=Cake.Sonar&version=1.1.25"
 
-#tool "nuget:?package=MSBuild.SonarQube.Runner.Tool&version=4.6.0"
+#tool "nuget:?package=MSBuild.SonarQube.Runner.Tool&version=4.8.0"
 #tool "nuget:?package=GitVersion.CommandLine&version=5.1.2-beta1.17&prerelease"
 
 //-------------------------------------------------------------
@@ -305,85 +305,44 @@ Task("Build")
         foreach (var processor in buildContext.Processors)
         {
             await processor.BuildAsync();
-        }        
+        }
     }
     finally
     {
         if (enableSonar)
         {
-            SonarEnd(new SonarEndSettings 
+            try
             {
-                Login = buildContext.General.SonarQube.Username,
-                Password = buildContext.General.SonarQube.Password,
-            });
+                await buildContext.SourceControl.MarkBuildAsPendingAsync("SonarQube");
 
-            var projectSpecificSonarUrl = $"{sonarUrl}/dashboard?id={buildContext.General.SonarQube.Project}";
+                SonarEnd(new SonarEndSettings 
+                {
+                    Login = buildContext.General.SonarQube.Username,
+                    Password = buildContext.General.SonarQube.Password,
+                });
 
-            Information($"Not checking the actual SonarQube quality gates, please visit {projectSpecificSonarUrl} for details about the quality gate");
+                await buildContext.SourceControl.MarkBuildAsSucceededAsync("SonarQube");
+            }
+            catch (Exception)
+            {
+                var projectSpecificSonarUrl = $"{sonarUrl}/dashboard?id={buildContext.General.SonarQube.Project}";
 
-            // Information("Checking whether the project passed the SonarQube gateway...");
-                
-            // var status = "none";
+                if (buildContext.General.SonarQube.SupportBranches)
+                {
+                    projectSpecificSonarUrl += $"&branch={buildContext.General.Repository.BranchName}";
+                }
 
-            // // We need to use /api/qualitygates/project_status
-            // var client = new System.Net.Http.HttpClient();
-            // using (client)
-            // {
-            //     var queryUri = string.Format("{0}/api/qualitygates/project_status?projectKey={1}", sonarUrl, buildContext.General.SonarQube.Project);
+                var failedDescription = $"SonarQube failed, please visit '{projectSpecificSonarUrl}' for more details";
 
-            //     System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12 | System.Net.SecurityProtocolType.Tls11 | System.Net.SecurityProtocolType.Tls;
-
-            //     var byteArray = Encoding.ASCII.GetBytes(string.Format("{0}:{1}", buildContext.General.SonarQube.Username, buildContext.General.SonarQube.Password));
-            //     client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
-            //     client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-
-            //     Debug("Invoking GET request: '{0}'", queryUri);
-
-            //     var response = await client.GetAsync(new Uri(queryUri));
-
-            //     Debug("Parsing request contents");
-
-            //     var content = response.Content;
-            //     var jsonContent = await content.ReadAsStringAsync();
-
-            //     Debug(jsonContent);
-
-            //     dynamic result = Newtonsoft.Json.Linq.JObject.Parse(jsonContent);
-            //     status = result.projectStatus.status;
-            // }
-
-            // Information("SonarQube gateway status returned from request: '{0}'", status);
-
-            // if (string.IsNullOrWhiteSpace(status))
-            // {
-            //     status = "none";
-            // }
-
-            // status = status.ToLower();
-
-            // switch (status)
-            // {
-            //     case "error":
-            //         throw new Exception(string.Format("The SonarQube gateway for '{0}' returned ERROR, please check the error(s) at {1}/dashboard?id={0}", buildContext.General.SonarQube.Project, sonarUrl));
-
-            //     case "warn":
-            //         Warning("The SonarQube gateway for '{0}' returned WARNING, please check the warning(s) at {1}/dashboard?id={0}", buildContext.General.SonarQube.Project, sonarUrl);
-            //         break;
-
-            //     case "none":
-            //         Warning("The SonarQube gateway for '{0}' returned NONE, please check why no gateway status is available at {1}/dashboard?id={0}", buildContext.General.SonarQube.Project, sonarUrl);
-            //         break;
-
-            //     case "ok":
-            //         Information("The SonarQube gateway for '{0}' returned OK, well done! If you want to show off the results, check out {1}/dashboard?id={0}", buildContext.General.SonarQube.Project, sonarUrl);
-            //         break;
-
-            //     default:
-            //         throw new Exception(string.Format("Unexpected SonarQube gateway status '{0}' for project '{1}'", status, buildContext.General.SonarQube.Project));
-            // }
+                await buildContext.SourceControl.MarkBuildAsFailedAsync("SonarQube", failedDescription);
+                throw;
+            }
         }
     }
 
+    // Build test projects *after* SonarQube (not part of SQ analysis). Unfortunately, because of this, we cannot yet mark
+    // the build as succeeded once we end the SQ session. Therefore, if SQ fails, both the SQ *and* build checks
+    // will be marked as failed if SQ fails.
     BuildTestProjects(buildContext);
 
     await buildContext.SourceControl.MarkBuildAsSucceededAsync("Build");
