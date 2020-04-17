@@ -324,6 +324,9 @@ private static void ConfigureMsBuild(BuildContext buildContext, MSBuildSettings 
         msBuildSettings.ToolPath = toolPath;
     }
 
+    // Continuous integration build
+    msBuildSettings.WithProperty("ContinuousIntegrationBuild", "true");
+
     // No NuGet restore (should already be done)
     msBuildSettings.WithProperty("ResolveNuGetPackages", "false");
     msBuildSettings.Restore = false;
@@ -368,6 +371,9 @@ private static void ConfigureMsBuildForDotNetCore(BuildContext buildContext, Dot
 
         msBuildSettings.ToolPath = toolPath;
     }
+
+    // Continuous integration build
+    msBuildSettings.WithProperty("ContinuousIntegrationBuild", "true");
 
     // No NuGet restore (should already be done)
     msBuildSettings.WithProperty("ResolveNuGetPackages", "false");

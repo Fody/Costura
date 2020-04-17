@@ -144,7 +144,14 @@ public class BuildServerIntegration : IIntegration
             {
                 CakeContext.Information("Variable '{0}' is specified via build.cakeoverrides", variableName);
             
-                return sb.ToString();
+                var sbValue = sb.ToString();
+                if (sbValue == "[ignore]" ||
+                    sbValue == "[empty]")
+                {
+                    return string.Empty;
+                }
+
+                return sbValue;
             }
         }
         
