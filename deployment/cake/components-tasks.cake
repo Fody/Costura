@@ -175,6 +175,12 @@ public class ComponentsProcessor : ProcessorBase
 
         foreach (var component in BuildContext.Components.Items)
         {
+            if (!ShouldDeployProject(BuildContext, component))
+            {
+                CakeContext.Information("Component '{0}' should not be deployed", component);
+                continue;
+            }
+
             BuildContext.CakeContext.LogSeparator("Packaging component '{0}'", component);
 
             var projectDirectory = string.Format("./src/{0}", component);

@@ -223,6 +223,12 @@ public class ToolsProcessor : ProcessorBase
 
         foreach (var tool in BuildContext.Tools.Items)
         {
+            if (!ShouldDeployProject(BuildContext, tool))
+            {
+                CakeContext.Information("Tool '{0}' should not be deployed", tool);
+                continue;
+            }
+
             BuildContext.CakeContext.LogSeparator("Packaging tool '{0}'", tool);
 
             var projectDirectory = string.Format("./src/{0}", tool);

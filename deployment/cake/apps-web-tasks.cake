@@ -114,6 +114,12 @@ public class WebProcessor : ProcessorBase
         
         foreach (var webApp in BuildContext.Web.Items)
         {
+            if (!ShouldDeployProject(BuildContext, webApp))
+            {
+                CakeContext.Information("Web app '{0}' should not be deployed", webApp);
+                continue;
+            }
+
             BuildContext.CakeContext.LogSeparator("Packaging web app '{0}'", webApp);
 
             var projectFileName = string.Format("./src/{0}/{0}.csproj", webApp);

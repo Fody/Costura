@@ -143,6 +143,12 @@ public class WpfProcessor : ProcessorBase
 
         foreach (var wpfApp in BuildContext.Wpf.Items)
         {
+            if (!ShouldDeployProject(BuildContext, wpfApp))
+            {
+                CakeContext.Information("WPF app '{0}' should not be deployed", wpfApp);
+                continue;
+            }
+
             CakeContext.Information("Deleting unnecessary files for WPF app '{0}'", wpfApp);
             
             var outputDirectory = GetProjectOutputDirectory(BuildContext, wpfApp);
