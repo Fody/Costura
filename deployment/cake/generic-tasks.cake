@@ -4,7 +4,7 @@
 #addin "nuget:?package=Cake.FileHelpers&version=3.0.0"
 #addin "nuget:?package=Cake.DependencyCheck&version=1.2.0"
 
-#tool "nuget:?package=DependencyCheck.Runner.Tool&include=./**/dependency-check.sh&include=./**/dependency-check.bat"
+#tool "nuget:?package=DependencyCheck.Runner.Tool&version=3.2.1&include=./**/dependency-check.sh&include=./**/dependency-check.bat"
 #tool "nuget:?package=JetBrains.ReSharper.CommandLineTools&version=2018.1.3"
 
 //-------------------------------------------------------------

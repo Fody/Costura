@@ -156,6 +156,12 @@ public class DockerImagesProcessor : ProcessorBase
 
         foreach (var dockerImage in BuildContext.DockerImages.Items)
         {
+            if (!ShouldDeployProject(BuildContext, dockerImage))
+            {
+                CakeContext.Information("Docker image '{0}' should not be deployed", dockerImage);
+                continue;
+            }
+
             BuildContext.CakeContext.LogSeparator("Packaging docker image '{0}'", dockerImage);
 
             var projectFileName = string.Format("./src/{0}/{0}.csproj", dockerImage);

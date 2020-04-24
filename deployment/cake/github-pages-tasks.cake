@@ -133,6 +133,12 @@ public class GitHubPagesProcessor : ProcessorBase
 
         foreach (var gitHubPage in BuildContext.GitHubPages.Items)
         {
+            if (!ShouldDeployProject(BuildContext, gitHubPage))
+            {
+                CakeContext.Information("GitHub page '{0}' should not be deployed", gitHubPage);
+                continue;
+            }
+
             BuildContext.CakeContext.LogSeparator("Packaging GitHub pages '{0}'", gitHubPage);
 
             var projectFileName = string.Format("./src/{0}/{0}.csproj", gitHubPage);
