@@ -19,7 +19,7 @@
     <PackageReference Include="FodyHelpers" Version="6.1.1" />
     <PackageReference Include="Fody" Version="6.1.1" PrivateAssets="None" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="Moq" Version="4.14.0" />
+    <PackageReference Include="Moq" Version="4.14.1" />
     <PackageReference Include="NUnit" Version="3.12.0" PrivateAssets="all" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.16.1" />
     <PackageReference Include="WpfAnalyzers" Version="2.4.5" PrivateAssets="all">
