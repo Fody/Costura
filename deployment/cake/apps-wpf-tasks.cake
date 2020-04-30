@@ -117,15 +117,12 @@ public class WpfProcessor : ProcessorBase
 
         if (BuildContext.General.IsOfficialBuild)
         {
-            // All channels
-            channels.Add("alpha");
-            channels.Add("beta");
+            // Note: we used to deploy stable to stable, beta and alpha, but want to keep things separated now
             channels.Add("stable");
         }
         else if (BuildContext.General.IsBetaBuild)
         {
-            // Both alpha and beta, since MyApp.beta1 should also be available on the alpha channel
-            channels.Add("alpha");
+            // Note: we used to deploy beta to beta and alpha, but want to keep things separated now
             channels.Add("beta");
         }
         else if (BuildContext.General.IsAlphaBuild)
