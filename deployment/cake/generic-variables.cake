@@ -1,5 +1,7 @@
 #l "buildserver.cake"
 
+#tool "nuget:?package=GitVersion.CommandLine&version=5.3.2"
+
 //-------------------------------------------------------------
 
 public class GeneralContext : BuildContextWithItemsBase

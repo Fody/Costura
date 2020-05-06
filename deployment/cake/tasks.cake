@@ -22,7 +22,6 @@
 #addin "nuget:?package=Cake.Sonar&version=1.1.25"
 
 #tool "nuget:?package=MSBuild.SonarQube.Runner.Tool&version=4.8.0"
-#tool "nuget:?package=GitVersion.CommandLine&version=5.1.2-beta1.17&prerelease"
 
 //-------------------------------------------------------------
 // BACKWARDS COMPATIBILITY CODE - START
