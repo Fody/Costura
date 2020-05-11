@@ -1,0 +1,15 @@
+<Project>
+  <!-- 
+    This file applies to projects when it gets imported explicitly using the line below:
+
+    <Import Project="$(MSBuildProjectDirectory)\..\Directory.Build.shared.tests.props" Condition="Exists('$(MSBuildProjectDirectory)\..\Directory.Build.shared.tests.props')" />
+  -->
+
+  <!-- START: This is a buildtime work around for https://github.com/dotnet/corefx/issues/22101 -->
+  <Target Name="CopyCustomContent" AfterTargets="AfterBuild">
+    <Copy SourceFiles="App.config" DestinationFiles="$(OutDir)\testhost.dll.config" />
+    <Copy SourceFiles="App.config" DestinationFiles="$(OutDir)\testhost.x86.dll.config" />
+  </Target>
+  <!-- END: This is a buildtime work around for https://github.com/dotnet/corefx/issues/22101 -->
+
+</Project>
