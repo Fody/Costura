@@ -5,7 +5,7 @@ using System.Text;
 
 public partial class ModuleWeaver
 {
-    private Dictionary<string, string> _checksums = new Dictionary<string, string>();
+    private readonly Dictionary<string, string> _checksums = new Dictionary<string, string>();
 
     private static string CalculateChecksum(string filename)
     {

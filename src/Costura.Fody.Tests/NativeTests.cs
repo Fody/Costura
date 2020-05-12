@@ -28,7 +28,9 @@ public abstract class NativeTests : BaseCosturaTest
     [Test]
     public void TemplateHasCorrectSymbols()
     {
-        using (ApprovalResults.ForScenario(nameof(NativeTests)))
+        var dataPoints = GetScenarioName();
+
+        using (ApprovalResults.ForScenario(dataPoints))
         {
             var text = Ildasm.Decompile(TestResult.AssemblyPath, "Costura.AssemblyLoader");
             Approvals.Verify(text);

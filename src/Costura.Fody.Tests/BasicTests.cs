@@ -61,11 +61,8 @@ public abstract class BasicTests : BaseCosturaTest
     [Test]
     public void TemplateHasCorrectSymbols()
     {
-#if DEBUG
-        var dataPoints = GetType().Name + "Debug";
-#else
-        var dataPoints = GetType().Name + "Release";
-#endif
+        var dataPoints = GetScenarioName();
+
         using (ApprovalResults.ForScenario(dataPoints))
         {
             var text = Ildasm.Decompile(TestResult.AssemblyPath, "Costura.AssemblyLoader");
