@@ -1,13 +1,13 @@
-using System.Linq;
+﻿using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using Mono.Cecil;
 
-partial class ModuleWeaver
+public partial class ModuleWeaver
 {
-    string resourcesHash;
+    private string _resourcesHash;
 
-    void CalculateHash()
+    private void CalculateHash()
     {
         var data = ModuleDefinition.Resources.OfType<EmbeddedResource>()
             .OrderBy(r => r.Name)
@@ -25,7 +25,7 @@ partial class ModuleWeaver
                 sb.Append(hashBytes[i].ToString("X2"));
             }
 
-            resourcesHash = sb.ToString();
+            _resourcesHash = sb.ToString();
         }
     }
 }

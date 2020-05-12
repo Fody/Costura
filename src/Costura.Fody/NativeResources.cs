@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Mono.Cecil;
 
-partial class ModuleWeaver
+public partial class ModuleWeaver
 {
-    void ProcessNativeResources(bool compress)
+    private void ProcessNativeResources(bool compress)
     {
         var unprocessedNameMatch = new Regex(@"^(.*\.)?costura(32|64)\.", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
         var processedNameMatch = new Regex(@"^costura(32|64)\.", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
@@ -17,7 +17,7 @@ partial class ModuleWeaver
             if (match.Success)
             {
                 resource.Name = resource.Name.Substring(match.Groups[1].Length).ToLowerInvariant();
-                hasUnmanaged = true;
+                _hasUnmanaged = true;
             }
 
             if (processedNameMatch.IsMatch(resource.Name))
@@ -28,12 +28,12 @@ partial class ModuleWeaver
                     {
                         using (var compressStream = new DeflateStream(stream, CompressionMode.Decompress))
                         {
-                            checksums.Add(resource.Name, CalculateChecksum(compressStream));
+                            _checksums.Add(resource.Name, CalculateChecksum(compressStream));
                         }
                     }
                     else
                     {
-                        checksums.Add(resource.Name, CalculateChecksum(stream));
+                        _checksums.Add(resource.Name, CalculateChecksum(stream));
                     }
                 }
             }

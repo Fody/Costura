@@ -6,20 +6,20 @@ using System.Linq;
 using Fody;
 using Mono.Cecil;
 
-partial class ModuleWeaver : IDisposable
+public partial class ModuleWeaver : IDisposable
 {
-    List<Stream> streams = new List<Stream>();
-    string cachePath;
+    private readonly List<Stream> _streams = new List<Stream>();
+    private string _cachePath;
 
-    void EmbedResources(Configuration config)
+    private void EmbedResources(Configuration config)
     {
         if (ReferenceCopyLocalPaths == null)
         {
             throw new WeavingException("ReferenceCopyLocalPaths is required you may need to update to the latest version of Fody.");
         }
 
-        cachePath = Path.Combine(Path.GetDirectoryName(AssemblyFilePath), "Costura");
-        Directory.CreateDirectory(cachePath);
+        _cachePath = Path.Combine(Path.GetDirectoryName(AssemblyFilePath), "Costura");
+        Directory.CreateDirectory(_cachePath);
 
         var onlyBinaries = ReferenceCopyLocalPaths.Where(x => x.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) || x.EndsWith(".exe", StringComparison.OrdinalIgnoreCase)).ToArray();
 
@@ -59,12 +59,12 @@ partial class ModuleWeaver : IDisposable
             if (config.Unmanaged32Assemblies.Any(x => string.Equals(x, Path.GetFileNameWithoutExtension(dependency), StringComparison.OrdinalIgnoreCase)))
             {
                 prefix = "costura32.";
-                hasUnmanaged = true;
+                _hasUnmanaged = true;
             }
             if (config.Unmanaged64Assemblies.Any(x => string.Equals(x, Path.GetFileNameWithoutExtension(dependency), StringComparison.OrdinalIgnoreCase)))
             {
                 prefix = "costura64.";
-                hasUnmanaged = true;
+                _hasUnmanaged = true;
             }
 
             if (string.IsNullOrEmpty(prefix))
@@ -87,7 +87,7 @@ partial class ModuleWeaver : IDisposable
         }
     }
 
-    bool CompareAssemblyName(string matchText, string assemblyName)
+    private bool CompareAssemblyName(string matchText, string assemblyName)
     {
         if (matchText.EndsWith("*") && matchText.Length > 1)
         {
@@ -97,7 +97,7 @@ partial class ModuleWeaver : IDisposable
         return matchText.Equals(assemblyName, StringComparison.OrdinalIgnoreCase);
     }
 
-    IEnumerable<string> GetFilteredReferences(IEnumerable<string> onlyBinaries, Configuration config)
+    private IEnumerable<string> GetFilteredReferences(IEnumerable<string> onlyBinaries, Configuration config)
     {
         if (config.IncludeAssemblies.Any())
         {
@@ -135,7 +135,7 @@ partial class ModuleWeaver : IDisposable
                     if (string.IsNullOrEmpty(fileName))
                     {
                         hasErrors = true;
-                        LogError($"Assembly '{skippedAssembly}' cannot be found (not even as CopyLocal='false'), please update the configuration");
+                        WriteError($"Assembly '{skippedAssembly}' cannot be found (not even as CopyLocal='false'), please update the configuration");
                         continue;
                     }
 
@@ -181,7 +181,7 @@ partial class ModuleWeaver : IDisposable
         }
     }
 
-    void Embed(string prefix, string fullPath, bool compress, bool addChecksum, bool disableCleanup)
+    private void Embed(string prefix, string fullPath, bool compress, bool addChecksum, bool disableCleanup)
     {
         try
         {
@@ -214,12 +214,12 @@ disableCleanup: {disableCleanup}");
         {
             // - an assembly that is already embedded uncompressed, using <EmbeddedResource> in the project file
             // - if compress == false: an assembly that appeared twice in the ReferenceCopyLocalPaths, e.g. the same library from different nuget packages (https://github.com/Fody/Costura/issues/332)
-            if (addChecksum && !checksums.ContainsKey(resourceName))
+            if (addChecksum && !_checksums.ContainsKey(resourceName))
             {
-                checksums.Add(resourceName, CalculateChecksum(fullPath));
+                _checksums.Add(resourceName, CalculateChecksum(fullPath));
             }
 
-            LogDebug($"\tSkipping '{fullPath}' because it is already embedded");
+            WriteDebug($"\tSkipping '{fullPath}' because it is already embedded");
             return;
         }
 
@@ -230,27 +230,27 @@ disableCleanup: {disableCleanup}");
             if (ModuleDefinition.Resources.Any(x => string.Equals(x.Name, resourceName, StringComparison.OrdinalIgnoreCase)))
             {
                 // an assembly that appeared twice in the ReferenceCopyLocalPaths, e.g. the same library from different nuget packages (https://github.com/Fody/Costura/issues/332)
-                LogDebug($"\tSkipping '{fullPath}' because it is already embedded");
+                WriteDebug($"\tSkipping '{fullPath}' because it is already embedded");
                 return;
             }
         }
 
-        LogDebug($"\tEmbedding '{fullPath}'");
+        WriteDebug($"\tEmbedding '{fullPath}'");
 
         var checksum = CalculateChecksum(fullPath);
-        var cacheFile = Path.Combine(cachePath, $"{checksum}.{resourceName}");
+        var cacheFile = Path.Combine(_cachePath, $"{checksum}.{resourceName}");
         var memoryStream = BuildMemoryStream(fullPath, compress, cacheFile);
-        streams.Add(memoryStream);
+        _streams.Add(memoryStream);
         var resource = new EmbeddedResource(resourceName, ManifestResourceAttributes.Private, memoryStream);
         ModuleDefinition.Resources.Add(resource);
 
         if (addChecksum)
         {
-            checksums.Add(resourceName, checksum);
+            _checksums.Add(resourceName, checksum);
         }
     }
 
-    static MemoryStream BuildMemoryStream(string fullPath, bool compress, string cacheFile)
+    private static MemoryStream BuildMemoryStream(string fullPath, bool compress, string cacheFile)
     {
         var memoryStream = new MemoryStream();
 
@@ -291,11 +291,11 @@ disableCleanup: {disableCleanup}");
 
     public void Dispose()
     {
-        if (streams == null)
+        if (_streams == null)
         {
             return;
         }
-        foreach (var stream in streams)
+        foreach (var stream in _streams)
         {
             stream.Dispose();
         }

@@ -3,11 +3,11 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-partial class ModuleWeaver
+public partial class ModuleWeaver
 {
-    Dictionary<string, string> checksums = new Dictionary<string, string>();
+    private Dictionary<string, string> _checksums = new Dictionary<string, string>();
 
-    static string CalculateChecksum(string filename)
+    private static string CalculateChecksum(string filename)
     {
         using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
         {
@@ -15,7 +15,7 @@ partial class ModuleWeaver
         }
     }
 
-    static string CalculateChecksum(Stream stream)
+    private static string CalculateChecksum(Stream stream)
     {
         using (var bs = new BufferedStream(stream))
         using (var sha1 = new SHA1CryptoServiceProvider())
@@ -31,16 +31,16 @@ partial class ModuleWeaver
         }
     }
 
-    void AddChecksumsToTemplate()
+    private void AddChecksumsToTemplate()
     {
-        if (checksumsField == null)
+        if (_checksumsField == null)
         {
             return;
         }
 
-        foreach (var checksum in checksums)
+        foreach (var checksum in _checksums)
         {
-            AddToDictionary(checksumsField, checksum.Key, checksum.Value);
+            AddToDictionary(_checksumsField, checksum.Key, checksum.Value);
         }
     }
 }

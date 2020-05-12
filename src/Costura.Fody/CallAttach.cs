@@ -3,9 +3,9 @@ using Fody;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
-partial class ModuleWeaver
+public partial class ModuleWeaver
 {
-    void CallAttach(Configuration config)
+    private void CallAttach(Configuration config)
     {
         var initialized = FindInitializeCalls();
 
@@ -19,7 +19,7 @@ partial class ModuleWeaver
         }
     }
 
-    bool FindInitializeCalls()
+    private bool FindInitializeCalls()
     {
         var found = false;
 
@@ -45,7 +45,7 @@ partial class ModuleWeaver
                         callMethod.FullName == "System.Void CosturaUtility::Initialize()")
                     {
                         found = true;
-                        instructions[i] = Instruction.Create(OpCodes.Call, attachMethod);
+                        instructions[i] = Instruction.Create(OpCodes.Call, _attachMethod);
                     }
                 }
             }
@@ -54,7 +54,7 @@ partial class ModuleWeaver
         return found;
     }
 
-    void AddModuleInitializerCall()
+    private void AddModuleInitializerCall()
     {
         const MethodAttributes attributes = MethodAttributes.Private
                                             | MethodAttributes.HideBySig
@@ -74,6 +74,6 @@ partial class ModuleWeaver
             cctor.Body.Instructions.Add(Instruction.Create(OpCodes.Ret));
             moduleClass.Methods.Add(cctor);
         }
-        cctor.Body.Instructions.Insert(0, Instruction.Create(OpCodes.Call, attachMethod));
+        cctor.Body.Instructions.Insert(0, Instruction.Create(OpCodes.Call, _attachMethod));
     }
 }

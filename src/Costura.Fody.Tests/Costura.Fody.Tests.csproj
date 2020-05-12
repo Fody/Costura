@@ -1,6 +1,6 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
   <PropertyGroup>
-    <TargetFrameworks>net472</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;net472</TargetFrameworks>
     <AssemblyName>Costura.Fody.Tests</AssemblyName>
     <RootNamespace>Costura.Fody.Tests</RootNamespace>
     <DefaultLanguage>en-US</DefaultLanguage>
@@ -19,6 +19,7 @@
     <PackageReference Include="FodyHelpers" Version="6.1.1" />
     <PackageReference Include="Fody" Version="6.1.1" PrivateAssets="None" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
     <PackageReference Include="Moq" Version="4.14.1" />
     <PackageReference Include="NUnit" Version="3.12.0" PrivateAssets="all" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.16.1" />
@@ -44,27 +45,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="MixedAndNativeTests.cs" Condition="$(Configuration)=='Release'" />  
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Compile Remove="*.approved.cs;*.received.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
+    <Compile Remove="MixedAndNativeTests.cs" Condition="$(Configuration)=='Release'" />
   </ItemGroup>
 
   <Import Project="$(MSBuildProjectDirectory)\..\Directory.build.shared.explicit.props" Condition="Exists('$(MSBuildProjectDirectory)\..\Directory.build.shared.explicit.props')" />
+  <Import Project="$(MSBuildProjectDirectory)\..\Directory.build.shared.tests.props" Condition="Exists('$(MSBuildProjectDirectory)\..\Directory.build.shared.tests.props')" />
 </Project>

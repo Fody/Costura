@@ -4,9 +4,9 @@ using System.Linq;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
-partial class ModuleWeaver
+public partial class ModuleWeaver
 {
-    void BuildUpNameDictionary(bool createTemporaryAssemblies, List<string> preloadOrder)
+    private void BuildUpNameDictionary(bool createTemporaryAssemblies, List<string> preloadOrder)
     {
         var orderedResources = preloadOrder
             .Join(ModuleDefinition.Resources, p => p.ToLowerInvariant(),
@@ -30,32 +30,32 @@ partial class ModuleWeaver
             {
                 if (createTemporaryAssemblies)
                 {
-                    AddToList(preloadListField, resource);
+                    AddToList(_preloadListField, resource);
                 }
                 else
                 {
                     if (string.Equals(ext, "pdb", StringComparison.OrdinalIgnoreCase))
                     {
-                        AddToDictionary(symbolNamesField, name, resource);
+                        AddToDictionary(_symbolNamesField, name, resource);
                     }
                     else
                     {
-                        AddToDictionary(assemblyNamesField, name, resource);
+                        AddToDictionary(_assemblyNamesField, name, resource);
                     }
                 }
             }
             else if (string.Equals(parts[0], "costura32", StringComparison.OrdinalIgnoreCase))
             {
-                AddToList(preload32ListField, resource);
+                AddToList(_preload32ListField, resource);
             }
             else if (string.Equals(parts[0], "costura64", StringComparison.OrdinalIgnoreCase))
             {
-                AddToList(preload64ListField, resource);
+                AddToList(_preload64ListField, resource);
             }
         }
     }
 
-    static void GetNameAndExt(string[] parts, out string name, out string ext)
+    private static void GetNameAndExt(string[] parts, out string name, out string ext)
     {
         var isCompressed = string.Equals(parts[parts.Length - 1], "compressed", StringComparison.OrdinalIgnoreCase);
 
@@ -64,22 +64,22 @@ partial class ModuleWeaver
         name = string.Join(".", parts.Skip(1).Take(parts.Length - (isCompressed ? 3 : 2)));
     }
 
-    void AddToDictionary(FieldDefinition field, string key, string name)
+    private void AddToDictionary(FieldDefinition field, string key, string name)
     {
-        var retIndex = loaderCctor.Body.Instructions.Count - 1;
-        loaderCctor.Body.Instructions.InsertBefore(retIndex,
+        var retIndex = _loaderCctor.Body.Instructions.Count - 1;
+        _loaderCctor.Body.Instructions.InsertBefore(retIndex,
             Instruction.Create(OpCodes.Ldsfld, field),
             Instruction.Create(OpCodes.Ldstr, key),
             Instruction.Create(OpCodes.Ldstr, name),
-            Instruction.Create(OpCodes.Callvirt, dictionaryOfStringOfStringAdd));
+            Instruction.Create(OpCodes.Callvirt, _dictionaryOfStringOfStringAdd));
     }
 
-    void AddToList(FieldDefinition field, string name)
+    private void AddToList(FieldDefinition field, string name)
     {
-        var retIndex = loaderCctor.Body.Instructions.Count - 1;
-        loaderCctor.Body.Instructions.InsertBefore(retIndex,
+        var retIndex = _loaderCctor.Body.Instructions.Count - 1;
+        _loaderCctor.Body.Instructions.InsertBefore(retIndex,
             Instruction.Create(OpCodes.Ldsfld, field),
             Instruction.Create(OpCodes.Ldstr, name),
-            Instruction.Create(OpCodes.Callvirt, listOfStringAdd));
+            Instruction.Create(OpCodes.Callvirt, _listOfStringAdd));
     }
 }

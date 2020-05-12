@@ -1,8 +1,8 @@
 using System;
 
-partial class ModuleWeaver
+public partial class ModuleWeaver
 {
-    void FixResourceCase()
+    private void FixResourceCase()
     {
         foreach (var resource in ModuleDefinition.Resources)
         {

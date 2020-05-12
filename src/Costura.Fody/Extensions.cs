@@ -3,7 +3,7 @@ using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
 using Mono.Collections.Generic;
 
-static class Extensions
+internal static class Extensions
 {
     public static Collection<TypeReference> GetGenericInstanceArguments(this TypeReference type) => ((GenericInstanceType)type).GenericArguments;
 
