@@ -20,6 +20,9 @@ update_configs:
         dependency_name: "*.Fody"
         update_type: "all"
     - match:
+        dependency_name: "Microsoft.*"
+        update_type: "all"
+    - match:
         dependency_name: "NUnit"
         update_type: "all"
     - match:
