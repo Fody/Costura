@@ -135,5 +135,12 @@ TestResults
 .github/
 BundleArtifacts/
 
+# editors
+.idea
 .vscode
+
+# fody
 FodyWeavers.xsd
+
+# Approval tests
+*.received.cs
