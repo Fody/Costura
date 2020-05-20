@@ -4,6 +4,7 @@
   -->
 
   <ItemGroup>
+    <PackageReference Include="Catel.Analyzers" Version="1.1.0-alpha0146" PrivateAssets="All" />
     <PackageReference Include="CatenaLogic.Analyzers" Version="1.0.0-alpha0019" PrivateAssets="All" />
     <!-- <PackageReference Include="ClrHeapAllocationAnalyzer" Version="3.0.0" PrivateAssets="All" /> -->
   </ItemGroup>
