@@ -12,7 +12,7 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="Fody" Version="6.1.1" PrivateAssets="All"/>
+    <PackageReference Include="Fody" Version="6.1.2" PrivateAssets="All"/>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" PrivateAssets="All" />
     <PackageReference Include="NUnit" Version="3.12.0" PrivateAssets="all" />
