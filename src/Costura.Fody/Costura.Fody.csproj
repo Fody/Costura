@@ -63,7 +63,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FodyHelpers" Version="6.1.2" />
+    <PackageReference Include="FodyHelpers" Version="6.2.0" />
     <PackageReference Update="NETStandard.Library" Version="2.0.3" />
   </ItemGroup>
 
