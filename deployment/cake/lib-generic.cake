@@ -432,40 +432,29 @@ private static string GetVisualStudioDirectory(BuildContext buildContext, bool? 
            //buildContext.General.SonarQube.IsDisabled = true;
            return pathFor2019Preview;
         }
-
-        buildContext.CakeContext.Debug("Checking for installation of Visual Studio 2017 preview");
-
-        var pathFor2017Preview = @"C:\Program Files (x86)\Microsoft Visual Studio\Preview\Professional\";
-        if (System.IO.Directory.Exists(pathFor2017Preview))
-        {
-            buildContext.CakeContext.Information("Using Visual Studio 2017 preview");
-            return pathFor2017Preview;
-        }
     }
     
     buildContext.CakeContext.Debug("Checking for installation of Visual Studio 2019");
 
-    var pathFor2019 = @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\";
-    if (System.IO.Directory.Exists(pathFor2019))
+    var pathFor2019Enterprise = @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\";
+    if (System.IO.Directory.Exists(pathFor2019Enterprise))
     {
-       buildContext.CakeContext.Information("Using Visual Studio 2019");
-       return pathFor2019;
+       buildContext.CakeContext.Information("Using Visual Studio 2019 Enterprise");
+       return pathFor2019Enterprise;
+    }
+
+    var pathFor2019Professional = @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\";
+    if (System.IO.Directory.Exists(pathFor2019Professional))
+    {
+       buildContext.CakeContext.Information("Using Visual Studio 2019 Professional");
+       return pathFor2019Professional;
     }
 	
-	var pathFor2019Community = @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\";
+    var pathFor2019Community = @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\";
     if (System.IO.Directory.Exists(pathFor2019Community))
     {
        buildContext.CakeContext.Information("Using Visual Studio 2019 CE");
        return pathFor2019Community;
-    }
-
-    buildContext.CakeContext.Debug("Checking for installation of Visual Studio 2017");
-
-    var pathFor2017 = @"C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\";
-    if (System.IO.Directory.Exists(pathFor2017))
-    {
-        buildContext.CakeContext.Information("Using Visual Studio 2017");
-        return pathFor2017;
     }
 
     // Failed
