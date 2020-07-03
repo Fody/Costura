@@ -1,6 +1,6 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard1.0</TargetFrameworks>
     <AssemblyName>Costura</AssemblyName>
     <RootNamespace>Costura</RootNamespace>
     <DefaultLanguage>en-US</DefaultLanguage>
@@ -20,13 +20,6 @@
   
   <ItemGroup>
     <PackageReference Include="Fody" Version="6.2.0" PrivateAssets="none" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <!-- see https://docs.microsoft.com/en-us/archive/blogs/kirillosenkov/how-to-have-a-project-reference-without-referencing-the-actual-binary -->
-    <ProjectReference Include="..\Costura.Template\Costura.Template.csproj" PrivateAssets="true">
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
   </ItemGroup>
 
   <ItemGroup>
