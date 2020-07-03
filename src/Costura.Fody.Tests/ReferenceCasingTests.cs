@@ -9,7 +9,7 @@ public class ReferenceCasingTests : BasicTests
         testResult = WeavingHelper.CreateIsolatedAssemblyCopy("AssemblyToProcess.dll",
             "<Costura IncludeAssemblies='assemblytoreference|exetoreference' />",
             new[] { "AssemblyToReference.dll", "AssemblyToReferencePreEmbedded.dll", "ExeToReference.exe" },
-            "InitializeCall");
+            "ReferenceCasing");
     }
 
     public override TestResult TestResult => testResult;
