@@ -6,6 +6,7 @@
   
   <ItemGroup>
     <ProjectReference Include="..\AssemblyToReferencePreEmbedded\AssemblyToReferencePreEmbedded.csproj" />
+    <ProjectReference Include="..\AssemblyToReferenceWithRuntimeReferences\AssemblyToReferenceWithRuntimeReferences.csproj" />
     <ProjectReference Include="..\AssemblyToReference\AssemblyToReference.csproj" />
     <ProjectReference Include="..\Costura\Costura.csproj" />
     <ProjectReference Include="..\ExeToReference\ExeToReference.csproj" />

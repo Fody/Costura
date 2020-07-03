@@ -12,6 +12,7 @@ public class Configuration
         // Defaults
         OptOut = true;
         IncludeDebugSymbols = true;
+        IncludeRuntimeReferences = true;
         DisableCompression = false;
         DisableCleanup = false;
         LoadAtModuleInit = true;
@@ -35,6 +36,7 @@ public class Configuration
         }
 
         IncludeDebugSymbols = ReadBool(config, "IncludeDebugSymbols", IncludeDebugSymbols);
+        IncludeRuntimeReferences = ReadBool(config, "IncludeRuntimeReferences", IncludeRuntimeReferences);
         DisableCompression = ReadBool(config, "DisableCompression", DisableCompression);
         DisableCleanup = ReadBool(config, "DisableCleanup", DisableCleanup);
         LoadAtModuleInit = ReadBool(config, "LoadAtModuleInit", LoadAtModuleInit);
@@ -55,6 +57,7 @@ public class Configuration
 
     public bool OptOut { get; }
     public bool IncludeDebugSymbols { get; }
+    public bool IncludeRuntimeReferences { get; }
     public bool DisableCompression { get; }
     public bool DisableCleanup { get; }
     public bool LoadAtModuleInit { get; }
