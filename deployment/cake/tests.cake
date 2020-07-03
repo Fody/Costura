@@ -40,7 +40,7 @@ private static void BuildTestProjects(BuildContext buildContext)
         // Note: we need to set OverridableOutputPath because we need to be able to respect
         // AppendTargetFrameworkToOutputPath which isn't possible for global properties (which
         // are properties passed in using the command line)
-        var outputDirectory = string.Format("{0}/{1}/", buildContext.General.OutputRootDirectory, testProject);
+        var outputDirectory = GetProjectOutputDirectory(buildContext, testProject);
         buildContext.CakeContext.Information("Output directory: '{0}'", outputDirectory);
         msBuildSettings.WithProperty("OverridableOutputRootPath", buildContext.General.OutputRootDirectory);
         msBuildSettings.WithProperty("OverridableOutputPath", outputDirectory);
@@ -54,7 +54,8 @@ private static void BuildTestProjects(BuildContext buildContext)
 
 private static void RunUnitTests(BuildContext buildContext, string projectName)
 {
-    var testResultsDirectory = string.Format("{0}/testresults/{1}/", buildContext.General.OutputRootDirectory, projectName);
+    var testResultsDirectory = System.IO.Path.Combine(buildContext.General.OutputRootDirectory,
+        "testresults", projectName);
 
     buildContext.CakeContext.CreateDirectory(testResultsDirectory);
 
@@ -75,7 +76,7 @@ private static void RunUnitTests(BuildContext buildContext, string projectName)
                 Configuration = buildContext.General.Solution.ConfigurationName,
                 NoRestore = true,
                 NoBuild = true,
-                OutputDirectory = string.Format("{0}/{1}", GetProjectOutputDirectory(buildContext, projectName), testTargetFramework),
+                OutputDirectory = System.IO.Path.Combine(GetProjectOutputDirectory(buildContext, projectName), testTargetFramework),
                 ResultsDirectory = testResultsDirectory
             });
 

@@ -114,7 +114,7 @@ public class GitHubPagesProcessor : ProcessorBase
             // Note: we need to set OverridableOutputPath because we need to be able to respect
             // AppendTargetFrameworkToOutputPath which isn't possible for global properties (which
             // are properties passed in using the command line)
-            var outputDirectory = string.Format("{0}/{1}/", BuildContext.General.OutputRootDirectory, gitHubPage);
+            var outputDirectory = GetProjectOutputDirectory(BuildContext, gitHubPage);
             CakeContext.Information("Output directory: '{0}'", outputDirectory);
             msBuildSettings.WithProperty("OverridableOutputRootPath", BuildContext.General.OutputRootDirectory);
             msBuildSettings.WithProperty("OverridableOutputPath", outputDirectory);
@@ -141,9 +141,9 @@ public class GitHubPagesProcessor : ProcessorBase
 
             BuildContext.CakeContext.LogSeparator("Packaging GitHub pages '{0}'", gitHubPage);
 
-            var projectFileName = string.Format("./src/{0}/{0}.csproj", gitHubPage);
-
-            var outputDirectory = string.Format("{0}/{1}/", BuildContext.General.OutputRootDirectory, gitHubPage);
+            var projectFileName = GetProjectFileName(BuildContext, gitHubPage);
+            var outputDirectory = GetProjectOutputDirectory(BuildContext, gitHubPage);
+            
             CakeContext.Information("Output directory: '{0}'", outputDirectory);
 
             CakeContext.Information("1) Using 'dotnet publish' to package '{0}'", gitHubPage);

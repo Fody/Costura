@@ -475,7 +475,7 @@ private static string GetVisualStudioPath(BuildContext buildContext, bool? allow
 
     foreach (var potentialPath in potentialPaths)
     {
-        var pathToCheck = string.Format(@"{0}\{1}", directory, potentialPath);
+        var pathToCheck = System.IO.Path.Combine(directory, potentialPath);
         if (System.IO.File.Exists(pathToCheck))
         {
             return pathToCheck;
@@ -496,7 +496,7 @@ private static bool IsCppProject(string projectName)
 
 private static string GetProjectDirectory(string projectName)
 {
-    var projectDirectory = string.Format("./src/{0}/", projectName);
+    var projectDirectory = System.IO.Path.Combine(".", "src", projectName);
     return projectDirectory;
 }
 
@@ -504,7 +504,7 @@ private static string GetProjectDirectory(string projectName)
 
 private static string GetProjectOutputDirectory(BuildContext buildContext, string projectName)
 {
-    var projectDirectory = string.Format("{0}/{1}", buildContext.General.OutputRootDirectory, projectName);
+    var projectDirectory = System.IO.Path.Combine(buildContext.General.OutputRootDirectory, projectName);
     return projectDirectory;
 }
 
@@ -520,8 +520,8 @@ private static string GetProjectFileName(BuildContext buildContext, string proje
 
     foreach (var allowedExtension in allowedExtensions)
     {
-        var fileName = string.Format("{0}{1}.{2}", GetProjectDirectory(projectName), projectName, allowedExtension);
-
+        var fileName = System.IO.Path.Combine(GetProjectDirectory(projectName), $"{projectName}.{allowedExtension}");
+       
         //buildContext.CakeContext.Information(fileName);
 
         if (buildContext.CakeContext.FileExists(fileName))
@@ -531,7 +531,7 @@ private static string GetProjectFileName(BuildContext buildContext, string proje
     }
 
     // Old behavior
-    var fallbackFileName = string.Format("{0}{1}.{2}", GetProjectDirectory(projectName), projectName, allowedExtensions[0]);
+    var fallbackFileName = System.IO.Path.Combine(GetProjectDirectory(projectName), $"{projectName}.{allowedExtensions[0]}");
     return fallbackFileName;
 }
 
@@ -539,7 +539,7 @@ private static string GetProjectFileName(BuildContext buildContext, string proje
 
 private static string GetProjectSlug(string projectName)
 {
-    var slug = projectName.Replace(".", "").Replace(" ", "");
+    var slug = projectName.Replace(".", string.Empty).Replace(" ", string.Empty);
     return slug;
 }
 

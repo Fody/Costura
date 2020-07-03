@@ -81,7 +81,7 @@ public class VersionContext : BuildContextBase
                     
                     // Make a *BIG* assumption that the solution name == repository name
                     var repositoryName = generalContext.Solution.Name;
-                    var tempDirectory = $"{System.IO.Path.GetTempPath()}\\{repositoryName}";
+                    var tempDirectory = System.IO.Path.Combine(System.IO.Path.GetTempPath(), repositoryName);
                     
                     if (CakeContext.DirectoryExists(tempDirectory))
                     {
@@ -204,16 +204,11 @@ public class SolutionContext : BuildContextBase
         get
         {
             var directory = System.IO.Directory.GetParent(FileName).FullName;
-            if (!directory.EndsWith("/") && !directory.EndsWith("\\"))
+            var separator = System.IO.Path.PathSeparator.ToString();
+
+            if (!directory.EndsWith(separator))
             {
-                if (directory.Contains("\\"))
-                {
-                    directory += "\\";
-                }
-                else
-                {
-                    directory += "/";
-                }
+                directory += separator;
             }
 
             return directory;

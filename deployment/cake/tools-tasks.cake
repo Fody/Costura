@@ -22,13 +22,13 @@ public class ToolsProcessor : ProcessorBase
         var outputDirectory = GetProjectOutputDirectory(BuildContext, projectName);
 
         // Check if it already exists
-        var fileName = string.Format("{0}/LICENSE.txt", outputDirectory);
+        var fileName = System.IO.Path.Combine(outputDirectory, "LICENSE.txt");
         if (!CakeContext.FileExists(fileName))
         {
             CakeContext.Information("Creating Chocolatey license file for '{0}'", projectName);
 
             // Option 1: Copy from root
-            var sourceFile = "./LICENSE";
+            var sourceFile = System.IO.Path.Combine(".", "LICENSE");
             if (CakeContext.FileExists(sourceFile))
             {
                 CakeContext.Information("Using license file from repository");
@@ -50,7 +50,7 @@ public class ToolsProcessor : ProcessorBase
         var outputDirectory = GetProjectOutputDirectory(BuildContext, projectName);
 
         // Check if it already exists
-        var fileName = string.Format("{0}/VERIFICATION.txt", outputDirectory);
+        var fileName = System.IO.Path.Combine(outputDirectory, "VERIFICATION.txt");
         if (!CakeContext.FileExists(fileName))
         {
             CakeContext.Information("Creating Chocolatey verification file for '{0}'", projectName);
@@ -102,8 +102,8 @@ public class ToolsProcessor : ProcessorBase
         {
             foreach (var tool in BuildContext.Tools.Items)
             {
-                var cacheDirectory = Environment.ExpandEnvironmentVariables(string.Format("%userprofile%/.nuget/packages/{0}/{1}", 
-                    tool, BuildContext.General.Version.NuGet));
+                var expandableCacheDirectory = System.IO.Path.Combine("%userprofile%", ".nuget", "packages", tool, BuildContext.General.Version.NuGet);
+                var cacheDirectory = Environment.ExpandEnvironmentVariables(expandableCacheDirectory);
 
                 CakeContext.Information("Checking for existing local NuGet cached version at '{0}'", cacheDirectory);
 
@@ -231,8 +231,8 @@ public class ToolsProcessor : ProcessorBase
 
             BuildContext.CakeContext.LogSeparator("Packaging tool '{0}'", tool);
 
-            var projectDirectory = string.Format("./src/{0}", tool);
-            var projectFileName = string.Format("{0}/{1}.csproj", projectDirectory, tool);
+            var projectDirectory = System.IO.Path.Combine(".", "src", tool);
+            var projectFileName = System.IO.Path.Combine(projectDirectory, $"{tool}.csproj");
             var outputDirectory = GetProjectOutputDirectory(BuildContext, tool);
             CakeContext.Information("Output directory: '{0}'", outputDirectory);
 
@@ -364,7 +364,7 @@ public class ToolsProcessor : ProcessorBase
 
             BuildContext.CakeContext.LogSeparator("Deploying tool '{0}'", tool);
 
-            var packageToPush = string.Format("{0}/{1}.{2}.nupkg", BuildContext.General.OutputRootDirectory, tool, version);
+            var packageToPush = System.IO.Path.Combine(BuildContext.General.OutputRootDirectory, $"{tool}.{version}.nupkg");
             var nuGetRepositoryUrls = GetToolsNuGetRepositoryUrls(tool);
             var nuGetRepositoryApiKeys = GetToolsNuGetRepositoryApiKeys(tool);
 

@@ -51,9 +51,10 @@ public static void InjectSourceLinkInProjectFile(BuildContext buildContext, stri
 
     // Required to end with a \
     var sourceRootValue = buildContext.General.RootDirectory;
-    if (!sourceRootValue.EndsWith("\\"))
+    var pathSeparator = System.IO.Path.PathSeparator.ToString();
+    if (!sourceRootValue.EndsWith(pathSeparator))
     {
-        sourceRootValue += "\\";
+        sourceRootValue += pathSeparator;
     };
 
     sourceRoot.Add(new XAttribute("Include", sourceRootValue));

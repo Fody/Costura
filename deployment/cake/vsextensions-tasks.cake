@@ -55,7 +55,7 @@ public class VsExtensionsProcessor : ProcessorBase
             var projectDirectory = GetProjectDirectory(vsExtension);
 
             // Step 1: update vsix manifest
-            var vsixManifestFileName = string.Format("{0}\\source.extension.vsixmanifest", projectDirectory);
+            var vsixManifestFileName = System.IO.Path.Combine(projectDirectory, "source.extension.vsixmanifest");
 
             CakeContext.TransformConfig(vsixManifestFileName, new TransformationCollection 
             {
@@ -123,8 +123,8 @@ public class VsExtensionsProcessor : ProcessorBase
             return;
         }
 
-        var vsixPublisherExeDirectory = string.Format(@"{0}\VSSDK\VisualStudioIntegration\Tools\Bin", GetVisualStudioDirectory(BuildContext));
-        var vsixPublisherExeFileName = string.Format(@"{0}\VsixPublisher.exe", vsixPublisherExeDirectory);
+        var vsixPublisherExeDirectory = System.IO.Path.Combine(GetVisualStudioDirectory(BuildContext), "VSSDK", "VisualStudioIntegration", "Tools", "Bin");
+        var vsixPublisherExeFileName = System.IO.Path.Combine(vsixPublisherExeDirectory, "VsixPublisher.exe");
 
         foreach (var vsExtension in BuildContext.VsExtensions.Items)
         {
@@ -138,14 +138,14 @@ public class VsExtensionsProcessor : ProcessorBase
 
             // Step 1: copy the output stuff
             var vsExtensionOutputDirectory = GetProjectOutputDirectory(BuildContext, vsExtension);
-            var payloadFileName = string.Format(@"{0}\{1}.vsix", vsExtensionOutputDirectory, vsExtension);
+            var payloadFileName = System.IO.Path.Combine(vsExtensionOutputDirectory, $"{vsExtension}.vsix");
 
-            var overviewSourceFileName = string.Format(@"src\{0}\overview.md", vsExtension);
-            var overviewTargetFileName = string.Format(@"{0}\overview.md", vsExtensionOutputDirectory);
+            var overviewSourceFileName = System.IO.Path.Combine("src", vsExtension, "overview.md");
+            var overviewTargetFileName = System.IO.Path.Combine(vsExtensionOutputDirectory, "overview.md");
             CakeContext.CopyFile(overviewSourceFileName, overviewTargetFileName);
 
-            var vsGalleryManifestSourceFileName = string.Format(@"src\{0}\source.extension.vsgallerymanifest", vsExtension);
-            var vsGalleryManifestTargetFileName = string.Format(@"{0}\source.extension.vsgallerymanifest", vsExtensionOutputDirectory);
+            var vsGalleryManifestSourceFileName = System.IO.Path.Combine("src", vsExtension, "source.extension.vsgallerymanifest");
+            var vsGalleryManifestTargetFileName = System.IO.Path.Combine(vsExtensionOutputDirectory, "source.extension.vsgallerymanifest");
             CakeContext.CopyFile(vsGalleryManifestSourceFileName, vsGalleryManifestTargetFileName);
 
             // Step 2: update vs gallery manifest

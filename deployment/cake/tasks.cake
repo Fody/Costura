@@ -440,8 +440,9 @@ Task("PackageLocal")
         {
             Information("Copying build artifact for '{0}'", component);
         
-            var sourceFile = string.Format("{0}/{1}.{2}.nupkg", buildContext.General.OutputRootDirectory, 
-                component, buildContext.General.Version.NuGet);
+            var sourceFile = System.IO.Path.Combine(buildContext.General.OutputRootDirectory, 
+                $"{component}.{buildContext.General.Version.NuGet}.nupkg");
+                
             CopyFiles(new [] { sourceFile }, localPackagesDirectory);
         }
         catch (Exception)

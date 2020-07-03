@@ -62,13 +62,13 @@ public class WpfProcessor : ProcessorBase
             
             var channelSuffix = BuildContext.Installer.GetDeploymentChannelSuffix();
 
-            var sourceFileName = $"./design/logo/logo{channelSuffix}.ico";
+            var sourceFileName = System.IO.Path.Combine(".", "design", "logo", $"logo{channelSuffix}.ico");
             if (BuildContext.CakeContext.FileExists(sourceFileName))
             {
                 CakeContext.Information("Enforcing channel specific icon '{0}'", sourceFileName);
 
                 var projectDirectory = GetProjectDirectory(wpfApp);
-                var targetFileName = $"{projectDirectory}/Resources/Icons/logo.ico";
+                var targetFileName = System.IO.Path.Combine(projectDirectory, "Resources", "Icons", "logo.ico");
 
                 BuildContext.CakeContext.CopyFile(sourceFileName, targetFileName);
             }
@@ -202,7 +202,7 @@ public class WpfProcessor : ProcessorBase
             BuildContext.CakeContext.LogSeparator("Deploying WPF app '{0}'", wpfApp);
 
             //%DeploymentsShare%\%ProjectName% /%ProjectName% -c %AzureDeploymentsStorageConnectionString%
-            var deploymentShare = string.Format("{0}/{1}", BuildContext.Wpf.DeploymentsShare, wpfApp);
+            var deploymentShare = System.IO.Path.Combine(BuildContext.Wpf.DeploymentsShare, wpfApp);
 
             var exitCode = CakeContext.StartProcess(azureStorageSyncExe, new ProcessSettings
             {

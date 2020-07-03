@@ -33,13 +33,13 @@ public class SquirrelInstaller : IInstaller
             return;
         }
 
-        var squirrelOutputRoot = string.Format("{0}/squirrel/{1}/{2}", BuildContext.General.OutputRootDirectory, projectName, channel);
-        var squirrelReleasesRoot = string.Format("{0}/releases", squirrelOutputRoot);
-        var squirrelOutputIntermediate = string.Format("{0}/intermediate", squirrelOutputRoot);
+        var squirrelOutputRoot = System.IO.Path.Combine(BuildContext.General.OutputRootDirectory, "squirrel", projectName, channel);
+        var squirrelReleasesRoot = System.IO.Path.Combine(squirrelOutputRoot, "releases");
+        var squirrelOutputIntermediate = System.IO.Path.Combine(squirrelOutputRoot, "intermediate");
 
-        var nuSpecTemplateFileName = string.Format("./deployment/squirrel/template/{0}.nuspec", projectName);
-        var nuSpecFileName = string.Format("{0}/{1}.nuspec", squirrelOutputIntermediate, projectName);
-        var nuGetFileName = string.Format("{0}/{1}.{2}.nupkg", squirrelOutputIntermediate, projectName, BuildContext.General.Version.NuGet);
+        var nuSpecTemplateFileName = System.IO.Path.Combine(".", "deployment", "squirrel", "template", $"{projectName}.nuspec");
+        var nuSpecFileName = System.IO.Path.Combine(squirrelOutputIntermediate, $"{projectName}.nuspec");
+        var nuGetFileName = System.IO.Path.Combine(squirrelOutputIntermediate, $"{projectName}.{BuildContext.General.Version.NuGet}.nupkg");
 
         if (!BuildContext.CakeContext.FileExists(nuSpecTemplateFileName))
         {
@@ -73,8 +73,8 @@ public class SquirrelInstaller : IInstaller
         System.IO.File.WriteAllText(nuSpecFileName, fileContents);
 
         // Copy all files to the lib so Squirrel knows what to do
-        var appSourceDirectory = string.Format("{0}/{1}", BuildContext.General.OutputRootDirectory, projectName);
-        var appTargetDirectory = string.Format("{0}/lib", squirrelOutputIntermediate);
+        var appSourceDirectory = System.IO.Path.Combine(BuildContext.General.OutputRootDirectory, projectName);
+        var appTargetDirectory = System.IO.Path.Combine(squirrelOutputIntermediate, "lib");
 
         BuildContext.CakeContext.Information("Copying files from '{0}' => '{1}'", appSourceDirectory, appTargetDirectory);
 
@@ -89,8 +89,8 @@ public class SquirrelInstaller : IInstaller
         // Rename so we have the right nuget package file names (without the channel)
         if (!string.IsNullOrWhiteSpace(setupSuffix))
         {
-            var sourcePackageFileName = $"{squirrelOutputIntermediate}/{projectName}{setupSuffix}.{BuildContext.General.Version.NuGet}.nupkg";
-            var targetPackageFileName = $"{squirrelOutputIntermediate}/{projectName}.{BuildContext.General.Version.NuGet}.nupkg";
+            var sourcePackageFileName = System.IO.Path.Combine(squirrelOutputIntermediate, $"{projectName}{setupSuffix}.{BuildContext.General.Version.NuGet}.nupkg");
+            var targetPackageFileName = System.IO.Path.Combine(squirrelOutputIntermediate, $"{projectName}.{BuildContext.General.Version.NuGet}.nupkg");
 
             BuildContext.CakeContext.Information("Moving file from '{0}' => '{1}'", sourcePackageFileName, targetPackageFileName);
 
@@ -98,7 +98,7 @@ public class SquirrelInstaller : IInstaller
         }
         
         // Copy deployments share to the intermediate root so we can locally create the Squirrel releases
-        var releasesSourceDirectory = string.Format("{0}/{1}/{2}", BuildContext.Wpf.DeploymentsShare, projectName, channel);
+        var releasesSourceDirectory = System.IO.Path.Combine(BuildContext.Wpf.DeploymentsShare, projectName, channel);
         var releasesTargetDirectory = squirrelReleasesRoot;
 
         BuildContext.CakeContext.Information("Copying releases from '{0}' => '{1}'", releasesSourceDirectory, releasesTargetDirectory);
@@ -109,11 +109,11 @@ public class SquirrelInstaller : IInstaller
         var squirrelSettings = new SquirrelSettings();
         squirrelSettings.NoMsi = false;
         squirrelSettings.ReleaseDirectory = squirrelReleasesRoot;
-        squirrelSettings.LoadingGif = "./deployment/squirrel/loading.gif";
+        squirrelSettings.LoadingGif = System.IO.Path.Combine(".", "deployment", "squirrel", "loading.gif");
 
         // Note: this is not really generic, but this is where we store our icons file, we can
         // always change this in the future
-        var iconFileName = $"./design/logo/logo{setupSuffix}.ico";
+        var iconFileName = System.IO.Path.Combine(".", "design", "logo", $"logo{setupSuffix}.ico");
         squirrelSettings.Icon = iconFileName;
         squirrelSettings.SetupIcon = iconFileName;
 
@@ -140,10 +140,10 @@ public class SquirrelInstaller : IInstaller
 
             var squirrelFiles = BuildContext.CakeContext.GetFiles($"{squirrelReleasesRoot}/{projectName}{setupSuffix}-{BuildContext.General.Version.NuGet}*.nupkg");
             BuildContext.CakeContext.CopyFiles(squirrelFiles, releasesSourceDirectory);
-            BuildContext.CakeContext.CopyFile(string.Format("{0}/Setup.exe", squirrelReleasesRoot), string.Format("{0}/Setup.exe", releasesSourceDirectory));
-            BuildContext.CakeContext.CopyFile(string.Format("{0}/Setup.exe", squirrelReleasesRoot), string.Format("{0}/{1}.exe", releasesSourceDirectory, projectName));
-            BuildContext.CakeContext.CopyFile(string.Format("{0}/Setup.msi", squirrelReleasesRoot), string.Format("{0}/Setup.msi", releasesSourceDirectory));
-            BuildContext.CakeContext.CopyFile(string.Format("{0}/RELEASES", squirrelReleasesRoot), string.Format("{0}/RELEASES", releasesSourceDirectory));
+            BuildContext.CakeContext.CopyFile(System.IO.Path.Combine(squirrelReleasesRoot, "Setup.exe"), System.IO.Path.Combine(releasesSourceDirectory, "Setup.exe"));
+            BuildContext.CakeContext.CopyFile(System.IO.Path.Combine(squirrelReleasesRoot, "Setup.exe"), System.IO.Path.Combine(releasesSourceDirectory, $"{projectName}.exe"));
+            BuildContext.CakeContext.CopyFile(System.IO.Path.Combine(squirrelReleasesRoot, "Setup.msi"), System.IO.Path.Combine(releasesSourceDirectory, "Setup.msi"));
+            BuildContext.CakeContext.CopyFile(System.IO.Path.Combine(squirrelReleasesRoot, "RELEASES"), System.IO.Path.Combine(releasesSourceDirectory, "RELEASES"));
         }
     }
 }

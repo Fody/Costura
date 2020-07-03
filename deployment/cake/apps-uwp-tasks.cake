@@ -36,7 +36,7 @@ public class UwpProcessor : ProcessorBase
     private string GetArtifactsDirectory(string outputRootDirectory)
     {
         // 1 directory up since we want to turn "/output/release" into "/output/"
-        var artifactsDirectoryString = string.Format("{0}/..", outputRootDirectory);
+        var artifactsDirectoryString = System.IO.Path.Combine(outputRootDirectory, "..");
         var artifactsDirectory = CakeContext.MakeAbsolute(CakeContext.Directory(artifactsDirectoryString)).FullPath;
 
         return artifactsDirectory;
@@ -44,7 +44,7 @@ public class UwpProcessor : ProcessorBase
 
     private string GetAppxUploadFileName(string artifactsDirectory, string solutionName, string versionMajorMinorPatch)
     {
-        var appxUploadSearchPattern = artifactsDirectory + string.Format("/{0}_{1}.0_*.appxupload", solutionName, versionMajorMinorPatch);
+        var appxUploadSearchPattern = System.IO.Path.Combine(artifactsDirectory, string.Format("{0}_{1}.0_*.appxupload", solutionName, versionMajorMinorPatch));
 
         CakeContext.Information("Searching for appxupload using '{0}'", appxUploadSearchPattern);
 
@@ -89,7 +89,7 @@ public class UwpProcessor : ProcessorBase
 
         foreach (var uwpApp in BuildContext.Uwp.Items)
         {
-            var appxManifestFile = string.Format("./src/{0}/Package.appxmanifest", uwpApp);
+            var appxManifestFile = System.IO.Path.Combine(".", "src", uwpApp, "Package.appxmanifest");
             UpdateAppxManifestVersion(appxManifestFile, string.Format("{0}.0", BuildContext.General.Version.MajorMinorPatch));
         }
     }
