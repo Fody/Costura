@@ -204,7 +204,7 @@ public class SolutionContext : BuildContextBase
         get
         {
             var directory = System.IO.Directory.GetParent(FileName).FullName;
-            var separator = System.IO.Path.PathSeparator.ToString();
+            var separator = System.IO.Path.DirectorySeparatorChar.ToString();
 
             if (!directory.EndsWith(separator))
             {
