@@ -391,6 +391,7 @@ private GeneralContext InitializeGeneralContext(BuildContext buildContext, IBuil
     data.MaximizePerformance = buildContext.BuildServer.GetVariableAsBool("MaximizePerformance", true, showValue: true);
     data.UseVisualStudioPrerelease = buildContext.BuildServer.GetVariableAsBool("UseVisualStudioPrerelease", false, showValue: true);
     data.VerifyDependencies = !buildContext.BuildServer.GetVariableAsBool("DependencyCheckDisabled", false, showValue: true);
+    data.SkipComponentsThatAreNotDeployable = buildContext.BuildServer.GetVariableAsBool("SkipComponentsThatAreNotDeployable", true, showValue: true);
 
     // If local, we want full pdb, so do a debug instead
     if (data.IsLocalBuild)

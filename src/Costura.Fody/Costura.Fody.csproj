@@ -10,7 +10,7 @@
   
   <PropertyGroup>
     <!-- SonarQube requires a project guid -->
-    <ProjectGuid>{E5622B74-B6C6-46A5-9207-0872533E6C2F}</ProjectGuid>
+    <ProjectGuid>E5622B74-B6C6-46A5-9207-0872533E6C2F</ProjectGuid>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Test|net472|AnyCPU'">
@@ -67,8 +67,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- see https://docs.microsoft.com/en-us/archive/blogs/kirillosenkov/how-to-have-a-project-reference-without-referencing-the-actual-binary -->
     <ProjectReference Include="..\Costura.Template\Costura.Template.csproj" PrivateAssets="true">
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>
   

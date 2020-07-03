@@ -8,10 +8,9 @@ Parameters["SolutionName"] = "Costura.Fody";
 Parameters["Company"] = "Fody";
 Parameters["RepositoryUrl"] = string.Format("https://github.com/{0}/{1}", GetBuildServerVariable("SolutionName"), GetBuildServerVariable("SolutionName"));
 Parameters["StartYear"] = "2015";
-Parameters["TestTargetFramework"] = "net472";
 Parameters["UseVisualStudioPrerelease"] = "false";
-Parameters["ProjectName"] = "Costura.Fody";
-//Parameters["BuildSolution"] = "true";
+Parameters["DeployCostura"] = "false";
+Parameters["SkipComponentsThatAreNotDeployable"] = "false";
 
 // Note: the rest of the variables should be coming from the build server,
 // see `/deployment/cake/*-variables.cake` for customization options
@@ -27,8 +26,6 @@ Parameters["ProjectName"] = "Costura.Fody";
 // DEFINE COMPONENTS TO BUILD / PACKAGE
 //=======================================================
 
-Components.Add("Costura.Fody");
-
 Dependencies.Add("AssemblyToReference");
 Dependencies.Add("AssemblyToReferenceNative");
 Dependencies.Add("AssemblyToReferenceMixed");
@@ -39,6 +36,9 @@ Dependencies.Add("ExeToProcess");
 Dependencies.Add("ExeToProcessWithNative");
 Dependencies.Add("ExeToProcessWithNativeAndEmbeddedMixed");
 Dependencies.Add("Costura.Template");
+
+Components.Add("Costura.Fody");
+Components.Add("Costura");
 
 TestProjects.Add("Costura.Fody.Tests");
 

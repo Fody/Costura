@@ -7,6 +7,7 @@
     <PackageVersion>3.0.0-alpha0001</PackageVersion>
     <Description>Fody add-in for embedding references as resources.</Description>
     <DevelopmentDependency>true</DevelopmentDependency>
+    <PackageId>Costura.Fody</PackageId>
     <PackageTags>ILMerge, ILWeaving, Embed, Resource, Fody, Cecil</PackageTags>
     <DisableFody>true</DisableFody>
     <AssemblyOriginatorKeyFile>$(SolutionDir)key.snk</AssemblyOriginatorKeyFile>
@@ -14,11 +15,18 @@
 
   <PropertyGroup>
     <!-- SonarQube requires a project guid -->
-    <ProjectGuid>{2B508691-68E6-4AE6-8F8D-1B78F7E65F80}</ProjectGuid>
+    <ProjectGuid>2B508691-68E6-4AE6-8F8D-1B78F7E65F80</ProjectGuid>
   </PropertyGroup>
   
   <ItemGroup>
     <PackageReference Include="Fody" Version="6.2.0" PrivateAssets="none" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- see https://docs.microsoft.com/en-us/archive/blogs/kirillosenkov/how-to-have-a-project-reference-without-referencing-the-actual-binary -->
+    <ProjectReference Include="..\Costura.Template\Costura.Template.csproj" PrivateAssets="true">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
   </ItemGroup>
 
   <ItemGroup>
