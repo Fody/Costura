@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using Fody;
 using Mono.Cecil;
 
@@ -8,6 +9,13 @@ public partial class ModuleWeaver: BaseModuleWeaver
 
     public override void Execute()
     {
+#if DEBUG
+        if (!Debugger.IsAttached)
+        {
+            Debugger.Launch();
+        }
+#endif
+
         var config = new Configuration(Config);
 
         FindMsCoreReferences();

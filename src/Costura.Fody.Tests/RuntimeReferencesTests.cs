@@ -19,7 +19,7 @@
 
         public override TestResult TestResult => testResult;
 
-        [Test]
+        [Explicit, Test]
         public void UseRuntimeReferences()
         {
             DeleteRuntimeReferencesFolder();
