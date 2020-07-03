@@ -30,6 +30,7 @@ Therefore we **strongly recommend** to try out the alternatives mentioned above.
 * Library linking (e.g. embed dependencies in library projects)
 * Exe linking (e.g. embed dependencies in exe projects)
 * Windows platforms
+* Any advanced scenario that you are not willing to contribute (money, PR, etc) **after discussing with the core contributes first**
 
 #### Non-supported use cases
 
@@ -128,6 +129,15 @@ Controls if .pdbs for reference assemblies are also embedded.
 <Costura IncludeDebugSymbols='false' />
 ```
 
+### IncludeRuntimeReferences
+
+Controls whether the `runtimes` folder, used by .NET Core, for the embedded dependencies will be embedded.
+
+*Defaults to `true`*
+
+```xml
+<Costura IncludeRuntimeReferences='false' />
+```
 
 ### DisableCompression
 

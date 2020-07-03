@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Reflection;
+using System.Text;
 using Fody;
 using Mono.Cecil;
 
@@ -13,13 +16,16 @@ public partial class ModuleWeaver : IDisposable
 
     private void EmbedResources(Configuration config)
     {
-        if (ReferenceCopyLocalPaths == null)
+        if (ReferenceCopyLocalPaths is null)
         {
             throw new WeavingException("ReferenceCopyLocalPaths is required you may need to update to the latest version of Fody.");
         }
 
-        _cachePath = Path.Combine(Path.GetDirectoryName(AssemblyFilePath), "Costura");
+        var assemblyDirectory = Path.GetDirectoryName(AssemblyFilePath);
+        _cachePath = Path.Combine(assemblyDirectory, "Costura");
         Directory.CreateDirectory(_cachePath);
+
+        var embeddedReferences = new List<EmbeddedReferenceInfo>();
 
         var onlyBinaries = ReferenceCopyLocalPaths.Where(x => x.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) || x.EndsWith(".exe", StringComparison.OrdinalIgnoreCase)).ToArray();
 
@@ -28,39 +34,113 @@ public partial class ModuleWeaver : IDisposable
 
         foreach (var dependency in GetFilteredReferences(onlyBinaries, config))
         {
+            var relativePath = Path.GetFileName(dependency);
             var fullPath = Path.GetFullPath(dependency);
 
             if (!config.IgnoreSatelliteAssemblies)
             {
                 if (dependency.EndsWith(".resources.dll", StringComparison.OrdinalIgnoreCase))
                 {
-                    Embed($"costura.{Path.GetFileName(Path.GetDirectoryName(fullPath))}.", fullPath, !disableCompression, createTemporaryAssemblies, config.DisableCleanup);
+                    var embeddedResourceReference = Embed($"costura.{Path.GetFileName(Path.GetDirectoryName(fullPath))}.", relativePath, fullPath, !disableCompression, createTemporaryAssemblies, config.DisableCleanup);
+                    if (embeddedResourceReference is null == false)
+                    {
+                        embeddedReferences.Add(embeddedResourceReference);
+                    }
                     continue;
                 }
             }
 
-            Embed("costura.", fullPath, !disableCompression, createTemporaryAssemblies, config.DisableCleanup);
-
-            if (!config.IncludeDebugSymbols)
+            var embeddedReference = Embed("costura.", relativePath, fullPath, !disableCompression, createTemporaryAssemblies, config.DisableCleanup);
+            if (embeddedReference is null == false)
             {
-                continue;
+                embeddedReferences.Add(embeddedReference);
             }
-            var pdbFullPath = Path.ChangeExtension(fullPath, "pdb");
-            if (File.Exists(pdbFullPath))
+
+            if (config.IncludeDebugSymbols)
             {
-                Embed("costura.", pdbFullPath, !disableCompression, createTemporaryAssemblies, config.DisableCleanup);
+                var pdbFullPath = Path.ChangeExtension(fullPath, "pdb");
+                if (File.Exists(pdbFullPath))
+                {
+                    var embeddedPdb = Embed("costura.", Path.ChangeExtension(relativePath, "pdb"), pdbFullPath, !disableCompression, createTemporaryAssemblies, config.DisableCleanup);
+                    if (embeddedPdb is null == false)
+                    {
+                        embeddedReferences.Add(embeddedPdb);
+                    }
+                }
+            }
+        }
+
+        if (config.IncludeRuntimeReferences)
+        {
+            const string RuntimesFolderName = "runtimes";
+            var runtimesDirectory = Path.Combine(assemblyDirectory, RuntimesFolderName);
+
+            // For now just support dll files
+            foreach (var runtimeReferencePath in Directory.GetFiles(runtimesDirectory, "*.dll", SearchOption.AllDirectories))
+            {
+                // Get relative prefix
+                var relativePrefix = string.Empty;
+                var relativeFileName = Path.GetFileName(runtimeReferencePath);
+
+                var parentDirectory = Path.GetDirectoryName(runtimeReferencePath);
+                var directoryName = Path.GetFileName(parentDirectory);
+
+                while (!directoryName.Equals(RuntimesFolderName, StringComparison.OrdinalIgnoreCase))
+                {
+                    relativePrefix = $"{directoryName}.{relativePrefix}";
+                    relativeFileName = $"{directoryName}/{relativeFileName}";
+
+                    parentDirectory = Path.GetDirectoryName(parentDirectory);
+                    directoryName = Path.GetFileName(parentDirectory);
+                }
+
+                relativePrefix = $"{RuntimesFolderName}.{relativePrefix}";
+                relativeFileName = $"{RuntimesFolderName}/{relativeFileName}";
+
+                if (!config.IgnoreSatelliteAssemblies)
+                {
+                    if (runtimeReferencePath.EndsWith(".resources.dll", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var embeddedResourceReference = Embed($"costura.{relativePrefix}.{Path.GetFileName(Path.GetDirectoryName(runtimeReferencePath))}.", relativeFileName, runtimeReferencePath, !disableCompression, createTemporaryAssemblies, config.DisableCleanup);
+                        if (embeddedResourceReference is null == false)
+                        {
+                            embeddedReferences.Add(embeddedResourceReference);
+                        }
+                        continue;
+                    }
+                }
+
+                var embeddedReference = Embed($"costura.{relativePrefix}", relativeFileName, runtimeReferencePath, !disableCompression, createTemporaryAssemblies, config.DisableCleanup);
+                if (embeddedReference is null == false)
+                {
+                    embeddedReferences.Add(embeddedReference);
+                }
+
+                if (config.IncludeDebugSymbols)
+                {
+                    var pdbFullPath = Path.ChangeExtension(runtimeReferencePath, "pdb");
+                    if (File.Exists(pdbFullPath))
+                    {
+                        var embeddedPdb = Embed($"costura.{relativePrefix}", Path.ChangeExtension(relativeFileName, "pdb"), pdbFullPath, !disableCompression, createTemporaryAssemblies, config.DisableCleanup);
+                        if (embeddedPdb is null == false)
+                        {
+                            embeddedReferences.Add(embeddedPdb);
+                        }
+                    }
+                }
             }
         }
 
         foreach (var dependency in onlyBinaries)
         {
-            var prefix = "";
+            var prefix = string.Empty;
 
             if (config.Unmanaged32Assemblies.Any(x => string.Equals(x, Path.GetFileNameWithoutExtension(dependency), StringComparison.OrdinalIgnoreCase)))
             {
                 prefix = "costura32.";
                 _hasUnmanaged = true;
             }
+
             if (config.Unmanaged64Assemblies.Any(x => string.Equals(x, Path.GetFileNameWithoutExtension(dependency), StringComparison.OrdinalIgnoreCase)))
             {
                 prefix = "costura64.";
@@ -72,19 +152,49 @@ public partial class ModuleWeaver : IDisposable
                 continue;
             }
 
+            var relativePath = Path.GetFileName(dependency);
             var fullPath = Path.GetFullPath(dependency);
-            Embed(prefix, fullPath, !disableCompression, true, config.DisableCleanup);
 
-            if (!config.IncludeDebugSymbols)
+            var embeddedReference = Embed(prefix, relativePath, fullPath, !disableCompression, true, config.DisableCleanup);
+            if (embeddedReference is null == false)
             {
-                continue;
+                embeddedReferences.Add(embeddedReference);
             }
-            var pdbFullPath = Path.ChangeExtension(fullPath, "pdb");
-            if (File.Exists(pdbFullPath))
+
+            if (config.IncludeDebugSymbols)
             {
-                Embed(prefix, pdbFullPath, !disableCompression, true, config.DisableCleanup);
+                var pdbFullPath = Path.ChangeExtension(fullPath, "pdb");
+                if (File.Exists(pdbFullPath))
+                {
+                    var embeddedPdb = Embed(prefix, relativePath, pdbFullPath, !disableCompression, true, config.DisableCleanup);
+                    if (embeddedPdb is null == false)
+                    {
+                        embeddedReferences.Add(embeddedPdb);
+                    }
+                }
             }
         }
+
+        EmbedMetadata(embeddedReferences);
+    }
+
+    private void EmbedMetadata(List<EmbeddedReferenceInfo> references)
+    {
+        // Write metadata file
+        var stringBuilder = new StringBuilder();
+        references.ForEach(x => stringBuilder.AppendLine(x.ToString()));
+
+        var metadata = stringBuilder.ToString();
+
+        var memoryStream = new MemoryStream();
+        var textWriter = new StreamWriter(memoryStream);
+        textWriter.Write(metadata);
+        textWriter.Flush();
+
+        _streams.Add(memoryStream);
+
+        var resource = new EmbeddedResource("costura.metadata", ManifestResourceAttributes.Private, memoryStream);
+        ModuleDefinition.Resources.Add(resource);
     }
 
     private bool CompareAssemblyName(string matchText, string assemblyName)
@@ -181,11 +291,11 @@ public partial class ModuleWeaver : IDisposable
         }
     }
 
-    private void Embed(string prefix, string fullPath, bool compress, bool addChecksum, bool disableCleanup)
+    private EmbeddedReferenceInfo Embed(string prefix, string relativePath, string fullPath, bool compress, bool addChecksum, bool disableCleanup)
     {
         try
         {
-            InnerEmbed(prefix, fullPath, compress, addChecksum, disableCleanup);
+            return InnerEmbed(prefix, relativePath, fullPath, compress, addChecksum, disableCleanup);
         }
         catch (Exception exception)
         {
@@ -200,7 +310,7 @@ disableCleanup: {disableCleanup}");
         }
     }
 
-    private void InnerEmbed(string prefix, string fullPath, bool compress, bool addChecksum, bool disableCleanup)
+    private EmbeddedReferenceInfo InnerEmbed(string prefix, string relativePath, string fullPath, bool compress, bool addChecksum, bool disableCleanup)
     {
         if (!disableCleanup)
         {
@@ -220,7 +330,7 @@ disableCleanup: {disableCleanup}");
             }
 
             WriteDebug($"\tSkipping '{fullPath}' because it is already embedded");
-            return;
+            return null;
         }
 
         if (compress)
@@ -231,7 +341,7 @@ disableCleanup: {disableCleanup}");
             {
                 // an assembly that appeared twice in the ReferenceCopyLocalPaths, e.g. the same library from different nuget packages (https://github.com/Fody/Costura/issues/332)
                 WriteDebug($"\tSkipping '{fullPath}' because it is already embedded");
-                return;
+                return null;
             }
         }
 
@@ -248,6 +358,33 @@ disableCleanup: {disableCleanup}");
         {
             _checksums.Add(resourceName, checksum);
         }
+
+        var version = string.Empty;
+        AssemblyName assemblyName = null;
+
+        if (relativePath.ToLower().EndsWith(".dll"))
+        {
+            try
+            {
+                var versionInfo = FileVersionInfo.GetVersionInfo(fullPath);
+                version = versionInfo.FileVersion;
+
+                assemblyName = AssemblyName.GetAssemblyName(fullPath);
+            }
+            catch (Exception)
+            {
+                // Native assemblies don't have assembly names
+            }
+        }
+
+        return new EmbeddedReferenceInfo
+        {
+            ResourceName = resourceName,
+            Version = assemblyName?.Version.ToString(4) ?? version,
+            AssemblyName = assemblyName?.FullName ?? string.Empty,
+            RelativeFileName = relativePath,
+            Checksum = checksum,
+        };
     }
 
     private static MemoryStream BuildMemoryStream(string fullPath, bool compress, string cacheFile)
