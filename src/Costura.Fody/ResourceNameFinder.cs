@@ -22,6 +22,12 @@ public partial class ModuleWeaver
 
         foreach (var resource in orderedResources)
         {
+            // Skip metadata
+            if (resource == "costura.metadata")
+            {
+                continue;
+            }
+
             var parts = resource.Split('.');
 
             GetNameAndExt(parts, out var name, out var ext);
