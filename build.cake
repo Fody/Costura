@@ -9,6 +9,7 @@ Parameters["Company"] = "Fody";
 Parameters["RepositoryUrl"] = string.Format("https://github.com/{0}/{1}", GetBuildServerVariable("SolutionName"), GetBuildServerVariable("SolutionName"));
 Parameters["StartYear"] = "2015";
 Parameters["UseVisualStudioPrerelease"] = "false";
+Parameters["TestTargetFramework"] = "net472";
 Parameters["DeployCostura"] = "false";
 Parameters["SkipComponentsThatAreNotDeployable"] = "false";
 
