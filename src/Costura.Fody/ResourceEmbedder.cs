@@ -65,7 +65,7 @@ public partial class ModuleWeaver : IDisposable
         if (config.IncludeRuntimeReferences)
         {
             var runtimeReferences = GetFilteredRuntimeReferences(references, config);
-            if (runtimeReferences.Count > 0)
+            if (runtimeReferences.Any())
             {
                 WriteInfo("\tIncluding runtime references");
 
@@ -199,19 +199,22 @@ public partial class ModuleWeaver : IDisposable
 
     private IEnumerable<Reference> GetFilteredReferences(IEnumerable<Reference> references, Configuration config)
     {
-        if (config.IncludeAssemblies.Any())
+        references = references.Where(x => !x.IsRuntimeReference);
+
+        var includeList = config.IncludeAssemblies;
+        if (includeList.Any())
         {
-            var skippedAssemblies = new List<string>(config.IncludeAssemblies);
+            var skippedAssemblies = new List<string>(includeList);
 
             foreach (var reference in references)
             {
                 var assemblyName = Path.GetFileNameWithoutExtension(reference.FileName);
 
-                if (config.IncludeAssemblies.Any(x => CompareAssemblyName(x, assemblyName)) &&
+                if (includeList.Any(x => CompareAssemblyName(x, assemblyName)) &&
                     config.Unmanaged32Assemblies.All(x => !CompareAssemblyName(x, assemblyName)) &&
                     config.Unmanaged64Assemblies.All(x => !CompareAssemblyName(x, assemblyName)))
                 {
-                    skippedAssemblies.Remove(config.IncludeAssemblies.First(x => CompareAssemblyName(x, assemblyName)));
+                    skippedAssemblies.Remove(includeList.First(x => CompareAssemblyName(x, assemblyName)));
                     yield return reference;
                 }
             }
@@ -249,13 +252,14 @@ public partial class ModuleWeaver : IDisposable
             yield break;
         }
 
-        if (config.ExcludeAssemblies.Any())
+        var excludeList = config.ExcludeAssemblies;
+        if (excludeList.Any())
         {
             foreach (var reference in references)
             {
                 var assemblyName = Path.GetFileNameWithoutExtension(reference.FileName);
 
-                if (config.ExcludeAssemblies.Any(x => CompareAssemblyName(x, assemblyName)) ||
+                if (excludeList.Any(x => CompareAssemblyName(x, assemblyName)) ||
                     config.Unmanaged32Assemblies.Any(x => CompareAssemblyName(x, assemblyName)) ||
                     config.Unmanaged64Assemblies.Any(x => CompareAssemblyName(x, assemblyName)))
                 {
@@ -268,7 +272,7 @@ public partial class ModuleWeaver : IDisposable
             yield break;
         }
 
-        if (config.OptOut)
+        if (config.OptOutAssemblies)
         {
             foreach (var reference in references)
             {
@@ -283,15 +287,90 @@ public partial class ModuleWeaver : IDisposable
         }
     }
 
-    private List<Reference> GetFilteredRuntimeReferences(IEnumerable<Reference> references, Configuration config)
+    private IEnumerable<Reference> GetFilteredRuntimeReferences(IEnumerable<Reference> references, Configuration config)
     {
-        var runtimeReferences = (from x in references
-                                 where x.IsRuntimeReference
-                                 select x).ToList();
+        references = references.Where(x => x.IsRuntimeReference);
 
-        // TODO: check config
+        var includeList = config.IncludeRuntimeAssemblies;
+        if (includeList.Any())
+        {
+            var skippedAssemblies = new List<string>(includeList);
 
-        return runtimeReferences;
+            foreach (var reference in references)
+            {
+                var assemblyName = Path.GetFileNameWithoutExtension(reference.FileName);
+
+                if (includeList.Any(x => CompareAssemblyName(x, assemblyName)))
+                {
+                    skippedAssemblies.Remove(includeList.First(x => CompareAssemblyName(x, assemblyName)));
+                    yield return reference;
+                }
+            }
+
+            if (skippedAssemblies.Count > 0)
+            {
+                if (References is null)
+                {
+                    throw new WeavingException("To embed references with CopyLocal='false', References is required - you may need to update to the latest version of Fody.");
+                }
+
+                var hasErrors = false;
+
+                foreach (var skippedAssembly in skippedAssemblies)
+                {
+                    var skippedReference = (from reference in references
+                                            where string.Equals(Path.GetFileNameWithoutExtension(reference.FileName), skippedAssembly, StringComparison.InvariantCulture)
+                                            select reference).FirstOrDefault();
+                    if (skippedReference is null)
+                    {
+                        hasErrors = true;
+                        WriteError($"Assembly '{skippedAssembly}' cannot be found (not even as CopyLocal='false'), please update the configuration");
+                        continue;
+                    }
+
+                    yield return skippedReference;
+                }
+
+                if (hasErrors)
+                {
+                    throw new WeavingException("One or more errors occurred, please check the log");
+                }
+            }
+
+            yield break;
+        }
+
+        var excludeList = config.ExcludeRuntimeAssemblies;
+        if (excludeList.Any())
+        {
+            foreach (var reference in references)
+            {
+                var assemblyName = Path.GetFileNameWithoutExtension(reference.FileName);
+
+                if (excludeList.Any(x => CompareAssemblyName(x, assemblyName)))
+                {
+                    continue;
+                }
+
+                yield return reference;
+            }
+
+            yield break;
+        }
+
+        if (config.OptOutRuntimeAssemblies)
+        {
+            foreach (var reference in references)
+            {
+                var assemblyName = Path.GetFileNameWithoutExtension(reference.FileName);
+
+                if (config.Unmanaged32Assemblies.All(x => !CompareAssemblyName(x, assemblyName)) &&
+                    config.Unmanaged64Assemblies.All(x => !CompareAssemblyName(x, assemblyName)))
+                {
+                    yield return reference;
+                }
+            }
+        }
     }
 
     private EmbeddedReferenceInfo Embed(string prefix, string relativePath, string fullPath, bool compress, bool addChecksum, bool disableCleanup)

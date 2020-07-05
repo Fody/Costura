@@ -10,7 +10,7 @@ public class Configuration
     public Configuration(XElement config)
     {
         // Defaults
-        OptOut = true;
+        OptOutAssemblies = true;
         IncludeDebugSymbols = true;
         IncludeRuntimeReferences = true;
         DisableCompression = false;
@@ -20,6 +20,8 @@ public class Configuration
         IgnoreSatelliteAssemblies = false;
         IncludeAssemblies = new List<string>();
         ExcludeAssemblies = new List<string>();
+        IncludeRuntimeAssemblies = new List<string>();
+        ExcludeRuntimeAssemblies = new List<string>();
         Unmanaged32Assemblies = new List<string>();
         Unmanaged64Assemblies = new List<string>();
         PreloadOrder = new List<string>();
@@ -32,7 +34,13 @@ public class Configuration
         if (config.Attribute("IncludeAssemblies") != null ||
             config.Element("IncludeAssemblies") != null)
         {
-            OptOut = false;
+            OptOutAssemblies = false;
+        }
+
+        if (config.Attribute("IncludeRuntimeAssemblies") != null ||
+            config.Element("IncludeRuntimeAssemblies") != null)
+        {
+            OptOutRuntimeAssemblies = false;
         }
 
         IncludeDebugSymbols = ReadBool(config, "IncludeDebugSymbols", IncludeDebugSymbols);
@@ -55,7 +63,8 @@ public class Configuration
         }
     }
 
-    public bool OptOut { get; }
+    public bool OptOutAssemblies { get; }
+    public bool OptOutRuntimeAssemblies { get; }
     public bool IncludeDebugSymbols { get; }
     public bool IncludeRuntimeReferences { get; }
     public bool DisableCompression { get; }
@@ -65,6 +74,8 @@ public class Configuration
     public bool IgnoreSatelliteAssemblies { get; }
     public List<string> IncludeAssemblies { get; }
     public List<string> ExcludeAssemblies { get; }
+    public List<string> IncludeRuntimeAssemblies { get; }
+    public List<string> ExcludeRuntimeAssemblies { get; }
     public List<string> Unmanaged32Assemblies { get; }
     public List<string> Unmanaged64Assemblies { get; }
     public List<string> PreloadOrder { get; }

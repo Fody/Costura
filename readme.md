@@ -129,6 +129,7 @@ Controls if .pdbs for reference assemblies are also embedded.
 <Costura IncludeDebugSymbols='false' />
 ```
 
+
 ### IncludeRuntimeReferences
 
 Controls whether the `runtimes` folder, used by .NET Core, for the embedded dependencies will be embedded.
@@ -138,6 +139,7 @@ Controls whether the `runtimes` folder, used by .NET Core, for the embedded depe
 ```xml
 <Costura IncludeRuntimeReferences='false' />
 ```
+
 
 ### DisableCompression
 
@@ -186,7 +188,7 @@ Be advised, that **DLL** project assembly names ending with '.resources' (result
 ```
 
 
-### ExcludeAssemblies
+### ExcludeAssemblies / ExcludeRuntimeAssemblies
 
 A list of assembly names to exclude from the default action of "embed all Copy Local references".
 
@@ -216,13 +218,13 @@ Or as an attribute with items delimited by a pipe `|`.
 ```
 
 
-### IncludeAssemblies
+### IncludeAssemblies / IncludeRuntimeAssemblies
 
 A list of assembly names to include from the default action of "embed all Copy Local references".
 
 Do not include `.exe` or `.dll` in the names.
 
-Can not be defined with `ExcludeAssemblies`.
+Can not be defined with `ExcludeAssemblies` / `IncludeRuntimeAssemblies`.
 
 Can use wildcards at the end of the name for partial matching.
 
