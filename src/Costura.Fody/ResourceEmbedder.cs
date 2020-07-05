@@ -31,32 +31,38 @@ public partial class ModuleWeaver : IDisposable
         var disableCompression = config.DisableCompression;
         var createTemporaryAssemblies = config.CreateTemporaryAssemblies;
 
-        foreach (var reference in GetFilteredReferences(references, config))
+        var normalReferences = GetFilteredReferences(references, config).ToList();
+        if (normalReferences.Any())
         {
-            var referencePath = reference.FullPath;
-            var relativeFileName = reference.RelativeFileName;
-            var relativePrefix = reference.GetResourceNamePrefix("costura.");
+            WriteInfo("\tIncluding references");
 
-            if (reference.IsResourcesAssembly && config.IgnoreSatelliteAssemblies)
+            foreach (var reference in normalReferences)
             {
-                continue;
-            }
+                var referencePath = reference.FullPath;
+                var relativeFileName = reference.RelativeFileName;
+                var relativePrefix = reference.GetResourceNamePrefix("costura.");
 
-            var embeddedReference = Embed(relativePrefix, relativeFileName, referencePath, !disableCompression, createTemporaryAssemblies, config.DisableCleanup);
-            if (embeddedReference is null == false)
-            {
-                embeddedReferences.Add(embeddedReference);
-            }
-
-            if (config.IncludeDebugSymbols)
-            {
-                var pdbFullPath = Path.ChangeExtension(referencePath, "pdb");
-                if (File.Exists(pdbFullPath))
+                if (reference.IsResourcesAssembly && config.IgnoreSatelliteAssemblies)
                 {
-                    var embeddedPdb = Embed(relativePrefix, Path.ChangeExtension(relativeFileName, "pdb"), pdbFullPath, !disableCompression, createTemporaryAssemblies, config.DisableCleanup);
-                    if (embeddedPdb is null == false)
+                    continue;
+                }
+
+                var embeddedReference = Embed(relativePrefix, relativeFileName, referencePath, !disableCompression, createTemporaryAssemblies, config.DisableCleanup);
+                if (embeddedReference is null == false)
+                {
+                    embeddedReferences.Add(embeddedReference);
+                }
+
+                if (config.IncludeDebugSymbols)
+                {
+                    var pdbFullPath = Path.ChangeExtension(referencePath, "pdb");
+                    if (File.Exists(pdbFullPath))
                     {
-                        embeddedReferences.Add(embeddedPdb);
+                        var embeddedPdb = Embed(relativePrefix, Path.ChangeExtension(relativeFileName, "pdb"), pdbFullPath, !disableCompression, createTemporaryAssemblies, config.DisableCleanup);
+                        if (embeddedPdb is null == false)
+                        {
+                            embeddedReferences.Add(embeddedPdb);
+                        }
                     }
                 }
             }
@@ -64,7 +70,7 @@ public partial class ModuleWeaver : IDisposable
 
         if (config.IncludeRuntimeReferences)
         {
-            var runtimeReferences = GetFilteredRuntimeReferences(references, config);
+            var runtimeReferences = GetFilteredRuntimeReferences(references, config).ToList();
             if (runtimeReferences.Any())
             {
                 WriteInfo("\tIncluding runtime references");
@@ -184,7 +190,7 @@ public partial class ModuleWeaver : IDisposable
 
         foreach (var item in ReferenceCopyLocalPaths)
         {
-            if (!item.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) && 
+            if (!item.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) &&
                 !item.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
             {
                 continue;
@@ -231,8 +237,8 @@ public partial class ModuleWeaver : IDisposable
                 foreach (var skippedAssembly in skippedAssemblies)
                 {
                     var skippedReference = (from reference in references
-                                    where string.Equals(Path.GetFileNameWithoutExtension(reference.FileName), skippedAssembly, StringComparison.InvariantCulture)
-                                    select reference).FirstOrDefault();
+                                            where string.Equals(Path.GetFileNameWithoutExtension(reference.FileName), skippedAssembly, StringComparison.InvariantCulture)
+                                            select reference).FirstOrDefault();
                     if (skippedReference is null)
                     {
                         hasErrors = true;
@@ -411,7 +417,7 @@ disableCleanup: {disableCleanup}");
                 _checksums.Add(resourceName, CalculateChecksum(fullPath));
             }
 
-            WriteDebug($"\tSkipping '{fullPath}' because it is already embedded");
+            WriteDebug($"\t\tSkipping '{fullPath}' because it is already embedded");
             return null;
         }
 
@@ -422,12 +428,12 @@ disableCleanup: {disableCleanup}");
             if (ModuleDefinition.Resources.Any(x => string.Equals(x.Name, resourceName, StringComparison.OrdinalIgnoreCase)))
             {
                 // an assembly that appeared twice in the ReferenceCopyLocalPaths, e.g. the same library from different nuget packages (https://github.com/Fody/Costura/issues/332)
-                WriteDebug($"\tSkipping '{fullPath}' because it is already embedded");
+                WriteDebug($"\t\tSkipping '{fullPath}' because it is already embedded");
                 return null;
             }
         }
 
-        WriteInfo($"\tEmbedding '{fullPath}'");
+        WriteInfo($"\t\tEmbedding '{fullPath}'");
 
         var checksum = CalculateChecksum(fullPath);
         var cacheFile = Path.Combine(_cachePath, $"{checksum}.{resourceName}");

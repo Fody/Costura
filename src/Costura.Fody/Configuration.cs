@@ -53,6 +53,8 @@ public class Configuration
 
         ExcludeAssemblies = ReadList(config, "ExcludeAssemblies");
         IncludeAssemblies = ReadList(config, "IncludeAssemblies");
+        ExcludeRuntimeAssemblies = ReadList(config, "ExcludeRuntimeAssemblies");
+        IncludeRuntimeAssemblies = ReadList(config, "IncludeRuntimeAssemblies");
         Unmanaged32Assemblies = ReadList(config, "Unmanaged32Assemblies");
         Unmanaged64Assemblies = ReadList(config, "Unmanaged64Assemblies");
         PreloadOrder = ReadList(config, "PreloadOrder");
