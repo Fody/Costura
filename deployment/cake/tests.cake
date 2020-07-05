@@ -65,7 +65,7 @@ private static void RunUnitTests(BuildContext buildContext, string projectName)
 
     try
     {
-        if (!testTargetFramework.Contains("netcore") && IsDotNetCoreProject(buildContext, projectName))
+        if (testTargetFramework.Contains("netcore") && IsDotNetCoreProject(buildContext, projectName))
         {
             buildContext.CakeContext.Information("Project '{0}' is a .NET core project, using 'dotnet test' to run the unit tests", projectName);
 
