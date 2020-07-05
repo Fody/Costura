@@ -9,12 +9,12 @@ public partial class ModuleWeaver: BaseModuleWeaver
 
     public override void Execute()
     {
-//#if DEBUG
-//        if (!Debugger.IsAttached)
-//        {
-//            Debugger.Launch();
-//        }
-//#endif
+#if DEBUG
+        if (!Debugger.IsAttached)
+        {
+            Debugger.Launch();
+        }
+#endif
 
         var config = new Configuration(Config);
 
