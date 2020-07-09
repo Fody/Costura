@@ -229,6 +229,19 @@ public partial class ModuleWeaver : IDisposable
                 {
                     skippedAssemblies.Remove(includeList.First(x => CompareAssemblyName(x, assemblyName)));
                     yield return reference;
+
+                    // Make sure to embed resources, even if not explicitly included
+                    if (!config.IgnoreSatelliteAssemblies)
+                    {
+                        var resourcesAssemblyName = assemblyName += ".resources";
+                        var resourcesAssemblyReferences = (from x in references
+                                                           where x.IsResourcesAssembly && CompareAssemblyName(x.FileNameWithoutExtension, resourcesAssemblyName)
+                                                           select x).ToList();
+                        foreach (var resourcesAssemblyReference in resourcesAssemblyReferences)
+                        {
+                            yield return resourcesAssemblyReference;
+                        }
+                    }
                 }
             }
 
@@ -317,6 +330,19 @@ public partial class ModuleWeaver : IDisposable
                 {
                     skippedAssemblies.Remove(includeList.First(x => CompareAssemblyName(x, assemblyName)));
                     yield return reference;
+
+                    // Make sure to embed resources, even if not explicitly included
+                    if (!config.IgnoreSatelliteAssemblies)
+                    {
+                        var resourcesAssemblyName = assemblyName += ".resources";
+                        var resourcesAssemblyReferences = (from x in references
+                                                           where x.IsResourcesAssembly && CompareAssemblyName(x.FileNameWithoutExtension, resourcesAssemblyName)
+                                                           select x).ToList();
+                        foreach (var resourcesAssemblyReference in resourcesAssemblyReferences)
+                        {
+                            yield return resourcesAssemblyReference;
+                        }
+                    }
                 }
             }
 

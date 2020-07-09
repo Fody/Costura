@@ -11,6 +11,7 @@ public class Reference
         FullPath = fullPath;
 
         FileName = Path.GetFileName(fullPath);
+        FileNameWithoutExtension = Path.GetFileNameWithoutExtension(fullPath);
         Directory = Path.GetDirectoryName(fullPath);
 
         CalculateRelativeFileName();
@@ -19,6 +20,8 @@ public class Reference
     public string FullPath { get; private set; }
 
     public string FileName { get; private set; }
+
+    public string FileNameWithoutExtension { get; private set; }
 
     public string Directory { get; private set; }
 
@@ -58,6 +61,7 @@ public class Reference
             directoryName = Path.GetFileName(parentDirectory);
         }
 
+        IsResourcesAssembly = relativeFileName.EndsWith("resources.dll");
         IsRuntimeReference = directoryName.Equals(RuntimesFolderName, StringComparison.OrdinalIgnoreCase);
 
         if (IsRuntimeReference)
@@ -70,9 +74,17 @@ public class Reference
             relativeFileName = Path.GetFileName(FullPath);
         }
 
-        IsResourcesAssembly = relativeFileName.EndsWith("resources.dll");
+        if (IsResourcesAssembly && !IsRuntimeReference)
+        {
+            // We need the relative path (e.g. /nl/Catel.Core.dll)
+            parentDirectory = Path.GetDirectoryName(FullPath);
+            directoryName = Path.GetFileName(parentDirectory);
+
+            relativeFileName = $"{directoryName}/{relativeFileName}";
+        }
+        
         RelativeFileName = relativeFileName;
-        RelativePrefix = Path.GetDirectoryName(relativeFileName).Replace("/", ".").Replace("\\", ".");
+        RelativePrefix = IsRuntimeReference ? Path.GetDirectoryName(relativeFileName).Replace("/", ".").Replace("\\", ".") : string.Empty;
         PredictedResourceName = $"{GetResourceNamePrefix("costura.")}{FileName.ToLowerInvariant()}";
     }
 
