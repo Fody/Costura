@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
+using Fody;
 
 public class Reference
 {
@@ -8,7 +9,13 @@ public class Reference
 
     public Reference(string fullPath)
     {
+        if (!Path.IsPathRooted(fullPath))
+        {
+            throw new WeavingException($"Only full paths are supported, please fix in Costura so '{fullPath}' can be included");
+        }
+
         FullPath = fullPath;
+        IsCopyLocal = true;
 
         FileName = Path.GetFileName(fullPath);
         FileNameWithoutExtension = Path.GetFileNameWithoutExtension(fullPath);
@@ -28,6 +35,8 @@ public class Reference
     public string RelativeFileName { get; private set; }
 
     public string RelativePrefix { get; private set; }
+
+    public bool IsCopyLocal { get; set; }
 
     public bool IsResourcesAssembly { get; private set; }
 

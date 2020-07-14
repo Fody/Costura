@@ -203,7 +203,46 @@ public partial class ModuleWeaver : IDisposable
                 continue;
             }
 
-            var reference = new Reference(item);
+            var reference = new Reference(item)
+            {
+                IsCopyLocal = true
+            };
+
+            references.Add(reference);
+        }
+
+        if (References is null)
+        {
+            throw new WeavingException("To embed references with CopyLocal='false', References is required - you may need to update to the latest version of Fody.");
+        }
+
+        // Add all references, but mark them as special
+        var splittedReferences = References.Split(';');
+
+        foreach (var splittedReference in splittedReferences)
+        {
+            var fileName = splittedReference;
+
+            if (!Path.IsPathRooted(fileName))
+            {
+                fileName = Path.GetFullPath(fileName);
+            }
+
+            if (!File.Exists(fileName))
+            {
+                continue;
+            }
+
+            if (references.Any(x => x.FullPath == fileName))
+            {
+                continue;
+            }
+
+            var reference = new Reference(fileName)
+            {
+                IsCopyLocal = false
+            };
+
             references.Add(reference);
         }
 
@@ -247,36 +286,19 @@ public partial class ModuleWeaver : IDisposable
 
             if (skippedAssemblies.Count > 0)
             {
-                if (References is null)
-                {
-                    throw new WeavingException("To embed references with CopyLocal='false', References is required - you may need to update to the latest version of Fody.");
-                }
-
-                var hasErrors = false;
-
                 foreach (var skippedAssembly in skippedAssemblies)
                 {
-                    var skippedReference = (from reference in references
-                                            where string.Equals(Path.GetFileNameWithoutExtension(reference.FileName), skippedAssembly, StringComparison.InvariantCulture)
-                                            select reference).FirstOrDefault();
-                    if (skippedReference is null)
-                    {
-                        hasErrors = true;
-                        WriteError($"Assembly '{skippedAssembly}' cannot be found (not even as CopyLocal='false'), please update the configuration");
-                        continue;
-                    }
-
-                    yield return skippedReference;
+                    WriteError($"Assembly '{skippedAssembly}' cannot be found (not even as CopyLocal='false'), please update the configuration");
                 }
 
-                if (hasErrors)
-                {
-                    throw new WeavingException("One or more errors occurred, please check the log");
-                }
+                throw new WeavingException("One or more errors occurred, please check the log");
             }
 
             yield break;
         }
+
+        // From this point, we want to exclude "CopyLocal=false"
+        references = references.Where(x => x.IsCopyLocal);
 
         var excludeList = config.ExcludeAssemblies;
         if (excludeList.Any())
@@ -348,36 +370,19 @@ public partial class ModuleWeaver : IDisposable
 
             if (skippedAssemblies.Count > 0)
             {
-                if (References is null)
-                {
-                    throw new WeavingException("To embed references with CopyLocal='false', References is required - you may need to update to the latest version of Fody.");
-                }
-
-                var hasErrors = false;
-
                 foreach (var skippedAssembly in skippedAssemblies)
                 {
-                    var skippedReference = (from reference in references
-                                            where string.Equals(Path.GetFileNameWithoutExtension(reference.FileName), skippedAssembly, StringComparison.InvariantCulture)
-                                            select reference).FirstOrDefault();
-                    if (skippedReference is null)
-                    {
-                        hasErrors = true;
-                        WriteError($"Assembly '{skippedAssembly}' cannot be found (not even as CopyLocal='false'), please update the configuration");
-                        continue;
-                    }
-
-                    yield return skippedReference;
+                    WriteError($"Assembly '{skippedAssembly}' cannot be found (not even as CopyLocal='false'), please update the configuration");
                 }
 
-                if (hasErrors)
-                {
-                    throw new WeavingException("One or more errors occurred, please check the log");
-                }
+                throw new WeavingException("One or more errors occurred, please check the log");
             }
 
             yield break;
         }
+
+        // From this point, we want to exclude "CopyLocal=false"
+        references = references.Where(x => x.IsCopyLocal);
 
         var excludeList = config.ExcludeRuntimeAssemblies;
         if (excludeList.Any())
