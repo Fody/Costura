@@ -2,8 +2,6 @@
 
 public class MsixInstaller : IInstaller
 {
-    private readonly string _signToolFileName;
-
     public MsixInstaller(BuildContext buildContext)
     {
         BuildContext = buildContext;
@@ -17,8 +15,6 @@ public class MsixInstaller : IInstaller
             // In the future, check if Msix is installed. Log error if not
             IsAvailable = IsEnabled;
         }
-
-        _signToolFileName = FindSignToolFileName();
     }
 
     public BuildContext BuildContext { get; private set; }
@@ -128,10 +124,7 @@ public class MsixInstaller : IInstaller
         filesToSign.AddRange(BuildContext.CakeContext.GetFiles($"{appTargetDirectory}/**/*.dll").Select(x => x.FullPath));
         filesToSign.AddRange(BuildContext.CakeContext.GetFiles($"{appTargetDirectory}/**/*.exe").Select(x => x.FullPath));
         
-        foreach (var fileToSign in filesToSign)
-        {
-            SignFile(signToolCommand, fileToSign);
-        }
+        SignFiles(BuildContext, signToolCommand, filesToSign);
 
         BuildContext.CakeContext.Information("Generating MSIX packages using MakeAppX...");
 
@@ -161,7 +154,7 @@ public class MsixInstaller : IInstaller
 
         // As documented at https://docs.microsoft.com/en-us/windows/msix/package/sign-app-package-using-signtool, we 
         // must *always* specify the hash algorithm (/fd) for MSIX files
-        SignFile(signToolCommand, installerSourceFile, "/fd SHA256");
+        SignFile(BuildContext, signToolCommand, installerSourceFile, "/fd SHA256");
 
         // Always copy the AppInstaller if available
         if (BuildContext.CakeContext.FileExists(msixUpdateScriptFileName))
@@ -203,94 +196,12 @@ public class MsixInstaller : IInstaller
         System.IO.File.WriteAllText(fileName, fileContents);
     }
 
-    private void SignFile(string signToolCommand, string fileName, string additionalCommandLineArguments = null)
-    {
-        if (string.IsNullOrWhiteSpace(signToolCommand))
-        {
-            return;
-        }
-        
-        // Check
-        var checkProcessSettings = new ProcessSettings
-        {
-            Arguments = $"verify /pa \"{fileName}\""
-        };
-
-        using (var checkProcess = BuildContext.CakeContext.StartAndReturnProcess(_signToolFileName, checkProcessSettings))
-        {
-            checkProcess.WaitForExit();
-            var exitCode = checkProcess.GetExitCode();
-
-            if (exitCode == 0)
-            {
-                BuildContext.CakeContext.Information($"File '{fileName}' is already signed, skipping...");
-                BuildContext.CakeContext.Information(string.Empty);
-                return;
-            }
-
-            BuildContext.CakeContext.Information(string.Empty);
-        }
-
-        // Sign
-        if (!string.IsNullOrWhiteSpace(additionalCommandLineArguments))
-        {
-            signToolCommand += $" {additionalCommandLineArguments}";
-        }
-
-        var finalCommand = $"{signToolCommand} \"{fileName}\"";
-
-        BuildContext.CakeContext.Information($"Signing '{fileName}' using '{finalCommand}'");
-
-        var signProcessSettings = new ProcessSettings
-        {
-            Arguments = finalCommand
-        };
-
-        using (var signProcess = BuildContext.CakeContext.StartAndReturnProcess(_signToolFileName, signProcessSettings))
-        {
-            signProcess.WaitForExit();
-            var exitCode = signProcess.GetExitCode();
-
-            if (exitCode != 0)
-            {
-                throw new Exception($"Signing failed, exit code is '{exitCode}'");
-            }
-        }
-    }
-
-    private string FindSignToolFileName()
-    {
-        var directory = FindLatestWindowsKitsDirectory();
-        if (directory != null)
-        {
-            return System.IO.Path.Combine(directory, "x64", "signtool.exe");
-        }
-
-        return null;
-    }
-
     private string FindLatestMakeAppxFileName()
     {
-        var directory = FindLatestWindowsKitsDirectory();
+        var directory = FindLatestWindowsKitsDirectory(BuildContext);
         if (directory != null)
         {
             return System.IO.Path.Combine(directory, "x64", "makeappx.exe");
-        }
-
-        return null;
-    }
-
-    private string FindLatestWindowsKitsDirectory()
-    {
-        // Find highest number with 10.0, e.g. 'C:\Program Files (x86)\Windows Kits\10\bin\10.0.18362.0\x64\makeappx.exe'
-        var directories = BuildContext.CakeContext.GetDirectories($@"C:/Program Files (x86)/Windows Kits/10/bin/10.0.*");
-        
-        //BuildContext.CakeContext.Information($"Found '{directories.Count}' potential directories for MakeAppX.exe");
-
-        var directory = directories.LastOrDefault();
-        if (directory != null)
-        {
-            return directory.FullPath;
         }
 
         return null;

@@ -32,11 +32,11 @@ public class InnoSetupInstaller : IInstaller
         var innoSetupTemplateDirectory = System.IO.Path.Combine(".", "deployment", "innosetup", projectName);
         if (!BuildContext.CakeContext.DirectoryExists(innoSetupTemplateDirectory))
         {
-            BuildContext.CakeContext.Information("Skip packaging of app '{0}' using Inno Setup since no Inno Setup template is present");
+            BuildContext.CakeContext.Information($"Skip packaging of app '{projectName}' using Inno Setup since no Inno Setup template is present");
             return;
         }
 
-        BuildContext.CakeContext.LogSeparator("Packaging app '{0}' using Inno Setup", projectName);
+        BuildContext.CakeContext.LogSeparator($"Packaging app '{projectName}' using Inno Setup");
 
         var installersOnDeploymentsShare = System.IO.Path.Combine(BuildContext.Wpf.DeploymentsShare, projectName, "installer");
         BuildContext.CakeContext.CreateDirectory(installersOnDeploymentsShare);
@@ -49,6 +49,14 @@ public class InnoSetupInstaller : IInstaller
 
         BuildContext.CakeContext.CreateDirectory(innoSetupReleasesRoot);
         BuildContext.CakeContext.CreateDirectory(innoSetupOutputIntermediate);
+
+        // Copy all files to the intermediate directory so Inno Setup knows what to do
+        var appSourceDirectory = string.Format("{0}/{1}/**/*", BuildContext.General.OutputRootDirectory, projectName);
+        var appTargetDirectory = innoSetupOutputIntermediate;
+
+        BuildContext.CakeContext.Information("Copying files from '{0}' => '{1}'", appSourceDirectory, appTargetDirectory);
+
+        BuildContext.CakeContext.CopyFiles(appSourceDirectory, appTargetDirectory, true);
 
         // Set up InnoSetup template
         BuildContext.CakeContext.CopyDirectory(innoSetupTemplateDirectory, innoSetupOutputIntermediate);
@@ -69,14 +77,6 @@ public class InnoSetupInstaller : IInstaller
 
         fileContents = fileContents.Replace("[SIGNTOOL]", signTool);
         System.IO.File.WriteAllText(innoSetupScriptFileName, fileContents);
-
-        // Copy all files to the intermediate directory so Inno Setup knows what to do
-        var appSourceDirectory = string.Format("{0}/{1}/**/*", BuildContext.General.OutputRootDirectory, projectName);
-        var appTargetDirectory = innoSetupOutputIntermediate;
-
-        BuildContext.CakeContext.Information("Copying files from '{0}' => '{1}'", appSourceDirectory, appTargetDirectory);
-
-        BuildContext.CakeContext.CopyFiles(appSourceDirectory, appTargetDirectory, true);
 
         BuildContext.CakeContext.Information("Generating Inno Setup packages, this can take a while, especially when signing is enabled...");
 
