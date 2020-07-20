@@ -416,6 +416,24 @@ private static void ConfigureMsBuildForDotNetCore(BuildContext buildContext, Dot
 
 //-------------------------------------------------------------
 
+private static string FindLatestWindowsKitsDirectory(BuildContext buildContext)
+{
+    // Find highest number with 10.0, e.g. 'C:\Program Files (x86)\Windows Kits\10\bin\10.0.18362.0\x64\makeappx.exe'
+    var directories = buildContext.CakeContext.GetDirectories($@"C:/Program Files (x86)/Windows Kits/10/bin/10.0.*");
+    
+    //buildContext.CakeContext.Information($"Found '{directories.Count}' potential directories for MakeAppX.exe");
+
+    var directory = directories.LastOrDefault();
+    if (directory != null)
+    {
+        return directory.FullPath;
+    }
+
+    return null;
+}
+
+//-------------------------------------------------------------
+
 private static string GetVisualStudioDirectory(BuildContext buildContext, bool? allowVsPrerelease = null)
 {
     // TODO: Support different editions (e.g. Professional, Enterprise, Community, etc)

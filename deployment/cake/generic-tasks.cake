@@ -241,7 +241,7 @@ Task("CleanupCode")
 //-------------------------------------------------------------
 
 Task("CodeSign")
-    .ContinueOnError()
+    //.ContinueOnError()
     .Does<BuildContext>(buildContext =>
 {
     if (buildContext.General.IsCiBuild)
@@ -263,7 +263,7 @@ Task("CodeSign")
         return;
     }
 
-    List<FilePath> filesToSign = new List<FilePath>();
+    var filesToSign = new List<FilePath>();
 
     // Note: only code-sign components & wpf apps, skip test projects & uwp apps
     var projectsToCodeSign = new List<string>();
@@ -278,10 +278,10 @@ Task("CodeSign")
             // Empty, we need to override with project name for valid default value
             codeSignWildCard = projectToCodeSign;
         }
-    
-        var projectFilesToSign = new List<FilePath>();
 
         var outputDirectory = string.Format("{0}/{1}", buildContext.General.OutputRootDirectory, projectToCodeSign);
+
+        var projectFilesToSign = new List<FilePath>();
 
         var exeSignFilesSearchPattern = string.Format("{0}/**/*{1}*.exe", outputDirectory, codeSignWildCard);
         Information(exeSignFilesSearchPattern);
@@ -296,22 +296,18 @@ Task("CodeSign")
         filesToSign.AddRange(projectFilesToSign);
     }
 
-    if (filesToSign.Count == 0)
-    {
-        Information("Found no files to sign, skipping code signing process...");
-        return;
-    }
+    var signToolCommand = string.Format("sign /a /t {0} /n {1}", buildContext.General.CodeSign.TimeStampUri, certificateSubjectName);
 
-    Information("Found '{0}' files to code sign using subject name '{1}', this can take a few minutes...", filesToSign.Count, certificateSubjectName);
+    SignFiles(buildContext, signToolCommand, filesToSign);
 
-    var signToolSignSettings = new SignToolSignSettings 
-    {
-        AppendSignature = false,
-        TimeStampUri = new Uri(buildContext.General.CodeSign.TimeStampUri),
-        CertSubjectName = certificateSubjectName
-    };
+    // var signToolSignSettings = new SignToolSignSettings 
+    // {
+    //     AppendSignature = false,
+    //     TimeStampUri = new Uri(buildContext.General.CodeSign.TimeStampUri),
+    //     CertSubjectName = certificateSubjectName
+    // };
 
-    Sign(filesToSign, signToolSignSettings);
+    // Sign(filesToSign, signToolSignSettings);
 
     // Note parallel doesn't seem to be faster in an example repository:
     // 1 thread:   1m 30s

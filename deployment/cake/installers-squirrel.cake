@@ -80,6 +80,15 @@ public class SquirrelInstaller : IInstaller
 
         BuildContext.CakeContext.CopyDirectory(appSourceDirectory, appTargetDirectory);
 
+        // Make sure all files are signed before we package them for Squirrel (saves potential errors occurring later in squirrel releasify)
+        var signToolCommand = string.Empty;
+
+        if (!string.IsNullOrWhiteSpace(BuildContext.General.CodeSign.CertificateSubjectName))
+        {
+            signToolCommand = string.Format("/a /t {0} /n {1}", BuildContext.General.CodeSign.TimeStampUri, 
+                BuildContext.General.CodeSign.CertificateSubjectName);
+        }
+
         // Create NuGet package
         BuildContext.CakeContext.NuGetPack(nuSpecFileName, new NuGetPackSettings
         {
@@ -107,6 +116,7 @@ public class SquirrelInstaller : IInstaller
 
         // Squirrelify!
         var squirrelSettings = new SquirrelSettings();
+        squirrelSettings.Silent = false;
         squirrelSettings.NoMsi = false;
         squirrelSettings.ReleaseDirectory = squirrelReleasesRoot;
         squirrelSettings.LoadingGif = System.IO.Path.Combine(".", "deployment", "squirrel", "loading.gif");
@@ -117,10 +127,9 @@ public class SquirrelInstaller : IInstaller
         squirrelSettings.Icon = iconFileName;
         squirrelSettings.SetupIcon = iconFileName;
 
-        if (!string.IsNullOrWhiteSpace(BuildContext.General.CodeSign.CertificateSubjectName))
+        if (!string.IsNullOrWhiteSpace(signToolCommand))
         {
-            squirrelSettings.SigningParameters = string.Format("/a /t {0} /n {1}", BuildContext.General.CodeSign.TimeStampUri, 
-                BuildContext.General.CodeSign.CertificateSubjectName);
+            squirrelSettings.SigningParameters = signToolCommand;
         }
 
         BuildContext.CakeContext.Information("Generating Squirrel packages, this can take a while, especially when signing is enabled...");

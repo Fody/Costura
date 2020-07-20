@@ -161,6 +161,27 @@ public class WpfProcessor : ProcessorBase
                 CakeContext.DeleteFiles(filesToDelete);
             }
 
+            // We know we *highly likely* need to sign, so try doing this upfront
+            if (!string.IsNullOrWhiteSpace(BuildContext.General.CodeSign.CertificateSubjectName))
+            {
+                BuildContext.CakeContext.Information("Searching for packagable files to sign:");
+
+                var projectFilesToSign = new List<FilePath>();
+
+                var exeSignFilesSearchPattern = $"{BuildContext.General.OutputRootDirectory}/{wpfApp}/**/*.exe";
+                BuildContext.CakeContext.Information($"  - {exeSignFilesSearchPattern}");
+                projectFilesToSign.AddRange(BuildContext.CakeContext.GetFiles(exeSignFilesSearchPattern));
+
+                var dllSignFilesSearchPattern = $"{BuildContext.General.OutputRootDirectory}/{wpfApp}/**/*.dll";
+                BuildContext.CakeContext.Information($"  - {dllSignFilesSearchPattern}");
+                projectFilesToSign.AddRange(BuildContext.CakeContext.GetFiles(dllSignFilesSearchPattern));
+
+                var signToolCommand = string.Format("sign /a /t {0} /n {1}", BuildContext.General.CodeSign.TimeStampUri, 
+                    BuildContext.General.CodeSign.CertificateSubjectName);
+
+                SignFiles(BuildContext, signToolCommand, projectFilesToSign);
+            }
+
             foreach (var channel in channels)
             {
                 CakeContext.Information("Packaging app '{0}' for channel '{1}'", wpfApp, channel);
