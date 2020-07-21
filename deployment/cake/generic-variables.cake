@@ -407,8 +407,8 @@ private GeneralContext InitializeGeneralContext(BuildContext buildContext, IBuil
     data.CodeSign = new CodeSignContext(data)
     {
         WildCard = buildContext.BuildServer.GetVariable("CodeSignWildcard", showValue: true),
-        CertificateSubjectName = buildContext.BuildServer.GetVariable("CodeSignCertificateSubjectName", data.Copyright.Company, showValue: true),
-        TimeStampUri = buildContext.BuildServer.GetVariable("CodeSignTimeStampUri", "http://timestamp.comodoca.com/authenticode", showValue: true)
+        CertificateSubjectName = buildContext.BuildServer.GetVariable("CodeSignCertificateSubjectName", showValue: true),
+        TimeStampUri = buildContext.BuildServer.GetVariable("CodeSignTimeStampUri", "http://timestamp.digicert.com", showValue: true)
     };
 
     data.Repository = new RepositoryContext(data)

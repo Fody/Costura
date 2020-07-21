@@ -97,6 +97,9 @@ public static void SignFile(BuildContext buildContext, string signToolCommand, s
             }
 
             buildContext.CakeContext.Warning($"Failed to sign '{fileName}', retries left: '{safetyCounter}'");
+
+            // Important: add a delay!
+            System.Threading.Thread.Sleep(5 * 1000);
         }
 
         safetyCounter--;
