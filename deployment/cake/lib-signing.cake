@@ -34,6 +34,14 @@ public static void SignFiles(BuildContext buildContext, string signToolCommand, 
 
 public static void SignFile(BuildContext buildContext, string signToolCommand, string fileName, string additionalCommandLineArguments = null)
 {
+    // Skip code signing in specific scenarios
+    if (buildContext.General.IsCiBuild ||
+        buildContext.General.IsLocalBuild)
+    {
+        buildContext.CakeContext.Information("Skipping signing because this is a local or CI build");
+        return;
+    }
+    
     if (string.IsNullOrWhiteSpace(signToolCommand))
     {
         return;

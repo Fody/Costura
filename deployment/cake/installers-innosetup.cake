@@ -38,7 +38,9 @@ public class InnoSetupInstaller : IInstaller
 
         BuildContext.CakeContext.LogSeparator($"Packaging app '{projectName}' using Inno Setup");
 
-        var installersOnDeploymentsShare = System.IO.Path.Combine(BuildContext.Wpf.DeploymentsShare, projectName, "installer");
+        var deploymentShare = BuildContext.Wpf.GetDeploymentShareForProject(projectName);
+
+        var installersOnDeploymentsShare = System.IO.Path.Combine(deploymentShare, "installer");
         BuildContext.CakeContext.CreateDirectory(installersOnDeploymentsShare);
 
         var setupSuffix = BuildContext.Installer.GetDeploymentChannelSuffix();

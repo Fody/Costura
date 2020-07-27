@@ -419,7 +419,7 @@ private static void ConfigureMsBuildForDotNetCore(BuildContext buildContext, Dot
 private static string FindLatestWindowsKitsDirectory(BuildContext buildContext)
 {
     // Find highest number with 10.0, e.g. 'C:\Program Files (x86)\Windows Kits\10\bin\10.0.18362.0\x64\makeappx.exe'
-    var directories = buildContext.CakeContext.GetDirectories($@"C:/Program Files (x86)/Windows Kits/10/bin/10.0.*");
+    var directories = buildContext.CakeContext.GetDirectories($@"{Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86)}/Windows Kits/10/bin/10.0.*");
     
     //buildContext.CakeContext.Information($"Found '{directories.Count}' potential directories for MakeAppX.exe");
 
@@ -442,7 +442,7 @@ private static string GetVisualStudioDirectory(BuildContext buildContext, bool? 
     {
         buildContext.CakeContext.Debug("Checking for installation of Visual Studio 2019 preview");
 
-        var pathFor2019Preview = @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Preview\";
+        var pathFor2019Preview = $@"{Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86)}\Microsoft Visual Studio\2019\Preview\";
         if (System.IO.Directory.Exists(pathFor2019Preview))
         {
            // Note: SonarQube supports VS 2019 now
@@ -454,21 +454,21 @@ private static string GetVisualStudioDirectory(BuildContext buildContext, bool? 
     
     buildContext.CakeContext.Debug("Checking for installation of Visual Studio 2019");
 
-    var pathFor2019Enterprise = @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\";
+    var pathFor2019Enterprise = $@"{Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86)}\Microsoft Visual Studio\2019\Enterprise\";
     if (System.IO.Directory.Exists(pathFor2019Enterprise))
     {
        buildContext.CakeContext.Information("Using Visual Studio 2019 Enterprise");
        return pathFor2019Enterprise;
     }
 
-    var pathFor2019Professional = @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\";
+    var pathFor2019Professional = $@"{Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86)}\Microsoft Visual Studio\2019\Professional\";
     if (System.IO.Directory.Exists(pathFor2019Professional))
     {
        buildContext.CakeContext.Information("Using Visual Studio 2019 Professional");
        return pathFor2019Professional;
     }
 	
-    var pathFor2019Community = @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\";
+    var pathFor2019Community = $@"{Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86)}\Microsoft Visual Studio\2019\Community\";
     if (System.IO.Directory.Exists(pathFor2019Community))
     {
        buildContext.CakeContext.Information("Using Visual Studio 2019 CE");
@@ -555,9 +555,9 @@ private static string GetProjectFileName(BuildContext buildContext, string proje
 
 //-------------------------------------------------------------
 
-private static string GetProjectSlug(string projectName)
+private static string GetProjectSlug(string projectName, string replacement = "")
 {
-    var slug = projectName.Replace(".", string.Empty).Replace(" ", string.Empty);
+    var slug = projectName.Replace(".", replacement).Replace(" ", replacement);
     return slug;
 }
 
@@ -714,7 +714,7 @@ private static bool IsDotNetCoreProject(BuildContext buildContext, string projec
 
 //-------------------------------------------------------------
 
-private static bool ShouldProcessProject(BuildContext buildContext, string projectName)
+private static bool ShouldProcessProject(BuildContext buildContext, string projectName, bool checkDeployment = true)
 {
     // Includes > Excludes
     var includes = buildContext.General.Includes;
@@ -753,7 +753,7 @@ private static bool ShouldProcessProject(BuildContext buildContext, string proje
     // it can only work if they are not part of unit tests (but that should never happen)
     if (buildContext.Tests.Items.Count == 0)
     {
-        if (!ShouldDeployProject(buildContext, projectName))
+        if (checkDeployment && !ShouldDeployProject(buildContext, projectName))
         {
             buildContext.CakeContext.Warning("Project '{0}' should not be processed because this is not a CI build, does not contain tests and the project should not be deployed, removing from projects to process", projectName);
             return false;
@@ -772,8 +772,14 @@ private static bool ShouldDeployProject(BuildContext buildContext, string projec
     var keyToCheck = string.Format("Deploy{0}", slug);
 
     var shouldDeploy = buildContext.BuildServer.GetVariableAsBool(keyToCheck, true);
-    
-    buildContext.CakeContext.Information("Value for '{0}': {1}", keyToCheck, shouldDeploy);
+    if (shouldDeploy && !ShouldProcessProject(buildContext, projectName, false))
+    {
+        buildContext.CakeContext.Information($"Project '{projectName}' should not be processed, excluding it anyway");
+        
+        shouldDeploy = false;
+    }
+
+    buildContext.CakeContext.Information($"Value for '{keyToCheck}': {shouldDeploy}");
 
     return shouldDeploy;
 }

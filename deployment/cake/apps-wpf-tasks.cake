@@ -136,17 +136,23 @@ public class WpfProcessor : ProcessorBase
             channels.Add(BuildContext.Wpf.Channel);
         }
 
-        CakeContext.Information("Found '{0}' target channels", channels.Count);
+        CakeContext.Information($"Found '{channels.Count}' target channels");
 
         foreach (var wpfApp in BuildContext.Wpf.Items)
         {
             if (!ShouldDeployProject(BuildContext, wpfApp))
             {
-                CakeContext.Information("WPF app '{0}' should not be deployed", wpfApp);
+                CakeContext.Information($"WPF app '{wpfApp}' should not be deployed");
                 continue;
             }
 
-            CakeContext.Information("Deleting unnecessary files for WPF app '{0}'", wpfApp);
+            var deploymentShare = BuildContext.Wpf.GetDeploymentShareForProject(wpfApp);
+
+            CakeContext.Information($"Using deployment share '{deploymentShare}' for WPF app '{wpfApp}'");
+
+            System.IO.Directory.CreateDirectory(deploymentShare);
+
+            CakeContext.Information($"Deleting unnecessary files for WPF app '{wpfApp}'");
             
             var outputDirectory = GetProjectOutputDirectory(BuildContext, wpfApp);
             var extensionsToDelete = new [] { ".pdb", ".RoslynCA.json" };
@@ -180,11 +186,18 @@ public class WpfProcessor : ProcessorBase
                     BuildContext.General.CodeSign.CertificateSubjectName);
 
                 SignFiles(BuildContext, signToolCommand, projectFilesToSign);
+            }            
+            else
+            {
+                BuildContext.CakeContext.Warning("No signing certificate subject name provided, not signing any files");
             }
 
             foreach (var channel in channels)
             {
                 CakeContext.Information("Packaging app '{0}' for channel '{1}'", wpfApp, channel);
+
+                var deploymentShareForChannel = System.IO.Path.Combine(deploymentShare, channel);
+                System.IO.Directory.CreateDirectory(deploymentShareForChannel);
 
                 await BuildContext.Installer.PackageAsync(wpfApp, channel);
             }
@@ -216,23 +229,24 @@ public class WpfProcessor : ProcessorBase
         {
             if (!ShouldDeployProject(BuildContext, wpfApp))
             {
-                CakeContext.Information("WPF app '{0}' should not be deployed", wpfApp);
+                CakeContext.Information($"WPF app '{wpfApp}' should not be deployed");
                 continue;
             }
             
-            BuildContext.CakeContext.LogSeparator("Deploying WPF app '{0}'", wpfApp);
+            BuildContext.CakeContext.LogSeparator($"Deploying WPF app '{wpfApp}'");
 
             //%DeploymentsShare%\%ProjectName% /%ProjectName% -c %AzureDeploymentsStorageConnectionString%
-            var deploymentShare = System.IO.Path.Combine(BuildContext.Wpf.DeploymentsShare, wpfApp);
+            var deploymentShare = BuildContext.Wpf.GetDeploymentShareForProject(wpfApp);
+            var projectSlug = GetProjectSlug(wpfApp, "-");
 
             var exitCode = CakeContext.StartProcess(azureStorageSyncExe, new ProcessSettings
             {
-                Arguments = string.Format("{0} /{1} -c {2}", deploymentShare, wpfApp, azureConnectionString)
+                Arguments = $"{deploymentShare} /{projectSlug} -c {azureConnectionString}"
             });
 
             if (exitCode != 0)
             {
-                throw new Exception(string.Format("Received unexpected exit code '{0}' for WPF app '{1}'", exitCode, wpfApp));
+                throw new Exception($"Received unexpected exit code '{exitCode}' for WPF app '{wpfApp}'");
             }
 
             await BuildContext.Notifications.NotifyAsync(wpfApp, string.Format("Deployed to target"), TargetType.WpfApp);
