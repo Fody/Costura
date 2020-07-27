@@ -25,6 +25,14 @@ public class WpfContext : BuildContextWithItemsBase
     {
         CakeContext.Information($"Found '{Items.Count}' wpf projects");
     }
+
+    public string GetDeploymentShareForProject(string projectName)
+    {
+        var projectSlug = GetProjectSlug(projectName, "-");
+        var deploymentShare = System.IO.Path.Combine(DeploymentsShare, projectSlug);
+
+        return deploymentShare;
+    }
 }
 
 //-------------------------------------------------------------

@@ -256,6 +256,31 @@ public class ToolsProcessor : ProcessorBase
             var objFiles = CakeContext.GetFiles(objFolderPattern);
             CakeContext.DeleteFiles(objFiles);
 
+            // We know we *highly likely* need to sign, so try doing this upfront
+            if (!string.IsNullOrWhiteSpace(BuildContext.General.CodeSign.CertificateSubjectName))
+            {
+                BuildContext.CakeContext.Information("Searching for packagable files to sign:");
+
+                var projectFilesToSign = new List<FilePath>();
+
+                var exeSignFilesSearchPattern = $"{BuildContext.General.OutputRootDirectory}/{tool}/**/*.exe";
+                BuildContext.CakeContext.Information($"  - {exeSignFilesSearchPattern}");
+                projectFilesToSign.AddRange(BuildContext.CakeContext.GetFiles(exeSignFilesSearchPattern));
+
+                var dllSignFilesSearchPattern = $"{BuildContext.General.OutputRootDirectory}/{tool}/**/*.dll";
+                BuildContext.CakeContext.Information($"  - {dllSignFilesSearchPattern}");
+                projectFilesToSign.AddRange(BuildContext.CakeContext.GetFiles(dllSignFilesSearchPattern));
+
+                var signToolCommand = string.Format("sign /a /t {0} /n {1}", BuildContext.General.CodeSign.TimeStampUri, 
+                    BuildContext.General.CodeSign.CertificateSubjectName);
+
+                SignFiles(BuildContext, signToolCommand, projectFilesToSign);
+            }
+            else
+            {
+                BuildContext.CakeContext.Warning("No signing certificate subject name provided, not signing any files");
+            }
+
             CakeContext.Information(string.Empty);
 
             // Step 2: Ensure chocolatey stuff
@@ -305,12 +330,19 @@ public class ToolsProcessor : ProcessorBase
             // Fix for .NET Core 3.0, see https://github.com/dotnet/core-sdk/issues/192, it
             // uses obj/release instead of [outputdirectory]
             msBuildSettings.WithProperty("DotNetPackIntermediateOutputPath", outputDirectory);
-            
+
+            // No dependencies for tools
+            msBuildSettings.WithProperty("SuppressDependenciesWhenPacking", "true");
+
             // As described in the this issue: https://github.com/NuGet/Home/issues/4360
             // we should not use IsTool, but set BuildOutputTargetFolder instead
+            msBuildSettings.WithProperty("CopyLocalLockFileAssemblies", "true");
+            msBuildSettings.WithProperty("IncludeBuildOutput", "true");
             msBuildSettings.WithProperty("BuildOutputTargetFolder", "tools");
             msBuildSettings.WithProperty("NoDefaultExcludes", "true");
-            //msBuildSettings.WithProperty("IsTool", "true");
+
+            // Ensures that files are written to "tools", not "tools\\netcoreapp3.1"
+            msBuildSettings.WithProperty("IsTool", "true");
 
             msBuildSettings.WithProperty("NoBuild", "true");
             msBuildSettings.Targets.Add("Pack");
@@ -327,21 +359,12 @@ public class ToolsProcessor : ProcessorBase
         {
             // For details, see https://docs.microsoft.com/en-us/nuget/create-packages/sign-a-package
             // nuget sign MyPackage.nupkg -CertificateSubjectName <MyCertSubjectName> -Timestamper <TimestampServiceURL>
-            var filesToSign = CakeContext.GetFiles(string.Format("{0}/*.nupkg", BuildContext.General.OutputRootDirectory));
+            var filesToSign = CakeContext.GetFiles($"{BuildContext.General.OutputRootDirectory}/*.nupkg");
 
-            foreach (var fileToSign in filesToSign)
-            {
-                CakeContext.Information("Signing NuGet package '{0}' using certificate subject '{1}'", 
-                    fileToSign, BuildContext.General.CodeSign.CertificateSubjectName);
+            var signToolCommand = string.Format("sign /a /t {0} /n {1}", BuildContext.General.CodeSign.TimeStampUri, 
+                BuildContext.General.CodeSign.CertificateSubjectName);
 
-                var exitCode = CakeContext.StartProcess(BuildContext.General.NuGet.Executable, new ProcessSettings
-                {
-                    Arguments = string.Format("sign \"{0}\" -CertificateSubjectName \"{1}\" -Timestamper \"{2}\"", 
-                        fileToSign, BuildContext.General.CodeSign.CertificateSubjectName, BuildContext.General.CodeSign.TimeStampUri)
-                });
-
-                CakeContext.Information("Signing NuGet package exited with '{0}'", exitCode);
-            }
+            SignFiles(BuildContext, signToolCommand, filesToSign);
         }        
     }
 
