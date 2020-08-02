@@ -178,7 +178,7 @@ public class DockerImagesProcessor : ProcessorBase
 
             CakeContext.CreateDirectory(confTargetDirectory);
 
-            var confSourceDirectory = string.Format("{0}*", dockerImageSpecificationDirectory);
+            var confSourceDirectory = string.Format("{0}/*", dockerImageSpecificationDirectory);
             CakeContext.Information("Copying files from '{0}' => '{1}'", confSourceDirectory, confTargetDirectory);
 
             CakeContext.CopyFiles(confSourceDirectory, confTargetDirectory, true);
