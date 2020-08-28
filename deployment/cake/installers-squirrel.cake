@@ -1,6 +1,6 @@
-#addin "nuget:?package=Cake.Squirrel&version=0.13.0"
+#addin "nuget:?package=Cake.Squirrel&version=0.15.1"
 
-#tool "nuget:?package=Squirrel.Windows&version=1.9.1"
+#tool "nuget:?package=Squirrel.Windows&version=2.0.0"
 
 //-------------------------------------------------------------
 
