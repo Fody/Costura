@@ -15,7 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ApprovalTests" Version="5.4.1" />
+    <PackageReference Include="ApprovalTests" Version="5.4.2" />
     <PackageReference Include="FodyHelpers" Version="6.2.6" />
     <PackageReference Include="Fody" Version="6.2.6" PrivateAssets="none" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
