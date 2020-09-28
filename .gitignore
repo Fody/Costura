@@ -143,4 +143,4 @@ BundleArtifacts/
 FodyWeavers.xsd
 
 # Approval tests
-*.received.cs
+*.received.*
