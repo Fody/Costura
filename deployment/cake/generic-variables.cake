@@ -1,6 +1,6 @@
 #l "buildserver.cake"
 
-#tool "nuget:?package=GitVersion.CommandLine&version=5.3.5"
+#tool "nuget:?package=GitVersion.CommandLine&version=5.3.7"
 
 //-------------------------------------------------------------
 
@@ -75,24 +75,24 @@ public class VersionContext : BuildContextBase
             {
                 CakeContext.Information("No local .git directory found, treating as dynamic repository");
 
+                // Make a *BIG* assumption that the solution name == repository name
+                var repositoryName = generalContext.Solution.Name;
+                var dynamicRepositoryPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), repositoryName);
+
                 if (ClearCache)
                 {
                     CakeContext.Warning("Cleaning the cloned temp directory, disable by setting 'GitVersion_ClearCache' to 'false'");
-                    
-                    // Make a *BIG* assumption that the solution name == repository name
-                    var repositoryName = generalContext.Solution.Name;
-                    var tempDirectory = System.IO.Path.Combine(System.IO.Path.GetTempPath(), repositoryName);
-                    
-                    if (CakeContext.DirectoryExists(tempDirectory))
+    
+                    if (CakeContext.DirectoryExists(dynamicRepositoryPath))
                     {
-                        CakeContext.DeleteDirectory(tempDirectory, new DeleteDirectorySettings
+                        CakeContext.DeleteDirectory(dynamicRepositoryPath, new DeleteDirectorySettings
                         {
                             Force = true,
                             Recursive = true
                         });
                     }
                 }
-          
+
                 // Validate first
                 if (string.IsNullOrWhiteSpace(generalContext.Repository.BranchName))
                 {
@@ -104,6 +104,8 @@ public class VersionContext : BuildContextBase
                     throw new Exception("No local .git directory was found, but repository url was not specified either. Make sure to specify the branch");
                 }
 
+                CakeContext.Information($"Fetching dynamic repository from url '{generalContext.Repository.Url}' => '{dynamicRepositoryPath}'");
+
                 // Dynamic repository
                 gitVersionSettings.UserName = generalContext.Repository.Username;
                 gitVersionSettings.Password = generalContext.Repository.Password;
@@ -112,6 +114,8 @@ public class VersionContext : BuildContextBase
                 gitVersionSettings.Commit = generalContext.Repository.CommitId;
                 gitVersionSettings.NoFetch = false;
                 gitVersionSettings.WorkingDirectory = generalContext.RootDirectory;
+                gitVersionSettings.DynamicRepositoryPath = dynamicRepositoryPath;
+                gitVersionSettings.Verbosity = GitVersionVerbosity.Debug;
             }
 
             _gitVersionContext = CakeContext.GitVersion(gitVersionSettings);
