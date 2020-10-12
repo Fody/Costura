@@ -254,6 +254,9 @@ public class ComponentsProcessor : ProcessorBase
                 msBuildSettings.WithProperty("RevisionId", repositoryCommitId);
             }
             
+            // Disable Multilingual App Toolkit (MAT) during packaging
+            msBuildSettings.WithProperty("DisableMAT", "true");
+
             // Fix for .NET Core 3.0, see https://github.com/dotnet/core-sdk/issues/192, it
             // uses obj/release instead of [outputdirectory]
             msBuildSettings.WithProperty("DotNetPackIntermediateOutputPath", outputDirectory);
