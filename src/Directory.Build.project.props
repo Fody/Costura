@@ -5,7 +5,6 @@
 
   <PropertyGroup>
     <Authors>geertvanhorrik,simoncropp</Authors>
-    <PackageIconUrl>https://github.com/Fody/Costura/raw/develop/design/logo/logo_64.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/Fody/Costura</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/Fody/Costura</RepositoryUrl>
