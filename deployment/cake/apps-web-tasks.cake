@@ -99,7 +99,7 @@ public class WebProcessor : ProcessorBase
 
             // TODO: Enable GitLink / SourceLink, see RepositoryUrl, RepositoryBranchName, RepositoryCommitId variables
 
-            CakeContext.MSBuild(projectFileName, msBuildSettings);
+            RunMsBuild(BuildContext, webApp, projectFileName, msBuildSettings);
         }
     }
 

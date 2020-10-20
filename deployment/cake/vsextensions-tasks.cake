@@ -102,7 +102,7 @@ public class VsExtensionsProcessor : ProcessorBase
             // msBuildSettings.WithProperty("PackageOutputPath", OutputRootDirectory);
             msBuildSettings.WithProperty("OutputPath", outputDirectory);
 
-            CakeContext.MSBuild(projectFileName, msBuildSettings);
+            RunMsBuild(BuildContext, vsExtension, projectFileName, msBuildSettings);
         }       
     }
 

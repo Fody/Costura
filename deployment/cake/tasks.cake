@@ -1,4 +1,5 @@
 #l "lib-generic.cake"
+#l "lib-msbuild.cake"
 #l "lib-nuget.cake"
 #l "lib-signing.cake"
 #l "lib-sourcelink.cake"

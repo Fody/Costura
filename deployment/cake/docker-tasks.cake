@@ -139,7 +139,7 @@ public class DockerImagesProcessor : ProcessorBase
             msBuildSettings.WithProperty("OverridableOutputPath", outputDirectory);
             msBuildSettings.WithProperty("PackageOutputPath", BuildContext.General.OutputRootDirectory);
 
-            CakeContext.MSBuild(projectFileName, msBuildSettings);
+            RunMsBuild(BuildContext, dockerImage, projectFileName, msBuildSettings);
         }        
     }
 

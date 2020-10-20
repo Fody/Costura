@@ -46,7 +46,7 @@ private static void BuildTestProjects(BuildContext buildContext)
         msBuildSettings.WithProperty("OverridableOutputPath", outputDirectory);
         msBuildSettings.WithProperty("PackageOutputPath", buildContext.General.OutputRootDirectory);
 
-        buildContext.CakeContext.MSBuild(projectFileName, msBuildSettings);
+        RunMsBuild(buildContext, testProject, projectFileName, msBuildSettings);
     }
 }
 

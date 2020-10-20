@@ -151,7 +151,7 @@ public class UwpProcessor : ProcessorBase
 
             // Note: if csproj doesn't work, use SolutionFileName instead
             //var projectFileName = SolutionFileName;
-            CakeContext.MSBuild(projectFileName, msBuildSettings);
+            RunMsBuild(BuildContext, uwpApp, projectFileName, msBuildSettings);
 
             // Recalculate!
             appxUploadFileName = GetAppxUploadFileName(artifactsDirectory, uwpApp, BuildContext.General.Version.MajorMinorPatch);

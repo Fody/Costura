@@ -161,7 +161,7 @@ public class ComponentsProcessor : ProcessorBase
                 }
             }
 
-            CakeContext.MSBuild(projectFileName, msBuildSettings);
+            RunMsBuild(BuildContext, component, projectFileName, msBuildSettings);
         }        
     }
 
@@ -264,7 +264,7 @@ public class ComponentsProcessor : ProcessorBase
             msBuildSettings.WithProperty("NoBuild", "true");
             msBuildSettings.Targets.Add("Pack");
 
-            CakeContext.MSBuild(projectFileName, msBuildSettings);
+            RunMsBuild(BuildContext, component, projectFileName, msBuildSettings);
 
             BuildContext.CakeContext.LogSeparator();
         }
