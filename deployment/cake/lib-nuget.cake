@@ -45,3 +45,29 @@ public static List<NuGetServer> GetNuGetServers(string urls, string apiKeys)
 
     return servers;
 }
+
+//-------------------------------------------------------------
+
+private static void RestoreNuGetPackages(BuildContext buildContext, Cake.Core.IO.FilePath solutionOrProjectFileName)
+{
+    buildContext.CakeContext.Information("Restoring packages for {0}", solutionOrProjectFileName);
+    
+    try
+    {
+        var nuGetRestoreSettings = new NuGetRestoreSettings
+        {
+        };
+
+        var sources = SplitSeparatedList(buildContext.General.NuGet.PackageSources, ';');
+        if (sources.Count > 0)
+        {
+            nuGetRestoreSettings.Source = sources;
+        }
+
+        buildContext.CakeContext.NuGetRestore(solutionOrProjectFileName, nuGetRestoreSettings);
+    }
+    catch (Exception)
+    {
+        // Ignore
+    }
+}

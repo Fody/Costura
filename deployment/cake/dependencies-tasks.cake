@@ -124,7 +124,7 @@ public class DependenciesProcessor : ProcessorBase
                 }
             }
 
-            CakeContext.MSBuild(projectFileName, msBuildSettings);
+            RunMsBuild(BuildContext, dependency, projectFileName, msBuildSettings);
         }
     }
 
