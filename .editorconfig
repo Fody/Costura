@@ -143,6 +143,10 @@ dotnet_naming_rule.private_static_fields_must_be_camel_cased_and_prefixed_with_s
 dotnet_naming_rule.private_static_fields_must_be_camel_cased_and_prefixed_with_s_underscore.style     = pascal_case_style
 dotnet_naming_rule.private_static_fields_must_be_camel_cased_and_prefixed_with_s_underscore.severity  = error
 
+dotnet_naming_rule.protected_instance_fields_must_be_camel_cased_and_prefixed_with_underscore.symbols   = protected_field_symbols
+dotnet_naming_rule.protected_instance_fields_must_be_camel_cased_and_prefixed_with_underscore.style     = camel_case_and_prefix_with_underscore_style
+dotnet_naming_rule.protected_instance_fields_must_be_camel_cased_and_prefixed_with_underscore.severity  = error
+
 dotnet_naming_rule.private_instance_fields_must_be_camel_cased_and_prefixed_with_underscore.symbols   = private_field_symbols
 dotnet_naming_rule.private_instance_fields_must_be_camel_cased_and_prefixed_with_underscore.style     = camel_case_and_prefix_with_underscore_style
 dotnet_naming_rule.private_instance_fields_must_be_camel_cased_and_prefixed_with_underscore.severity  = error
@@ -170,6 +174,9 @@ dotnet_naming_symbols.private_static_field_symbols.applicable_accessibilities   
 
 dotnet_naming_symbols.private_field_symbols.applicable_kinds                                          = field
 dotnet_naming_symbols.private_field_symbols.applicable_accessibilities                                = private
+
+dotnet_naming_symbols.protected_field_symbols.applicable_kinds                                        = field
+dotnet_naming_symbols.protected_field_symbols.applicable_accessibilities                              = protected
 
 #---------------------------------------------------------------------------------------
 # Styles
