@@ -144,3 +144,7 @@ FodyWeavers.xsd
 
 # Approval tests
 *.received.*
+
+# ANTLR
+data/dsl/*.class
+data/dsl/*.java
