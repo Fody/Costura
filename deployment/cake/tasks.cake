@@ -259,13 +259,11 @@ Task("Build")
         {
             // SonarQube info
             Url = sonarUrl,
-            Login = buildContext.General.SonarQube.Username,
-            Password = buildContext.General.SonarQube.Password,
 
             // Project info
             Key = buildContext.General.SonarQube.Project,
             Version = buildContext.General.Version.FullSemVer,
-            
+
             // TODO: How to determine if this is a .NET Core project / solution? We cannot
             // use IsDotNetCoreProject() because it's project based, not solution based
             UseCoreClr = true,
@@ -279,6 +277,21 @@ Task("Build")
                 .Append("/d:sonar.qualitygate.wait=true")
         };
 
+        if (!string.IsNullOrWhiteSpace(buildContext.General.SonarQube.Organization))
+        {
+            sonarSettings.Organization = buildContext.General.SonarQube.Organization;
+        }
+
+        if (!string.IsNullOrWhiteSpace(buildContext.General.SonarQube.Username))
+        {
+            sonarSettings.Login = buildContext.General.SonarQube.Username;
+        }
+
+        if (!string.IsNullOrWhiteSpace(buildContext.General.SonarQube.Password))
+        {
+            sonarSettings.Password = buildContext.General.SonarQube.Password;
+        }
+
         // see https://cakebuild.net/api/Cake.Sonar/SonarBeginSettings/ for more information on
         // what to set for SonarCloud
 
@@ -291,6 +304,8 @@ Task("Build")
             // TODO: How to support PR?
             sonarSettings.Branch = buildContext.General.Repository.BranchName;
         }
+
+        Information("Beginning SonarQube");
 
         SonarBegin(sonarSettings);
     }
@@ -319,11 +334,21 @@ Task("Build")
             {
                 await buildContext.SourceControl.MarkBuildAsPendingAsync("SonarQube");
 
-                SonarEnd(new SonarEndSettings 
+                var sonarEndSettings = new SonarEndSettings();
+
+                if (!string.IsNullOrWhiteSpace(buildContext.General.SonarQube.Username))
                 {
-                    Login = buildContext.General.SonarQube.Username,
-                    Password = buildContext.General.SonarQube.Password,
-                });
+                    sonarEndSettings.Login = buildContext.General.SonarQube.Username;
+                }
+
+                if (!string.IsNullOrWhiteSpace(buildContext.General.SonarQube.Password))
+                {
+                    sonarEndSettings.Password = buildContext.General.SonarQube.Password;
+                }
+
+                Information("Ending SonarQube");
+
+                SonarEnd(sonarEndSettings);
 
                 await buildContext.SourceControl.MarkBuildAsSucceededAsync("SonarQube");
             }
