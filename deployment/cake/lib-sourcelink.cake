@@ -38,7 +38,7 @@ public static void InjectSourceLinkInProjectFile(BuildContext buildContext, stri
     var referencesItemGroup = new XElement("ItemGroup");
     var sourceLinkPackageReference = new XElement("PackageReference");
     sourceLinkPackageReference.Add(new XAttribute("Include", "Microsoft.SourceLink.GitHub"));
-    sourceLinkPackageReference.Add(new XAttribute("Version", "1.0.0-beta-63127-02"));
+    sourceLinkPackageReference.Add(new XAttribute("Version", "1.0.0"));
     sourceLinkPackageReference.Add(new XAttribute("PrivateAssets", "all"));
 
     referencesItemGroup.Add(sourceLinkPackageReference);
