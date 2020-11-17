@@ -23,7 +23,10 @@
 #addin "nuget:?package=Newtonsoft.Json&version=11.0.2"
 #addin "nuget:?package=Cake.Sonar&version=1.1.25"
 
-#tool "nuget:?package=MSBuild.SonarQube.Runner.Tool&version=4.8.0"
+// Note: the SonarQube tool must be installed as a global .NET tool:
+// `dotnet tool install --global dotnet-sonarscanner --ignore-failed-sources`
+//#tool "nuget:?package=MSBuild.SonarQube.Runner.Tool&version=4.8.0"
+#tool "nuget:?package=dotnet-sonarscanner&version=5.0.4"
 
 //-------------------------------------------------------------
 // BACKWARDS COMPATIBILITY CODE - START
@@ -264,8 +267,7 @@ Task("Build")
             Key = buildContext.General.SonarQube.Project,
             Version = buildContext.General.Version.FullSemVer,
 
-            // TODO: How to determine if this is a .NET Core project / solution? We cannot
-            // use IsDotNetCoreProject() because it's project based, not solution based
+            // Use core clr version of SonarQube
             UseCoreClr = true,
 
             // Minimize extreme logging
@@ -334,7 +336,11 @@ Task("Build")
             {
                 await buildContext.SourceControl.MarkBuildAsPendingAsync("SonarQube");
 
-                var sonarEndSettings = new SonarEndSettings();
+                var sonarEndSettings = new SonarEndSettings
+                {
+                    // Use core clr version of SonarQube
+                    UseCoreClr = true
+                };
 
                 if (!string.IsNullOrWhiteSpace(buildContext.General.SonarQube.Username))
                 {
