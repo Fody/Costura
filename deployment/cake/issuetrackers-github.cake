@@ -52,7 +52,7 @@ public class GitHubIssueTracker : IIssueTracker
 
         BuildContext.CakeContext.Information("Step 1 / 4: Creating release");
 
-        BuildContext.CakeContext.GitReleaseManagerCreate(UserName, ApiKey, OwnerName, ProjectName, new GitReleaseManagerCreateSettings
+        BuildContext.CakeContext.GitReleaseManagerCreate(ApiKey, OwnerName, ProjectName, new GitReleaseManagerCreateSettings
         {
             TargetDirectory = BuildContext.General.RootDirectory,
             Milestone = BuildContext.General.Version.MajorMinorPatch,
@@ -73,14 +73,14 @@ public class GitHubIssueTracker : IIssueTracker
         {
             BuildContext.CakeContext.Information("Step 3 / 4: Publishing release");
 
-            BuildContext.CakeContext.GitReleaseManagerPublish(UserName, ApiKey, OwnerName, ProjectName, new GitReleaseManagerPublishSettings
+            BuildContext.CakeContext.GitReleaseManagerPublish(ApiKey, OwnerName, ProjectName, BuildContext.General.Version.MajorMinorPatch, new GitReleaseManagerPublishSettings
             {
                 TargetDirectory = BuildContext.General.RootDirectory
             });
 
             BuildContext.CakeContext.Information("Step 4 / 4: Closing the milestone");
 
-            BuildContext.CakeContext.GitReleaseManagerClose(UserName, ApiKey, OwnerName, ProjectName, BuildContext.General.Version.MajorMinorPatch, new GitReleaseManagerCloseMilestoneSettings
+            BuildContext.CakeContext.GitReleaseManagerClose(ApiKey, OwnerName, ProjectName, BuildContext.General.Version.MajorMinorPatch, new GitReleaseManagerCloseMilestoneSettings
             {
                 TargetDirectory = BuildContext.General.RootDirectory
             });

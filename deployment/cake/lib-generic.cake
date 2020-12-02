@@ -461,6 +461,15 @@ private static bool IsDotNetCoreProject(BuildContext buildContext, string projec
                     isDotNetCore = true;
                     break;
                 }
+
+                if (lowerCase.Contains("net5") ||
+                    lowerCase.Contains("net6") ||
+                    lowerCase.Contains("net7") ||
+                    lowerCase.Contains("net8"))
+                {
+                    isDotNetCore = true;
+                    break;
+                }
             }
         }
 
