@@ -65,7 +65,7 @@ private static void RunUnitTests(BuildContext buildContext, string projectName)
 
     try
     {
-        if (testTargetFramework.Contains("netcore") && IsDotNetCoreProject(buildContext, projectName))
+        if (IsDotNetCoreProject(buildContext, projectName))
         {
             buildContext.CakeContext.Information("Project '{0}' is a .NET core project, using 'dotnet test' to run the unit tests", projectName);
 
@@ -74,8 +74,9 @@ private static void RunUnitTests(BuildContext buildContext, string projectName)
             buildContext.CakeContext.DotNetCoreTest(projectFileName, new DotNetCoreTestSettings
             {
                 Configuration = buildContext.General.Solution.ConfigurationName,
-                NoRestore = true,
                 NoBuild = true,
+                NoLogo = true,
+                NoRestore = true,
                 OutputDirectory = System.IO.Path.Combine(GetProjectOutputDirectory(buildContext, projectName), testTargetFramework),
                 ResultsDirectory = testResultsDirectory
             });
