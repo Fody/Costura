@@ -2,20 +2,42 @@
 #l "tests-variables.cake"
 #l "tests-nunit.cake"
 
-//-------------------------------------------------------------
-
-private static void BuildTestProjects(BuildContext buildContext)
+private static bool IgnoreTestProject(BuildContext buildContext, string projectName)
 {
     // In case of a local build and we have included / excluded anything, skip tests
     if (buildContext.General.IsLocalBuild && 
         (buildContext.General.Includes.Count > 0 || buildContext.General.Excludes.Count > 0))
     {
-        buildContext.CakeContext.Information("Skipping test project because this is a local build with specific includes / excludes");
-        return;
+        buildContext.CakeContext.Information($"Skipping test project '{projectName}' because this is a local build with specific includes / excludes");
+        return true;
     }
 
+    // Special unit test part assuming a few naming conventions:
+    // 1. [ProjectName].Tests
+    // 2. [SolutionName].Tests.[ProjectName]
+    //
+    // In both cases, we can simply remove ".Tests" and check if that project is being ignored
+    var expectedProjectName = projectName.Replace(".Tests", string.Empty);
+    if (!ShouldProcessProject(buildContext, expectedProjectName))
+    {
+        buildContext.CakeContext.Information($"Skipping test project '{projectName}' because project '{expectedProjectName}' should not be processed either");
+        return true;
+    }
+
+    return false;
+}
+
+//-------------------------------------------------------------
+
+private static void BuildTestProjects(BuildContext buildContext)
+{    
     foreach (var testProject in buildContext.Tests.Items)
     {
+        if (IgnoreTestProject(buildContext, testProject))
+        {
+            continue;
+        }
+
         buildContext.CakeContext.LogSeparator("Building test project '{0}'", testProject);
 
         var projectFileName = GetProjectFileName(buildContext, testProject);
@@ -54,6 +76,11 @@ private static void BuildTestProjects(BuildContext buildContext)
 
 private static void RunUnitTests(BuildContext buildContext, string projectName)
 {
+    if (IgnoreTestProject(buildContext, projectName))
+    {
+        return;
+    }
+
     var testResultsDirectory = System.IO.Path.Combine(buildContext.General.OutputRootDirectory,
         "testresults", projectName);
 
