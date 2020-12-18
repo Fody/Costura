@@ -37,6 +37,9 @@ update_configs:
       - match:
           dependency_name: "PublicApiGenerator"
           update_type: "all"
+      - match:
+          dependency_name: "Verify.NUnit"
+          update_type: "all"
     ignored_updates:
       - match:
           dependency_name: "*Analyzers"
