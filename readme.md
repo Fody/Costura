@@ -118,6 +118,7 @@ This will copy embedded files to disk before loading them into memory. This is h
 <Costura CreateTemporaryAssemblies='true' />
 ```
 
+⚠️ Beware when setting `CreateTemporaryAssemblies` to `true`, see the <a href="#Caveat">Caveat</a> section for explanation.
 
 ### IncludeDebugSymbols
 
@@ -307,6 +308,11 @@ Or as a attribute with items delimited by a pipe `|`.
 <Costura PreloadOrder='Foo|Bar' />
 ```
 
+## Caveat
+
+Embedding native libraries and/or setting `CreateTemporaryAssemblies` to `true` interferes with the .NET Framework [AppContext switches](https://docs.microsoft.com/en-us/dotnet/framework/configure-apps/file-schema/runtime/appcontextswitchoverrides-element). See [issue #633](https://github.com/Fody/Costura/issues/633) for a detailed explanation.
+
+In order to get system AppContext switches properly initialized, you must set <a href="#LoadAtModuleInit">`LoadAtModuleInit`</a> to `false` and manually call `CosturaUtility.Initialize()` in your code (see the CosturaUtility section just below).
 
 ## CosturaUtility
 
