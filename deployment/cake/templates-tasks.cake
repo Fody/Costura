@@ -14,6 +14,21 @@ public class TemplatesProcessor : ProcessorBase
     public TemplatesProcessor(BuildContext buildContext)
         : base(buildContext)
     {
+        var templatesRelativePath = "./deployment/templates";
+
+        if (CakeContext.DirectoryExists(templatesRelativePath))
+        {
+            var currentDirectoryPath = System.IO.Directory.GetCurrentDirectory();
+            var templateAbsolutePath = System.IO.Path.Combine(currentDirectoryPath, templatesRelativePath);
+            var files = System.IO.Directory.GetFiles(templateAbsolutePath, "*.*", System.IO.SearchOption.AllDirectories);
+            
+            CakeContext.Information($"Found '{files.Count()}' template files");
+
+            foreach (var file in files)
+            {              
+                BuildContext.Templates.Items.Add(file.Substring(templateAbsolutePath.Length + 1));
+            }
+        }
     }
 
     public override bool HasItems()
@@ -23,17 +38,7 @@ public class TemplatesProcessor : ProcessorBase
 
     public override async Task PrepareAsync()
     {
-        var templatesRelativePath = "deployment/templates";
-        if (CakeContext.DirectoryExists(templatesRelativePath))
-        {
-            var currentDirectoryPath = System.IO.Directory.GetCurrentDirectory();
-            var templateAbsolutePath = System.IO.Path.Combine(currentDirectoryPath, templatesRelativePath);
-            var files = System.IO.Directory.GetFiles(templateAbsolutePath, "*.*", System.IO.SearchOption.AllDirectories);
-            foreach (var file in files)
-            {
-                BuildContext.Templates.Items.Add(file.Substring(templateAbsolutePath.Length + 1));
-            }
-        }
+
     }
 
     public override async Task UpdateInfoAsync()
@@ -47,18 +52,26 @@ public class TemplatesProcessor : ProcessorBase
         
         foreach (var template in BuildContext.Templates.Items)
         {
-            CakeContext.Information("Updating file '{0}'", template);
+            CakeContext.Information($"Updating template file '{template}'");
             
-            var templateFile  = $"deployment/templates/{template}";
-            var content = CakeContext.FileReadText(templateFile);
-            var variableNames = variableRegex.Matches(content).OfType<Match>().Select(m => m.Groups[1].Value).Distinct().ToList();
-            
-            foreach (var variableName in variableNames)
+            var templateSourceFile  = $"./deployment/templates/{template}";
+            var content = CakeContext.FileReadText(templateSourceFile);
+
+            var matches = variableRegex.Matches(content);
+
+            foreach (var match in matches.Cast<Match>())
             {
-                if(BuildContext.Variables.TryGetValue(variableName, out var replacement))
+                var variableName = match.Groups[1].Value;
+
+                CakeContext.Information($"Found usage of variable '{variableName}'");
+
+                if (!BuildContext.Variables.TryGetValue(variableName, out var replacement))
                 {
-                    content = content.Replace($"${{{variableName}}}", replacement);
+                    CakeContext.Error($"Could not find value for variable '{variableName}'");
+                    continue;   
                 }
+                
+                content = content.Replace($"${{{variableName}}}", replacement);
             }
 
             CakeContext.FileWriteText($"{template}", content);
@@ -67,18 +80,14 @@ public class TemplatesProcessor : ProcessorBase
 
     public override async Task BuildAsync()
     {
-        if (!HasItems())
-        {
-            return;
-        }
+        // Run templates every time
+        await UpdateInfoAsync();
     }
 
     public override async Task PackageAsync()
     {
-        if (!HasItems())
-        {
-            return;
-        }
+        // Run templates every time
+        await UpdateInfoAsync();
     }
 
     public override async Task DeployAsync()
