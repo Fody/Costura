@@ -125,13 +125,31 @@ Task("RestorePackages")
         return;
     }
 
-    var csharpProjects = GetFiles("./**/*.csproj");
+    //var csharpProjects = GetFiles("./**/*.csproj");
     // var cProjects = GetFiles("./**/*.vcxproj");
     var solutions = GetFiles("./**/*.sln");
-    
+    var csharpProjects = new List<FilePath>();
+
+    foreach (var project in buildContext.AllProjects)
+    {
+        if (ShouldProcessProject(buildContext, project))
+        {
+            var projectFileName = GetProjectFileName(buildContext, project);
+            if (projectFileName.EndsWith(".csproj"))
+            {
+                Information("Adding '{0}' as C# specific project to restore", project);
+
+                csharpProjects.Add(projectFileName);
+
+                // Inject source link *before* package restore
+                InjectSourceLinkInProjectFile(buildContext, projectFileName);
+            }
+        }
+    }
+
     var allFiles = new List<FilePath>();
-    allFiles.AddRange(solutions);
-    //allFiles.AddRange(csharpProjects);
+    //allFiles.AddRange(solutions);
+    allFiles.AddRange(csharpProjects);
     // //allFiles.AddRange(cProjects);
 
     foreach (var file in allFiles)

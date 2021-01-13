@@ -50,12 +50,11 @@ public static List<NuGetServer> GetNuGetServers(string urls, string apiKeys)
 
 private static void RestoreNuGetPackages(BuildContext buildContext, Cake.Core.IO.FilePath solutionOrProjectFileName)
 {
-    buildContext.CakeContext.Information("Restoring packages for {0}", solutionOrProjectFileName);
+    buildContext.CakeContext.LogSeparator("Restoring packages for '{0}'", solutionOrProjectFileName);
     
     var sources = SplitSeparatedList(buildContext.General.NuGet.PackageSources, ';');
     var runtimeIdentifiers = new List<string>(new [] 
     {
-        "",
         "win-x64",
         "browser-wasm"
     });
@@ -68,7 +67,7 @@ private static void RestoreNuGetPackages(BuildContext buildContext, Cake.Core.IO
 
 private static void RestoreNuGetPackagesUsingNuGet(BuildContext buildContext, Cake.Core.IO.FilePath solutionOrProjectFileName, List<string> sources)
 {
-    buildContext.CakeContext.Information("Restoring packages for {0} using 'NuGet'", solutionOrProjectFileName);
+    buildContext.CakeContext.LogSeparator("Restoring packages for '{0}' using 'NuGet'", solutionOrProjectFileName);
     
     try
     {
@@ -95,29 +94,66 @@ private static void RestoreNuGetPackagesUsingNuGet(BuildContext buildContext, Ca
 
 private static void RestoreNuGetPackagesUsingDotnetRestore(BuildContext buildContext, Cake.Core.IO.FilePath solutionOrProjectFileName, List<string> sources, List<string> runtimeIdentifiers)
 {
-    buildContext.CakeContext.Information("Restoring packages for {0} using 'dotnet restore'", solutionOrProjectFileName);
+    buildContext.CakeContext.LogSeparator("Restoring packages for '{0}' using 'dotnet restore'", solutionOrProjectFileName);
         
+    var projectFileContents = System.IO.File.ReadAllText(solutionOrProjectFileName.FullPath)?.ToLower();
+
+    var supportedRuntimeIdentifiers = new List<string>();
+
     foreach (var runtimeIdentifier in runtimeIdentifiers)
+    {
+        if (!string.IsNullOrWhiteSpace(runtimeIdentifier))
+        {
+            if (!projectFileContents.Contains(runtimeIdentifier.ToLower()))
+            {
+                buildContext.CakeContext.Information("Project '{0}' does not support runtime identifier '{1}', skipping restore for this runtime identifier", solutionOrProjectFileName, runtimeIdentifier);
+                continue;
+            }
+        }
+
+        supportedRuntimeIdentifiers.Add(runtimeIdentifier);
+    }
+
+    if (supportedRuntimeIdentifiers.Count == 0)
+    {
+        // Default
+        supportedRuntimeIdentifiers.Add(string.Empty);
+    }
+
+    foreach (var runtimeIdentifier in supportedRuntimeIdentifiers)
     {
         try
         {
+            buildContext.CakeContext.LogSeparator("Restoring packages for '{0}' using 'dotnet restore' using runtime identifier '{1}'", solutionOrProjectFileName, runtimeIdentifier);
+
             var restoreSettings = new DotNetCoreRestoreSettings
             {
+                DisableParallel = false,
+                Force = false,
+                ForceEvaluate = false,
                 IgnoreFailedSources = true,
                 NoCache = false,
+                NoDependencies = false, // use true to speed up things
+                Verbosity = DotNetCoreVerbosity.Normal
             };
     
+            if (!string.IsNullOrWhiteSpace(runtimeIdentifier))
+            {
+                // This is a explicit supported runtime identifier, force re-evaluation
+                restoreSettings.Force = true;
+                restoreSettings.ForceEvaluate = true;
+                restoreSettings.Runtime = runtimeIdentifier;
+            }
+
             if (sources.Count > 0)
             {
                 restoreSettings.Sources = sources;
             }
 
-            if (!string.IsNullOrWhiteSpace(runtimeIdentifier))
+            using (buildContext.CakeContext.UseDiagnosticVerbosity())
             {
-                restoreSettings.Runtime = runtimeIdentifier;
+                buildContext.CakeContext.DotNetCoreRestore(solutionOrProjectFileName.FullPath, restoreSettings);
             }
-
-            buildContext.CakeContext.DotNetCoreRestore(solutionOrProjectFileName.FullPath, restoreSettings);
         }
         catch (Exception)
         {
