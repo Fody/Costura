@@ -8,6 +8,10 @@
   </PropertyGroup>
   
   <ItemGroup>
+    <Compile Include="..\ExeToProcess\Program.cs" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <ProjectReference Include="..\AssemblyToReferenceMixed\AssemblyToReferenceMixed.vcxproj"/>
   </ItemGroup>
   

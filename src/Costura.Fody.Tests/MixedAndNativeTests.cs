@@ -43,4 +43,11 @@ public class MixedAndNativeTests : BaseCosturaTest
             Approvals.Verify(text);
         }
     }
+
+    [Test]
+    public void ExecutableRunsSuccessfully()
+    {
+        var output = RunHelper.RunExecutable(TestResult.AssemblyPath);
+        Assert.AreEqual("Run-OK", output);
+    }
 }
