@@ -29,4 +29,11 @@ public class MixedAndNativeTestsWithEmbeddedMixed : BaseCosturaTest
         var instance1 = TestResult.GetInstance("ClassToTest");
         Assert.AreEqual("Hello", instance1.MixedFooPInvoke());
     }
+
+    [Test]
+    public void ExecutableRunsSuccessfully()
+    {
+        var output = RunHelper.RunExecutable(TestResult.AssemblyPath);
+        Assert.AreEqual("Run-OK", output);
+    }
 }

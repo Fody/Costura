@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Runtime.Versioning;
 using System.Threading;
 
 internal static class ILTemplateWithUnmanagedHandler
@@ -28,6 +29,20 @@ internal static class ILTemplateWithUnmanagedHandler
             return;
         }
 
+        var currentDomain = AppDomain.CurrentDomain;
+
+        // Make sure the target framework is set in order not to interfere with AppContext switches initialization
+        // See https://github.com/Fody/Costura/issues/633 for full explanation
+        if (AppContext.TargetFrameworkName == null)
+        {
+            var targetFrameworkAttribute = (TargetFrameworkAttribute)Assembly.GetCallingAssembly()?.GetCustomAttribute(typeof(TargetFrameworkAttribute));
+            var targetFrameworkName = targetFrameworkAttribute?.FrameworkName;
+            if (targetFrameworkName != null)
+            {
+                currentDomain.SetData(nameof(AppContext.TargetFrameworkName), targetFrameworkName);
+            }
+        }
+
         //Create a unique Temp directory for the application path.
         var md5Hash = "To be replaced at compile time";
         var prefixPath = Path.Combine(Path.GetTempPath(), "Costura");
@@ -37,7 +52,6 @@ internal static class ILTemplateWithUnmanagedHandler
         var unmanagedAssemblies = IntPtr.Size == 8 ? preload64List : preload32List;
         Common.PreloadUnmanagedLibraries(md5Hash, tempBasePath, unmanagedAssemblies, checksums);
 
-        var currentDomain = AppDomain.CurrentDomain;
         currentDomain.AssemblyResolve += ResolveAssembly;
     }
 
