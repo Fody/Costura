@@ -33,13 +33,15 @@ internal static class ILTemplateWithUnmanagedHandler
 
         // Make sure the target framework is set in order not to interfere with AppContext switches initialization
         // See https://github.com/Fody/Costura/issues/633 for full explanation
-        if (AppContext.TargetFrameworkName == null)
+        var setupInformation = currentDomain.GetType()?.GetProperty("SetupInformation")?.GetValue(currentDomain);
+        var targetFrameworkNameProperty = setupInformation?.GetType()?.GetProperty("TargetFrameworkName");
+        if (targetFrameworkNameProperty != null && targetFrameworkNameProperty.GetValue(setupInformation) == null)
         {
             var targetFrameworkAttribute = (TargetFrameworkAttribute)Assembly.GetCallingAssembly()?.GetCustomAttribute(typeof(TargetFrameworkAttribute));
             var targetFrameworkName = targetFrameworkAttribute?.FrameworkName;
             if (targetFrameworkName != null)
             {
-                currentDomain.SetData(nameof(AppContext.TargetFrameworkName), targetFrameworkName);
+                currentDomain.SetData("TargetFrameworkName", targetFrameworkName);
             }
         }
 
