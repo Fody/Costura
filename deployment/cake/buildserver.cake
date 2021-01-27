@@ -1,8 +1,6 @@
 // Customize this file when using a different build server
 #l "buildserver-continuaci.cake"
 
-#addin "nuget:?package=MagicChunks&version=2.0.0.119"
-
 using System.Runtime.InteropServices;
 
 public interface IBuildServer

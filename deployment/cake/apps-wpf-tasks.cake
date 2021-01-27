@@ -1,9 +1,6 @@
-#pragma warning disable 1998
-
 #l "apps-wpf-variables.cake"
 
-#addin "nuget:?package=MagicChunks&version=2.0.0.119"
-#tool "nuget:?package=AzureStorageSync&version=2.0.0-alpha0028&prerelease"
+#tool "nuget:?package=AzureStorageSync&version=2.0.0-alpha0039&prerelease"
 
 //-------------------------------------------------------------
 
