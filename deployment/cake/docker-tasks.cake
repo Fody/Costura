@@ -1,9 +1,6 @@
-#pragma warning disable 1998
-
 #l "docker-variables.cake"
 #l "lib-octopusdeploy.cake"
 
-#addin "nuget:?package=Cake.FileHelpers&version=3.0.0"
 #addin "nuget:?package=Cake.Docker&version=0.11.1"
 
 //-------------------------------------------------------------

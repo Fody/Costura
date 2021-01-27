@@ -1,3 +1,5 @@
+#pragma warning disable CS1998
+
 #l "lib-generic.cake"
 #l "lib-logging.cake"
 #l "lib-msbuild.cake"
@@ -21,9 +23,11 @@
 #l "tests.cake"
 #l "templates-tasks.cake"
 
-#addin "nuget:?package=System.Net.Http&version=4.3.3"
-#addin "nuget:?package=Newtonsoft.Json&version=11.0.2"
+#addin "nuget:?package=Cake.FileHelpers&version=3.3.0"
 #addin "nuget:?package=Cake.Sonar&version=1.1.25"
+#addin "nuget:?package=MagicChunks&version=2.0.0.119"
+#addin "nuget:?package=Newtonsoft.Json&version=11.0.2"
+#addin "nuget:?package=System.Net.Http&version=4.3.4"
 
 // Note: the SonarQube tool must be installed as a global .NET tool:
 // `dotnet tool install --global dotnet-sonarscanner --ignore-failed-sources`

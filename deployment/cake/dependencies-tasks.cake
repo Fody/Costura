@@ -1,7 +1,5 @@
 #l "dependencies-variables.cake"
 
-#addin "nuget:?package=Cake.FileHelpers&version=3.0.0"
-
 using System.Xml.Linq;
 
 //-------------------------------------------------------------
