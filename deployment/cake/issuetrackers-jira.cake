@@ -1,4 +1,4 @@
-#tool "nuget:?package=JiraCli&version=1.2.0-beta0002&prerelease"
+#tool "nuget:?package=JiraCli&version=1.3.0-alpha0338&prerelease"
 
 //-------------------------------------------------------------
 
