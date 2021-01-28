@@ -2,7 +2,7 @@
 #l "lib-octopusdeploy.cake"
 
 #addin "nuget:?package=Microsoft.Azure.KeyVault.Core&version=3.0.5"
-#addin "nuget:?package=WindowsAzure.Storage&version=9.1.1"
+#addin "nuget:?package=WindowsAzure.Storage&version=9.3.3"
 
 //-------------------------------------------------------------
 
