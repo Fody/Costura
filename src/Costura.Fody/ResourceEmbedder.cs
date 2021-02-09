@@ -70,44 +70,37 @@ public partial class ModuleWeaver : IDisposable
 
         if (config.IncludeRuntimeReferences)
         {
-            if (!ModuleDefinition.IsUsingDotNetCore())
+            var runtimeReferences = GetFilteredRuntimeReferences(references, config).ToList();
+            if (runtimeReferences.Any())
             {
-                WriteInfo("\tSkipping runtime references for this target framework, library doesn't target .NET Core");
-            }
-            else
-            {
-                var runtimeReferences = GetFilteredRuntimeReferences(references, config).ToList();
-                if (runtimeReferences.Any())
+                WriteInfo("\tIncluding runtime references");
+
+                foreach (var runtimeReference in runtimeReferences)
                 {
-                    WriteInfo("\tIncluding runtime references");
+                    var runtimeReferencePath = runtimeReference.FullPath;
+                    var relativeFileName = runtimeReference.RelativeFileName;
+                    var relativePrefix = runtimeReference.GetResourceNamePrefix("costura.");
 
-                    foreach (var runtimeReference in runtimeReferences)
+                    if (runtimeReference.IsResourcesAssembly && config.IgnoreSatelliteAssemblies)
                     {
-                        var runtimeReferencePath = runtimeReference.FullPath;
-                        var relativeFileName = runtimeReference.RelativeFileName;
-                        var relativePrefix = runtimeReference.GetResourceNamePrefix("costura.");
+                        continue;
+                    }
 
-                        if (runtimeReference.IsResourcesAssembly && config.IgnoreSatelliteAssemblies)
-                        {
-                            continue;
-                        }
+                    var embeddedReference = Embed(relativePrefix, relativeFileName, runtimeReferencePath, !disableCompression, createTemporaryAssemblies, config.DisableCleanup);
+                    if (embeddedReference is null == false)
+                    {
+                        embeddedReferences.Add(embeddedReference);
+                    }
 
-                        var embeddedReference = Embed(relativePrefix, relativeFileName, runtimeReferencePath, !disableCompression, createTemporaryAssemblies, config.DisableCleanup);
-                        if (embeddedReference is null == false)
+                    if (config.IncludeDebugSymbols)
+                    {
+                        var pdbFullPath = Path.ChangeExtension(runtimeReferencePath, "pdb");
+                        if (File.Exists(pdbFullPath))
                         {
-                            embeddedReferences.Add(embeddedReference);
-                        }
-
-                        if (config.IncludeDebugSymbols)
-                        {
-                            var pdbFullPath = Path.ChangeExtension(runtimeReferencePath, "pdb");
-                            if (File.Exists(pdbFullPath))
+                            var embeddedPdb = Embed(relativePrefix, Path.ChangeExtension(relativeFileName, "pdb"), pdbFullPath, !disableCompression, createTemporaryAssemblies, config.DisableCleanup);
+                            if (embeddedPdb is null == false)
                             {
-                                var embeddedPdb = Embed(relativePrefix, Path.ChangeExtension(relativeFileName, "pdb"), pdbFullPath, !disableCompression, createTemporaryAssemblies, config.DisableCleanup);
-                                if (embeddedPdb is null == false)
-                                {
-                                    embeddedReferences.Add(embeddedPdb);
-                                }
+                                embeddedReferences.Add(embeddedPdb);
                             }
                         }
                     }
