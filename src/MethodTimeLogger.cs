@@ -32,7 +32,7 @@ internal static class MethodTimeLogger
         // {
             // finalMessage += $" | {message}";
         // }
-
+ 
         // var logger = LogManager.GetLogger(type);
         // logger.Debug(finalMessage);
     }
