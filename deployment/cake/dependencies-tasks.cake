@@ -28,10 +28,11 @@ public class DependenciesProcessor : ProcessorBase
         // is required to prevent issues with foreach
         foreach (var dependency in BuildContext.Dependencies.Items.ToList())
         {
-            if (!ShouldProcessProject(BuildContext, dependency))
-            {
-                BuildContext.Dependencies.Items.Remove(dependency);
-            }
+            // Note: dependencies should always be built
+            // if (!ShouldProcessProject(BuildContext, dependency))
+            // {
+            //     BuildContext.Dependencies.Items.Remove(dependency);
+            // }
         }
     }
 

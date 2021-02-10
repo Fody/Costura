@@ -518,14 +518,14 @@ private static bool ShouldProcessProject(BuildContext buildContext, string proje
 
     // Experimental mode where we ignore projects that are not on the deploy list when not in CI mode, but
     // it can only work if they are not part of unit tests (but that should never happen)
-    if (buildContext.Tests.Items.Count == 0)
-    {
+    // if (buildContext.Tests.Items.Count == 0)
+    // {
         if (checkDeployment && !ShouldDeployProject(buildContext, projectName))
         {
             buildContext.CakeContext.Warning("Project '{0}' should not be processed because this is not a CI build, does not contain tests and the project should not be deployed, removing from projects to process", projectName);
             return false;
         }
-    }
+    //}
 
     return true;
 }
