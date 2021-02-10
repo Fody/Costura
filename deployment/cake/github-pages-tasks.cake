@@ -1,6 +1,6 @@
 #l "github-pages-variables.cake"
 
-#addin "nuget:?package=Cake.Git&version=0.22.0"
+#addin "nuget:?package=Cake.Git&version=1.0.0"
 
 //-------------------------------------------------------------
 
