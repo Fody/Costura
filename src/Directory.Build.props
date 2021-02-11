@@ -1,0 +1,22 @@
+<Project>
+  <!-- 
+    This file applies to all projects automatically. Project specific values should go into Directory.Build.project.props
+  -->
+
+  <!-- ..\ -->
+  <Import Project="$(MSBuildProjectDirectory)\..\Directory.Build.shared.implicit.props" 
+          Condition="$(RepositoryTemplateIgnoreBuildImplicitProps) != 'true' And Exists('$(MSBuildProjectDirectory)\..\Directory.Build.shared.implicit.props')" />
+  <Import Project="$(MSBuildProjectDirectory)\..\Directory.Build.project.props"
+          Condition="$(RepositoryTemplateIgnoreBuildProjectProps) != 'true' And Exists('$(MSBuildProjectDirectory)\..\Directory.Build.project.props')" />
+  <Import Project="$(MSBuildProjectDirectory)\..\Directory.Build.analyzers.props"
+          Condition="$(RepositoryTemplateIgnoreBuildAnalyzersProps) != 'true' And Exists('$(MSBuildProjectDirectory)\..\Directory.Build.analyzers.props')" />
+
+
+  <!-- ..\..\ -->
+  <Import Project="$(MSBuildProjectDirectory)\..\..\Directory.Build.shared.implicit.props" 
+          Condition="$(RepositoryTemplateIgnoreBuildImplicitProps) != 'true' And Exists('$(MSBuildProjectDirectory)\..\..\Directory.Build.shared.implicit.props')" />
+  <Import Project="$(MSBuildProjectDirectory)\..\..\Directory.Build.project.props"
+          Condition="$(RepositoryTemplateIgnoreBuildProjectProps) != 'true' And Exists('$(MSBuildProjectDirectory)\..\..\Directory.Build.project.props')" />
+  <Import Project="$(MSBuildProjectDirectory)\..\..\Directory.Build.analyzers.props"
+          Condition="$(RepositoryTemplateIgnoreBuildAnalyzersProps) != 'true' And Exists('$(MSBuildProjectDirectory)\..\..\Directory.Build.analyzers.props')" />
+</Project>

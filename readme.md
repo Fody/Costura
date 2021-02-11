@@ -6,6 +6,11 @@ Embeds dependencies as resources.
 [![NuGet Status](https://img.shields.io/nuget/v/Costura.Fody.svg)](https://www.nuget.org/packages/Costura.Fody/)
 
 
+### This is an add-in for [Fody](https://github.com/Fody/Home/)
+
+**It is expected that all developers using Fody either [become a Patron on OpenCollective](https://opencollective.com/fody/contribute/patron-3059), or have a [Tidelift Subscription](https://tidelift.com/subscription/pkg/nuget-fody?utm_source=nuget-fody&utm_medium=referral&utm_campaign=enterprise). [See Licensing/Patron FAQ](https://github.com/Fody/Home/blob/master/pages/licensing-patron-faq.md) for more information.**
+
+
 ### !!! READ THIS !!! Package is in maintenance mode !!! READ THIS !!!
 
 In .NET Core 3 there are two new features:
@@ -25,6 +30,7 @@ Therefore we **strongly recommend** to try out the alternatives mentioned above.
 * Library linking (e.g. embed dependencies in library projects)
 * Exe linking (e.g. embed dependencies in exe projects)
 * Windows platforms
+* Any advanced scenario that you are not willing to contribute (money, PR, etc) **after discussing with the core contributes first**
 
 #### Non-supported use cases
 
@@ -124,6 +130,17 @@ Controls if .pdbs for reference assemblies are also embedded.
 ```
 
 
+### IncludeRuntimeReferences
+
+Controls whether the `runtimes` folder, used by .NET Core, for the embedded dependencies will be embedded.
+
+*Defaults to `true`*
+
+```xml
+<Costura IncludeRuntimeReferences='false' />
+```
+
+
 ### DisableCompression
 
 Embedded assemblies are compressed by default, and uncompressed when they are loaded. You can turn compression off with this option.
@@ -162,6 +179,8 @@ Costura by default will load as part of the module initialization. This flag dis
 
 Costura will by default use assemblies with a name like 'resources.dll' as a satellite resource and prepend the output path. This flag disables that behavior.
 
+Be advised, that **DLL** project assembly names ending with '.resources' (resulting in `*.resources.dll` will lead to errors when this flag set to `false`.
+
 *Defaults to `false`*
 
 ```xml
@@ -169,7 +188,7 @@ Costura will by default use assemblies with a name like 'resources.dll' as a sat
 ```
 
 
-### ExcludeAssemblies
+### ExcludeAssemblies / ExcludeRuntimeAssemblies
 
 A list of assembly names to exclude from the default action of "embed all Copy Local references".
 
@@ -199,13 +218,13 @@ Or as an attribute with items delimited by a pipe `|`.
 ```
 
 
-### IncludeAssemblies
+### IncludeAssemblies / IncludeRuntimeAssemblies
 
 A list of assembly names to include from the default action of "embed all Copy Local references".
 
 Do not include `.exe` or `.dll` in the names.
 
-Can not be defined with `ExcludeAssemblies`.
+Can not be defined with `ExcludeAssemblies` / `IncludeRuntimeAssemblies`.
 
 Can use wildcards at the end of the name for partial matching.
 

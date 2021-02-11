@@ -1,0 +1,77 @@
+﻿<Project Sdk="MSBuild.Sdk.Extras">
+  <PropertyGroup>
+    <TargetFrameworks>net472;netstandard2.0</TargetFrameworks>
+    <AssemblyName>Costura.Fody</AssemblyName>
+    <RootNamespace>Costura.Fody</RootNamespace>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <DisableFody>true</DisableFody>
+    <Configurations>Debug;Release;Test</Configurations>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <!-- SonarQube requires a project guid -->
+    <ProjectGuid>E5622B74-B6C6-46A5-9207-0872533E6C2F</ProjectGuid>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Test|net472|AnyCPU'">
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <EmbeddedResource Include="$(OverridableOutputRootPath)\Costura.Template\netstandard2.0\Costura.Template.dll">
+      <Link>bin\Template.dll</Link>
+      <InProject>false</InProject>
+      <LogicalName>Costura.Template.dll</LogicalName>
+    </EmbeddedResource>
+
+    <EmbeddedResource Include="$(OverridableOutputRootPath)\Costura.Template\netstandard2.0\Costura.Template.pdb">
+      <Link>bin\Template.pdb</Link>
+      <InProject>false</InProject>
+      <LogicalName>Costura.Template.pdb</LogicalName>
+    </EmbeddedResource>
+
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\Costura.Template\Common.cs">
+      <Link>src\Common.cs</Link>
+      <InProject>false</InProject>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\Costura.Template\ILTemplate.cs">
+      <Link>src\ILTemplate.cs</Link>
+      <InProject>false</InProject>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\Costura.Template\ILTemplateWithTempAssembly.cs">
+      <Link>src\ILTemplateWithTempAssembly.cs</Link>
+      <InProject>false</InProject>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\Costura.Template\ILTemplateWithUnmanagedHandler.cs">
+      <Link>src\ILTemplateWithUnmanagedHandler.cs</Link>
+      <InProject>false</InProject>
+    </EmbeddedResource>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Remove="Costura.Fody.xcf" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Content Include="Costura.Fody.props">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Costura.Fody.xcf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FodyHelpers" Version="6.3.0" />
+    <PackageReference Update="NETStandard.Library" Version="2.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- see https://docs.microsoft.com/en-us/archive/blogs/kirillosenkov/how-to-have-a-project-reference-without-referencing-the-actual-binary -->
+    <ProjectReference Include="..\Costura.Template\Costura.Template.csproj" PrivateAssets="true">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  
+  <Import Project="$(MSBuildProjectDirectory)\..\Directory.build.shared.explicit.props" Condition="Exists('$(MSBuildProjectDirectory)\..\Directory.build.shared.explicit.props')" />
+</Project>

@@ -1,0 +1,13 @@
+<Project>
+  <!-- 
+    This file applies to all projects automatically, this file contains all the project specific data
+  -->
+
+  <PropertyGroup>
+    <Authors>geertvanhorrik,simoncropp</Authors>
+    <PackageProjectUrl>https://github.com/Fody/Costura</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/Fody/Costura</RepositoryUrl>
+  </PropertyGroup>
+   
+</Project>
