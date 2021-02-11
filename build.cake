@@ -38,7 +38,7 @@ Dependencies.Add("ExeToProcessWithNativeAndEmbeddedMixed");
 Dependencies.Add("Costura.Template");
 
 Components.Add("Costura.Fody");
-Components.Add("Costura");
+Dependencies.Add("Costura");
 
 TestProjects.Add("Costura.Fody.Tests");
 
