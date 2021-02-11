@@ -546,7 +546,7 @@ private static bool ShouldBuildProject(BuildContext buildContext, string project
 
     var shouldBuild = buildContext.BuildServer.GetVariableAsBool(keyToCheck, true);
 
-    buildContext.CakeContext.Information($"Value for '{keyToCheck}': {shouldDeploy}");
+    buildContext.CakeContext.Information($"Value for '{keyToCheck}': {shouldBuild}");
 
     return shouldBuild;
 }
