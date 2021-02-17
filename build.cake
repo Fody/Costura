@@ -11,6 +11,7 @@ Parameters["StartYear"] = "2015";
 Parameters["UseVisualStudioPrerelease"] = "false";
 Parameters["DeployCostura"] = "false";
 Parameters["SkipComponentsThatAreNotDeployable"] = "false";
+Parameters["BuildCostura"] = "true";
 
 // Note: the rest of the variables should be coming from the build server,
 // see `/deployment/cake/*-variables.cake` for customization options
