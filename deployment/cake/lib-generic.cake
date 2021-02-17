@@ -540,11 +540,13 @@ private static bool ShouldProcessProject(BuildContext buildContext, string proje
 
 private static bool ShouldBuildProject(BuildContext buildContext, string projectName)
 {
-        // Allow the build server to configure this via "Build[ProjectName]"
+    // Allow the build server to configure this via "Build[ProjectName]"
     var slug = GetProjectSlug(projectName);
     var keyToCheck = string.Format("Build{0}", slug);
 
-    var shouldBuild = buildContext.BuildServer.GetVariableAsBool(keyToCheck, true);
+    // Note: we return false by default. This method is only used to explicitly
+    // force a build even when a project is not deployable
+    var shouldBuild = buildContext.BuildServer.GetVariableAsBool(keyToCheck, false);
 
     buildContext.CakeContext.Information($"Value for '{keyToCheck}': {shouldBuild}");
 
