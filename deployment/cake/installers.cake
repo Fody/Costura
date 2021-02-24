@@ -12,6 +12,96 @@ public interface IInstaller
     bool IsAvailable { get; }
 
     Task PackageAsync(string projectName, string channel);
+
+    Task<DeploymentTarget> GenerateDeploymentTargetAsync(string projectName);
+}
+
+//-------------------------------------------------------------
+
+public class DeploymentCatalog
+{
+    public DeploymentCatalog()
+    {
+        Targets = new List<DeploymentTarget>();
+    }
+
+    public List<DeploymentTarget> Targets { get; private set; }
+}
+
+//-------------------------------------------------------------
+
+public class DeploymentTarget
+{
+    public DeploymentTarget()
+    {
+        Groups = new List<DeploymentGroup>();
+    }
+
+    public string Name { get; set; }
+
+    public List<DeploymentGroup> Groups { get; private set; }
+}
+
+//-------------------------------------------------------------
+
+public class DeploymentGroup
+{
+    public DeploymentGroup()
+    {
+        Channels = new List<DeploymentChannel>();
+    }
+
+    public string Name { get; set; }
+
+    public List<DeploymentChannel> Channels { get; private set; }
+}
+
+//-------------------------------------------------------------
+
+public class DeploymentChannel
+{
+    public DeploymentChannel()
+    {
+        Releases = new List<DeploymentRelease>();
+    }
+
+    public string Name { get; set; }
+
+    public List<DeploymentRelease> Releases { get; private set; }
+}
+
+//-------------------------------------------------------------
+
+public class DeploymentRelease
+{
+    public string Name { get; set; }
+
+    public DateTime? Timestamp { get; set;}
+
+    public bool HasFull
+    {
+        get { return Full is not null; }
+    }
+
+    public DeploymentReleasePart Full { get; set; }
+
+    public bool HasDelta
+    {
+        get { return Delta is not null; }
+    }
+
+    public DeploymentReleasePart Delta { get; set; }
+}
+
+//-------------------------------------------------------------
+
+public class DeploymentReleasePart
+{
+    public string Hash { get; set; }
+
+    public string RelativeFileName { get; set; }
+
+    public ulong Size { get; set; }
 }
 
 //-------------------------------------------------------------
@@ -70,6 +160,43 @@ public class InstallerIntegration : IntegrationBase
                 stopwatch.Stop();
 
                 BuildContext.CakeContext.Information($"Installer took {stopwatch.Elapsed}");
+            }
+        }
+
+        if (BuildContext.Wpf.GenerateDeploymentCatalog)
+        {
+            BuildContext.CakeContext.LogSeparator($"Generating deployment catalog for '{projectName}'");
+
+            var catalog = new DeploymentCatalog();
+
+            foreach (var installer in _installers)
+            {
+                if (!installer.IsAvailable)
+                {
+                    continue;
+                }
+
+                BuildContext.CakeContext.LogSeparator($"Generating deployment target for catalog for installer '{installer.GetType().Name}' for '{projectName}'");
+             
+                var deploymentTarget = await installer.GenerateDeploymentTargetAsync(projectName);
+                if (deploymentTarget is not null)
+                {
+                    catalog.Targets.Add(deploymentTarget);
+                }
+            }
+
+            var localCatalogDirectory = System.IO.Path.Combine(BuildContext.General.OutputRootDirectory, "catalog", projectName);
+            BuildContext.CakeContext.CreateDirectory(localCatalogDirectory);
+
+            var localCatalogFileName = System.IO.Path.Combine(localCatalogDirectory, "catalog.json");
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(catalog);
+
+            System.IO.File.WriteAllText(localCatalogFileName, json);
+
+            if (BuildContext.Wpf.UpdateDeploymentsShare)
+            {
+                var targetFileName = System.IO.Path.Combine(BuildContext.Wpf.GetDeploymentShareForProject(projectName), "catalog.json");
+                BuildContext.CakeContext.CopyFile(localCatalogFileName, targetFileName);
             }
         }
     }
