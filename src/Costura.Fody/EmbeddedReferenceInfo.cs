@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-public class EmbeddedReferenceInfo
+﻿public class EmbeddedReferenceInfo
 {
     public string ResourceName { get; set; }
 
@@ -12,10 +8,12 @@ public class EmbeddedReferenceInfo
 
     public string RelativeFileName { get; set; }
 
-    public string Checksum { get; set; }
+    public string Sha1Checksum { get; set; }
+
+    public long Size { get; set; }
 
     public override string ToString()
     {
-        return $"{ResourceName}|{Version}|{AssemblyName}|{RelativeFileName}|{Checksum}";
+        return $"{ResourceName}|{Version}|{AssemblyName}|{RelativeFileName}|{Sha1Checksum}|{Size}";
     }
 }

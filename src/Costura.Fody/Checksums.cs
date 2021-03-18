@@ -7,27 +7,30 @@ public partial class ModuleWeaver
 {
     private readonly Dictionary<string, string> _checksums = new Dictionary<string, string>();
 
-    private static string CalculateChecksum(string filename)
+    private static string CalculateSha1Checksum(string filename)
     {
         using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
         {
-            return CalculateChecksum(fs);
+            return CalculateSha1Checksum(fs);
         }
     }
 
-    private static string CalculateChecksum(Stream stream)
+    private static string CalculateSha1Checksum(Stream stream)
     {
         using (var bs = new BufferedStream(stream))
-        using (var sha1 = new SHA1CryptoServiceProvider())
         {
-            var hash = sha1.ComputeHash(bs);
-            var formatted = new StringBuilder(2 * hash.Length);
-            foreach (var b in hash)
+            using (var sha1 = new SHA1CryptoServiceProvider())
             {
-                formatted.AppendFormat("{0:X2}", b);
-            }
+                var hash = sha1.ComputeHash(bs);
+                var formatted = new StringBuilder(2 * hash.Length);
 
-            return formatted.ToString();
+                foreach (var b in hash)
+                {
+                    formatted.AppendFormat("{0:X2}", b);
+                }
+
+                return formatted.ToString();
+            }
         }
     }
 
