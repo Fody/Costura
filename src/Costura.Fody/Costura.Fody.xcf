@@ -52,6 +52,11 @@
       <xs:documentation>Controls if runtime assemblies are also embedded.</xs:documentation>
     </xs:annotation>
   </xs:attribute>
+  <xs:attribute name="UseRuntimeReferencePaths" type="xs:boolean">
+    <xs:annotation>
+      <xs:documentation>Controls whether the runtime assemblies are embedded with their full path or only with their assembly name.</xs:documentation>
+    </xs:annotation>
+  </xs:attribute>
   <xs:attribute name="DisableCompression" type="xs:boolean">
     <xs:annotation>
       <xs:documentation>Embedded assemblies are compressed by default, and uncompressed when they are loaded. You can turn compression off with this option.</xs:documentation>

@@ -13,6 +13,7 @@ public class Configuration
         OptOutAssemblies = true;
         IncludeDebugSymbols = true;
         IncludeRuntimeReferences = true;
+        UseRuntimeReferencePaths = null;
         DisableCompression = false;
         DisableCleanup = false;
         LoadAtModuleInit = true;
@@ -45,6 +46,7 @@ public class Configuration
 
         IncludeDebugSymbols = ReadBool(config, "IncludeDebugSymbols", IncludeDebugSymbols);
         IncludeRuntimeReferences = ReadBool(config, "IncludeRuntimeReferences", IncludeRuntimeReferences);
+        UseRuntimeReferencePaths = ReadBool(config, "UseRuntimeReferencePaths");
         DisableCompression = ReadBool(config, "DisableCompression", DisableCompression);
         DisableCleanup = ReadBool(config, "DisableCleanup", DisableCleanup);
         LoadAtModuleInit = ReadBool(config, "LoadAtModuleInit", LoadAtModuleInit);
@@ -69,6 +71,7 @@ public class Configuration
     public bool OptOutRuntimeAssemblies { get; }
     public bool IncludeDebugSymbols { get; }
     public bool IncludeRuntimeReferences { get; }
+    public bool? UseRuntimeReferencePaths { get; }
     public bool DisableCompression { get; }
     public bool DisableCleanup { get; }
     public bool LoadAtModuleInit { get; }
@@ -84,6 +87,11 @@ public class Configuration
 
     public static bool ReadBool(XElement config, string nodeName, bool @default)
     {
+        return ReadBool(config, nodeName) ?? @default;
+    }
+
+    public static bool? ReadBool(XElement config, string nodeName)
+    {
         var attribute = config.Attribute(nodeName);
         if (attribute != null)
         {
@@ -97,7 +105,7 @@ public class Configuration
             }
         }
 
-        return @default;
+        return null;
     }
 
     public static List<string> ReadList(XElement config, string nodeName)
