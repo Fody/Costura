@@ -232,6 +232,15 @@ public class WpfProcessor : ProcessorBase
             
             BuildContext.CakeContext.LogSeparator($"Deploying WPF app '{wpfApp}'");
 
+            // TODO: Respect the deploy settings per category, requires changes to AzureStorageSync
+            if (!BuildContext.Wpf.DeployUpdatesToAlphaChannel ||
+                !BuildContext.Wpf.DeployUpdatesToBetaChannel ||
+                !BuildContext.Wpf.DeployUpdatesToStableChannel ||
+                !BuildContext.Wpf.DeployInstallers)
+            {
+                throw new Exception("Not deploying a specific channel is not yet supported, please implement");
+            }
+
             //%DeploymentsShare%\%ProjectName% /%ProjectName% -c %AzureDeploymentsStorageConnectionString%
             var deploymentShare = BuildContext.Wpf.GetDeploymentShareForProject(wpfApp);
             var projectSlug = GetProjectSlug(wpfApp, "-");

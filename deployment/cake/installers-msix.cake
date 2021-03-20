@@ -27,6 +27,8 @@ public class MsixInstaller : IInstaller
 
     public bool IsAvailable { get; private set; }
 
+    //-------------------------------------------------------------
+
     public async Task PackageAsync(string projectName, string channel)
     {
         if (!IsAvailable)
@@ -63,9 +65,7 @@ public class MsixInstaller : IInstaller
         BuildContext.CakeContext.LogSeparator($"Packaging app '{projectName}' using MSIX");
 
         var deploymentShare = BuildContext.Wpf.GetDeploymentShareForProject(projectName);
-
-        var installersOnDeploymentsShare = System.IO.Path.Combine(deploymentShare, channel, "msix");
-        BuildContext.CakeContext.CreateDirectory(installersOnDeploymentsShare);
+        var installersOnDeploymentsShare = GetDeploymentsShareRootDirectory(projectName, channel);
 
         var setupSuffix = BuildContext.Installer.GetDeploymentChannelSuffix();
 
@@ -186,6 +186,163 @@ public class MsixInstaller : IInstaller
         }
     }
 
+    //-------------------------------------------------------------
+
+    public async Task<DeploymentTarget> GenerateDeploymentTargetAsync(string projectName)
+    {
+        var deploymentTarget = new DeploymentTarget
+        {
+            Name = "MSIX"
+        };
+
+        var channels = new [] 
+        {
+            "alpha",
+            "beta",
+            "stable"
+        };
+
+        var deploymentGroupNames = new List<string>();
+        var projectDeploymentShare = BuildContext.Wpf.GetDeploymentShareForProject(projectName);
+
+        if (BuildContext.Wpf.GroupUpdatesByMajorVersion)
+        {
+            // Check every directory that we can parse as number
+            var directories = System.IO.Directory.GetDirectories(projectDeploymentShare);
+            
+            foreach (var directory in directories)
+            {
+                var deploymentGroupName = new System.IO.DirectoryInfo(directory).Name;
+
+                if (int.TryParse(deploymentGroupName, out _))
+                {
+                    deploymentGroupNames.Add(deploymentGroupName);
+                }
+            }
+        }
+        else
+        {
+            // Just a single group
+            deploymentGroupNames.Add("all");
+        }
+
+        foreach (var deploymentGroupName in deploymentGroupNames)
+        {
+            BuildContext.CakeContext.Information($"Searching for releases for deployment group '{deploymentGroupName}'");
+
+            var deploymentGroup = new DeploymentGroup
+            {
+                Name = deploymentGroupName
+            };
+
+            var version = deploymentGroupName;
+            if (version == "all")
+            {
+                version = string.Empty;
+            }
+
+            foreach (var channel in channels)
+            {
+                BuildContext.CakeContext.Information($"Searching for releases for deployment channel '{deploymentGroupName}/{channel}'");
+
+                var deploymentChannel = new DeploymentChannel
+                {
+                    Name = channel
+                };
+
+                var targetDirectory = GetDeploymentsShareRootDirectory(projectName, channel, version);
+
+                BuildContext.CakeContext.Information($"Searching for release files in '{targetDirectory}'");
+
+                var msixFiles = System.IO.Directory.GetFiles(targetDirectory, "*.msix");
+
+                foreach (var msixFile in msixFiles)
+                {
+                    var releaseFileInfo = new System.IO.FileInfo(msixFile);
+                    var relativeFileName = new DirectoryPath(projectDeploymentShare).GetRelativePath(new FilePath(releaseFileInfo.FullName)).FullPath.Replace("\\", "/");
+                    var releaseVersion = releaseFileInfo.Name
+                        .Replace($"{projectName}_", string.Empty)
+                        .Replace($".msix", string.Empty);
+
+                    // Either empty or matching a release channel should be ignored
+                    if (string.IsNullOrWhiteSpace(releaseVersion) ||
+                        channels.Any(x => x == releaseVersion))
+                    {
+                        BuildContext.CakeContext.Information($"Ignoring '{msixFile}'");
+                        continue;
+                    }
+
+                    // Special case for stable releases
+                    if (channel == "stable")
+                    {
+                        if (releaseVersion.Contains("-alpha") ||
+                            releaseVersion.Contains("-beta"))
+                        {
+                            BuildContext.CakeContext.Information($"Ignoring '{msixFile}'");
+                            continue;
+                        }
+                    }
+
+                    BuildContext.CakeContext.Information($"Applying release based on '{msixFile}'");
+
+                    var release = new DeploymentRelease
+                    {
+                        Name = releaseVersion,
+                        Timestamp = releaseFileInfo.CreationTimeUtc
+                    };
+
+                    // Only support full versions
+                    release.Full = new DeploymentReleasePart
+                    {
+                        RelativeFileName = relativeFileName,
+                        Size = (ulong)releaseFileInfo.Length
+                    };
+
+                    deploymentChannel.Releases.Add(release);
+                }
+
+                deploymentGroup.Channels.Add(deploymentChannel);
+            }
+
+            deploymentTarget.Groups.Add(deploymentGroup);
+        }
+
+        return deploymentTarget;
+    }
+
+    //-------------------------------------------------------------
+
+    private string GetDeploymentsShareRootDirectory(string projectName, string channel)
+    {
+        var version = string.Empty;
+
+        if (BuildContext.Wpf.GroupUpdatesByMajorVersion)
+        {
+            version = BuildContext.General.Version.Major;
+        }
+
+        return GetDeploymentsShareRootDirectory(projectName, channel, version);
+    }
+
+    //-------------------------------------------------------------
+    
+    private string GetDeploymentsShareRootDirectory(string projectName, string channel, string version)
+    {
+        var deploymentShare = BuildContext.Wpf.GetDeploymentShareForProject(projectName);
+
+        if (!string.IsNullOrWhiteSpace(version))
+        {
+            deploymentShare = System.IO.Path.Combine(deploymentShare, version);
+        }
+
+        var installersOnDeploymentsShare = System.IO.Path.Combine(deploymentShare, channel, "msix");
+        BuildContext.CakeContext.CreateDirectory(installersOnDeploymentsShare);
+
+        return installersOnDeploymentsShare;
+    }
+
+    //-------------------------------------------------------------
+
     private void ReplaceVariablesInFile(string fileName, Dictionary<string, string> variables)
     {
         var fileContents = System.IO.File.ReadAllText(fileName);
@@ -197,6 +354,8 @@ public class MsixInstaller : IInstaller
 
         System.IO.File.WriteAllText(fileName, fileContents);
     }
+
+    //-------------------------------------------------------------
 
     private string FindLatestMakeAppxFileName()
     {

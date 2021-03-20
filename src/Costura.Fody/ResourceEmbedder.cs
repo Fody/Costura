@@ -25,7 +25,9 @@ public partial class ModuleWeaver : IDisposable
         _cachePath = Path.Combine(assemblyDirectory, "Costura");
         Directory.CreateDirectory(_cachePath);
 
-        var references = GetReferences();
+        var useRuntimeReferencePaths = config.UseRuntimeReferencePaths ?? ModuleDefinition.IsUsingDotNetCore();
+
+        var references = GetReferences(useRuntimeReferencePaths);
         var embeddedReferences = new List<EmbeddedReferenceInfo>();
 
         var disableCompression = config.DisableCompression;
@@ -184,7 +186,7 @@ public partial class ModuleWeaver : IDisposable
         return matchText.Equals(assemblyName, StringComparison.OrdinalIgnoreCase);
     }
 
-    private List<Reference> GetReferences()
+    private List<Reference> GetReferences(bool useRuntimeReferencePaths)
     {
         var references = new List<Reference>();
 
@@ -196,7 +198,7 @@ public partial class ModuleWeaver : IDisposable
                 continue;
             }
 
-            var reference = new Reference(item)
+            var reference = new Reference(item, useRuntimeReferencePaths)
             {
                 IsCopyLocal = true
             };
@@ -231,7 +233,7 @@ public partial class ModuleWeaver : IDisposable
                 continue;
             }
 
-            var reference = new Reference(fileName)
+            var reference = new Reference(fileName, useRuntimeReferencePaths)
             {
                 IsCopyLocal = false
             };
@@ -445,7 +447,7 @@ disableCleanup: {disableCleanup}");
             // - if compress == false: an assembly that appeared twice in the ReferenceCopyLocalPaths, e.g. the same library from different nuget packages (https://github.com/Fody/Costura/issues/332)
             if (addChecksum && !_checksums.ContainsKey(resourceName))
             {
-                _checksums.Add(resourceName, CalculateChecksum(fullPath));
+                _checksums.Add(resourceName, CalculateSha1Checksum(fullPath));
             }
 
             WriteDebug($"\t\tSkipping '{fullPath}' because it is already embedded");
@@ -466,8 +468,8 @@ disableCleanup: {disableCleanup}");
 
         WriteInfo($"\t\tEmbedding '{fullPath}'");
 
-        var checksum = CalculateChecksum(fullPath);
-        var cacheFile = Path.Combine(_cachePath, $"{checksum}.{resourceName}");
+        var sha1Checksum = CalculateSha1Checksum(fullPath);
+        var cacheFile = Path.Combine(_cachePath, $"{sha1Checksum}.{resourceName}");
         var memoryStream = BuildMemoryStream(fullPath, compress, cacheFile);
         _streams.Add(memoryStream);
         var resource = new EmbeddedResource(resourceName, ManifestResourceAttributes.Private, memoryStream);
@@ -475,7 +477,7 @@ disableCleanup: {disableCleanup}");
 
         if (addChecksum)
         {
-            _checksums.Add(resourceName, checksum);
+            _checksums.Add(resourceName, sha1Checksum);
         }
 
         var version = string.Empty;
@@ -502,7 +504,8 @@ disableCleanup: {disableCleanup}");
             Version = assemblyName?.Version.ToString(4) ?? version,
             AssemblyName = assemblyName?.FullName ?? string.Empty,
             RelativeFileName = relativePath,
-            Checksum = checksum,
+            Sha1Checksum = sha1Checksum,
+            Size = new FileInfo(fullPath).Length
         };
     }
 
