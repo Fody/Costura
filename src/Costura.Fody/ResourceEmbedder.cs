@@ -25,7 +25,9 @@ public partial class ModuleWeaver : IDisposable
         _cachePath = Path.Combine(assemblyDirectory, "Costura");
         Directory.CreateDirectory(_cachePath);
 
-        var references = GetReferences();
+        var useRuntimeReferencePaths = config.UseRuntimeReferencePaths ?? ModuleDefinition.IsUsingDotNetCore();
+
+        var references = GetReferences(useRuntimeReferencePaths);
         var embeddedReferences = new List<EmbeddedReferenceInfo>();
 
         var disableCompression = config.DisableCompression;
@@ -184,7 +186,7 @@ public partial class ModuleWeaver : IDisposable
         return matchText.Equals(assemblyName, StringComparison.OrdinalIgnoreCase);
     }
 
-    private List<Reference> GetReferences()
+    private List<Reference> GetReferences(bool useRuntimeReferencePaths)
     {
         var references = new List<Reference>();
 
@@ -196,7 +198,7 @@ public partial class ModuleWeaver : IDisposable
                 continue;
             }
 
-            var reference = new Reference(item)
+            var reference = new Reference(item, useRuntimeReferencePaths)
             {
                 IsCopyLocal = true
             };
@@ -231,7 +233,7 @@ public partial class ModuleWeaver : IDisposable
                 continue;
             }
 
-            var reference = new Reference(fileName)
+            var reference = new Reference(fileName, useRuntimeReferencePaths)
             {
                 IsCopyLocal = false
             };

@@ -7,7 +7,7 @@ public class Reference
 {
     // Path such as "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\runtime.win-arm64.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtimes\\win-arm64\\native\\sni.dll"
 
-    public Reference(string fullPath)
+    public Reference(string fullPath, bool useRuntimeReferencePaths)
     {
         if (!Path.IsPathRooted(fullPath))
         {
@@ -21,7 +21,7 @@ public class Reference
         FileNameWithoutExtension = Path.GetFileNameWithoutExtension(fullPath);
         Directory = Path.GetDirectoryName(fullPath);
 
-        CalculateRelativeFileName();
+        CalculateRelativeFileName(useRuntimeReferencePaths);
     }
 
     public string FullPath { get; private set; }
@@ -44,7 +44,7 @@ public class Reference
 
     public string PredictedResourceName { get; private set; }
 
-    private void CalculateRelativeFileName()
+    private void CalculateRelativeFileName(bool useRuntimeReferencePaths)
     {
         const string RuntimesFolderName = "runtimes";
 
@@ -71,7 +71,7 @@ public class Reference
         }
 
         IsResourcesAssembly = relativeFileName.EndsWith("resources.dll");
-        IsRuntimeReference = directoryName.Equals(RuntimesFolderName, StringComparison.OrdinalIgnoreCase);
+        IsRuntimeReference = useRuntimeReferencePaths && directoryName.Equals(RuntimesFolderName, StringComparison.OrdinalIgnoreCase);
 
         if (IsRuntimeReference)
         {

@@ -141,6 +141,21 @@ Controls whether the `runtimes` folder, used by .NET Core, for the embedded depe
 ```
 
 
+### UseRuntimeReferencePaths
+
+Controls whether the *runtime* assemblies are embedded with their full path or only with their assembly name.
+
+For example, the reference `system.text.encoding.codepages\5.0.0\runtimes\win\lib\net461\System.Text.Encoding.CodePages.dll` will be embedded as `costura.system.text.encoding.codepages.dll.compressed` when `false`, so Costura will automatically load it.
+
+It will be embedded as `costura.runtimes.win.lib.net461.system.text.encoding.codepages.dll.compressed` when `true` (given `IncludeRuntimeReferences='true'` and `IncludeRuntimeAssemblies='System.Text.Encoding.CodePages'`), requiring custom user code to load the embedded compressed assembly.
+
+*Defaults to `false` when the weaved assembly targets .NET Framework, `true` when the weaved assembly targets .NET Core*
+
+```xml
+<Costura UseRuntimeReferencePaths='true' />
+```
+
+
 ### DisableCompression
 
 Embedded assemblies are compressed by default, and uncompressed when they are loaded. You can turn compression off with this option.
