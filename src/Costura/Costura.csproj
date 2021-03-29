@@ -66,5 +66,9 @@
     <CreateItem Include="$(MSBuildThisFileDirectory)..\$(PackageId)\$(PackageId).props" AdditionalMetadata="PackagePath=build">
       <Output TaskParameter="Include" ItemName="TfmSpecificPackageFile" />
     </CreateItem>
+    
+    <CreateItem Include="$(MSBuildThisFileDirectory)..\$(PackageId)\$(PackageId).targets" AdditionalMetadata="PackagePath=build">
+      <Output TaskParameter="Include" ItemName="TfmSpecificPackageFile" />
+    </CreateItem>
   </Target>
 </Project>
