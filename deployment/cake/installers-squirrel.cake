@@ -276,6 +276,12 @@ public class SquirrelInstaller : IInstaller
                         .Replace($"{projectName}_{channel}-", string.Empty)
                         .Replace($"-full.nupkg", string.Empty);
 
+                    // Exception for full releases, they don't contain the channel name
+                    if (channel == "stable")
+                    {
+                        releaseVersion = releaseVersion.Replace($"{projectName}-", string.Empty);
+                    }
+
                     var release = new DeploymentRelease
                     {
                         Name = releaseVersion,
