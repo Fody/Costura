@@ -67,6 +67,11 @@ private static void RestoreNuGetPackages(BuildContext buildContext, Cake.Core.IO
 
 private static void RestoreNuGetPackagesUsingNuGet(BuildContext buildContext, Cake.Core.IO.FilePath solutionOrProjectFileName, List<string> sources)
 {
+    if (!buildContext.General.NuGet.RestoreUsingNuGet)
+    {
+        return;
+    }
+
     buildContext.CakeContext.LogSeparator("Restoring packages for '{0}' using 'NuGet'", solutionOrProjectFileName);
     
     try
@@ -94,6 +99,11 @@ private static void RestoreNuGetPackagesUsingNuGet(BuildContext buildContext, Ca
 
 private static void RestoreNuGetPackagesUsingDotnetRestore(BuildContext buildContext, Cake.Core.IO.FilePath solutionOrProjectFileName, List<string> sources, List<string> runtimeIdentifiers)
 {
+    if (!buildContext.General.NuGet.RestoreUsingDotNetRestore)
+    {
+        return;
+    }
+
     buildContext.CakeContext.LogSeparator("Restoring packages for '{0}' using 'dotnet restore'", solutionOrProjectFileName);
         
     var projectFileContents = System.IO.File.ReadAllText(solutionOrProjectFileName.FullPath)?.ToLower();
@@ -133,13 +143,14 @@ private static void RestoreNuGetPackagesUsingDotnetRestore(BuildContext buildCon
                 ForceEvaluate = false,
                 IgnoreFailedSources = true,
                 NoCache = false,
-                NoDependencies = false, // use true to speed up things
+                NoDependencies = buildContext.General.NuGet.NoDependencies, // use true to speed up things
                 Verbosity = DotNetCoreVerbosity.Normal
             };
     
             if (!string.IsNullOrWhiteSpace(runtimeIdentifier))
             {
-                // This is a explicit supported runtime identifier, force re-evaluation
+                buildContext.CakeContext.Information("Project restore uses explicit runtime identifier, forcing re-evaluation");
+
                 restoreSettings.Force = true;
                 restoreSettings.ForceEvaluate = true;
                 restoreSettings.Runtime = runtimeIdentifier;
