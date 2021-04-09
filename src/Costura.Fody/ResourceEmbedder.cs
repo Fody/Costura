@@ -550,7 +550,7 @@ disableCleanup: {disableCleanup}");
 
     public void Dispose()
     {
-        if (_streams == null)
+        if (_streams is null)
         {
             return;
         }

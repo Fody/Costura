@@ -27,19 +27,19 @@ public class Configuration
         Unmanaged64Assemblies = new List<string>();
         PreloadOrder = new List<string>();
 
-        if (config == null)
+        if (config is null)
         {
             return;
         }
 
-        if (config.Attribute("IncludeAssemblies") != null ||
-            config.Element("IncludeAssemblies") != null)
+        if (config.Attribute("IncludeAssemblies") is not null ||
+            config.Element("IncludeAssemblies") is not null)
         {
             OptOutAssemblies = false;
         }
 
-        if (config.Attribute("IncludeRuntimeAssemblies") != null ||
-            config.Element("IncludeRuntimeAssemblies") != null)
+        if (config.Attribute("IncludeRuntimeAssemblies") is not null ||
+            config.Element("IncludeRuntimeAssemblies") is not null)
         {
             OptOutRuntimeAssemblies = false;
         }
@@ -93,7 +93,7 @@ public class Configuration
     public static bool? ReadBool(XElement config, string nodeName)
     {
         var attribute = config.Attribute(nodeName);
-        if (attribute != null)
+        if (attribute is not null)
         {
             try
             {
@@ -113,7 +113,7 @@ public class Configuration
         var list = new List<string>();
 
         var attribute = config.Attribute(nodeName);
-        if (attribute != null)
+        if (attribute is not null)
         {
             foreach (var item in attribute.Value.Split('|').Where(s => !string.IsNullOrWhiteSpace(s)))
             {
@@ -122,7 +122,7 @@ public class Configuration
         }
 
         var element = config.Element(nodeName);
-        if (element != null)
+        if (element is not null)
         {
             foreach (var item in element.Value
                                         .Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)

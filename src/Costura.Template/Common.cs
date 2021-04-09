@@ -88,7 +88,7 @@ internal static class Common
 
     static string CultureToString(CultureInfo culture)
     {
-        if (culture == null)
+        if (culture is null)
         {
             return "";
         }
@@ -100,7 +100,7 @@ internal static class Common
     {
         var name = requestedAssemblyName.Name.ToLowerInvariant();
 
-        if (requestedAssemblyName.CultureInfo != null && !string.IsNullOrEmpty(requestedAssemblyName.CultureInfo.Name))
+        if (requestedAssemblyName.CultureInfo is not null && !string.IsNullOrEmpty(requestedAssemblyName.CultureInfo.Name))
         {
             name = $"{requestedAssemblyName.CultureInfo.Name}.{name}";
         }
@@ -133,7 +133,7 @@ internal static class Common
     {
         var name = requestedAssemblyName.Name.ToLowerInvariant();
 
-        if (requestedAssemblyName.CultureInfo != null && !string.IsNullOrEmpty(requestedAssemblyName.CultureInfo.Name))
+        if (requestedAssemblyName.CultureInfo is not null && !string.IsNullOrEmpty(requestedAssemblyName.CultureInfo.Name))
         {
             name = $"{requestedAssemblyName.CultureInfo.Name}.{name}";
         }
@@ -141,7 +141,7 @@ internal static class Common
         byte[] assemblyData;
         using (var assemblyStream = LoadStream(assemblyNames, name))
         {
-            if (assemblyStream == null)
+            if (assemblyStream is null)
             {
                 return null;
             }
@@ -150,7 +150,7 @@ internal static class Common
 
         using (var pdbStream = LoadStream(symbolNames, name))
         {
-            if (pdbStream != null)
+            if (pdbStream is not null)
             {
                 var pdbData = ReadStream(pdbStream);
                 return Assembly.Load(assemblyData, pdbData);
