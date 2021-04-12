@@ -21,7 +21,7 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="Fody" Version="6.4.0" PrivateAssets="none" />
+    <PackageReference Include="Fody" Version="6.5.1" PrivateAssets="none" />
   </ItemGroup>
 
   <ItemGroup>
@@ -64,6 +64,10 @@
     </CreateItem>
     
     <CreateItem Include="$(MSBuildThisFileDirectory)..\$(PackageId)\$(PackageId).props" AdditionalMetadata="PackagePath=build">
+      <Output TaskParameter="Include" ItemName="TfmSpecificPackageFile" />
+    </CreateItem>
+    
+    <CreateItem Include="$(MSBuildThisFileDirectory)..\$(PackageId)\$(PackageId).targets" AdditionalMetadata="PackagePath=build">
       <Output TaskParameter="Include" ItemName="TfmSpecificPackageFile" />
     </CreateItem>
   </Target>

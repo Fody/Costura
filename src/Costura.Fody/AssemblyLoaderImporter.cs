@@ -75,7 +75,7 @@ public partial class ModuleWeaver
         }
 
         var resourceStream = GetType().Assembly.GetManifestResourceStream($"Costura.src.{file}.cs");
-        if (resourceStream != null)
+        if (resourceStream is not null)
         {
             using (resourceStream)
             using (var outStream = new FileStream(localFile, FileMode.Create))
@@ -152,7 +152,7 @@ public partial class ModuleWeaver
         if (templateMethod.IsPInvokeImpl)
         {
             var moduleRef = ModuleDefinition.ModuleReferences.FirstOrDefault(mr => mr.Name == templateMethod.PInvokeInfo.Module.Name);
-            if (moduleRef == null)
+            if (moduleRef is null)
             {
                 moduleRef = new ModuleReference(templateMethod.PInvokeInfo.Module.Name);
                 ModuleDefinition.ModuleReferences.Add(moduleRef);
@@ -160,7 +160,7 @@ public partial class ModuleWeaver
             newMethod.PInvokeInfo = new PInvokeInfo(templateMethod.PInvokeInfo.Attributes, templateMethod.PInvokeInfo.EntryPoint, moduleRef);
         }
 
-        if (templateMethod.Body != null)
+        if (templateMethod.Body is not null)
         {
             newMethod.Body.InitLocals = templateMethod.Body.InitLocals;
             foreach (var variableDefinition in templateMethod.Body.Variables)
@@ -196,27 +196,27 @@ public partial class ModuleWeaver
             var handler = new ExceptionHandler(exceptionHandler.HandlerType);
             var templateInstructions = templateMethod.Body.Instructions;
             var targetInstructions = newMethod.Body.Instructions;
-            if (exceptionHandler.TryStart != null)
+            if (exceptionHandler.TryStart is not null)
             {
                 handler.TryStart = targetInstructions[templateInstructions.IndexOf(exceptionHandler.TryStart)];
             }
-            if (exceptionHandler.TryEnd != null)
+            if (exceptionHandler.TryEnd is not null)
             {
                 handler.TryEnd = targetInstructions[templateInstructions.IndexOf(exceptionHandler.TryEnd)];
             }
-            if (exceptionHandler.HandlerStart != null)
+            if (exceptionHandler.HandlerStart is not null)
             {
                 handler.HandlerStart = targetInstructions[templateInstructions.IndexOf(exceptionHandler.HandlerStart)];
             }
-            if (exceptionHandler.HandlerEnd != null)
+            if (exceptionHandler.HandlerEnd is not null)
             {
                 handler.HandlerEnd = targetInstructions[templateInstructions.IndexOf(exceptionHandler.HandlerEnd)];
             }
-            if (exceptionHandler.FilterStart != null)
+            if (exceptionHandler.FilterStart is not null)
             {
                 handler.FilterStart = targetInstructions[templateInstructions.IndexOf(exceptionHandler.FilterStart)];
             }
-            if (exceptionHandler.CatchType != null)
+            if (exceptionHandler.CatchType is not null)
             {
                 handler.CatchType = Resolve(exceptionHandler.CatchType);
             }
@@ -231,7 +231,7 @@ public partial class ModuleWeaver
             var newInstruction = CloneInstruction(instruction);
             newMethod.Body.Instructions.Add(newInstruction);
             var sequencePoint = templateMethod.DebugInformation.GetSequencePoint(instruction);
-            if (sequencePoint != null)
+            if (sequencePoint is not null)
             {
                 newMethod.DebugInformation.SequencePoints.Add(TranslateSequencePoint(newInstruction, sequencePoint));
             }
@@ -253,7 +253,7 @@ public partial class ModuleWeaver
 
     private SequencePoint TranslateSequencePoint(Instruction instruction, SequencePoint sequencePoint)
     {
-        if (sequencePoint == null)
+        if (sequencePoint is null)
         {
             return null;
         }
@@ -282,7 +282,7 @@ public partial class ModuleWeaver
             if (methodReference.DeclaringType == _sourceType || methodReference.DeclaringType == _commonType)
             {
                 var mr = _targetType.Methods.FirstOrDefault(x => x.Name == methodReference.Name && x.Parameters.Count == methodReference.Parameters.Count);
-                if (mr == null)
+                if (mr is null)
                 {
                     //little poetic license... :). .Resolve() doesn't work with "extern" methods
                     return CopyMethod(methodReference.DeclaringType.Resolve().Methods

@@ -37,7 +37,7 @@ internal static class ILTemplate
         var requestedAssemblyName = new AssemblyName(e.Name);
 
         var assembly = Common.ReadExistingAssembly(requestedAssemblyName);
-        if (assembly != null)
+        if (assembly is not null)
         {
             return assembly;
         }
@@ -45,7 +45,7 @@ internal static class ILTemplate
         Common.Log("Loading assembly '{0}' into the AppDomain", requestedAssemblyName);
 
         assembly = Common.ReadFromEmbeddedResources(assemblyNames, symbolNames, requestedAssemblyName);
-        if (assembly == null)
+        if (assembly is null)
         {
             lock (nullCacheLock)
             {

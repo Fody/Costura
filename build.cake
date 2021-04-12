@@ -12,6 +12,7 @@ Parameters["UseVisualStudioPrerelease"] = "false";
 Parameters["SkipComponentsThatAreNotDeployable"] = "false";
 Parameters["BuildCostura"] = "true";
 Parameters["DeployCostura"] = "false";
+Parameters["NuGet_NoDependencies"] = "false";
 
 // Note: the rest of the variables should be coming from the build server,
 // see `/deployment/cake/*-variables.cake` for customization options

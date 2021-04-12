@@ -36,7 +36,7 @@ public partial class ModuleWeaver
 
     private void AddChecksumsToTemplate()
     {
-        if (_checksumsField == null)
+        if (_checksumsField is null)
         {
             return;
         }

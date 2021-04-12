@@ -149,6 +149,9 @@ private static void RunMsBuild(BuildContext buildContext, string projectName, st
     //
     // IMPORTANT NOTE --- READ  <=============================================
 
+    var totalStopwatch = Stopwatch.StartNew();
+    var buildStopwatch = Stopwatch.StartNew();
+
     // Enforce additional logging for issues
     var action = "build";
     //var logPath = System.IO.Path.Combine(buildContext.General.OutputRootDirectory, string.Format(@"MsBuild_{0}_{1}_log.binlog", projectName, action));
@@ -172,9 +175,13 @@ private static void RunMsBuild(BuildContext buildContext, string projectName, st
     }
 
     buildContext.CakeContext.Information(string.Empty);
-    buildContext.CakeContext.Information($"Done building project, investigating potential issues using '{logPath}'");
+    buildContext.CakeContext.Information($"Done building project, took '{buildStopwatch.Elapsed}'");
+    buildContext.CakeContext.Information(string.Empty);
+    buildContext.CakeContext.Information($"Investigating potential issues using '{logPath}'");
     buildContext.CakeContext.Information(string.Empty);
     
+    var investigationStopwatch = Stopwatch.StartNew();
+
     var issuesContext = buildContext.CakeContext.MsBuildIssuesFromFilePath(logPath, buildContext.CakeContext.MsBuildXmlFileLoggerFormat());
     //var issuesContext = buildContext.CakeContext.MsBuildIssuesFromFilePath(logPath, buildContext.CakeContext.MsBuildBinaryLogFileFormat());
 
@@ -215,6 +222,11 @@ private static void RunMsBuild(BuildContext buildContext, string projectName, st
             failBuild = true;
         }
     }
+
+    buildContext.CakeContext.Information(string.Empty);
+    buildContext.CakeContext.Information($"Done investigating project, took '{investigationStopwatch.Elapsed}'");
+    buildContext.CakeContext.Information($"Total msbuild (build + investigation) took '{totalStopwatch.Elapsed}'");
+    buildContext.CakeContext.Information(string.Empty);
 
     if (failBuild)
     {    

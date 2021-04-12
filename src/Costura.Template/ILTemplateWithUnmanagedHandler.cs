@@ -35,11 +35,11 @@ internal static class ILTemplateWithUnmanagedHandler
         // See https://github.com/Fody/Costura/issues/633 for full explanation
         var setupInformation = currentDomain.GetType()?.GetProperty("SetupInformation")?.GetValue(currentDomain);
         var targetFrameworkNameProperty = setupInformation?.GetType()?.GetProperty("TargetFrameworkName");
-        if (targetFrameworkNameProperty != null && targetFrameworkNameProperty.GetValue(setupInformation) == null)
+        if (targetFrameworkNameProperty is not null && targetFrameworkNameProperty.GetValue(setupInformation) is null)
         {
             var targetFrameworkAttribute = (TargetFrameworkAttribute)Assembly.GetCallingAssembly()?.GetCustomAttribute(typeof(TargetFrameworkAttribute));
             var targetFrameworkName = targetFrameworkAttribute?.FrameworkName;
-            if (targetFrameworkName != null)
+            if (targetFrameworkName is not null)
             {
                 currentDomain.SetData("TargetFrameworkName", targetFrameworkName);
             }
@@ -70,7 +70,7 @@ internal static class ILTemplateWithUnmanagedHandler
         var requestedAssemblyName = new AssemblyName(e.Name);
 
         var assembly = Common.ReadExistingAssembly(requestedAssemblyName);
-        if (assembly != null)
+        if (assembly is not null)
         {
             return assembly;
         }
@@ -78,13 +78,13 @@ internal static class ILTemplateWithUnmanagedHandler
         Common.Log("Loading assembly '{0}' into the AppDomain", requestedAssemblyName);
 
         assembly = Common.ReadFromDiskCache(tempBasePath, requestedAssemblyName);
-        if (assembly != null)
+        if (assembly is not null)
         {
             return assembly;
         }
 
         assembly = Common.ReadFromEmbeddedResources(assemblyNames, symbolNames, requestedAssemblyName);
-        if (assembly == null)
+        if (assembly is null)
         {
             lock (nullCacheLock)
             {
