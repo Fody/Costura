@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using Costura.Fody.Tests;
@@ -16,7 +15,6 @@ public static class WeavingHelper
             Config = XElement.Parse(config),
             References = string.Join(";", references.Select(r => Path.Combine(currentDirectory, r))),
             ReferenceCopyLocalPaths = references.Select(r => Path.Combine(currentDirectory, r)).ToList(),
-            AssemblyResolver = new TestAssemblyResolver()
         };
 
         if (!Path.IsPathRooted(assemblyPath))
