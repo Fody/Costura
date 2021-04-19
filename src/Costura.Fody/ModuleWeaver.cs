@@ -1,12 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using Fody;
-using Mono.Cecil;
 
 public partial class ModuleWeaver: BaseModuleWeaver
 {
-    public IAssemblyResolver AssemblyResolver { get; set; }
-
     public override void Execute()
     {
 //#if DEBUG
