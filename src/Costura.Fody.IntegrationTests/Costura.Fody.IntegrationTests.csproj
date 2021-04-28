@@ -12,7 +12,7 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="Catel.Core" Version="5.12.11" PrivateAssets="All" />
+    <PackageReference Include="Catel.Core" Version="5.12.13" PrivateAssets="All" />
     <PackageReference Include="Fody" Version="6.5.1" PrivateAssets="All" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" PrivateAssets="All" />
