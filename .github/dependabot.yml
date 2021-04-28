@@ -1,0 +1,14 @@
+version: 2
+updates:
+- package-ecosystem: nuget
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: "*Analyzers"
+    versions:
+    - ">= 0"
+  - dependency-name: Catel.Core
+    versions:
+    - 5.12.12
