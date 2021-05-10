@@ -30,6 +30,12 @@
       <LogicalName>Costura.Template.pdb</LogicalName>
     </EmbeddedResource>
 
+    <EmbeddedResource Include="$(PkgMicrosoft_NETFramework_ReferenceAssemblies_net48)\build\.NETFramework\v4.8\Facades\netstandard.dll">
+      <Link>bin\netstandard.dll</Link>
+      <InProject>false</InProject>
+      <LogicalName>Costura.NETFramework.netstandard.dll</LogicalName>
+    </EmbeddedResource>
+
     <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\Costura.Template\Common.cs">
       <Link>src\Common.cs</Link>
       <InProject>false</InProject>
@@ -66,6 +72,7 @@
 
   <ItemGroup>
     <PackageReference Include="FodyHelpers" Version="6.5.1" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net48" Version="1.0.0" PrivateAssets="all" GeneratePathProperty="true" />
     <PackageReference Update="NETStandard.Library" Version="2.0.3" />
   </ItemGroup>
 
