@@ -311,7 +311,7 @@
   
   <!-- WIX toolset fix, see https://github.com/wixtoolset/issues/issues/5705 -->
   <PropertyGroup Condition=" '$(_InstallerTargetFramework)' == '' ">
-    <_InstallerTargetFramework>net451</_InstallerTargetFramework>
+    <_InstallerTargetFramework>net48</_InstallerTargetFramework>
   </PropertyGroup>
   
   <Target Name="GetTargetPath" Returns="@(_FakeOutputPath)">

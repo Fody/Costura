@@ -89,25 +89,27 @@ Task("UpdateNuGet")
     .ContinueOnError()
     .Does<BuildContext>(buildContext => 
 {
-    Information("Making sure NuGet is using the latest version");
+    // DISABLED UNTIL NUGET GETS FIXED: https://github.com/NuGet/Home/issues/10853
 
-    if (buildContext.General.IsLocalBuild && buildContext.General.MaximizePerformance)
-    {
-        Information("Local build with maximized performance detected, skipping NuGet update check");
-        return;
-    }
+    // Information("Making sure NuGet is using the latest version");
 
-    var nuGetExecutable = buildContext.General.NuGet.Executable;
+    // if (buildContext.General.IsLocalBuild && buildContext.General.MaximizePerformance)
+    // {
+    //     Information("Local build with maximized performance detected, skipping NuGet update check");
+    //     return;
+    // }
 
-    var exitCode = StartProcess(nuGetExecutable, new ProcessSettings
-    {
-        Arguments = "update -self"
-    });
+    // var nuGetExecutable = buildContext.General.NuGet.Executable;
 
-    var newNuGetVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(nuGetExecutable);
-    var newNuGetVersion = newNuGetVersionInfo.FileVersion;
+    // var exitCode = StartProcess(nuGetExecutable, new ProcessSettings
+    // {
+    //     Arguments = "update -self"
+    // });
 
-    Information("Updating NuGet.exe exited with '{0}', version is '{1}'", exitCode, newNuGetVersion);
+    // var newNuGetVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(nuGetExecutable);
+    // var newNuGetVersion = newNuGetVersionInfo.FileVersion;
+
+    // Information("Updating NuGet.exe exited with '{0}', version is '{1}'", exitCode, newNuGetVersion);
 });
 
 //-------------------------------------------------------------
