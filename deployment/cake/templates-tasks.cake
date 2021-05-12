@@ -1,7 +1,5 @@
 #l "templates-variables.cake"
 
-#addin "nuget:?package=Cake.FileHelpers&version=3.0.0"
-
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
