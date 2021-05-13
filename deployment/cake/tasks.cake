@@ -148,18 +148,6 @@ Setup<BuildContext>(setupContext =>
     buildContext.Web = InitializeWebContext(buildContext, buildContext);
     buildContext.Wpf = InitializeWpfContext(buildContext, buildContext);
 
-    // All projects, but dependencies first & tests last
-    buildContext.AllProjects.AddRange(buildContext.Dependencies.Items);
-    buildContext.AllProjects.AddRange(buildContext.Components.Items);
-    buildContext.AllProjects.AddRange(buildContext.DockerImages.Items);
-    buildContext.AllProjects.AddRange(buildContext.GitHubPages.Items);
-    buildContext.AllProjects.AddRange(buildContext.Tools.Items);
-    buildContext.AllProjects.AddRange(buildContext.Uwp.Items);
-    buildContext.AllProjects.AddRange(buildContext.VsExtensions.Items);
-    buildContext.AllProjects.AddRange(buildContext.Web.Items);
-    buildContext.AllProjects.AddRange(buildContext.Wpf.Items);
-    buildContext.AllProjects.AddRange(buildContext.Tests.Items);
-
     // Other integrations last
     buildContext.IssueTracker = new IssueTrackerIntegration(buildContext);
     buildContext.Installer = new InstallerIntegration(buildContext);
@@ -184,6 +172,7 @@ Setup<BuildContext>(setupContext =>
     buildContext.Processors.Add(new VsExtensionsProcessor(buildContext));
     buildContext.Processors.Add(new WebProcessor(buildContext));
     buildContext.Processors.Add(new WpfProcessor(buildContext));
+    // !!! Note: we add test projects *after* preparing all the other processors, see Prepare task !!!
 
     setupContext.LogSeparator("Registering variables for templates");
 
@@ -241,6 +230,35 @@ Task("Prepare")
     foreach (var processor in buildContext.Processors)
     {
         await processor.PrepareAsync();
+    }
+
+    // Now add all projects, but dependencies first & tests last
+    buildContext.AllProjects.AddRange(buildContext.Dependencies.Items);
+    buildContext.AllProjects.AddRange(buildContext.Components.Items);
+    buildContext.AllProjects.AddRange(buildContext.DockerImages.Items);
+    buildContext.AllProjects.AddRange(buildContext.GitHubPages.Items);
+    buildContext.AllProjects.AddRange(buildContext.Tools.Items);
+    buildContext.AllProjects.AddRange(buildContext.Uwp.Items);
+    buildContext.AllProjects.AddRange(buildContext.VsExtensions.Items);
+    buildContext.AllProjects.AddRange(buildContext.Web.Items);
+    buildContext.AllProjects.AddRange(buildContext.Wpf.Items);
+
+    // Once we know all the projects that will be built, we calculate which
+    // test projects need to be built as well
+
+    var testProcessor = new TestProcessor(buildContext);
+
+    await testProcessor.PrepareAsync();
+
+    buildContext.Processors.Add(testProcessor);
+
+    buildContext.AllProjects.AddRange(buildContext.Tests.Items);
+
+    buildContext.CakeContext.LogSeparator("Final projects to process");
+
+    foreach (var item in buildContext.AllProjects.ToList())
+    {
+        buildContext.CakeContext.Information($"- {item}");
     }
 });
 
@@ -343,6 +361,12 @@ Task("Build")
 
         foreach (var processor in buildContext.Processors)
         {
+            if (processor is TestProcessor)
+            {
+                // Build test projects *after* SonarQube (not part of SQ analysis)
+                continue;
+            }
+
             await processor.BuildAsync();
         }
     }
@@ -393,21 +417,13 @@ Task("Build")
         }
     }
 
-    var buildTestProjects = true;
-
-    if (buildContext.General.IsLocalBuild && buildContext.General.MaximizePerformance)
+    var testProcessor = buildContext.Processors.FirstOrDefault(x => x is TestProcessor) as TestProcessor;
+    if (testProcessor is not null)
     {
-        Information("Local build with maximized performance detected, skipping test project(s) build");
-
-        buildTestProjects = false;
-    }
-
-    // Build test projects *after* SonarQube (not part of SQ analysis). Unfortunately, because of this, we cannot yet mark
-    // the build as succeeded once we end the SQ session. Therefore, if SQ fails, both the SQ *and* build checks
-    // will be marked as failed if SQ fails.
-    if (buildTestProjects)
-    {
-        BuildTestProjects(buildContext);
+        // Build test projects *after* SonarQube (not part of SQ analysis). Unfortunately, because of this, we cannot yet mark
+        // the build as succeeded once we end the SQ session. Therefore, if SQ fails, both the SQ *and* build checks
+        // will be marked as failed if SQ fails.
+        await testProcessor.BuildAsync();
     }
 
     await buildContext.SourceControl.MarkBuildAsSucceededAsync("Build");
@@ -424,6 +440,7 @@ Task("Build")
 //-------------------------------------------------------------
 
 Task("Test")
+    .IsDependentOn("Prepare")
     // Note: no dependency on 'build' since we might have already built the solution
     .Does<BuildContext>(async buildContext =>
 {    

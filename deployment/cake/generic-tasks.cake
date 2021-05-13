@@ -115,6 +115,7 @@ Task("UpdateNuGet")
 //-------------------------------------------------------------
 
 Task("RestorePackages")
+    .IsDependentOn("Prepare")
     .IsDependentOn("UpdateNuGet")
     .ContinueOnError()
     .Does<BuildContext>(buildContext =>
@@ -132,8 +133,8 @@ Task("RestorePackages")
 
     foreach (var project in buildContext.AllProjects)
     {
-        if (ShouldProcessProject(buildContext, project))
-        {
+        // if (ShouldProcessProject(buildContext, project))
+        // {
             var projectFileName = GetProjectFileName(buildContext, project);
             if (projectFileName.EndsWith(".csproj"))
             {
@@ -144,7 +145,7 @@ Task("RestorePackages")
                 // Inject source link *before* package restore
                 InjectSourceLinkInProjectFile(buildContext, projectFileName);
             }
-        }
+        //}
     }
 
     var allFiles = new List<FilePath>();
@@ -181,6 +182,7 @@ Task("RestorePackages")
 
 Task("Clean")
     //.IsDependentOn("RestorePackages")
+    .IsDependentOn("Prepare")
     .ContinueOnError()
     .Does<BuildContext>(buildContext => 
 {
