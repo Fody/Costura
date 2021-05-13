@@ -538,6 +538,39 @@ private static bool ShouldProcessProject(BuildContext buildContext, string proje
 
 //-------------------------------------------------------------
 
+private static List<string> GetProjectRuntimesIdentifiers(BuildContext buildContext, Cake.Core.IO.FilePath solutionOrProjectFileName, List<string> runtimeIdentifiersToInvestigate)
+{
+    var projectFileContents = System.IO.File.ReadAllText(solutionOrProjectFileName.FullPath)?.ToLower();
+
+    var supportedRuntimeIdentifiers = new List<string>();
+
+    foreach (var runtimeIdentifier in runtimeIdentifiersToInvestigate)
+    {
+        if (!string.IsNullOrWhiteSpace(runtimeIdentifier))
+        {
+            if (!projectFileContents.Contains(runtimeIdentifier.ToLower()))
+            {
+                buildContext.CakeContext.Information("Project '{0}' does not support runtime identifier '{1}', removing from supported runtime identifiers list", solutionOrProjectFileName, runtimeIdentifier);
+                continue;
+            }
+        }
+
+        supportedRuntimeIdentifiers.Add(runtimeIdentifier);
+    }
+
+    if (supportedRuntimeIdentifiers.Count == 0)
+    {
+        buildContext.CakeContext.Information("Project '{0}' does not have any explicit runtime identifiers left, adding empty one as default", solutionOrProjectFileName);
+
+        // Default
+        supportedRuntimeIdentifiers.Add(string.Empty);
+    }
+
+    return supportedRuntimeIdentifiers;
+}
+
+//-------------------------------------------------------------
+
 private static bool ShouldBuildProject(BuildContext buildContext, string projectName)
 {
     // Allow the build server to configure this via "Build[ProjectName]"
