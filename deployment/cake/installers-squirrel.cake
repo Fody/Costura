@@ -1,4 +1,4 @@
-#addin "nuget:?package=Cake.Squirrel&version=0.15.1"
+#addin "nuget:?package=Cake.Squirrel&version=0.15.2"
 
 #tool "nuget:?package=Squirrel.Windows&version=2.0.1"
 
