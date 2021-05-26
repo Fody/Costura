@@ -6,31 +6,35 @@
   -->
 
   <PropertyGroup>
-    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);GetToolsPackageFiles</TargetsForTfmSpecificBuildOutput>
     <PackageSummary>$(Description)</PackageSummary>
     <ProjectSourceUrl>$(PackageProjectUrl)</ProjectSourceUrl>
+    <ExtrasIncludeDefaultProjectBuildOutputInPackTarget>IncludeDefaultProjectBuildOutputInPack</ExtrasIncludeDefaultProjectBuildOutputInPackTarget>
   </PropertyGroup>
 
   <ItemGroup>
     <ToolLegalFiles Include="$(OutputPath)\**\legal\*.txt" />
-    <ToolDllFiles Include="$(OutputPath)\**\*.dll" />
-    <ToolExeFiles Include="$(OutputPath)\**\*.exe" />
+    <ToolDllFiles Include="$(OutputPath)\$(TargetFrameworks)\**\*.dll" />
+    <ToolExeFiles Include="$(OutputPath)\$(TargetFrameworks)\**\*.exe" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="@(ToolLegalFiles)" Pack="true" PackagePath="\" />
-  </ItemGroup>
-
-  <Target Name="GetToolsPackageFiles">
+  <Target Name="IncludeDefaultProjectBuildOutputInPack"
+          DependsOnTargets="_GetTargetFrameworksOutput">
+    <Message Text="$(TargetFrameworks)" Importance="high"/>
+    
     <ItemGroup>
-      <BuildOutputInPackage Include="@(ToolDllFiles)">
-          <TargetPath>$([MSBuild]::MakeRelative('$(OutputPath)', %(ToolDllFiles.FullPath)))</TargetPath>
-      </BuildOutputInPackage>
+      <None Include="@(ToolLegalFiles)" Pack="true" PackagePath="\" />
       
-      <BuildOutputInPackage Include="@(ToolExeFiles)">
-          <TargetPath>$([MSBuild]::MakeRelative('$(OutputPath)', %(ToolExeFiles.FullPath)))</TargetPath>
-      </BuildOutputInPackage>
+      <!-- Big assumption that tools only have a single target framework -->
+      
+      <None Include="@(ToolDllFiles)" Pack="true">
+          <TargetPath>$([MSBuild]::MakeRelative('$(OutputPath)\$(TargetFrameworks)\', %(ToolDllFiles.FullPath)))</TargetPath>
+          <PackagePath>tools</PackagePath>
+      </None>
+      
+      <None Include="@(ToolExeFiles)" Pack="true">
+          <TargetPath>$([MSBuild]::MakeRelative('$(OutputPath)\$(TargetFrameworks)\', %(ToolExeFiles.FullPath)))</TargetPath>
+          <PackagePath>tools</PackagePath>
+      </None>
     </ItemGroup>
   </Target>
-
 </Project>
