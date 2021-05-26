@@ -152,11 +152,11 @@
   </ItemGroup>
   
   <!-- .NET 5.0 -->
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net5.0' OR '$(TargetFramework)' == 'net5.0-windows'">
+  <PropertyGroup Condition=" $(TargetFramework.StartsWith('net5.0')) ">
     <DefineConstants>$(DefineConstants);NETCORE;NETCORE5;NETCORE5_0;NET5;NET5_0</DefineConstants>
   </PropertyGroup>
   
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' OR '$(TargetFramework)' == 'net5.0-windows' ">
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('net5.0')) ">
     <None Remove="Platforms\net\**\*.cs;Platforms\net\**\*.xaml;Platforms\net\**\*.xaml.cs" />
     <Compile Include="Platforms\net\**\*.cs" DependentUpon="%(Filename)" />
     <Page Include="Platforms\net\**\*.xaml" SubType="Designer" Generator="MSBuild:Compile" />
