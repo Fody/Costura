@@ -95,13 +95,16 @@
     <!-- This is here so that the conditionally included files below are all visible in VS -->
     <None Include="Platforms\**\*.*" />
     <None Include="Resources\**\*.*" Exclude="Resources\**\*.xaml" />
-    <EmbeddedResource Include="Resources\Files\**\*.*" />
+    <EmbeddedResource Include="Resources\Files\**\*.*">
+        <WithCulture>false</WithCulture>
+    </EmbeddedResource>
     <Resource Include="Resources\Fonts\**\*.ttf" />
     <Resource Include="Resources\Images\**\*.png" />
     <Resource Include="Resources\Images\**\*.gif" />
     <Resource Include="Resources\Images\**\*.jpg" />
     <Resource Include="Resources\Images\**\*.jpeg" />
     <Resource Include="Resources\Videos\**\*.mp4" />
+    <Resource Include="Resources\Videos\**\*.wav" />
     <EmbeddedResource Include="Resources\ThirdPartyNotices\**\*" />
   </ItemGroup>
 
