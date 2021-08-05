@@ -9,6 +9,3 @@ updates:
   - dependency-name: "*Analyzers"
     versions:
     - ">= 0"
-  - dependency-name: Catel.Core
-    versions:
-    - 5.12.12
