@@ -1,0 +1,38 @@
+name: Dependabot auto-merge
+on: pull_request_target
+permissions:
+  pull-requests: write
+  contents: write
+jobs:
+  dependabot:
+    runs-on: ubuntu-latest
+    # Checking the actor will prevent your Action run failing on non-Dependabot PRs
+    if: ${{ github.actor == 'dependabot[bot]' }}
+    steps:
+      - name: Dependabot metadata
+        id: dependabot-metadata
+        uses: dependabot/fetch-metadata@v1.1.1
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Approve Dependabot PR
+        run: gh pr review --approve "$PR_URL"
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Enable auto-merge for Dependabot PRs
+        if: |
+            (startsWith(steps.dependabot-metadata.outputs.dependency-names, 'catel.') ||
+             startsWith(steps.dependabot-metadata.outputs.dependency-names, 'fody') ||
+             endsWith(steps.dependabot-metadata.outputs.dependency-names,   '.fody') ||
+             startsWith(steps.dependabot-metadata.outputs.dependency-names, 'microsoft.') ||
+             startsWith(steps.dependabot-metadata.outputs.dependency-names, 'nunit') ||
+             startsWith(steps.dependabot-metadata.outputs.dependency-names, 'nunit3testadapter') ||
+             startsWith(steps.dependabot-metadata.outputs.dependency-names, 'orc.') || 
+             startsWith(steps.dependabot-metadata.outputs.dependency-names, 'orchestra.')) &&
+            (steps.dependabot-metadata.outputs.update-type == 'version-update:semver-minor' ||
+             steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch')
+        run: gh pr merge --auto --merge "$PR_URL"
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          PR_NUMBER: ${{github.event.pull_request.number}}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

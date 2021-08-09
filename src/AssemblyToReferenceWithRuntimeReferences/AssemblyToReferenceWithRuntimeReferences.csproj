@@ -9,6 +9,6 @@
   <Import Project="$(MSBuildProjectDirectory)\..\Directory.build.shared.explicit.props" Condition="Exists('$(MSBuildProjectDirectory)\..\Directory.build.shared.explicit.props')" />
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="2.1.2" PrivateAssets="true" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="3.0.0" PrivateAssets="true" />
   </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-#addin "nuget:?package=Cake.Squirrel&version=0.15.1"
+#addin "nuget:?package=Cake.Squirrel&version=0.15.2"
 
 #tool "nuget:?package=Squirrel.Windows&version=2.0.1"
 
@@ -124,11 +124,18 @@ public class SquirrelInstaller : IInstaller
                 BuildContext.General.CodeSign.CertificateSubjectName);
         }
 
-        // Create NuGet package
-        BuildContext.CakeContext.NuGetPack(nuSpecFileName, new NuGetPackSettings
+        var nuGetSettings  = new NuGetPackSettings
         {
+            NoPackageAnalysis = true,
             OutputDirectory = squirrelOutputIntermediate,
-        });
+            Verbosity = NuGetVerbosity.Detailed,
+        };
+
+        // Fix for target framework issues
+        nuGetSettings.Properties.Add("TargetPlatformVersion", "7.0");
+
+        // Create NuGet package
+        BuildContext.CakeContext.NuGetPack(nuSpecFileName, nuGetSettings);
 
         // Rename so we have the right nuget package file names (without the channel)
         if (!string.IsNullOrWhiteSpace(setupSuffix))
