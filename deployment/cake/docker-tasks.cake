@@ -47,7 +47,7 @@ public class DockerImagesProcessor : ProcessorBase
         var dockerRegistryUrl = GetDockerRegistryUrl(projectName);
 
         var tag = string.Format("{0}/{1}:{2}", dockerRegistryUrl, GetDockerImageName(projectName), version);
-        return tag.ToLower();
+        return tag.TrimStart(' ', '/').ToLower();
     }
 
     private void ConfigureDockerSettings(AutoToolSettings dockerSettings)
