@@ -212,7 +212,7 @@ public partial class ModuleWeaver : IDisposable
         }
 
         // Add all references, but mark them as special
-        var splittedReferences = References.Split(';');
+        var splittedReferences = References.Split(';').Where(item => !string.IsNullOrEmpty(item));
 
         foreach (var splittedReference in splittedReferences)
         {
