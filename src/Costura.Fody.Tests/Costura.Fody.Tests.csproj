@@ -40,6 +40,7 @@
     <ProjectReference Include="..\AssemblyToReference\AssemblyToReference.csproj" />
     <ProjectReference Include="..\AssemblyWithoutInitialize\AssemblyWithoutInitialize.csproj" />
     <ProjectReference Include="..\Costura.Fody\Costura.Fody.csproj" />
+    <ProjectReference Include="..\ExeToProcessWithMultipleNative\ExeToProcessWithMultipleNative.csproj" />
     <ProjectReference Include="..\ExeToProcessWithNativeAndEmbeddedMixed\ExeToProcessWithNativeAndEmbeddedMixed.csproj" />
     <ProjectReference Include="..\ExeToProcessWithNative\ExeToProcessWithNative.csproj" />
     <ProjectReference Include="..\ExeToProcess\ExeToProcess.csproj" />

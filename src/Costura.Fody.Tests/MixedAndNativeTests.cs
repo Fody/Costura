@@ -9,7 +9,7 @@ public class MixedAndNativeTests : BaseCosturaTest
 
     private static readonly TestResult testResult = WeavingHelper.CreateIsolatedAssemblyCopy("ExeToProcessWithNative.exe",
         "<Costura Unmanaged32Assemblies='AssemblyToReferenceMixed' />",
-        new[] {"AssemblyToReferenceMixed.dll"}, "MixedAndNative");
+        new[] { "AssemblyToReferenceMixed.dll" }, "MixedAndNative");
 
     [Test]
     public void Native()

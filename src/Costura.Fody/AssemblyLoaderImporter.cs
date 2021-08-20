@@ -306,7 +306,8 @@ public partial class ModuleWeaver
 
         if (operand is FieldReference fieldReference)
         {
-            return _targetType.Fields.FirstOrDefault(f => f.Name == fieldReference.Name);
+            return _targetType.Fields.FirstOrDefault(f => f.Name == fieldReference.Name) 
+                   ?? new FieldReference(fieldReference.Name, ModuleDefinition.ImportReference(fieldReference.FieldType.Resolve()), ModuleDefinition.ImportReference(fieldReference.DeclaringType.Resolve()));
         }
         return operand;
     }
