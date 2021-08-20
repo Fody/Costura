@@ -166,7 +166,6 @@ public partial class ModuleWeaver
             foreach (var variableDefinition in templateMethod.Body.Variables)
             {
                 var newVariableDefinition = new VariableDefinition(Resolve(variableDefinition.VariableType));
-                //newVariableDefinition.Name = variableDefinition.Name;
                 newMethod.Body.Variables.Add(newVariableDefinition);
             }
             CopyInstructions(templateMethod, newMethod);
@@ -226,21 +225,32 @@ public partial class ModuleWeaver
 
     private void CopyInstructions(MethodDefinition templateMethod, MethodDefinition newMethod)
     {
-        var newInstructions = newMethod.Body.Instructions;
+        var newBody = newMethod.Body;
+        var newInstructions = newBody.Instructions;
         var newDebugInformation = newMethod.DebugInformation;
+
+        var templateDebugInformation = templateMethod.DebugInformation;
 
         foreach (var instruction in templateMethod.Body.Instructions)
         {
             var newInstruction = CloneInstruction(instruction);
             newInstructions.Add(newInstruction);
-            var sequencePoint = templateMethod.DebugInformation.GetSequencePoint(instruction);
+            var sequencePoint = templateDebugInformation.GetSequencePoint(instruction);
             if (sequencePoint is not null)
             {
                 newDebugInformation.SequencePoints.Add(TranslateSequencePoint(newInstruction, sequencePoint));
             }
         }
 
-        newDebugInformation.Scope = new ScopeDebugInformation(newInstructions.First(), newInstructions.Last());
+        var scope = newDebugInformation.Scope = new ScopeDebugInformation(newInstructions.First(), newInstructions.Last());
+
+        foreach (var variable in templateDebugInformation.Scope.Variables)
+        {
+            var targetVariable = newBody.Variables[variable.Index];
+
+            scope.Variables.Add(new VariableDebugInformation(targetVariable, variable.Name));
+        }
+
     }
 
     private Instruction CloneInstruction(Instruction instruction)
