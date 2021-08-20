@@ -4,7 +4,9 @@ using NUnit.Framework;
 
 public class MultipleNativeTests : BaseCosturaTest
 {
+#pragma warning disable IDE1006 // Naming Styles
     private static readonly TestResult testResult = WeavingHelper.CreateIsolatedAssemblyCopy(
+#pragma warning restore IDE1006 // Naming Styles
         "ExeToProcessWithMultipleNative.exe",
         "<Costura />", 
         Array.Empty<string>(), 

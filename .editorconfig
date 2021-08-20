@@ -327,9 +327,6 @@ xmldoc_indent_size = 2
 # Test projects
 #=======================================================================================
 
-# IDE1006: Naming Styles
-dotnet_diagnostic.IDE1006.severity = none
-
 [src/*Tests/**/*.cs]
 # We allow usage of "var" inside tests as it reduces churn as we remove/rename types
 csharp_style_var_for_built_in_types = true:none
