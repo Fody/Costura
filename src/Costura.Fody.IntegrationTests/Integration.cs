@@ -6,6 +6,11 @@ using NUnit.Framework;
 [TestFixture]
 public class Integration
 {
+    static Integration()
+    {
+        CosturaUtility.Initialize();
+    }
+
     [Test, Explicit]
     public void Test()
     {

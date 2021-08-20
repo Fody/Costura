@@ -226,16 +226,21 @@ public partial class ModuleWeaver
 
     private void CopyInstructions(MethodDefinition templateMethod, MethodDefinition newMethod)
     {
+        var newInstructions = newMethod.Body.Instructions;
+        var newDebugInformation = newMethod.DebugInformation;
+
         foreach (var instruction in templateMethod.Body.Instructions)
         {
             var newInstruction = CloneInstruction(instruction);
-            newMethod.Body.Instructions.Add(newInstruction);
+            newInstructions.Add(newInstruction);
             var sequencePoint = templateMethod.DebugInformation.GetSequencePoint(instruction);
             if (sequencePoint is not null)
             {
-                newMethod.DebugInformation.SequencePoints.Add(TranslateSequencePoint(newInstruction, sequencePoint));
+                newDebugInformation.SequencePoints.Add(TranslateSequencePoint(newInstruction, sequencePoint));
             }
         }
+
+        newDebugInformation.Scope = new ScopeDebugInformation(newInstructions.First(), newInstructions.Last());
     }
 
     private Instruction CloneInstruction(Instruction instruction)
@@ -247,7 +252,6 @@ public partial class ModuleWeaver
 
         var newInstruction = (Instruction)_instructionConstructorInfo.Invoke(new[] { instruction.OpCode, instruction.Operand });
         newInstruction.Operand = Import(instruction.Operand);
-        //newInstruction.SequencePoint = TranslateSequencePoint(instruction.SequencePoint);
         return newInstruction;
     }
 
@@ -258,14 +262,7 @@ public partial class ModuleWeaver
             return null;
         }
 
-        var document = new Document(Path.Combine(Path.GetDirectoryName(AssemblyFilePath), Path.GetFileName(sequencePoint.Document.Url)))
-        {
-            Language = sequencePoint.Document.Language,
-            LanguageVendor = sequencePoint.Document.LanguageVendor,
-            Type = sequencePoint.Document.Type,
-        };
-
-        return new SequencePoint(instruction, document)
+        return new SequencePoint(instruction, sequencePoint.Document)
         {
             StartLine = sequencePoint.StartLine,
             StartColumn = sequencePoint.StartColumn,
