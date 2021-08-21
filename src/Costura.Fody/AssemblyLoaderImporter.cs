@@ -28,8 +28,7 @@ public partial class ModuleWeaver
         {
             AssemblyResolver = new NetStandardAssemblyResolver(this),
             ReadSymbols = true,
-            SymbolReaderProvider = new PdbReaderProvider(),
-            SymbolStream = GetType().Assembly.GetManifestResourceStream("Costura.Template.pdb"),
+            SymbolReaderProvider = new PdbReaderProvider()
         };
 
         using (var resourceStream = GetType().Assembly.GetManifestResourceStream("Costura.Template.dll"))
