@@ -24,12 +24,6 @@
       <LogicalName>Costura.Template.dll</LogicalName>
     </EmbeddedResource>
 
-    <EmbeddedResource Include="$(OverridableOutputRootPath)\Costura.Template\netstandard2.0\Costura.Template.pdb">
-      <Link>bin\Template.pdb</Link>
-      <InProject>false</InProject>
-      <LogicalName>Costura.Template.pdb</LogicalName>
-    </EmbeddedResource>
-
     <EmbeddedResource Include="$(PkgMicrosoft_NETFramework_ReferenceAssemblies_net48)\build\.NETFramework\v4.8\Facades\netstandard.dll">
       <Link>bin\netstandard.dll</Link>
       <InProject>false</InProject>

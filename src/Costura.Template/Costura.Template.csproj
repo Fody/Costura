@@ -8,13 +8,15 @@
     <Description></Description>
     <PackageTags></PackageTags>
     <DisableFody>true</DisableFody>
+    <DebugType>embedded</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
   <PropertyGroup>
     <!-- SonarQube requires a project guid -->
     <ProjectGuid>{CD9AEBAA-78F4-4A78-BF06-0CB7D84D83E8}</ProjectGuid>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <PackageReference Include="Fody" Version="6.5.2" PrivateAssets="none" />
   </ItemGroup>
