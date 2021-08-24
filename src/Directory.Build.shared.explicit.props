@@ -43,7 +43,7 @@
         <Message Importance="High" Text="Target platform identifier is '$(TargetPlatformIdentifier)', applying pdb fix" />
       </Target>-->
       <ItemGroup>
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+        <PackageReference Include="SourceLink.Copy.PdbFiles" Version="2.8.3" PrivateAssets="All" />
       </ItemGroup>
     </When>
     <Otherwise>
