@@ -1,0 +1,31 @@
+<Project Sdk="MSBuild.Sdk.Extras">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net472</TargetFramework>
+    <DebugType>embedded</DebugType>
+    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+    <GenerateSupportedRuntime>false</GenerateSupportedRuntime>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DisableFody>true</DisableFody>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Confluent.Kafka" Version="1.7.0" />
+  </ItemGroup>
+
+  <Target Name="EmbedLibrdkafkaRedistNativeLibraries" BeforeTargets="ResolvePackageAssets">
+    <ItemGroup>
+      <LibrdkafkaNativeLibraries Include="@(Content)" Condition="$([MSBuild]::ValueOrDefault('%(Link)', '').StartsWith('librdkafka'))" />
+      <LibrdkafkaNativeLibraries Update="@(LibrdkafkaNativeLibraries)" CopyToOutputDirectory="Never" />
+      <Content Remove="@(LibrdkafkaNativeLibraries)" />
+    </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Include="@(LibrdkafkaNativeLibraries)">
+        <Link Condition="$([MSBuild]::ValueOrDefault('%(Identity)', '').Contains('x86'))">costura32\%(Filename)%(Extension)</Link>
+        <Link Condition="$([MSBuild]::ValueOrDefault('%(Identity)', '').Contains('x64'))">costura64\%(Filename)%(Extension)</Link>
+      </EmbeddedResource>
+    </ItemGroup>
+  </Target>
+
+  <Import Project="$(MSBuildProjectDirectory)\..\Directory.build.shared.explicit.props" Condition="Exists('$(MSBuildProjectDirectory)\..\Directory.build.shared.explicit.props')" />
+</Project>

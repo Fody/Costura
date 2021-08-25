@@ -606,16 +606,14 @@ IL_0058:  ret
 IL_0059:  ldloc.s    V_4
 IL_005b:  ret
 }
-.method private hidebysig static pinvokeimpl("kernel32.dll" unicode lasterr winapi)
-bool  SetDllDirectory(string lpPathName) cil managed preservesig
-{
-}
 .method private hidebysig static pinvokeimpl("kernel32.dll" winapi)
 uint32  SetErrorMode(uint32 uMode) cil managed preservesig
 {
 }
 .method private hidebysig static pinvokeimpl("kernel32" unicode lasterr winapi)
-native int  LoadLibrary(string dllToLoad) cil managed preservesig
+native int  LoadLibraryEx(string lpFileName,
+native int hReservedNull,
+uint32 dwFlags) cil managed preservesig
 {
 }
 .method private hidebysig static void  InternalPreloadUnmanagedLibraries(string tempBasePath,
@@ -716,55 +714,56 @@ IL_009d:  ldloc.3
 IL_009e:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
 IL_00a3:  endfinally
 }  // end handler
-IL_00a4:  ldarg.0
-IL_00a5:  call       bool Costura.AssemblyLoader::SetDllDirectory(string)
-IL_00aa:  pop
-IL_00ab:  ldc.i4     0x8003
-IL_00b0:  stloc.1
-IL_00b1:  ldloc.1
-IL_00b2:  call       uint32 Costura.AssemblyLoader::SetErrorMode(uint32)
-IL_00b7:  stloc.2
-IL_00b8:  ldarg.1
-IL_00b9:  callvirt   instance class [mscorlib]System.Collections.Generic.IEnumerator`1<!0> class [mscorlib]System.Collections.Generic.IEnumerable`1<string>::GetEnumerator()
-IL_00be:  stloc.s    V_9
+IL_00a4:  ldc.i4     0x8003
+IL_00a9:  stloc.1
+IL_00aa:  ldloc.1
+IL_00ab:  call       uint32 Costura.AssemblyLoader::SetErrorMode(uint32)
+IL_00b0:  stloc.2
+IL_00b1:  ldarg.1
+IL_00b2:  callvirt   instance class [mscorlib]System.Collections.Generic.IEnumerator`1<!0> class [mscorlib]System.Collections.Generic.IEnumerable`1<string>::GetEnumerator()
+IL_00b7:  stloc.s    V_9
 .try
 {
-IL_00c0:  br.s       IL_00f1
-IL_00c2:  ldloc.s    V_9
-IL_00c4:  callvirt   instance !0 class [mscorlib]System.Collections.Generic.IEnumerator`1<string>::get_Current()
-IL_00c9:  stloc.s    V_10
-IL_00cb:  ldloc.s    V_10
-IL_00cd:  call       string Costura.AssemblyLoader::ResourceNameToPath(string)
-IL_00d2:  stloc.0
-IL_00d3:  ldloc.0
-IL_00d4:  ldstr      ".dll"
-IL_00d9:  callvirt   instance bool [mscorlib]System.String::EndsWith(string)
-IL_00de:  brfalse.s  IL_00f1
-IL_00e0:  ldarg.0
-IL_00e1:  ldloc.0
-IL_00e2:  call       string [mscorlib]System.IO.Path::Combine(string,
+IL_00b9:  br.s       IL_00f0
+IL_00bb:  ldloc.s    V_9
+IL_00bd:  callvirt   instance !0 class [mscorlib]System.Collections.Generic.IEnumerator`1<string>::get_Current()
+IL_00c2:  stloc.s    V_10
+IL_00c4:  ldloc.s    V_10
+IL_00c6:  call       string Costura.AssemblyLoader::ResourceNameToPath(string)
+IL_00cb:  stloc.0
+IL_00cc:  ldloc.0
+IL_00cd:  ldstr      ".dll"
+IL_00d2:  callvirt   instance bool [mscorlib]System.String::EndsWith(string)
+IL_00d7:  brfalse.s  IL_00f0
+IL_00d9:  ldarg.0
+IL_00da:  ldloc.0
+IL_00db:  call       string [mscorlib]System.IO.Path::Combine(string,
 string)
-IL_00e7:  stloc.s    V_11
-IL_00e9:  ldloc.s    V_11
-IL_00eb:  call       native int Costura.AssemblyLoader::LoadLibrary(string)
-IL_00f0:  pop
-IL_00f1:  ldloc.s    V_9
-IL_00f3:  callvirt   instance bool [mscorlib]System.Collections.IEnumerator::MoveNext()
-IL_00f8:  brtrue.s   IL_00c2
-IL_00fa:  leave.s    IL_0108
+IL_00e0:  stloc.s    V_11
+IL_00e2:  ldloc.s    V_11
+IL_00e4:  ldsfld     native int [mscorlib]System.IntPtr::Zero
+IL_00e9:  ldc.i4.8
+IL_00ea:  call       native int Costura.AssemblyLoader::LoadLibraryEx(string,
+native int,
+uint32)
+IL_00ef:  pop
+IL_00f0:  ldloc.s    V_9
+IL_00f2:  callvirt   instance bool [mscorlib]System.Collections.IEnumerator::MoveNext()
+IL_00f7:  brtrue.s   IL_00bb
+IL_00f9:  leave.s    IL_0107
 }  // end .try
 finally
 {
-IL_00fc:  ldloc.s    V_9
-IL_00fe:  brfalse.s  IL_0107
-IL_0100:  ldloc.s    V_9
-IL_0102:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
-IL_0107:  endfinally
+IL_00fb:  ldloc.s    V_9
+IL_00fd:  brfalse.s  IL_0106
+IL_00ff:  ldloc.s    V_9
+IL_0101:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
+IL_0106:  endfinally
 }  // end handler
-IL_0108:  ldloc.2
-IL_0109:  call       uint32 Costura.AssemblyLoader::SetErrorMode(uint32)
-IL_010e:  pop
-IL_010f:  ret
+IL_0107:  ldloc.2
+IL_0108:  call       uint32 Costura.AssemblyLoader::SetErrorMode(uint32)
+IL_010d:  pop
+IL_010e:  ret
 }
 .method private hidebysig static void  PreloadUnmanagedLibraries(string hash,
 string tempBasePath,

@@ -14,11 +14,7 @@ using System.Threading;
 internal static class Common
 {
     [DllImport("kernel32", SetLastError = true, CharSet = CharSet.Unicode)]
-    static extern IntPtr LoadLibrary(string dllToLoad);
-
-    [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    static extern bool SetDllDirectory(string lpPathName);
+    public static extern IntPtr LoadLibraryEx(string lpFileName, IntPtr hReservedNull, uint dwFlags);
 
     [Conditional("DEBUG")]
     public static void Log(string format, params object[] args)
@@ -255,8 +251,6 @@ internal static class Common
             }
         }
 
-        SetDllDirectory(tempBasePath);
-
         // prevent system-generated error message when LoadLibrary is called on a dll with an unmet dependency
         // https://msdn.microsoft.com/en-us/library/windows/desktop/ms680621(v=vs.85).aspx
         //
@@ -277,7 +271,8 @@ internal static class Common
             {
                 var assemblyTempFilePath = Path.Combine(tempBasePath, name);
 
-                LoadLibrary(assemblyTempFilePath);
+                // LOAD_WITH_ALTERED_SEARCH_PATH = 0x00000008
+                LoadLibraryEx(assemblyTempFilePath, IntPtr.Zero, 0x00000008);
             }
         }
 

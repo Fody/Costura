@@ -28,8 +28,7 @@ public partial class ModuleWeaver
         {
             AssemblyResolver = new NetStandardAssemblyResolver(this),
             ReadSymbols = true,
-            SymbolReaderProvider = new PdbReaderProvider(),
-            SymbolStream = GetType().Assembly.GetManifestResourceStream("Costura.Template.pdb"),
+            SymbolReaderProvider = new PdbReaderProvider()
         };
 
         using (var resourceStream = GetType().Assembly.GetManifestResourceStream("Costura.Template.dll"))
@@ -166,7 +165,6 @@ public partial class ModuleWeaver
             foreach (var variableDefinition in templateMethod.Body.Variables)
             {
                 var newVariableDefinition = new VariableDefinition(Resolve(variableDefinition.VariableType));
-                //newVariableDefinition.Name = variableDefinition.Name;
                 newMethod.Body.Variables.Add(newVariableDefinition);
             }
             CopyInstructions(templateMethod, newMethod);
@@ -226,16 +224,32 @@ public partial class ModuleWeaver
 
     private void CopyInstructions(MethodDefinition templateMethod, MethodDefinition newMethod)
     {
+        var newBody = newMethod.Body;
+        var newInstructions = newBody.Instructions;
+        var newDebugInformation = newMethod.DebugInformation;
+
+        var templateDebugInformation = templateMethod.DebugInformation;
+
         foreach (var instruction in templateMethod.Body.Instructions)
         {
             var newInstruction = CloneInstruction(instruction);
-            newMethod.Body.Instructions.Add(newInstruction);
-            var sequencePoint = templateMethod.DebugInformation.GetSequencePoint(instruction);
+            newInstructions.Add(newInstruction);
+            var sequencePoint = templateDebugInformation.GetSequencePoint(instruction);
             if (sequencePoint is not null)
             {
-                newMethod.DebugInformation.SequencePoints.Add(TranslateSequencePoint(newInstruction, sequencePoint));
+                newDebugInformation.SequencePoints.Add(TranslateSequencePoint(newInstruction, sequencePoint));
             }
         }
+
+        var scope = newDebugInformation.Scope = new ScopeDebugInformation(newInstructions.First(), newInstructions.Last());
+
+        foreach (var variable in templateDebugInformation.Scope.Variables)
+        {
+            var targetVariable = newBody.Variables[variable.Index];
+
+            scope.Variables.Add(new VariableDebugInformation(targetVariable, variable.Name));
+        }
+
     }
 
     private Instruction CloneInstruction(Instruction instruction)
@@ -247,7 +261,6 @@ public partial class ModuleWeaver
 
         var newInstruction = (Instruction)_instructionConstructorInfo.Invoke(new[] { instruction.OpCode, instruction.Operand });
         newInstruction.Operand = Import(instruction.Operand);
-        //newInstruction.SequencePoint = TranslateSequencePoint(instruction.SequencePoint);
         return newInstruction;
     }
 
@@ -258,14 +271,7 @@ public partial class ModuleWeaver
             return null;
         }
 
-        var document = new Document(Path.Combine(Path.GetDirectoryName(AssemblyFilePath), Path.GetFileName(sequencePoint.Document.Url)))
-        {
-            Language = sequencePoint.Document.Language,
-            LanguageVendor = sequencePoint.Document.LanguageVendor,
-            Type = sequencePoint.Document.Type,
-        };
-
-        return new SequencePoint(instruction, document)
+        return new SequencePoint(instruction, sequencePoint.Document)
         {
             StartLine = sequencePoint.StartLine,
             StartColumn = sequencePoint.StartColumn,
@@ -306,7 +312,8 @@ public partial class ModuleWeaver
 
         if (operand is FieldReference fieldReference)
         {
-            return _targetType.Fields.FirstOrDefault(f => f.Name == fieldReference.Name);
+            return _targetType.Fields.FirstOrDefault(f => f.Name == fieldReference.Name) 
+                   ?? new FieldReference(fieldReference.Name, ModuleDefinition.ImportReference(fieldReference.FieldType.Resolve()), ModuleDefinition.ImportReference(fieldReference.DeclaringType.Resolve()));
         }
         return operand;
     }

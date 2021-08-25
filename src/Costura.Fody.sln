@@ -32,8 +32,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssemblyWithoutInitialize",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{BD2A89FD-65C5-4DC9-B50F-049CA337FF20}"
 	ProjectSection(SolutionItems) = preProject
+		..\.editorconfig = ..\.editorconfig
 		.vsconfig = .vsconfig
-		Costura.sln.DotSettings = Costura.sln.DotSettings
+		Costura.Fody.sln.DotSettings = Costura.Fody.sln.DotSettings
 		Directory.build.analyzers.props = Directory.build.analyzers.props
 		Directory.build.project.props = Directory.build.project.props
 		Directory.Build.props = Directory.Build.props
@@ -63,6 +64,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExeToProcessWithNativeAndEmbeddedMixed", "ExeToProcessWithNativeAndEmbeddedMixed\ExeToProcessWithNativeAndEmbeddedMixed.csproj", "{1BACB257-5B8A-45D4-BC49-51985E076BD2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssemblyToReferenceWithRuntimeReferences", "AssemblyToReferenceWithRuntimeReferences\AssemblyToReferenceWithRuntimeReferences.csproj", "{3C8562E5-DAEE-410D-A492-1EAC53ED4290}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExeToProcessWithMultipleNative", "ExeToProcessWithMultipleNative\ExeToProcessWithMultipleNative.csproj", "{24395ED7-04CF-45E4-AB58-D6AA4F340335}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -266,6 +269,18 @@ Global
 		{3C8562E5-DAEE-410D-A492-1EAC53ED4290}.Release|x64.Build.0 = Release|Any CPU
 		{3C8562E5-DAEE-410D-A492-1EAC53ED4290}.Release|x86.ActiveCfg = Release|Any CPU
 		{3C8562E5-DAEE-410D-A492-1EAC53ED4290}.Release|x86.Build.0 = Release|Any CPU
+		{24395ED7-04CF-45E4-AB58-D6AA4F340335}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24395ED7-04CF-45E4-AB58-D6AA4F340335}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24395ED7-04CF-45E4-AB58-D6AA4F340335}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{24395ED7-04CF-45E4-AB58-D6AA4F340335}.Debug|x64.Build.0 = Debug|Any CPU
+		{24395ED7-04CF-45E4-AB58-D6AA4F340335}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{24395ED7-04CF-45E4-AB58-D6AA4F340335}.Debug|x86.Build.0 = Debug|Any CPU
+		{24395ED7-04CF-45E4-AB58-D6AA4F340335}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24395ED7-04CF-45E4-AB58-D6AA4F340335}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24395ED7-04CF-45E4-AB58-D6AA4F340335}.Release|x64.ActiveCfg = Release|Any CPU
+		{24395ED7-04CF-45E4-AB58-D6AA4F340335}.Release|x64.Build.0 = Release|Any CPU
+		{24395ED7-04CF-45E4-AB58-D6AA4F340335}.Release|x86.ActiveCfg = Release|Any CPU
+		{24395ED7-04CF-45E4-AB58-D6AA4F340335}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -290,6 +305,7 @@ Global
 		{2B508691-68E6-4AE6-8F8D-1B78F7E65F80} = {B7B46C59-9452-424E-ABFE-1350A00D0FD4}
 		{1BACB257-5B8A-45D4-BC49-51985E076BD2} = {93B6F5A2-F07C-4DB0-B65F-02F69B9DC6B2}
 		{3C8562E5-DAEE-410D-A492-1EAC53ED4290} = {93B6F5A2-F07C-4DB0-B65F-02F69B9DC6B2}
+		{24395ED7-04CF-45E4-AB58-D6AA4F340335} = {93B6F5A2-F07C-4DB0-B65F-02F69B9DC6B2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2231BA74-85F3-48B2-9340-B98CDF1C5031}
