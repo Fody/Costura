@@ -518,6 +518,7 @@ disableCleanup: {disableCleanup}");
             using (var fileStream = File.Open(cacheFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 fileStream.CopyTo(memoryStream);
+                memoryStream.Flush();
             }
         }
         else
@@ -531,16 +532,19 @@ disableCleanup: {disableCleanup}");
                         using (var compressedStream = new DeflateStream(memoryStream, CompressionMode.Compress, true))
                         {
                             fileStream.CopyTo(compressedStream);
+                            compressedStream.Flush();
                         }
                     }
                     else
                     {
                         fileStream.CopyTo(memoryStream);
+                        memoryStream.Flush();
                     }
                 }
 
                 memoryStream.Position = 0;
                 memoryStream.CopyTo(cacheFileStream);
+                cacheFileStream.Flush();
             }
         }
 
