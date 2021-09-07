@@ -509,7 +509,7 @@ disableCleanup: {disableCleanup}");
         };
     }
 
-    private static MemoryStream BuildMemoryStream(string fullPath, bool compress, string cacheFile)
+    private MemoryStream BuildMemoryStream(string fullPath, bool compress, string cacheFile)
     {
         var memoryStream = new MemoryStream();
 
@@ -523,6 +523,8 @@ disableCleanup: {disableCleanup}");
         }
         else
         {
+            WriteInfo($"\t\t\tCreating cached file at '{cacheFile}'");
+
             using (var cacheFileStream = File.Open(cacheFile, FileMode.CreateNew, FileAccess.Write, FileShare.Read))
             {
                 using (var fileStream = File.Open(fullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
