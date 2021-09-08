@@ -531,6 +531,11 @@ disableCleanup: {disableCleanup}");
 
             WriteInfo($"\t\t\tCreating target file");
 
+            if (cacheFile.Length > 255)
+            {
+                WriteError($"\t\t\tPath length is too large ({cacheFile.Length} characters)");
+            }
+
             using (var cacheFileStream = File.Open(cacheFile, FileMode.CreateNew, FileAccess.Write, FileShare.Read))
             {
                 WriteInfo($"\t\t\tOpening source file");
