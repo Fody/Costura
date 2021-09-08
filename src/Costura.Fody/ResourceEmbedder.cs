@@ -515,6 +515,8 @@ disableCleanup: {disableCleanup}");
 
         if (File.Exists(cacheFile))
         {
+            WriteInfo($"\t\t\tReusing cached file at '{cacheFile}'");
+
             using (var fileStream = File.Open(cacheFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 fileStream.CopyTo(memoryStream);
