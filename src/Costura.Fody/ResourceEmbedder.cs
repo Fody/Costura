@@ -527,12 +527,20 @@ disableCleanup: {disableCleanup}");
         {
             WriteInfo($"\t\t\tCreating cached file at '{cacheFile}'");
 
+            var stopwatch = Stopwatch.StartNew();
+
+            WriteInfo($"\t\t\tCreating target file");
+
             using (var cacheFileStream = File.Open(cacheFile, FileMode.CreateNew, FileAccess.Write, FileShare.Read))
             {
+                WriteInfo($"\t\t\tOpening source file");
+
                 using (var fileStream = File.Open(fullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
                     if (compress)
                     {
+                        WriteInfo($"\t\t\tCompressing file");
+
                         using (var compressedStream = new DeflateStream(memoryStream, CompressionMode.Compress, true))
                         {
                             fileStream.CopyTo(compressedStream);
@@ -542,17 +550,20 @@ disableCleanup: {disableCleanup}");
                     else
                     {
                         fileStream.CopyTo(memoryStream);
-                        memoryStream.Flush();
                     }
+
+                    memoryStream.Flush();
                 }
 
-                memoryStream.Position = 0;
+                memoryStream.Position = 0L;
                 memoryStream.CopyTo(cacheFileStream);
                 cacheFileStream.Flush();
             }
+
+            WriteInfo($"\t\t\tCreated cached file at '{cacheFile}', took '{stopwatch.ElapsedMilliseconds}' ms");
         }
 
-        memoryStream.Position = 0;
+        memoryStream.Position = 0L;
         return memoryStream;
     }
 
