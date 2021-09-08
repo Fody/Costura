@@ -15,6 +15,8 @@ public partial class ModuleWeaver: BaseModuleWeaver
 
         var config = new Configuration(Config);
 
+        WriteInfo($"Costura.Fody v{GetType().Assembly.GetVersion()}");
+
         FindMsCoreReferences();
 
         FixResourceCase();

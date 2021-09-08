@@ -3,6 +3,7 @@
     <TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
     <DisableFody>true</DisableFody>
     <OutputType>Exe</OutputType>
+    <PlatformTarget>x86</PlatformTarget>
     <NoWarn>$(NoWarn);NU1201</NoWarn>
     <NoError>$(NoError);NU1201</NoError>
   </PropertyGroup>

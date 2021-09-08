@@ -14,6 +14,8 @@ public partial class ModuleWeaver : IDisposable
     private readonly List<Stream> _streams = new List<Stream>();
     private string _cachePath;
 
+    private int _fallbackCounter = 1;
+
     private void EmbedResources(Configuration config)
     {
         if (ReferenceCopyLocalPaths is null)
@@ -469,7 +471,8 @@ disableCleanup: {disableCleanup}");
         WriteInfo($"\t\tEmbedding '{fullPath}'");
 
         var sha1Checksum = CalculateSha1Checksum(fullPath);
-        var cacheFile = Path.Combine(_cachePath, $"{sha1Checksum}.{resourceName}");
+        var cacheFile = GetCacheFile(_cachePath, resourceName, compress, sha1Checksum);
+
         var memoryStream = BuildMemoryStream(fullPath, compress, cacheFile);
         _streams.Add(memoryStream);
         var resource = new EmbeddedResource(resourceName, ManifestResourceAttributes.Private, memoryStream);
@@ -509,42 +512,95 @@ disableCleanup: {disableCleanup}");
         };
     }
 
-    private static MemoryStream BuildMemoryStream(string fullPath, bool compress, string cacheFile)
+    public string GetCacheFile(string cacheRoot, string resourceName, bool isCompressed, string sha1Checksum, bool allowNumberReplacement = true)
+    {
+        var cacheFile = Path.Combine(cacheRoot, $"{sha1Checksum}.{resourceName}");
+
+        if (isCompressed)
+        {
+            cacheFile += ".compressed";
+        }
+
+        if (cacheFile.Length > 255)
+        {
+            // We should never embed more than 10k assemblies at the same time, but we don't want to have a too high number either in case this is a long-living msbuild instance
+            if (_fallbackCounter > 10000)
+            {
+                _fallbackCounter = 1;
+            }
+
+            if (!allowNumberReplacement)
+            {
+                WriteError($"\t\t\tPath length is too large ({cacheFile.Length} characters)");
+                return cacheFile;
+            }
+
+            var oldCacheFile = cacheFile;
+            cacheFile = GetCacheFile(cacheRoot, _fallbackCounter++.ToString(), isCompressed, sha1Checksum, false);
+
+            WriteInfo($"\t\t\tCache file path has too many characters, using simplified random guid as fallback ('{oldCacheFile}' => '{cacheFile}')");
+
+            return cacheFile;
+        }
+
+        return cacheFile;
+    }
+
+    private MemoryStream BuildMemoryStream(string fullPath, bool compress, string cacheFile)
     {
         var memoryStream = new MemoryStream();
 
         if (File.Exists(cacheFile))
         {
+            WriteInfo($"\t\t\tReusing cached file at '{cacheFile}'");
+
             using (var fileStream = File.Open(cacheFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 fileStream.CopyTo(memoryStream);
+                memoryStream.Flush();
             }
         }
         else
         {
+            WriteInfo($"\t\t\tCreating cached file at '{cacheFile}'");
+
+            var stopwatch = Stopwatch.StartNew();
+
+            WriteInfo($"\t\t\tCreating target file");
+
             using (var cacheFileStream = File.Open(cacheFile, FileMode.CreateNew, FileAccess.Write, FileShare.Read))
             {
+                WriteInfo($"\t\t\tOpening source file");
+
                 using (var fileStream = File.Open(fullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
                     if (compress)
                     {
+                        WriteInfo($"\t\t\tCompressing file");
+
                         using (var compressedStream = new DeflateStream(memoryStream, CompressionMode.Compress, true))
                         {
                             fileStream.CopyTo(compressedStream);
+                            compressedStream.Flush();
                         }
                     }
                     else
                     {
                         fileStream.CopyTo(memoryStream);
                     }
+
+                    memoryStream.Flush();
                 }
 
-                memoryStream.Position = 0;
+                memoryStream.Position = 0L;
                 memoryStream.CopyTo(cacheFileStream);
+                cacheFileStream.Flush();
             }
+
+            WriteInfo($"\t\t\tCreated cached file at '{cacheFile}', took '{stopwatch.ElapsedMilliseconds}' ms");
         }
 
-        memoryStream.Position = 0;
+        memoryStream.Position = 0L;
         return memoryStream;
     }
 
