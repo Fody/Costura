@@ -12,6 +12,7 @@
     <DisableFody>true</DisableFody>
     <NoWarn>$(NoWarn);NU1201</NoWarn>
     <NoError>$(NoError);NU1201</NoError>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
