@@ -1,4 +1,4 @@
-#tool "nuget:?package=gitreleasemanager&version=0.12.0"
+#tool "nuget:?package=gitreleasemanager&version=0.12.1"
 
 //-------------------------------------------------------------
 
