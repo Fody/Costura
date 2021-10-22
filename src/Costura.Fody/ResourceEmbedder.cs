@@ -459,13 +459,13 @@ disableCleanup: {disableCleanup}");
         if (compress)
         {
             resourceName += ".compressed";
+        }
 
-            if (ModuleDefinition.Resources.Any(x => string.Equals(x.Name, resourceName, StringComparison.OrdinalIgnoreCase)))
-            {
-                // an assembly that appeared twice in the ReferenceCopyLocalPaths, e.g. the same library from different nuget packages (https://github.com/Fody/Costura/issues/332)
-                WriteDebug($"\t\tSkipping '{fullPath}' because it is already embedded");
-                return null;
-            }
+        if (ModuleDefinition.Resources.Any(x => string.Equals(x.Name, resourceName, StringComparison.OrdinalIgnoreCase)))
+        {
+            // an assembly that appeared twice in the ReferenceCopyLocalPaths, e.g. the same library from different nuget packages (https://github.com/Fody/Costura/issues/332)
+            WriteDebug($"\t\tSkipping '{fullPath}' because it is already embedded");
+            return null;
         }
 
         WriteInfo($"\t\tEmbedding '{fullPath}'");
