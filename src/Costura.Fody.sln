@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29201.188
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31815.197
 MinimumVisualStudioVersion = 16.0.29201.188
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Costura.Template", "Costura.Template\Costura.Template.csproj", "{CD9AEBAA-78F4-4A78-BF06-0CB7D84D83E8}"
 EndProject
@@ -58,6 +58,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Costura.Fody.Tests", "Costura.Fody.Tests\Costura.Fody.Tests.csproj", "{CC1756D9-09B0-4988-BDF0-A6236D0170B8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Costura.Fody.IntegrationTests", "Costura.Fody.IntegrationTests\Costura.Fody.IntegrationTests.csproj", "{381A7887-0792-494B-9819-3BCB099367D9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E5622B74-B6C6-46A5-9207-0872533E6C2F} = {E5622B74-B6C6-46A5-9207-0872533E6C2F}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Costura", "Costura\Costura.csproj", "{2B508691-68E6-4AE6-8F8D-1B78F7E65F80}"
 EndProject
