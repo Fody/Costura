@@ -65,7 +65,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FodyHelpers" Version="6.5.5" />
+    <PackageReference Include="FodyHelpers" Version="6.6.0" />
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net48" Version="1.0.2" PrivateAssets="all" GeneratePathProperty="true" />
     <PackageReference Update="NETStandard.Library" Version="2.0.3" />
   </ItemGroup>

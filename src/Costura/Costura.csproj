@@ -21,7 +21,7 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="Fody" Version="6.5.5" PrivateAssets="none" />
+    <PackageReference Include="Fody" Version="6.6.0" PrivateAssets="none" />
   </ItemGroup>
 
   <ItemGroup>

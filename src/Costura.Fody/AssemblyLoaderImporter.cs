@@ -26,7 +26,7 @@ public partial class ModuleWeaver
     {
         var readerParameters = new ReaderParameters
         {
-            AssemblyResolver = new NetStandardAssemblyResolver(this),
+            AssemblyResolver = AssemblyResolver,
             ReadSymbols = true,
             SymbolReaderProvider = new PdbReaderProvider()
         };
