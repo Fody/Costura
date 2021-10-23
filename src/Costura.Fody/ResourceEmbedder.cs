@@ -269,7 +269,7 @@ public partial class ModuleWeaver : IDisposable
                     // Make sure to embed resources, even if not explicitly included
                     if (!config.IgnoreSatelliteAssemblies)
                     {
-                        var resourcesAssemblyName = assemblyName += ".resources";
+                        var resourcesAssemblyName = assemblyName + ".resources";
                         var resourcesAssemblyReferences = (from x in references
                                                            where x.IsResourcesAssembly && CompareAssemblyName(x.FileNameWithoutExtension, resourcesAssemblyName)
                                                            select x).ToList();
