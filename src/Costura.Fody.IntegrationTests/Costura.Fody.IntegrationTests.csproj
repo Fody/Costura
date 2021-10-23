@@ -13,7 +13,7 @@
   
   <ItemGroup>
     <PackageReference Include="Catel.Core" Version="5.12.19" PrivateAssets="All" />
-    <PackageReference Include="Fody" Version="6.5.5" PrivateAssets="All" />
+    <PackageReference Include="Fody" Version="6.6.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" PrivateAssets="All" />
     <PackageReference Include="NUnit" Version="3.13.2" PrivateAssets="all" />
