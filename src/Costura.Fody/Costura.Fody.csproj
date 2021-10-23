@@ -24,12 +24,6 @@
       <LogicalName>Costura.Template.dll</LogicalName>
     </EmbeddedResource>
 
-    <EmbeddedResource Include="$(PkgMicrosoft_NETFramework_ReferenceAssemblies_net48)\build\.NETFramework\v4.8\Facades\netstandard.dll">
-      <Link>bin\netstandard.dll</Link>
-      <InProject>false</InProject>
-      <LogicalName>Costura.NETFramework.netstandard.dll</LogicalName>
-    </EmbeddedResource>
-
     <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\Costura.Template\Common.cs">
       <Link>src\Common.cs</Link>
       <InProject>false</InProject>
