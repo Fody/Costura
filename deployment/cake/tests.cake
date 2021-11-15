@@ -146,7 +146,7 @@ private static void RunUnitTests(BuildContext buildContext, string projectName)
 
             var projectFileName = GetProjectFileName(buildContext, projectName);
 
-            buildContext.CakeContext.DotNetCoreTest(projectFileName, new DotNetCoreTestSettings
+            var dotNetCoreTestSettings = new DotNetCoreTestSettings
             {
                 Configuration = buildContext.General.Solution.ConfigurationName,
                 NoBuild = true,
@@ -154,17 +154,15 @@ private static void RunUnitTests(BuildContext buildContext, string projectName)
                 NoRestore = true,
                 OutputDirectory = System.IO.Path.Combine(GetProjectOutputDirectory(buildContext, projectName), testTargetFramework),
                 ResultsDirectory = testResultsDirectory
-            });
+            };
 
-            // Information("Project '{0}' is a .NET core project, using 'dotnet vstest' to run the unit tests", projectName); 
+            var processBit = buildContext.Tests.ProcessBit.ToLower();
+            if (!string.IsNullOrWhiteSpace(processBit))
+            {
+                dotNetCoreTestSettings.Runtime = $"win-{processBit}";
+            }
 
-            // var testFile = string.Format("{0}/{1}/{2}.dll", GetProjectOutputDirectory(buildContext, projectName), testTargetFramework, projectName);
-
-            // DotNetCoreVSTest(testFile, new DotNetCoreVSTestSettings
-            // {
-            //     //Platform = TestFramework
-            //     ResultsDirectory = testResultsDirectory
-            // });
+            buildContext.CakeContext.DotNetCoreTest(projectFileName, dotNetCoreTestSettings);
 
             ranTests = true;
         }
