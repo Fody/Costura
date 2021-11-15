@@ -260,26 +260,30 @@ private static string GetVisualStudioDirectory(BuildContext buildContext, bool? 
 {
     // TODO: Support different editions (e.g. Professional, Enterprise, Community, etc)
 
+    // Force 64-bit, even when running as 32-bit process
+    var programFilesx64 = Environment.ExpandEnvironmentVariables("%ProgramW6432%");
+    var programFilesx86 = Environment.ExpandEnvironmentVariables("%ProgramFiles(x86)%");
+
     var prereleasePaths = new List<KeyValuePair<string, string>>(new [] 
     { 
-        new KeyValuePair<string, string>("Visual Studio 2022 Preview", $@"{Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles)}\Microsoft Visual Studio\2022\Preview\"),
-        new KeyValuePair<string, string>("Visual Studio 2019 Preview", $@"{Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86)}\Microsoft Visual Studio\2019\Preview\"),
+        new KeyValuePair<string, string>("Visual Studio 2022 Preview", $@"{programFilesx64}\Microsoft Visual Studio\2022\Preview\"),
+        new KeyValuePair<string, string>("Visual Studio 2019 Preview", $@"{programFilesx86}\Microsoft Visual Studio\2019\Preview\"),
     });
 
     var normalPaths = new List<KeyValuePair<string, string>> (new []
     {
-        new KeyValuePair<string, string>("Visual Studio 2022 Enterprise", $@"{Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles)}\Microsoft Visual Studio\2022\Enterprise\"),
-        new KeyValuePair<string, string>("Visual Studio 2022 Professional", $@"{Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles)}\Microsoft Visual Studio\2022\Professional\"),
-        new KeyValuePair<string, string>("Visual Studio 2022 Community", $@"{Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles)}\Microsoft Visual Studio\2022\Community\"),
-        new KeyValuePair<string, string>("Visual Studio 2019 Enterprise", $@"{Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86)}\Microsoft Visual Studio\2019\Enterprise\"),
-        new KeyValuePair<string, string>("Visual Studio 2019 Professional", $@"{Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86)}\Microsoft Visual Studio\2019\Professional\"),
-        new KeyValuePair<string, string>("Visual Studio 2019 Community", $@"{Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86)}\Microsoft Visual Studio\2019\Community\"),
+        new KeyValuePair<string, string>("Visual Studio 2022 Enterprise", $@"{programFilesx64}\Microsoft Visual Studio\2022\Enterprise\"),
+        new KeyValuePair<string, string>("Visual Studio 2022 Professional", $@"{programFilesx64}\Microsoft Visual Studio\2022\Professional\"),
+        new KeyValuePair<string, string>("Visual Studio 2022 Community", $@"{programFilesx64}\Microsoft Visual Studio\2022\Community\"),
+        new KeyValuePair<string, string>("Visual Studio 2019 Enterprise", $@"{programFilesx86}\Microsoft Visual Studio\2019\Enterprise\"),
+        new KeyValuePair<string, string>("Visual Studio 2019 Professional", $@"{programFilesx86}\Microsoft Visual Studio\2019\Professional\"),
+        new KeyValuePair<string, string>("Visual Studio 2019 Community", $@"{programFilesx86}\Microsoft Visual Studio\2019\Community\"),
     });
 
     // Prerelease paths
     if ((allowVsPrerelease ?? true) && buildContext.General.UseVisualStudioPrerelease)
     {
-        buildContext.CakeContext.Debug("Checking for installation of Visual Studio preview");
+        buildContext.CakeContext.Debug("Checking for installation of Visual Studio (preview)");
 
         foreach (var prereleasePath in prereleasePaths)
         {
@@ -291,6 +295,8 @@ private static string GetVisualStudioDirectory(BuildContext buildContext, bool? 
             }
         }
     }
+
+    buildContext.CakeContext.Debug("Checking for installation of Visual Studio (non-preview)");
     
     // Normal paths
     foreach (var normalPath in normalPaths)
@@ -325,6 +331,8 @@ private static string GetVisualStudioPath(BuildContext buildContext, bool? allow
     var potentialPaths = new []
     {
         @"MSBuild\Current\Bin\msbuild.exe",
+        @"MSBuild\17.0\Bin\msbuild.exe",
+        @"MSBuild\16.0\Bin\msbuild.exe",
         @"MSBuild\15.0\Bin\msbuild.exe"
     };
 
