@@ -79,7 +79,7 @@ public class WpfProcessor : ProcessorBase
                 PlatformTarget = PlatformTarget.MSIL
             };
 
-            ConfigureMsBuild(BuildContext, msBuildSettings, wpfApp);
+            ConfigureMsBuild(BuildContext, msBuildSettings, wpfApp, "build");
 
             // Always disable SourceLink
             msBuildSettings.WithProperty("EnableSourceLink", "false");
@@ -93,7 +93,7 @@ public class WpfProcessor : ProcessorBase
             msBuildSettings.WithProperty("OverridableOutputPath", outputDirectory);
             msBuildSettings.WithProperty("PackageOutputPath", BuildContext.General.OutputRootDirectory);
 
-            RunMsBuild(BuildContext, wpfApp, projectFileName, msBuildSettings);
+            RunMsBuild(BuildContext, wpfApp, projectFileName, msBuildSettings, "build");
         }
     }
 

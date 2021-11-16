@@ -79,7 +79,7 @@ public class WebProcessor : ProcessorBase
                 PlatformTarget = PlatformTarget.MSIL
             };
 
-            ConfigureMsBuild(BuildContext, msBuildSettings, webApp);
+            ConfigureMsBuild(BuildContext, msBuildSettings, webApp, "build");
 
             // Always disable SourceLink
             msBuildSettings.WithProperty("EnableSourceLink", "false");
@@ -95,7 +95,7 @@ public class WebProcessor : ProcessorBase
 
             // TODO: Enable GitLink / SourceLink, see RepositoryUrl, RepositoryBranchName, RepositoryCommitId variables
 
-            RunMsBuild(BuildContext, webApp, projectFileName, msBuildSettings);
+            RunMsBuild(BuildContext, webApp, projectFileName, msBuildSettings, "build");
         }
     }
 

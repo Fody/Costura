@@ -4,19 +4,16 @@
   -->
 
   <ItemGroup>
-    <PackageReference Include="Catel.Analyzers" Version="1.2.0" PrivateAssets="all">
+    <PackageReference Include="Catel.Analyzers" Version="1.3.0" PrivateAssets="all">
       <IncludeAssets>build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="CatenaLogic.Analyzers" Version="1.1.2" PrivateAssets="all">
+    <PackageReference Include="CatenaLogic.Analyzers" Version="1.2.0" PrivateAssets="all">
       <IncludeAssets>build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
     <!-- <PackageReference Include="ClrHeapAllocationAnalyzer" Version="3.0.0" PrivateAssets="all" /> -->
     <PackageReference Include="WpfAnalyzers" Version="3.5.4" PrivateAssets="all">
       <IncludeAssets>build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <!--<PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0" PrivateAssets="all">
-      <IncludeAssets>build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>-->
   </ItemGroup>
 
   <!-- 

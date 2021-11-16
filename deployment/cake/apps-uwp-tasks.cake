@@ -126,7 +126,7 @@ public class UwpProcessor : ProcessorBase
                 PlatformTarget = platform.Value
             };
 
-            ConfigureMsBuild(BuildContext, msBuildSettings, uwpApp);
+            ConfigureMsBuild(BuildContext, msBuildSettings, uwpApp, "build");
 
             // Always disable SourceLink
             msBuildSettings.WithProperty("EnableSourceLink", "false");
@@ -145,7 +145,7 @@ public class UwpProcessor : ProcessorBase
 
             // Note: if csproj doesn't work, use SolutionFileName instead
             //var projectFileName = SolutionFileName;
-            RunMsBuild(BuildContext, uwpApp, projectFileName, msBuildSettings);
+            RunMsBuild(BuildContext, uwpApp, projectFileName, msBuildSettings, "build");
 
             // Recalculate!
             appxUploadFileName = GetAppxUploadFileName(artifactsDirectory, uwpApp, BuildContext.General.Version.MajorMinorPatch);

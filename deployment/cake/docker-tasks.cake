@@ -122,7 +122,7 @@ public class DockerImagesProcessor : ProcessorBase
                 PlatformTarget = PlatformTarget.MSIL
             };
 
-            ConfigureMsBuild(BuildContext, msBuildSettings, dockerImage);
+            ConfigureMsBuild(BuildContext, msBuildSettings, dockerImage, "build");
 
             // Always disable SourceLink
             msBuildSettings.WithProperty("EnableSourceLink", "false");
@@ -136,7 +136,7 @@ public class DockerImagesProcessor : ProcessorBase
             msBuildSettings.WithProperty("OverridableOutputPath", outputDirectory);
             msBuildSettings.WithProperty("PackageOutputPath", BuildContext.General.OutputRootDirectory);
 
-            RunMsBuild(BuildContext, dockerImage, projectFileName, msBuildSettings);
+            RunMsBuild(BuildContext, dockerImage, projectFileName, msBuildSettings, "build");
         }        
     }
 
@@ -189,6 +189,8 @@ public class DockerImagesProcessor : ProcessorBase
             CakeContext.Information("Output directory: '{0}'", outputDirectory);
 
             var msBuildSettings = new DotNetCoreMSBuildSettings();
+
+            ConfigureMsBuildForDotNetCore(BuildContext, msBuildSettings, dockerImage, "pack");
 
             // Note: we need to set OverridableOutputPath because we need to be able to respect
             // AppendTargetFrameworkToOutputPath which isn't possible for global properties (which
