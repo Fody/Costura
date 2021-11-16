@@ -55,7 +55,7 @@ public class TestProcessor : ProcessorBase
                 PlatformTarget = PlatformTarget.MSIL
             };
 
-            ConfigureMsBuild(BuildContext, msBuildSettings, testProject);
+            ConfigureMsBuild(BuildContext, msBuildSettings, testProject, "build");
 
             // Always disable SourceLink
             msBuildSettings.WithProperty("EnableSourceLink", "false");
@@ -72,7 +72,7 @@ public class TestProcessor : ProcessorBase
             msBuildSettings.WithProperty("OverridableOutputPath", outputDirectory);
             msBuildSettings.WithProperty("PackageOutputPath", BuildContext.General.OutputRootDirectory);
 
-            RunMsBuild(BuildContext, testProject, projectFileName, msBuildSettings);
+            RunMsBuild(BuildContext, testProject, projectFileName, msBuildSettings, "build");
         }
     }
 

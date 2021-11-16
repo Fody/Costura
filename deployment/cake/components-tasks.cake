@@ -123,7 +123,7 @@ public class ComponentsProcessor : ProcessorBase
                 PlatformTarget = PlatformTarget.MSIL
             };
 
-            ConfigureMsBuild(BuildContext, msBuildSettings, component);
+            ConfigureMsBuild(BuildContext, msBuildSettings, component, "build");
             
             // Note: we need to set OverridableOutputPath because we need to be able to respect
             // AppendTargetFrameworkToOutputPath which isn't possible for global properties (which
@@ -155,7 +155,7 @@ public class ComponentsProcessor : ProcessorBase
                 InjectSourceLinkInProjectFile(BuildContext, projectFileName);
             }
 
-            RunMsBuild(BuildContext, component, projectFileName, msBuildSettings);
+            RunMsBuild(BuildContext, component, projectFileName, msBuildSettings, "build");
         }        
     }
 
@@ -258,7 +258,7 @@ public class ComponentsProcessor : ProcessorBase
             msBuildSettings.WithProperty("NoBuild", "true");
             msBuildSettings.Targets.Add("Pack");
 
-            RunMsBuild(BuildContext, component, projectFileName, msBuildSettings);
+            RunMsBuild(BuildContext, component, projectFileName, msBuildSettings, "pack");
 
             BuildContext.CakeContext.LogSeparator();
         }

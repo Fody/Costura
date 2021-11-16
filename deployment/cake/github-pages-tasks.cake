@@ -106,7 +106,7 @@ public class GitHubPagesProcessor : ProcessorBase
                 PlatformTarget = PlatformTarget.MSIL
             };
 
-            ConfigureMsBuild(BuildContext, msBuildSettings, gitHubPage);
+            ConfigureMsBuild(BuildContext, msBuildSettings, gitHubPage, "build");
 
             // Always disable SourceLink
             msBuildSettings.WithProperty("EnableSourceLink", "false");
@@ -120,7 +120,7 @@ public class GitHubPagesProcessor : ProcessorBase
             msBuildSettings.WithProperty("OverridableOutputPath", outputDirectory);
             msBuildSettings.WithProperty("PackageOutputPath", BuildContext.General.OutputRootDirectory);
 
-            RunMsBuild(BuildContext, gitHubPage, projectFileName, msBuildSettings);
+            RunMsBuild(BuildContext, gitHubPage, projectFileName, msBuildSettings, "build");
         }        
     }
 

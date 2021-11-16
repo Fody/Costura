@@ -79,7 +79,7 @@ public class DependenciesProcessor : ProcessorBase
                 PlatformTarget = PlatformTarget.MSIL
             };
 
-            ConfigureMsBuild(BuildContext, msBuildSettings, dependency);
+            ConfigureMsBuild(BuildContext, msBuildSettings, dependency, "build");
             
             // Note: we need to set OverridableOutputPath because we need to be able to respect
             // AppendTargetFrameworkToOutputPath which isn't possible for global properties (which
@@ -119,7 +119,7 @@ public class DependenciesProcessor : ProcessorBase
                 InjectSourceLinkInProjectFile(BuildContext, projectFileName);
             }
 
-            RunMsBuild(BuildContext, dependency, projectFileName, msBuildSettings);
+            RunMsBuild(BuildContext, dependency, projectFileName, msBuildSettings, "build");
         }
     }
 

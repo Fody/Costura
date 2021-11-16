@@ -23,15 +23,15 @@ private static void BuildSolution(BuildContext buildContext)
         NoLogo = true
     };
 
-    //ConfigureMsBuild(buildContext, msBuildSettings, dependency);
+    //ConfigureMsBuild(buildContext, msBuildSettings, dependency, "build");
 
-    RunMsBuild(buildContext, "Solution", solutionFileName, msBuildSettings);
+    RunMsBuild(buildContext, "Solution", solutionFileName, msBuildSettings, "build");
 }
 
 //-------------------------------------------------------------
 
 private static void ConfigureMsBuild(BuildContext buildContext, MSBuildSettings msBuildSettings, 
-    string projectName, string action = "build", bool? allowVsPrerelease = null)
+    string projectName, string action, bool? allowVsPrerelease = null)
 {
     var toolPath = GetVisualStudioPath(buildContext, allowVsPrerelease);
     if (!string.IsNullOrWhiteSpace(toolPath))
@@ -82,7 +82,7 @@ private static void ConfigureMsBuild(BuildContext buildContext, MSBuildSettings 
 //-------------------------------------------------------------
 
 private static void ConfigureMsBuildForDotNetCore(BuildContext buildContext, DotNetCoreMSBuildSettings msBuildSettings, 
-    string projectName, string action = "build", bool? allowVsPrerelease = null)
+    string projectName, string action, bool? allowVsPrerelease = null)
 {
     var toolPath = GetVisualStudioPath(buildContext, allowVsPrerelease);
     if (!string.IsNullOrWhiteSpace(toolPath))
@@ -122,12 +122,12 @@ private static void ConfigureMsBuildForDotNetCore(BuildContext buildContext, Dot
     });
 
     // Enable for bin logging
-    //msBuildSettings.BinaryLogger = new MSBuildBinaryLogSettings
-    //{
-    //    Enabled = true,
-    //    Imports = MSBuildBinaryLogImports.Embed,
-    //    FileName = System.IO.Path.Combine(OutputRootDirectory, string.Format(@"MsBuild_{0}_{1}.binlog", projectName, action))
-    //};
+    msBuildSettings.BinaryLogger = new MSBuildBinaryLoggerSettings
+    {
+        Enabled = true,
+        Imports = MSBuildBinaryLoggerImports.Embed,
+        FileName = System.IO.Path.Combine(buildContext.General.OutputRootDirectory, string.Format(@"MsBuild_{0}_{1}.binlog", projectName, action))
+    };
     
     // Note: this only works for direct .net core msbuild usage, not when this is
     // being wrapped in a tool (such as 'dotnet pack')
@@ -139,7 +139,7 @@ private static void ConfigureMsBuildForDotNetCore(BuildContext buildContext, Dot
 
 //-------------------------------------------------------------
 
-private static void RunMsBuild(BuildContext buildContext, string projectName, string projectFileName, MSBuildSettings msBuildSettings)
+private static void RunMsBuild(BuildContext buildContext, string projectName, string projectFileName, MSBuildSettings msBuildSettings, string action)
 {
     // IMPORTANT NOTE --- READ  <=============================================
     //
@@ -153,7 +153,6 @@ private static void RunMsBuild(BuildContext buildContext, string projectName, st
     var buildStopwatch = Stopwatch.StartNew();
 
     // Enforce additional logging for issues
-    var action = "build";
     //var logPath = System.IO.Path.Combine(buildContext.General.OutputRootDirectory, string.Format(@"MsBuild_{0}_{1}_log.binlog", projectName, action));
 
     buildContext.CakeContext.CreateDirectory(buildContext.General.OutputRootDirectory);
@@ -175,7 +174,7 @@ private static void RunMsBuild(BuildContext buildContext, string projectName, st
     }
 
     buildContext.CakeContext.Information(string.Empty);
-    buildContext.CakeContext.Information($"Done building project, took '{buildStopwatch.Elapsed}'");
+    buildContext.CakeContext.Information($"Done {action}ing project, took '{buildStopwatch.Elapsed}'");
     buildContext.CakeContext.Information(string.Empty);
     buildContext.CakeContext.Information($"Investigating potential issues using '{logPath}'");
     buildContext.CakeContext.Information(string.Empty);
@@ -225,14 +224,14 @@ private static void RunMsBuild(BuildContext buildContext, string projectName, st
 
     buildContext.CakeContext.Information(string.Empty);
     buildContext.CakeContext.Information($"Done investigating project, took '{investigationStopwatch.Elapsed}'");
-    buildContext.CakeContext.Information($"Total msbuild (build + investigation) took '{totalStopwatch.Elapsed}'");
+    buildContext.CakeContext.Information($"Total msbuild ({action} + investigation) took '{totalStopwatch.Elapsed}'");
     buildContext.CakeContext.Information(string.Empty);
 
     if (failBuild)
     {    
         buildContext.CakeContext.Information(string.Empty);
 
-        throw new Exception($"Build failed for project '{projectName}'");
+        throw new Exception($"{action} failed for project '{projectName}'");
     }
 }
 
