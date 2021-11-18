@@ -3,6 +3,7 @@ using System.Reflection;
 //-------------------------------------------------------------
 
 private static readonly Dictionary<string, bool> _dotNetCoreCache = new Dictionary<string, bool>();
+private static readonly Dictionary<string, bool> _blazorCache = new Dictionary<string, bool>();
 
 //-------------------------------------------------------------
 
@@ -263,13 +264,6 @@ private static List<string> SplitSeparatedList(string value, params char[] separ
 
 //-------------------------------------------------------------
 
-private static bool IsCppProject(string projectName)
-{
-    return projectName.EndsWith(".vcxproj");
-}
-
-//-------------------------------------------------------------
-
 private static string GetProjectDirectory(string projectName)
 {
     var projectDirectory = System.IO.Path.Combine(".", "src", projectName);
@@ -437,6 +431,44 @@ private static void DeleteDirectoryWithLogging(BuildContext buildContext, string
             Recursive = true
         });
     }
+}
+
+//-------------------------------------------------------------
+
+private static bool IsCppProject(string projectName)
+{
+    return projectName.EndsWith(".vcxproj");
+}
+
+//-------------------------------------------------------------
+
+private static bool IsBlazorProject(BuildContext buildContext, string projectName)
+{
+    var projectFileName = GetProjectFileName(buildContext, projectName);
+
+    if (!_blazorCache.TryGetValue(projectFileName, out var isBlazor))
+    {
+        isBlazor = false;
+
+        var lines = System.IO.File.ReadAllLines(projectFileName);
+        foreach (var line in lines)
+        {
+            // Match both *TargetFramework* and *TargetFrameworks* 
+            var lowerCase = line.ToLower();
+            if (lowerCase.Contains("<project"))
+            {
+                if (lowerCase.Contains("microsoft.net.sdk.razor"))
+                {
+                    isBlazor = true;
+                    break;
+                }
+            }
+        }
+
+        _blazorCache[projectFileName] = isBlazor;
+    }
+
+    return _blazorCache[projectFileName];
 }
 
 //-------------------------------------------------------------
