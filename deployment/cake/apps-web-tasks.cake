@@ -125,7 +125,7 @@ public class WebProcessor : ProcessorBase
 
             CakeContext.Information("1) Using 'dotnet publish' to package '{0}'", webApp);
 
-            var msBuildSettings = new DotNetCoreMSBuildSettings();
+            var msBuildSettings = new DotNetMSBuildSettings();
 
             // Note: we need to set OverridableOutputPath because we need to be able to respect
             // AppendTargetFrameworkToOutputPath which isn't possible for global properties (which
@@ -136,23 +136,23 @@ public class WebProcessor : ProcessorBase
             msBuildSettings.WithProperty("ConfigurationName", BuildContext.General.Solution.ConfigurationName);
             msBuildSettings.WithProperty("PackageVersion", BuildContext.General.Version.NuGet);
 
-            var publishSettings = new DotNetCorePublishSettings
+            var publishSettings = new DotNetPublishSettings
             {
                 MSBuildSettings = msBuildSettings,
                 OutputDirectory = outputDirectory,
                 Configuration = BuildContext.General.Solution.ConfigurationName
             };
 
-            CakeContext.DotNetCorePublish(projectFileName, publishSettings);
+            CakeContext.DotNetPublish(projectFileName, publishSettings);
             
             CakeContext.Information("2) Using 'octo pack' to package '{0}'", webApp);
 
-            var toolSettings = new DotNetCoreToolSettings
+            var toolSettings = new DotNetToolSettings
             {
             };
 
             var octoPackCommand = string.Format("--id {0} --version {1} --basePath {0}", webApp, BuildContext.General.Version.NuGet);
-            CakeContext.DotNetCoreTool(outputDirectory, "octo pack", octoPackCommand, toolSettings);
+            CakeContext.DotNetTool(outputDirectory, "octo pack", octoPackCommand, toolSettings);
             
             BuildContext.CakeContext.LogSeparator();
         }

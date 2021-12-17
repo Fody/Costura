@@ -188,9 +188,9 @@ public class DockerImagesProcessor : ProcessorBase
             var outputDirectory = System.IO.Path.Combine(outputRootDirectory, "output");
             CakeContext.Information("Output directory: '{0}'", outputDirectory);
 
-            var msBuildSettings = new DotNetCoreMSBuildSettings();
+            var msBuildSettings = new DotNetMSBuildSettings();
 
-            ConfigureMsBuildForDotNetCore(BuildContext, msBuildSettings, dockerImage, "pack");
+            ConfigureMsBuildForDotNet(BuildContext, msBuildSettings, dockerImage, "pack");
 
             // Note: we need to set OverridableOutputPath because we need to be able to respect
             // AppendTargetFrameworkToOutputPath which isn't possible for global properties (which
@@ -204,7 +204,7 @@ public class DockerImagesProcessor : ProcessorBase
             // Disable code analyses, we experienced publish issues with mvc .net core projects
             msBuildSettings.WithProperty("RunCodeAnalysis", "false");
 
-            var publishSettings = new DotNetCorePublishSettings
+            var publishSettings = new DotNetPublishSettings
             {
                 MSBuildSettings = msBuildSettings,
                 OutputDirectory = outputDirectory,
@@ -212,7 +212,7 @@ public class DockerImagesProcessor : ProcessorBase
                 //NoBuild = true
             };
 
-            CakeContext.DotNetCorePublish(projectFileName, publishSettings);
+            CakeContext.DotNetPublish(projectFileName, publishSettings);
 
             BuildContext.CakeContext.LogSeparator();
 

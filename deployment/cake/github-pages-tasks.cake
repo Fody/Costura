@@ -1,6 +1,6 @@
 #l "github-pages-variables.cake"
 
-#addin "nuget:?package=Cake.Git&version=1.1.0"
+#addin "nuget:?package=Cake.Git&version=2.0.0"
 
 //-------------------------------------------------------------
 
@@ -148,7 +148,7 @@ public class GitHubPagesProcessor : ProcessorBase
 
             CakeContext.Information("1) Using 'dotnet publish' to package '{0}'", gitHubPage);
 
-            var msBuildSettings = new DotNetCoreMSBuildSettings();
+            var msBuildSettings = new DotNetMSBuildSettings();
 
             // Note: we need to set OverridableOutputPath because we need to be able to respect
             // AppendTargetFrameworkToOutputPath which isn't possible for global properties (which
@@ -159,14 +159,14 @@ public class GitHubPagesProcessor : ProcessorBase
             msBuildSettings.WithProperty("ConfigurationName", BuildContext.General.Solution.ConfigurationName);
             msBuildSettings.WithProperty("PackageVersion", BuildContext.General.Version.NuGet);
 
-            var publishSettings = new DotNetCorePublishSettings
+            var publishSettings = new DotNetPublishSettings
             {
                 MSBuildSettings = msBuildSettings,
                 OutputDirectory = outputDirectory,
                 Configuration = BuildContext.General.Solution.ConfigurationName
             };
 
-            CakeContext.DotNetCorePublish(projectFileName, publishSettings);
+            CakeContext.DotNetPublish(projectFileName, publishSettings);
         }        
     }
 
