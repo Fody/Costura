@@ -81,7 +81,7 @@ private static void ConfigureMsBuild(BuildContext buildContext, MSBuildSettings 
 
 //-------------------------------------------------------------
 
-private static void ConfigureMsBuildForDotNetCore(BuildContext buildContext, DotNetCoreMSBuildSettings msBuildSettings, 
+private static void ConfigureMsBuildForDotNet(BuildContext buildContext, DotNetMSBuildSettings msBuildSettings, 
     string projectName, string action, bool? allowVsPrerelease = null)
 {
     var toolPath = GetVisualStudioPath(buildContext, allowVsPrerelease);

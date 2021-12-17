@@ -38,8 +38,8 @@ private void CleanUpCode(bool failOnChanges)
     //     arguments.Add("--check");
     // }
 
-    // DotNetCoreTool(null, "format", string.Join(" ", arguments),
-    //     new DotNetCoreToolSettings
+    // DotNetTool(null, "format", string.Join(" ", arguments),
+    //     new DotNetToolSettings
     //     {
     //         WorkingDirectory = "./src/"
     //     });

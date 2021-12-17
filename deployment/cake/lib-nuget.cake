@@ -119,7 +119,7 @@ private static void RestoreNuGetPackagesUsingDotnetRestore(BuildContext buildCon
         {
             buildContext.CakeContext.LogSeparator("Restoring packages for '{0}' using 'dotnet restore' using runtime identifier '{1}'", solutionOrProjectFileName, runtimeIdentifier);
 
-            var restoreSettings = new DotNetCoreRestoreSettings
+            var restoreSettings = new DotNetRestoreSettings
             {
                 DisableParallel = false,
                 Force = false,
@@ -127,7 +127,7 @@ private static void RestoreNuGetPackagesUsingDotnetRestore(BuildContext buildCon
                 IgnoreFailedSources = true,
                 NoCache = false,
                 NoDependencies = buildContext.General.NuGet.NoDependencies, // use true to speed up things
-                Verbosity = DotNetCoreVerbosity.Normal
+                Verbosity = DotNetVerbosity.Normal
             };
     
             if (!string.IsNullOrWhiteSpace(runtimeIdentifier))
@@ -146,7 +146,7 @@ private static void RestoreNuGetPackagesUsingDotnetRestore(BuildContext buildCon
 
             using (buildContext.CakeContext.UseDiagnosticVerbosity())
             {
-                buildContext.CakeContext.DotNetCoreRestore(solutionOrProjectFileName.FullPath, restoreSettings);
+                buildContext.CakeContext.DotNetRestore(solutionOrProjectFileName.FullPath, restoreSettings);
             }
         }
         catch (Exception)

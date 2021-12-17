@@ -67,7 +67,7 @@ public class VersionContext : BuildContextBase
             var gitVersionSettings = new GitVersionSettings
             {
                 UpdateAssemblyInfo = false,
-                Verbosity = GitVersionVerbosity.Debug
+                Verbosity = GitVersionVerbosity.Verbose
             };
 
             var gitDirectory = ".git";
@@ -115,7 +115,7 @@ public class VersionContext : BuildContextBase
                 gitVersionSettings.NoFetch = false;
                 gitVersionSettings.WorkingDirectory = generalContext.RootDirectory;
                 gitVersionSettings.DynamicRepositoryPath = dynamicRepositoryPath;
-                gitVersionSettings.Verbosity = GitVersionVerbosity.Debug;
+                gitVersionSettings.Verbosity = GitVersionVerbosity.Verbose;
             }
 
             _gitVersionContext = CakeContext.GitVersion(gitVersionSettings);

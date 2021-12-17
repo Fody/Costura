@@ -23,8 +23,8 @@
 #l "tests.cake"
 #l "templates-tasks.cake"
 
-#addin "nuget:?package=Cake.FileHelpers&version=4.0.1"
-#addin "nuget:?package=Cake.Sonar&version=1.1.25"
+#addin "nuget:?package=Cake.FileHelpers&version=5.0.0"
+#addin "nuget:?package=Cake.Sonar&version=1.1.29"
 #addin "nuget:?package=MagicChunks&version=2.0.0.119"
 #addin "nuget:?package=Newtonsoft.Json&version=13.0.1"
 #addin "nuget:?package=System.Net.Http&version=4.3.4"
@@ -32,7 +32,7 @@
 // Note: the SonarQube tool must be installed as a global .NET tool:
 // `dotnet tool install --global dotnet-sonarscanner --ignore-failed-sources`
 //#tool "nuget:?package=MSBuild.SonarQube.Runner.Tool&version=4.8.0"
-#tool "nuget:?package=dotnet-sonarscanner&version=5.3.2"
+#tool "nuget:?package=dotnet-sonarscanner&version=5.4.0"
 
 //-------------------------------------------------------------
 // BACKWARDS COMPATIBILITY CODE - START
@@ -291,6 +291,7 @@ Task("Build")
     var sonarUrl = buildContext.General.SonarQube.Url;
 
     var enableSonar = !buildContext.General.SonarQube.IsDisabled && 
+                      buildContext.General.IsCiBuild && // Only build on CI (all projects need to be included)
                       !string.IsNullOrWhiteSpace(sonarUrl);
     if (enableSonar)
     {
