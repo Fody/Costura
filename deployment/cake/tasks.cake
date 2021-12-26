@@ -32,7 +32,7 @@
 // Note: the SonarQube tool must be installed as a global .NET tool:
 // `dotnet tool install --global dotnet-sonarscanner --ignore-failed-sources`
 //#tool "nuget:?package=MSBuild.SonarQube.Runner.Tool&version=4.8.0"
-#tool "nuget:?package=dotnet-sonarscanner&version=5.4.0"
+#tool "nuget:?package=dotnet-sonarscanner&version=5.4.1"
 
 //-------------------------------------------------------------
 // BACKWARDS COMPATIBILITY CODE - START
