@@ -468,6 +468,8 @@ Task("Test")
 //-------------------------------------------------------------
 
 Task("Package")
+    // Make sure to update info so our SolutionAssemblyInfo.cs is up to date
+    .IsDependentOn("UpdateInfo")
     // Note: no dependency on 'build' since we might have already built the solution
     // Make sure we have the temporary "project.assets.json" in case we need to package with Visual Studio
     .IsDependentOn("RestorePackages")
