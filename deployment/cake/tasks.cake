@@ -24,7 +24,7 @@
 #l "templates-tasks.cake"
 
 #addin "nuget:?package=Cake.FileHelpers&version=5.0.0"
-#addin "nuget:?package=Cake.Sonar&version=1.1.29"
+#addin "nuget:?package=Cake.Sonar&version=1.1.30"
 #addin "nuget:?package=MagicChunks&version=2.0.0.119"
 #addin "nuget:?package=Newtonsoft.Json&version=13.0.1"
 #addin "nuget:?package=System.Net.Http&version=4.3.4"
@@ -32,7 +32,7 @@
 // Note: the SonarQube tool must be installed as a global .NET tool:
 // `dotnet tool install --global dotnet-sonarscanner --ignore-failed-sources`
 //#tool "nuget:?package=MSBuild.SonarQube.Runner.Tool&version=4.8.0"
-#tool "nuget:?package=dotnet-sonarscanner&version=5.4.1"
+#tool "nuget:?package=dotnet-sonarscanner&version=5.5.2"
 
 //-------------------------------------------------------------
 // BACKWARDS COMPATIBILITY CODE - START
