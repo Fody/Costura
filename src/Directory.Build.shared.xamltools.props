@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <PackageReference Include="XAMLTools.MSBuild" Version="1.0.0-alpha0085" PrivateAssets="all" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <XAMLColorSchemeGeneratorEnabled>False</XAMLColorSchemeGeneratorEnabled>
+    <XAMLCombineEnabled>True</XAMLCombineEnabled>
+    <XAMLCombineImportMergedResourceDictionaryReferences>False</XAMLCombineImportMergedResourceDictionaryReferences>
+    <RemoveXAMLCombineItemsFromPages>False</RemoveXAMLCombineItemsFromPages>
+  </PropertyGroup>
+</Project>
