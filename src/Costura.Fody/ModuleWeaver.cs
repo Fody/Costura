@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using Fody;
 
-public partial class ModuleWeaver: BaseModuleWeaver
+public sealed partial class ModuleWeaver: BaseModuleWeaver
 {
     public override void Execute()
     {

@@ -39,8 +39,10 @@ public static partial class CecilExtensions
 
     public static bool IsUsingDotNetCore(this ModuleDefinition moduleDefinition)
     {
-        var resolvedAssembly = moduleDefinition.AssemblyResolver.Resolve("System.Runtime.Loader");
-        return resolvedAssembly is not null;
+        using (var resolvedAssembly = moduleDefinition.AssemblyResolver.Resolve("System.Runtime.Loader"))
+        {
+            return resolvedAssembly is not null;
+        }
     }
 
     public static AssemblyDefinition Resolve(this IAssemblyResolver assemblyResolver, string name)

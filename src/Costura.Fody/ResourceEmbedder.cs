@@ -168,7 +168,9 @@ public partial class ModuleWeaver : IDisposable
         var metadata = stringBuilder.ToString();
 
         var memoryStream = new MemoryStream();
+#pragma warning disable IDISP001 // Dispose created
         var textWriter = new StreamWriter(memoryStream);
+#pragma warning restore IDISP001 // Dispose created
         textWriter.Write(metadata);
         textWriter.Flush();
 

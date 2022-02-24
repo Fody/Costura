@@ -10,21 +10,22 @@ public static class WeavingHelper
     {
         var currentDirectory = AssemblyDirectoryHelper.GetCurrentDirectory();
 
-        var weavingTask = new ModuleWeaver
+        using (var weavingTask = new ModuleWeaver
         {
             Config = XElement.Parse(config),
             References = string.Join(";", references.Select(r => Path.Combine(currentDirectory, r))),
             ReferenceCopyLocalPaths = references.Select(r => Path.Combine(currentDirectory, r)).ToList(),
-        };
-
-        if (!Path.IsPathRooted(assemblyPath))
+        })
         {
-            assemblyPath = Path.Combine(currentDirectory, assemblyPath);
-        }
+            if (!Path.IsPathRooted(assemblyPath))
+            {
+                assemblyPath = Path.Combine(currentDirectory, assemblyPath);
+            }
 
-        return weavingTask.ExecuteTestRun(assemblyPath,
-            assemblyName: assemblyName,
-            ignoreCodes: new []{ "0x80131869" },
-            runPeVerify:false);
+            return weavingTask.ExecuteTestRun(assemblyPath,
+                assemblyName: assemblyName,
+                ignoreCodes: new[] { "0x80131869" },
+                runPeVerify: false);
+        }
     }
 }

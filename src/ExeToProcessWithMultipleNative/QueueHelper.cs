@@ -10,12 +10,14 @@
 
         public static void SendMessage(string topic, string message)
         {
-            var producer = new ProducerBuilder<Null, string>(new ProducerConfig
+            using (var producer = new ProducerBuilder<Null, string>(new ProducerConfig
             {
                 ClientId = Dns.GetHostName(),
                 BootstrapServers = QueueAddressesList
-            }).Build();
-            producer.Produce(topic, new Message<Null, string> { Value = message });
+            }).Build())
+            {
+                producer.Produce(topic, new Message<Null, string> { Value = message });
+            }
         }
     }
 }

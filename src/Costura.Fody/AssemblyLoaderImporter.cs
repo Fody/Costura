@@ -73,13 +73,15 @@ public partial class ModuleWeaver
             return;
         }
 
-        var resourceStream = GetType().Assembly.GetManifestResourceStream($"Costura.src.{file}.cs");
-        if (resourceStream is not null)
+        using (var resourceStream = GetType().Assembly.GetManifestResourceStream($"Costura.src.{file}.cs"))
         {
-            using (resourceStream)
-            using (var outStream = new FileStream(localFile, FileMode.Create))
+            if (resourceStream is not null)
             {
-                resourceStream.CopyTo(outStream);
+                using (resourceStream)
+                using (var outStream = new FileStream(localFile, FileMode.Create))
+                {
+                    resourceStream.CopyTo(outStream);
+                }
             }
         }
     }
