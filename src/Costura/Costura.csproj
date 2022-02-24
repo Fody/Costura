@@ -10,6 +10,7 @@
     <PackageId>Costura.Fody</PackageId>
     <PackageTags>ILMerge, ILWeaving, Embed, Resource, Fody, Cecil</PackageTags>
     <DisableFody>true</DisableFody>
+    <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>$(SolutionDir)key.snk</AssemblyOriginatorKeyFile>
     <NoWarn>$(NoWarn);NU5100</NoWarn>
     <NoError>$(NoError);NU5100</NoError>
