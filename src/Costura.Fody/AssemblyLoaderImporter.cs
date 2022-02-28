@@ -26,7 +26,7 @@ public partial class ModuleWeaver
     {
         var readerParameters = new ReaderParameters
         {
-            AssemblyResolver = AssemblyResolver,
+            AssemblyResolver = new NetStandardAssemblyResolver(this),
             ReadSymbols = true,
             SymbolReaderProvider = new PdbReaderProvider()
         };
@@ -92,6 +92,7 @@ public partial class ModuleWeaver
         {
             var newField = new FieldDefinition(field.Name, field.Attributes, Resolve(field.FieldType));
             _targetType.Fields.Add(newField);
+            
             if (field.Name == "assemblyNames")
             {
                 _assemblyNamesField = newField;
@@ -106,14 +107,17 @@ public partial class ModuleWeaver
             {
                 _preloadListField = newField;
             }
+
             if (field.Name == "preload32List")
             {
                 _preload32ListField = newField;
             }
+            
             if (field.Name == "preload64List")
             {
                 _preload64ListField = newField;
             }
+            
             if (field.Name == "checksums")
             {
                 _checksumsField = newField;
