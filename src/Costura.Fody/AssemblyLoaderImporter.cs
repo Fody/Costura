@@ -124,15 +124,23 @@ public partial class ModuleWeaver
     private TypeReference Resolve(TypeReference baseType)
     {
         var typeDefinition = baseType.Resolve();
+        if (typeDefinition is null)
+        {
+            WriteError($"Failed to resolve type '{baseType?.FullName}'");
+            return null;
+        }
+
         var typeReference = ModuleDefinition.ImportReference(typeDefinition);
         if (baseType is ArrayType)
         {
             return new ArrayType(typeReference);
         }
+
         if (baseType.IsGenericInstance)
         {
             typeReference = typeReference.MakeGenericInstanceType(baseType.GetGenericInstanceArguments().ToArray());
         }
+
         return typeReference;
     }
 
