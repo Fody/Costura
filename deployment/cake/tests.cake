@@ -148,7 +148,13 @@ private static void RunUnitTests(BuildContext buildContext, string projectName)
 
             var dotNetTestSettings = new DotNetTestSettings
             {
+                ArgumentCustomization = args => args
+                    .Append($"-- NUnit.TestOutputXml={testResultsDirectory}"),
                 Configuration = buildContext.General.Solution.ConfigurationName,
+                // Loggers = new []
+                // {
+                //     "nunit;LogFilePath=test-result.xml"
+                // },
                 NoBuild = true,
                 NoLogo = true,
                 NoRestore = true,

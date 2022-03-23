@@ -1,13 +1,62 @@
-public class ContinuaCIBuildServer : IBuildServer
+public class ContinuaCIBuildServer : BuildServerBase
 {
     public ContinuaCIBuildServer(ICakeContext cakeContext)
+        : base(cakeContext)
     {
-        CakeContext = cakeContext;
     }
 
-    public ICakeContext CakeContext { get; private set; }
+    //-------------------------------------------------------------
+    
+    public override async Task OnTestFailedAsync()
+    {
+        await ImportNUnitTestFilesAsync();     
+    }
 
-    public void PinBuild(string comment)
+    //-------------------------------------------------------------
+
+    public override async Task AfterTestAsync()
+    {
+        await ImportNUnitTestFilesAsync();     
+    }
+
+    //-------------------------------------------------------------
+
+    private async Task ImportNUnitTestFilesAsync()
+    {
+        var continuaCIContext = GetContinuaCIContext();
+        if (!continuaCIContext.IsRunningOnContinuaCI)
+        {
+            return;
+        }
+
+        var testResultsDirectory = System.IO.Path.Combine(BuildContext.General.OutputRootDirectory, "testresults");
+
+        if (!CakeContext.DirectoryExists(testResultsDirectory))
+        {            
+            CakeContext.Warning("No test results directory");
+            return;
+        }
+
+        var cakeFilePattern =  System.IO.Path.Combine(testResultsDirectory, "**", "*.xml");
+
+        var testResultsFiles = CakeContext.GetFiles(cakeFilePattern);
+        if (!testResultsFiles.Any())
+        {            
+            CakeContext.Warning($"No test result file found using '{cakeFilePattern}'");
+            return;
+        }
+
+        var continuaCiFilePattern = System.IO.Path.Combine(testResultsDirectory, "**.xml");
+
+        CakeContext.Information($"Importing NUnit test results from using '{continuaCiFilePattern}'");
+
+        var message = $"@@continua[importUnitTestResults type='nunit' filePatterns='{continuaCiFilePattern}']";
+        WriteIntegration(message);
+    }
+
+    //-------------------------------------------------------------
+
+    public override async Task PinBuildAsync(string comment)
     {
         var continuaCIContext = GetContinuaCIContext();
         if (!continuaCIContext.IsRunningOnContinuaCI)
@@ -22,7 +71,9 @@ public class ContinuaCIBuildServer : IBuildServer
         WriteIntegration(message);
     }
 
-    public void SetVersion(string version)
+    //-------------------------------------------------------------
+
+    public override async Task SetVersionAsync(string version)
     {
         var continuaCIContext = GetContinuaCIContext();
         if (!continuaCIContext.IsRunningOnContinuaCI)
@@ -36,7 +87,9 @@ public class ContinuaCIBuildServer : IBuildServer
         WriteIntegration(message);
     }
 
-    public void SetVariable(string variableName, string value)
+    //-------------------------------------------------------------
+
+    public override async Task SetVariableAsync(string variableName, string value)
     {
         var continuaCIContext = GetContinuaCIContext();
         if (!continuaCIContext.IsRunningOnContinuaCI)
@@ -50,7 +103,9 @@ public class ContinuaCIBuildServer : IBuildServer
         WriteIntegration(message);
     }
 
-    public Tuple<bool, string> GetVariable(string variableName, string defaultValue)
+    //-------------------------------------------------------------
+
+    public override Tuple<bool, string> GetVariable(string variableName, string defaultValue)
     {
         var continuaCIContext = GetContinuaCIContext();
         if (!continuaCIContext.IsRunningOnContinuaCI)
@@ -73,10 +128,14 @@ public class ContinuaCIBuildServer : IBuildServer
         return new Tuple<bool, string>(exists, value);
     }
 
+    //-------------------------------------------------------------
+
     private IContinuaCIProvider GetContinuaCIContext()
     {
         return CakeContext.ContinuaCI();
     }
+
+    //-------------------------------------------------------------
 
     private void WriteIntegration(string message)
     {
