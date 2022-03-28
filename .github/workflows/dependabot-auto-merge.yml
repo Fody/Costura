@@ -21,14 +21,16 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Enable auto-merge for Dependabot PRs
         if: |
-            (startsWith(steps.dependabot-metadata.outputs.dependency-names, 'catel.') ||
+            (startsWith(steps.dependabot-metadata.outputs.dependency-names, 'approvaltests.') || 
+             startsWith(steps.dependabot-metadata.outputs.dependency-names, 'catel.') ||
              startsWith(steps.dependabot-metadata.outputs.dependency-names, 'fody') ||
              endsWith(steps.dependabot-metadata.outputs.dependency-names,   '.fody') ||
              startsWith(steps.dependabot-metadata.outputs.dependency-names, 'microsoft.') ||
              startsWith(steps.dependabot-metadata.outputs.dependency-names, 'nunit') ||
              startsWith(steps.dependabot-metadata.outputs.dependency-names, 'nunit3testadapter') ||
              startsWith(steps.dependabot-metadata.outputs.dependency-names, 'orc.') || 
-             startsWith(steps.dependabot-metadata.outputs.dependency-names, 'orchestra.')) &&
+             startsWith(steps.dependabot-metadata.outputs.dependency-names, 'orchestra.') ||
+             startsWith(steps.dependabot-metadata.outputs.dependency-names, 'verify.')) &&
             (steps.dependabot-metadata.outputs.update-type == 'version-update:semver-minor' ||
              steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch')
         run: gh pr merge --auto --merge "$PR_URL"
