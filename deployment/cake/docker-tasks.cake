@@ -1,7 +1,7 @@
 #l "docker-variables.cake"
 #l "lib-octopusdeploy.cake"
 
-#addin "nuget:?package=Cake.Docker&version=1.1.1"
+#addin "nuget:?package=Cake.Docker&version=1.1.2"
 
 //-------------------------------------------------------------
 
