@@ -8,16 +8,34 @@
   <!-- Explicit additional project properties that require stuff set before -->
   <PropertyGroup>
     <!-- 
-      Use MsBuildProjectName, this allows us to use the same assembly name for different
-      versions, e.g.:
+      Note that this can either be used to:
+
+      1. Resolve project references (but with properties of the *resolving* project)
+      2. Determine the output directory of the current project
+
+      In rare cases, need to be able to use the MsBuildProjectName. This allows us 
+      to use the same assembly name for different versions, e.g.:
       
       Orc.EntityFramework5 => Orc.EntityFramework.dll
       Orc.EntityFramework6 => Orc.EntityFramework.dll
       
       If we would use AssemblyName, they would be compiled into the same directory
+
+      To enable this feature, use:
+
+      <OutputTargetAssemblyDirectory>Orc.EntityFramework5</OutputTargetAssemblyDirectory>
     -->
     <OverridableOutputRootPath>$(ProjectDir)..\..\output\$(Configuration)</OverridableOutputRootPath>
-    <OverridableOutputPath>$(OverridableOutputRootPath)\$(MSBuildProjectName)\</OverridableOutputPath>
+
+    <!-- 
+        Use correct overridable output path. Since it could already be set by
+        projects referencing this project, we always need to set the output root path.
+
+        If the specific property is set, we then update it once again to its final version.
+     -->
+    <OverridableOutputPath>$(OverridableOutputRootPath)\$(MsBuildProjectName)\</OverridableOutputPath>
+    <OverridableOutputPath Condition=" '$(OutputTargetAssemblyDirectory)' != '' ">$(OverridableOutputRootPath)\$(OutputTargetAssemblyDirectory)\</OverridableOutputPath>
+
     <OutputPath>$(OverridableOutputPath)</OutputPath>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>

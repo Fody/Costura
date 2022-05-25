@@ -515,6 +515,15 @@ private static bool IsDotNetCoreProject(BuildContext buildContext, string projec
 
 private static bool ShouldProcessProject(BuildContext buildContext, string projectName, bool checkDeployment = true)
 {
+    // Is this a dependency?
+    if (buildContext.Dependencies.Items.Contains(projectName))
+    {
+        if (buildContext.Dependencies.ShouldBuildDependency(projectName))
+        {
+            return true;
+        }
+    }
+
     // Includes > Excludes
     var includes = buildContext.General.Includes;
     if (includes.Count > 0)
@@ -637,4 +646,11 @@ private static bool ShouldDeployProject(BuildContext buildContext, string projec
     buildContext.CakeContext.Information($"Value for '{keyToCheck}': {shouldDeploy}");
 
     return shouldDeploy;
+}
+
+//-------------------------------------------------------------
+
+public static void Add(this Dictionary<string, List<string>> dictionary, string project, params string[] projects)
+{
+    dictionary.Add(project, new List<string>(projects));
 }
