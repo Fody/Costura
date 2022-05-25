@@ -95,9 +95,6 @@ public class VsExtensionsProcessor : ProcessorBase
 
             // Since vs extensions (for now) use the old csproj style, make sure
             // to override the output path as well
-            //msBuildSettings.WithProperty("OverridableOutputRootPath", BuildContext.General.OutputRootDirectory);
-            // msBuildSettings.WithProperty("OverridableOutputPath", outputDirectory);
-            // msBuildSettings.WithProperty("PackageOutputPath", OutputRootDirectory);
             msBuildSettings.WithProperty("OutputPath", outputDirectory);
 
             RunMsBuild(BuildContext, vsExtension, projectFileName, msBuildSettings, "build");

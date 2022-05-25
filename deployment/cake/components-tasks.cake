@@ -124,18 +124,9 @@ public class ComponentsProcessor : ProcessorBase
             };
 
             ConfigureMsBuild(BuildContext, msBuildSettings, component, "build");
-            
-            // Note: we need to set OverridableOutputPath because we need to be able to respect
-            // AppendTargetFrameworkToOutputPath which isn't possible for global properties (which
-            // are properties passed in using the command line)
-            var outputDirectory = GetProjectOutputDirectory(BuildContext, component);
-            CakeContext.Information("Output directory: '{0}'", outputDirectory);
-            msBuildSettings.WithProperty("OverridableOutputRootPath", BuildContext.General.OutputRootDirectory);
-            msBuildSettings.WithProperty("OverridableOutputPath", outputDirectory);
-            msBuildSettings.WithProperty("PackageOutputPath", BuildContext.General.OutputRootDirectory);
 
             // SourceLink specific stuff
-            if (IsSourceLinkSupported(BuildContext, projectFileName))
+            if (IsSourceLinkSupported(BuildContext, component, projectFileName))
             {
                 var repositoryUrl = BuildContext.General.Repository.Url;
                 var repositoryCommitId = BuildContext.General.Repository.CommitId;
@@ -152,7 +143,7 @@ public class ComponentsProcessor : ProcessorBase
                 msBuildSettings.WithProperty("RepositoryUrl", repositoryUrl);
                 msBuildSettings.WithProperty("RevisionId", repositoryCommitId);
 
-                InjectSourceLinkInProjectFile(BuildContext, projectFileName);
+                InjectSourceLinkInProjectFile(BuildContext, component, projectFileName);
             }
 
             RunMsBuild(BuildContext, component, projectFileName, msBuildSettings, "build");
@@ -230,12 +221,6 @@ public class ComponentsProcessor : ProcessorBase
 
             ConfigureMsBuild(BuildContext, msBuildSettings, component, "pack");
 
-            // Note: we need to set OverridableOutputPath because we need to be able to respect
-            // AppendTargetFrameworkToOutputPath which isn't possible for global properties (which
-            // are properties passed in using the command line)
-            msBuildSettings.WithProperty("OverridableOutputRootPath", BuildContext.General.OutputRootDirectory);
-            msBuildSettings.WithProperty("OverridableOutputPath", outputDirectory);
-            msBuildSettings.WithProperty("PackageOutputPath", BuildContext.General.OutputRootDirectory);
             msBuildSettings.WithProperty("ConfigurationName", configurationName);
             msBuildSettings.WithProperty("PackageVersion", BuildContext.General.Version.NuGet);
 

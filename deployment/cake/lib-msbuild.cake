@@ -41,8 +41,38 @@ private static void ConfigureMsBuild(BuildContext buildContext, MSBuildSettings 
         msBuildSettings.ToolPath = toolPath;
     }
 
+    // Note: we need to set OverridableOutputPath because we need to be able to respect
+    // AppendTargetFrameworkToOutputPath which isn't possible for global properties (which
+    // are properties passed in using the command line)
+    var outputDirectory = GetProjectOutputDirectory(buildContext, projectName);
+    buildContext.CakeContext.Information("Output directory: '{0}'", outputDirectory);
+    msBuildSettings.WithProperty("OverridableOutputRootPath", buildContext.General.OutputRootDirectory);
+                
+    // GHK: 2022-05-25: Disabled overriding the (whole) output path since this caused all 
+    // reference projects to be re-build again since this override is used for all projects, 
+    // including project references
+    //msBuildSettings.WithProperty("OverridableOutputPath", outputDirectory);
+
+    msBuildSettings.WithProperty("PackageOutputPath", buildContext.General.OutputRootDirectory);
+
+    // Only optimize in release mode
+    if (!buildContext.General.IsLocalBuild)
+    {
+        buildContext.CakeContext.Information($"This is NOT a local build, disabling building of project references");
+
+        // Don't build project references (should already be built)
+        msBuildSettings.WithProperty("BuildProjectReferences", "false");
+
+        //InjectAssemblySearchPathsInProjectFile(buildContext, projectName, GetProjectFileName(buildContext, projectName));
+    }
+    else
+    {
+        buildContext.CakeContext.Information($"This is a local build, disabling building of project references");
+    }
+
     // Continuous integration build
-    msBuildSettings.WithProperty("ContinuousIntegrationBuild", "true");
+    msBuildSettings.ContinuousIntegrationBuild = true;
+    //msBuildSettings.WithProperty("ContinuousIntegrationBuild", "true");
 
     // No NuGet restore (should already be done)
     msBuildSettings.WithProperty("ResolveNuGetPackages", "false");
@@ -92,8 +122,38 @@ private static void ConfigureMsBuildForDotNet(BuildContext buildContext, DotNetM
         msBuildSettings.ToolPath = toolPath;
     }
 
+    // Note: we need to set OverridableOutputPath because we need to be able to respect
+    // AppendTargetFrameworkToOutputPath which isn't possible for global properties (which
+    // are properties passed in using the command line)
+    var outputDirectory = GetProjectOutputDirectory(buildContext, projectName);
+    buildContext.CakeContext.Information("Output directory: '{0}'", outputDirectory);
+    msBuildSettings.WithProperty("OverridableOutputRootPath", buildContext.General.OutputRootDirectory);
+                
+    // GHK: 2022-05-25: Disabled overriding the (whole) output path since this caused all 
+    // reference projects to be re-build again since this override is used for all projects, 
+    // including project references
+    //msBuildSettings.WithProperty("OverridableOutputPath", outputDirectory);
+
+    msBuildSettings.WithProperty("PackageOutputPath", buildContext.General.OutputRootDirectory);
+
+    // Only optimize in release mode
+    if (!buildContext.General.IsLocalBuild)
+    {
+        buildContext.CakeContext.Information($"This is NOT a local build, disabling building of project references");
+
+        // Don't build project references (should already be built)
+        msBuildSettings.WithProperty("BuildProjectReferences", "false");
+
+        //InjectAssemblySearchPathsInProjectFile(buildContext, projectName, GetProjectFileName(buildContext, projectName));
+    }
+    else
+    {
+        buildContext.CakeContext.Information($"This is a local build, disabling building of project references");
+    }
+
     // Continuous integration build
-    msBuildSettings.WithProperty("ContinuousIntegrationBuild", "true");
+    msBuildSettings.ContinuousIntegrationBuild = true;
+    //msBuildSettings.WithProperty("ContinuousIntegrationBuild", "true");
 
     // No NuGet restore (should already be done)
     msBuildSettings.WithProperty("ResolveNuGetPackages", "false");
@@ -347,4 +407,58 @@ private static string GetVisualStudioPath(BuildContext buildContext, bool? allow
     }
 
     throw new Exception("Could not find the path to Visual Studio (msbuild.exe)");
+}
+
+//-------------------------------------------------------------
+
+private static void InjectAssemblySearchPathsInProjectFile(BuildContext buildContext, string projectName, string projectFileName)
+{
+    try
+    {
+        // Allow this project to find any other projects that we have built (since we disabled
+        // building of project dependencies)
+        var assemblySearchPaths = new List<string>();
+        var separator = System.IO.Path.DirectorySeparatorChar.ToString();
+
+        foreach (var project in buildContext.AllProjects)
+        {
+            var projectOutputDirectory = GetProjectOutputDirectory(buildContext, project);
+            assemblySearchPaths.Add(projectOutputDirectory);
+        }
+
+        if (assemblySearchPaths.Count == 0)
+        {
+            buildContext.CakeContext.Information("No assembly search paths found to inject");
+            return;
+        }        
+
+        // For SourceLink to work, the .csproj should contain something like this:
+        // <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02" PrivateAssets="all" />
+        var projectFileContents = System.IO.File.ReadAllText(projectFileName);
+        if (projectFileContents.Contains("AssemblySearchPaths"))
+        {
+            buildContext.CakeContext.Information("Assembly search paths is already added to the project file");
+            return;
+        }
+
+        buildContext.CakeContext.Information("Injecting assembly search paths into project file");
+
+        var xmlDocument = XDocument.Parse(projectFileContents);
+        var projectElement = xmlDocument.Root;
+
+        // Item group with package reference
+        var propertyGroupElement = new XElement("PropertyGroup");
+        var assemblySearchPathsElement = new XElement("AssemblySearchPaths");
+
+        assemblySearchPathsElement.Value = $"$(AssemblySearchPaths);{string.Join(";", assemblySearchPaths)}";
+
+        propertyGroupElement.Add(assemblySearchPathsElement);
+        projectElement.Add(propertyGroupElement);
+
+        xmlDocument.Save(projectFileName);
+    }
+    catch (Exception ex)
+    {
+        buildContext.CakeContext.Error($"Failed to process assembly search paths for project '{projectFileName}': {ex.Message}");
+    }
 }

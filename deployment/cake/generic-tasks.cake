@@ -133,8 +133,10 @@ Task("RestorePackages")
 
     foreach (var project in buildContext.AllProjects)
     {
-        // if (ShouldProcessProject(buildContext, project))
-        // {
+        Information($"Checking whether '{project}' should be restored");
+
+        if (ShouldProcessProject(buildContext, project))
+        {
             var projectFileName = GetProjectFileName(buildContext, project);
             if (projectFileName.EndsWith(".csproj"))
             {
@@ -143,15 +145,17 @@ Task("RestorePackages")
                 csharpProjects.Add(projectFileName);
 
                 // Inject source link *before* package restore
-                InjectSourceLinkInProjectFile(buildContext, projectFileName);
+                InjectSourceLinkInProjectFile(buildContext, project, projectFileName);
             }
-        //}
+        }
     }
 
     var allFiles = new List<FilePath>();
     //allFiles.AddRange(solutions);
     allFiles.AddRange(csharpProjects);
     // //allFiles.AddRange(cProjects);
+
+	Information($"Found '{allFiles.Count}' projects to restore");
 
     foreach (var file in allFiles)
     {

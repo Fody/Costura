@@ -14,6 +14,7 @@
 #l "apps-uwp-tasks.cake"
 #l "apps-web-tasks.cake"
 #l "apps-wpf-tasks.cake"
+#l "codesigning-tasks.cake"
 #l "components-tasks.cake"
 #l "dependencies-tasks.cake"
 #l "tools-tasks.cake"
@@ -92,6 +93,7 @@ public class BuildContext : BuildContextBase
     public GeneralContext General { get; set; }
     public TestsContext Tests { get; set; }
 
+    public CodeSigningContext CodeSigning { get; set; }
     public ComponentsContext Components { get; set; }
     public DependenciesContext Dependencies { get; set; }
     public DockerImagesContext DockerImages { get; set; }
@@ -138,6 +140,7 @@ Setup<BuildContext>(setupContext =>
     buildContext.General = InitializeGeneralContext(buildContext, buildContext);
     buildContext.Tests = InitializeTestsContext(buildContext, buildContext);
 
+    buildContext.CodeSigning = InitializeCodeSigningContext(buildContext, buildContext);
     buildContext.Components = InitializeComponentsContext(buildContext, buildContext);
     buildContext.Dependencies = InitializeDependenciesContext(buildContext, buildContext);
     buildContext.DockerImages = InitializeDockerImagesContext(buildContext, buildContext);
