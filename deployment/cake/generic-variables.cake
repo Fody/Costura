@@ -1,6 +1,6 @@
 #l "buildserver.cake"
 
-#tool "nuget:?package=GitVersion.CommandLine&version=5.10.1"
+#tool "nuget:?package=GitVersion.CommandLine&version=5.10.3"
 
 //-------------------------------------------------------------
 
