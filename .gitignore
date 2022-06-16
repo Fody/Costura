@@ -135,9 +135,16 @@ TestResults
 .github/
 BundleArtifacts/
 
+# docker / tye
+.tye
+
 # editors
 .idea
 .vscode
+
+# Binaries
+*.dll
+*.exe
 
 # fody
 FodyWeavers.xsd
