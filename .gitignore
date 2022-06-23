@@ -155,3 +155,7 @@ FodyWeavers.xsd
 # ANTLR
 data/dsl/*.class
 data/dsl/*.java
+
+# Nodejs / NPM
+node_modules
+package-lock.json
