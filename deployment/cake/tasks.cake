@@ -33,7 +33,7 @@
 // Note: the SonarQube tool must be installed as a global .NET tool:
 // `dotnet tool install --global dotnet-sonarscanner --ignore-failed-sources`
 //#tool "nuget:?package=MSBuild.SonarQube.Runner.Tool&version=4.8.0"
-#tool "nuget:?package=dotnet-sonarscanner&version=5.7.1"
+#tool "nuget:?package=dotnet-sonarscanner&version=5.7.2"
 
 //-------------------------------------------------------------
 // BACKWARDS COMPATIBILITY CODE - START
@@ -242,8 +242,7 @@ Task("Prepare")
         await processor.PrepareAsync();
     }
 
-    // Now add all projects, but dependencies first & tests last
-    buildContext.AllProjects.AddRange(buildContext.Dependencies.Items);
+    // Now add all projects, but dependencies first & tests last, which will be added at the end
     buildContext.AllProjects.AddRange(buildContext.Components.Items);
     buildContext.AllProjects.AddRange(buildContext.DockerImages.Items);
     buildContext.AllProjects.AddRange(buildContext.GitHubPages.Items);
@@ -253,16 +252,41 @@ Task("Prepare")
     buildContext.AllProjects.AddRange(buildContext.Web.Items);
     buildContext.AllProjects.AddRange(buildContext.Wpf.Items);
 
+    buildContext.CakeContext.LogSeparator("Final check which test projects should be included");
+
     // Once we know all the projects that will be built, we calculate which
     // test projects need to be built as well
 
     var testProcessor = new TestProcessor(buildContext);
-
     await testProcessor.PrepareAsync();
-
     buildContext.Processors.Add(testProcessor);
 
+    buildContext.CakeContext.Information(string.Empty);
+    buildContext.CakeContext.Information($"Found '{buildContext.Tests.Items.Count}' test projects");
+    
+    foreach (var test in buildContext.Dependencies.Items)
+    {
+        buildContext.CakeContext.Information($"  - {test}");
+    }
+
     buildContext.AllProjects.AddRange(buildContext.Tests.Items);
+
+    buildContext.CakeContext.LogSeparator("Final check which dependencies should be included");
+
+    // Now we really really determined all projects to build, we can check the dependencies
+    var dependenciesProcessor = (DependenciesProcessor)buildContext.Processors.First(x => x is DependenciesProcessor);
+    await dependenciesProcessor.PrepareAsync();
+
+    buildContext.CakeContext.Information(string.Empty);
+    buildContext.CakeContext.Information($"Found '{buildContext.Dependencies.Items.Count}' dependencies");
+    
+    foreach (var dependency in buildContext.Dependencies.Items)
+    {
+        buildContext.CakeContext.Information($"  - {dependency}");
+    }
+
+    // Add to the front, these are dependencies after all
+    buildContext.AllProjects.InsertRange(0, buildContext.Dependencies.Items);
 
     buildContext.CakeContext.LogSeparator("Final projects to process");
 
