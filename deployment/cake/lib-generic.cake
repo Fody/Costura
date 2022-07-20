@@ -524,6 +524,13 @@ private static bool ShouldProcessProject(BuildContext buildContext, string proje
         }
     }
 
+    // Is this a test project?
+    if (buildContext.Tests.Items.Contains(projectName))
+    {
+        // Assume false, the test processor will check for this
+        return false;
+    }
+
     // Includes > Excludes
     var includes = buildContext.General.Includes;
     if (includes.Count > 0)
@@ -636,6 +643,13 @@ private static bool ShouldDeployProject(BuildContext buildContext, string projec
     var keyToCheck = string.Format("Deploy{0}", slug);
 
     var shouldDeploy = buildContext.BuildServer.GetVariableAsBool(keyToCheck, true);
+
+    // If this is *only* a dependency, it should never be deployed
+    if (IsOnlyDependencyProject(buildContext, projectName))
+    {
+        shouldDeploy = false;
+    }
+
     if (shouldDeploy && !ShouldProcessProject(buildContext, projectName, false))
     {
         buildContext.CakeContext.Information($"Project '{projectName}' should not be processed, excluding it anyway");
@@ -646,6 +660,79 @@ private static bool ShouldDeployProject(BuildContext buildContext, string projec
     buildContext.CakeContext.Information($"Value for '{keyToCheck}': {shouldDeploy}");
 
     return shouldDeploy;
+}
+
+//-------------------------------------------------------------
+
+private static bool IsOnlyDependencyProject(BuildContext buildContext, string projectName)
+{
+    buildContext.CakeContext.Information($"Checking if project '{projectName}' is a dependency only");
+
+    // If not in the dependencies list, we can stop checking
+    if (!buildContext.Dependencies.Items.Contains(projectName))
+    {
+        buildContext.CakeContext.Information($"Project is not in list of dependencies, assuming not dependency only");
+        return false;
+    }
+
+    if (buildContext.Components.Items.Contains(projectName))
+    {
+        buildContext.CakeContext.Information($"Project is list of components, assuming not dependency only");
+        return false;
+    }
+
+    if (buildContext.DockerImages.Items.Contains(projectName))
+    {
+        buildContext.CakeContext.Information($"Project is list of docker images, assuming not dependency only");
+        return false;
+    }
+
+    if (buildContext.GitHubPages.Items.Contains(projectName))
+    {
+        buildContext.CakeContext.Information($"Project is list of GitHub pages, assuming not dependency only");
+        return false;
+    }
+
+    if (buildContext.Templates.Items.Contains(projectName))
+    {
+        buildContext.CakeContext.Information($"Project is list of templates, assuming not dependency only");
+        return false;
+    }
+
+    if (buildContext.Tools.Items.Contains(projectName))
+    {
+        buildContext.CakeContext.Information($"Project is list of tools, assuming not dependency only");
+        return false;
+    }            
+
+    if (buildContext.Uwp.Items.Contains(projectName))
+    {
+        buildContext.CakeContext.Information($"Project is list of UWP apps, assuming not dependency only");
+        return false;
+    }   
+
+    if (buildContext.VsExtensions.Items.Contains(projectName))
+    {
+        buildContext.CakeContext.Information($"Project is list of VS extensions, assuming not dependency only");
+        return false;
+    }   
+
+    if (buildContext.Web.Items.Contains(projectName))
+    {
+        buildContext.CakeContext.Information($"Project is list of web apps, assuming not dependency only");
+        return false;
+    }  
+
+    if (buildContext.Wpf.Items.Contains(projectName))
+    {
+        buildContext.CakeContext.Information($"Project is list of WPF apps, assuming not dependency only");
+        return false;
+    }  
+
+    buildContext.CakeContext.Information($"Project '{projectName}' is a dependency only");
+
+    // It's in the dependencies list and not in any other list
+    return true;
 }
 
 //-------------------------------------------------------------
