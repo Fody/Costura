@@ -1,4 +1,4 @@
-### <img src="https://raw.githubusercontent.com/Fody/Costura/master/package_icon.png" height="28px"> Costura is an add-in for [Fody](https://github.com/Fody/Home/)
+### <img src="./design/logo/package_icon.png" height="28px"> Costura is an add-in for [Fody](https://github.com/Fody/Home/)
 
 Embeds dependencies as resources.
 
