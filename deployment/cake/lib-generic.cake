@@ -558,6 +558,13 @@ private static bool ShouldProcessProject(BuildContext buildContext, string proje
         return process;
     }
 
+    // Is this a known project?
+    if (!buildContext.RegisteredProjects.Any(x => string.Equals(projectName, x, StringComparison.OrdinalIgnoreCase)))
+    {
+        buildContext.CakeContext.Warning("Project '{0}' should not be processed, does not exist as registered project", projectName);
+        return false;
+    }
+
     if (buildContext.General.IsCiBuild)
     {
         // In CI builds, we always want to include all projects

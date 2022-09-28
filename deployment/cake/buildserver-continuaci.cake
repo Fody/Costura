@@ -9,25 +9,37 @@ public class ContinuaCIBuildServer : BuildServerBase
     
     public override async Task OnTestFailedAsync()
     {
-        await ImportNUnitTestFilesAsync();     
+        await ImportUnitTestsAsync();
     }
 
     //-------------------------------------------------------------
 
     public override async Task AfterTestAsync()
     {
-        await ImportNUnitTestFilesAsync();     
+        await ImportUnitTestsAsync();
     }
 
     //-------------------------------------------------------------
 
-    private async Task ImportNUnitTestFilesAsync()
+    private async Task ImportUnitTestsAsync()
+    {
+        foreach (var project in BuildContext.Tests.Items)
+        {
+            await ImportTestFilesAsync(project);
+        }
+    }
+
+    //-------------------------------------------------------------
+
+    private async Task ImportTestFilesAsync(string projectName)
     {
         var continuaCIContext = GetContinuaCIContext();
         if (!continuaCIContext.IsRunningOnContinuaCI)
         {
             return;
         }
+
+        CakeContext.Warning($"Importing test results for '{projectName}'");
 
         var testResultsDirectory = System.IO.Path.Combine(BuildContext.General.OutputRootDirectory, "testresults");
 
@@ -37,7 +49,32 @@ public class ContinuaCIBuildServer : BuildServerBase
             return;
         }
 
-        var cakeFilePattern =  System.IO.Path.Combine(testResultsDirectory, "**", "*.xml");
+        var type = string.Empty;
+        var importType = string.Empty;
+
+        if (IsNUnitTestProject(BuildContext, projectName))
+        {
+            type = "nunit";
+            importType = "nunit";
+        }
+        
+        if (IsXUnitTestProject(BuildContext, projectName))
+        {
+            type = "xunit";
+            importType = "mstest"; // Xml type is different
+        }
+
+        if (string.IsNullOrWhiteSpace(type))
+        {
+            CakeContext.Warning("Could not find test project type");
+            return;
+        }
+
+        CakeContext.Warning($"Determined project type '{type}'");
+
+        var cakeFilePattern =  System.IO.Path.Combine(testResultsDirectory, projectName, "*.xml");
+
+        CakeContext.Warning($"Using pattern '{cakeFilePattern}'");
 
         var testResultsFiles = CakeContext.GetFiles(cakeFilePattern);
         if (!testResultsFiles.Any())
@@ -48,9 +85,9 @@ public class ContinuaCIBuildServer : BuildServerBase
 
         var continuaCiFilePattern = System.IO.Path.Combine(testResultsDirectory, "**.xml");
 
-        CakeContext.Information($"Importing NUnit test results from using '{continuaCiFilePattern}'");
+        CakeContext.Information($"Importing test results from using '{continuaCiFilePattern}' using import type '{importType}'");
 
-        var message = $"@@continua[importUnitTestResults type='nunit' filePatterns='{continuaCiFilePattern}']";
+        var message = $"@@continua[importUnitTestResults type='{importType}' filePatterns='{cakeFilePattern}']";
         WriteIntegration(message);
     }
 
