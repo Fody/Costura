@@ -25,6 +25,11 @@ public class DependenciesContext : BuildContextWithItemsBase
 
     public bool ShouldBuildDependency(string dependencyProject)
     {
+        return ShouldBuildDependency(dependencyProject, Array.Empty<string>());
+    }
+
+    public bool ShouldBuildDependency(string dependencyProject, IEnumerable<string> knownDependenciesToBeBuilt)
+    {
         if (!Dependencies.TryGetValue(dependencyProject, out var dependencyInfo))
         {
             return false;
@@ -38,9 +43,19 @@ public class DependenciesContext : BuildContextWithItemsBase
 
         foreach (var projectRequiringDependency in dependencyInfo)
         {
+             CakeContext.Information($"Checking whether '{projectRequiringDependency}' is in the list to be processed");
+
+            // Check dependencies of dependencies
+            if (knownDependenciesToBeBuilt.Any(x => string.Equals(x, projectRequiringDependency, StringComparison.OrdinalIgnoreCase)))
+            {
+                CakeContext.Information($"Dependency '{dependencyProject}' is a dependency of dependency project '{projectRequiringDependency}', including this in the build");
+                return true;
+            }
+
             // Check if we should build this project
             if (ShouldProcessProject((BuildContext)ParentContext, projectRequiringDependency))
             {
+                CakeContext.Information($"Dependency '{dependencyProject}' is a dependency of '{projectRequiringDependency}', including this in the build");
                 return true;
             }
         }

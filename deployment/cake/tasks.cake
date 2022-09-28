@@ -253,6 +253,12 @@ Task("Prepare")
 
     foreach (var processor in buildContext.Processors)
     {
+        if (processor is DependenciesProcessor)
+        {
+            // Process later
+            continue;
+        }
+
         await processor.PrepareAsync();
     }
 
@@ -278,7 +284,7 @@ Task("Prepare")
     buildContext.CakeContext.Information(string.Empty);
     buildContext.CakeContext.Information($"Found '{buildContext.Tests.Items.Count}' test projects");
     
-    foreach (var test in buildContext.Dependencies.Items)
+    foreach (var test in buildContext.Tests.Items)
     {
         buildContext.CakeContext.Information($"  - {test}");
     }
