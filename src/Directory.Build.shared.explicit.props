@@ -13,7 +13,7 @@
       1. Resolve project references (but with properties of the *resolving* project)
       2. Determine the output directory of the current project
 
-      In rare cases, need to be able to use the MsBuildProjectName. This allows us 
+      In rare cases, need to be able to use the MSBuildProjectName. This allows us 
       to use the same assembly name for different versions, e.g.:
       
       Orc.EntityFramework5 => Orc.EntityFramework.dll
@@ -33,10 +33,18 @@
 
         If the specific property is set, we then update it once again to its final version.
      -->
-    <OverridableOutputPath>$(OverridableOutputRootPath)\$(MsBuildProjectName)\</OverridableOutputPath>
+    <__OverridableOutputPathDefault>$(OverridableOutputRootPath)\$(MSBuildProjectName)\</__OverridableOutputPathDefault>
+    <OverridableOutputPath>$(OverridableOutputRootPath)\$(MSBuildProjectName)\</OverridableOutputPath>
     <OverridableOutputPath Condition=" '$(OutputTargetAssemblyDirectory)' != '' ">$(OverridableOutputRootPath)\$(OutputTargetAssemblyDirectory)\</OverridableOutputPath>
 
-    <OutputPath>$(OverridableOutputPath)</OutputPath>
+    <!-- 
+        Overridable output path can be set for a project, but directly referenced projects need a way 
+        to use this correctly. Therefore this property checks whether it's explicitly set and already
+        contains the correct paths. If not, it will automatically be appended.
+    -->
+
+    <OutputPath Condition=" '$(OverridableOutputPath)' != '$(__OverridableOutputPathDefault)' ">$(OverridableOutputPath)\..\$(MSBuildProjectName)\</OutputPath>
+    <OutputPath Condition=" '$(OverridableOutputPath)' == '$(__OverridableOutputPathDefault)' ">$(OverridableOutputPath)</OutputPath>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
   
