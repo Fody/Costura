@@ -110,6 +110,13 @@ public class TestProcessor : ProcessorBase
             .Replace(".IntegrationTests", string.Empty)
             .Replace(".Tests", string.Empty);
 
+        // Special case: if this is a "solution wide" test project, it must always run
+        if (!BuildContext.RegisteredProjects.Any(x => string.Equals(x, expectedProjectName, StringComparison.OrdinalIgnoreCase)))
+        {
+            BuildContext.CakeContext.Information($"Including test project '{projectName}' because there are no linked projects, assuming this is a solution wide test project");
+            return false;
+        }
+
         if (!ShouldProcessProject(BuildContext, expectedProjectName))
         {
             BuildContext.CakeContext.Information($"Skipping test project '{projectName}' because project '{expectedProjectName}' should not be processed either");

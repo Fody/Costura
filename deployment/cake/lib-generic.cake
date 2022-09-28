@@ -513,8 +513,15 @@ private static bool IsDotNetCoreProject(BuildContext buildContext, string projec
 
 //-------------------------------------------------------------
 
-private static bool ShouldProcessProject(BuildContext buildContext, string projectName, bool checkDeployment = true)
+private static bool ShouldProcessProject(BuildContext buildContext, string projectName, 
+    bool checkDeployment = true)
 {
+    // If part of all projects, always include
+    if (buildContext.AllProjects.Contains(projectName))
+    {
+        return true;
+    }
+
     // Is this a dependency?
     if (buildContext.Dependencies.Items.Contains(projectName))
     {

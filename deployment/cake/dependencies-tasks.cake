@@ -19,18 +19,46 @@ public class DependenciesProcessor : ProcessorBase
 
     public override async Task PrepareAsync()
     {
+        BuildContext.CakeContext.Information($"Checking '{BuildContext.Dependencies.Items.Count}' dependencies");
+        
         if (!HasItems())
         {
             return;
         }
 
+        // We need to go through this twice because a dependency can be a dependency of a dependency
+        var dependenciesToBuild = new List<string>();
+
         // Check whether projects should be processed, `.ToList()` 
         // is required to prevent issues with foreach
+        for (int i = 0; i < 3; i++)
+        {
+            foreach (var dependency in BuildContext.Dependencies.Items.ToList())
+            {
+                if (dependenciesToBuild.Contains(dependency))
+                {
+                    // Already done
+                    continue;
+                }
+
+                BuildContext.CakeContext.Information($"Checking dependency '{dependency}' using run {i + 1}");
+
+                if (BuildContext.Dependencies.ShouldBuildDependency(dependency, dependenciesToBuild))
+                {
+                    BuildContext.CakeContext.Information($"Dependency '{dependency}' should be included");
+
+                    dependenciesToBuild.Add(dependency);
+                }
+            }
+        }
+
+        // TODO: How to determine the sort order? E.g. dependencies of dependencies?
+
         foreach (var dependency in BuildContext.Dependencies.Items.ToList())
         {
-            if (!BuildContext.Dependencies.ShouldBuildDependency(dependency))
+            if (!dependenciesToBuild.Contains(dependency))
             {
-                BuildContext.CakeContext.Information("Skipping dependency '{0}' because no dependent projects are included", dependency);
+                BuildContext.CakeContext.Information($"Skipping dependency '{dependency}' because no dependent projects are included");
 
                 BuildContext.Dependencies.Dependencies.Remove(dependency);
                 BuildContext.Dependencies.Items.Remove(dependency);
