@@ -33,7 +33,7 @@
 // Note: the SonarQube tool must be installed as a global .NET tool:
 // `dotnet tool install --global dotnet-sonarscanner --ignore-failed-sources`
 //#tool "nuget:?package=MSBuild.SonarQube.Runner.Tool&version=4.8.0"
-#tool "nuget:?package=dotnet-sonarscanner&version=5.7.2"
+#tool "nuget:?package=dotnet-sonarscanner&version=5.8.0"
 
 //-------------------------------------------------------------
 // BACKWARDS COMPATIBILITY CODE - START
@@ -74,6 +74,7 @@ public class BuildContext : BuildContextBase
     {
         Processors = new List<IProcessor>();
         AllProjects = new List<string>();
+        RegisteredProjects = new List<string>();
         Variables = new Dictionary<string, string>();  
     }
 
@@ -106,6 +107,7 @@ public class BuildContext : BuildContextBase
     public WpfContext Wpf { get; set; }
 
     public List<string> AllProjects { get; private set; }
+    public List<string> RegisteredProjects { get; private set; }
 
     protected override void ValidateContext()
     {
@@ -235,6 +237,18 @@ Task("Initialize")
 Task("Prepare")
     .Does<BuildContext>(async buildContext =>
 {
+    // Add all projects to registered projects
+    buildContext.RegisteredProjects.AddRange(buildContext.Components.Items);
+    buildContext.RegisteredProjects.AddRange(buildContext.Dependencies.Items);
+    buildContext.RegisteredProjects.AddRange(buildContext.DockerImages.Items);
+    buildContext.RegisteredProjects.AddRange(buildContext.GitHubPages.Items);
+    buildContext.RegisteredProjects.AddRange(buildContext.Tests.Items);
+    buildContext.RegisteredProjects.AddRange(buildContext.Tools.Items);
+    buildContext.RegisteredProjects.AddRange(buildContext.Uwp.Items);
+    buildContext.RegisteredProjects.AddRange(buildContext.VsExtensions.Items);
+    buildContext.RegisteredProjects.AddRange(buildContext.Web.Items);
+    buildContext.RegisteredProjects.AddRange(buildContext.Wpf.Items);
+
     await buildContext.BuildServer.BeforePrepareAsync();
 
     foreach (var processor in buildContext.Processors)
@@ -287,6 +301,12 @@ Task("Prepare")
 
     // Add to the front, these are dependencies after all
     buildContext.AllProjects.InsertRange(0, buildContext.Dependencies.Items);
+
+    // Now we have the full collection, distinct
+    var allProjects = buildContext.AllProjects.ToArray();
+
+    buildContext.AllProjects.Clear();
+    buildContext.AllProjects.AddRange(allProjects.Distinct());
 
     buildContext.CakeContext.LogSeparator("Final projects to process");
 
@@ -496,11 +516,66 @@ Task("Test")
 
     await buildContext.SourceControl.MarkBuildAsPendingAsync("Test");
     
-    foreach (var testProject in buildContext.Tests.Items)
+    if (buildContext.Tests.Items.Count > 0)
     {
-        buildContext.CakeContext.LogSeparator("Running tests for '{0}'", testProject);
+        // If docker is involved, login to all registries for the unit / integration tests
+        var dockerRegistries = new HashSet<string>();
+        var dockerProcessor = (DockerImagesProcessor)buildContext.Processors.Single(x => x is DockerImagesProcessor);
 
-        RunUnitTests(buildContext, testProject);
+        try
+        {
+            foreach (var dockerImage in buildContext.DockerImages.Items)
+            {       
+                var dockerRegistryUrl = dockerProcessor.GetDockerRegistryUrl(dockerImage);
+                if (dockerRegistries.Contains(dockerRegistryUrl))
+                {
+                    continue;
+                }
+
+                // Note: we are logging in each time because the registry might be different per container
+                Information($"Logging in to docker @ '{dockerRegistryUrl}'");
+
+                dockerRegistries.Add(dockerRegistryUrl);
+
+                var dockerRegistryUserName = dockerProcessor.GetDockerRegistryUserName(dockerImage);
+                var dockerRegistryPassword = dockerProcessor.GetDockerRegistryPassword(dockerImage);
+
+                var dockerLoginSettings = new DockerRegistryLoginSettings
+                {
+                    Username = dockerRegistryUserName,
+                    Password = dockerRegistryPassword
+                };
+
+                DockerLogin(dockerLoginSettings, dockerRegistryUrl);
+            }
+
+            foreach (var testProject in buildContext.Tests.Items)
+            {
+                buildContext.CakeContext.LogSeparator("Running tests for '{0}'", testProject);
+
+                RunUnitTests(buildContext, testProject);
+            }
+        }
+        finally
+        {
+            foreach (var dockerRegistry in dockerRegistries)
+            {
+                try
+                {
+                    Information($"Logging out of docker @ '{dockerRegistry}'");
+
+                    var dockerLogoutSettings = new DockerRegistryLogoutSettings
+                    {
+                    };
+
+                    DockerLogout(dockerLogoutSettings, dockerRegistry);
+                }
+                catch (Exception ex)
+                {
+                    Warning($"Failed to logout from docker: {ex.Message}");
+                }
+            }
+        }
     }
 
     await buildContext.SourceControl.MarkBuildAsSucceededAsync("Test");
