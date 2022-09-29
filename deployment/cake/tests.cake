@@ -131,8 +131,7 @@ public class TestProcessor : ProcessorBase
 
 private static void RunUnitTests(BuildContext buildContext, string projectName)
 {
-    var testResultsDirectory = System.IO.Path.Combine(buildContext.General.OutputRootDirectory,
-        "testresults", projectName);
+    var testResultsDirectory = System.IO.Path.Combine(buildContext.General.OutputRootDirectory, "testresults", projectName);
 
     buildContext.CakeContext.CreateDirectory(testResultsDirectory);
 
@@ -144,7 +143,7 @@ private static void RunUnitTests(BuildContext buildContext, string projectName)
     {
         if (IsDotNetCoreProject(buildContext, projectName))
         {
-            buildContext.CakeContext.Information("Project '{0}' is a .NET core project, using 'dotnet test' to run the unit tests", projectName);
+            buildContext.CakeContext.Information($"Project '{projectName}' is a .NET core project, using 'dotnet test' to run the unit tests");
 
             var projectFileName = GetProjectFileName(buildContext, projectName);
 
@@ -188,7 +187,7 @@ private static void RunUnitTests(BuildContext buildContext, string projectName)
         }
         else
         {
-            buildContext.CakeContext.Information("Project '{0}' is a .NET project, using '{1} runner' to run the unit tests", projectName, buildContext.Tests.Framework);
+            buildContext.CakeContext.Information($"Project '{projectName}' is a .NET project, using '{buildContext.Tests.Framework} runner' to run the unit tests");
 
             if (IsNUnitTestProject(buildContext, projectName))
             {
@@ -200,14 +199,14 @@ private static void RunUnitTests(BuildContext buildContext, string projectName)
     }
     catch (Exception ex)
     {
-        buildContext.CakeContext.Warning("An exception occurred: {0}", ex.Message);
+        buildContext.CakeContext.Warning($"An exception occurred: {ex.Message}");
 
         failed = true;   
     }
 
     if (ranTests)
     {
-        buildContext.CakeContext.Information("Results are available in '{0}'", testResultsDirectory);
+        buildContext.CakeContext.Information($"Results are available in '{testResultsDirectory}'");
     }
     else if (failed)
     {
