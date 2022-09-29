@@ -555,11 +555,28 @@ Task("Test")
                 DockerLogin(dockerLoginSettings, dockerRegistryUrl);
             }
 
+            // Always run all unit test projects before throwing
+            var failed = false;
+
             foreach (var testProject in buildContext.Tests.Items)
             {
                 buildContext.CakeContext.LogSeparator("Running tests for '{0}'", testProject);
 
-                RunUnitTests(buildContext, testProject);
+                try
+                {
+                    RunUnitTests(buildContext, testProject);
+                }
+                catch (Exception ex)
+                {
+                    failed = true;
+
+                    Warning($"Running tests for '{testProject}' caused an exception: {ex.Message}");
+                }
+            }
+
+            if (failed)
+            {
+                throw new Exception("At least 1 test project failed execution");
             }
         }
         finally
