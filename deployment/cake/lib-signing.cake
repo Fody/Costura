@@ -72,6 +72,11 @@ public static void SignFile(BuildContext buildContext, string signToolCommand, s
         _signToolFileName = FindSignToolFileName(buildContext);
     }
 
+    if (string.IsNullOrWhiteSpace(_signToolFileName))
+    {
+        throw new InvalidOperationException("Cannot find signtool.exe, make sure to install a Windows Development Kit");
+    }
+
     buildContext.CakeContext.Information(string.Empty);
 
     // Retry mechanism, signing with timestamping is not as reliable as we thought
