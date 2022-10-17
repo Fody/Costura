@@ -28,9 +28,12 @@
 #addin "nuget:?package=Cake.Sonar&version=1.1.30"
 #addin "nuget:?package=MagicChunks&version=2.0.0.119"
 #addin "nuget:?package=Newtonsoft.Json&version=13.0.1"
-#addin "nuget:?package=System.Net.Http&version=4.3.4"
 
-// Note: the SonarQube tool must be installed as a global .NET tool:
+// Note: the SonarQube tool must be installed as a global .NET tool. If you are getting issues like this:
+//
+// The SonarScanner for MSBuild integration failed: [...] was unable to collect the required information about your projects.
+// 
+// It probably means the tool is not correctly installed.
 // `dotnet tool install --global dotnet-sonarscanner --ignore-failed-sources`
 //#tool "nuget:?package=MSBuild.SonarQube.Runner.Tool&version=4.8.0"
 #tool "nuget:?package=dotnet-sonarscanner&version=5.8.0"

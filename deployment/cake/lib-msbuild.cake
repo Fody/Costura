@@ -224,8 +224,11 @@ private static void RunMsBuild(BuildContext buildContext, string projectName, st
     var failBuild = false;
 
     try
-    {
-        buildContext.CakeContext.MSBuild(projectFileName, msBuildSettings);
+    {        
+        // using (buildContext.CakeContext.UseDiagnosticVerbosity())
+        // {
+            buildContext.CakeContext.MSBuild(projectFileName, msBuildSettings);
+        //}
     }
     catch (System.Exception)
     {
