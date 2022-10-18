@@ -264,7 +264,14 @@ public class ComponentsProcessor : ProcessorBase
             {
                 CakeContext.Information("Allowing build and package restore during package phase since this is a Blazor project which requires the 'obj' directory");
 
-                msBuildSettings.WithProperty("ResolveNuGetPackages", "true");
+                // Don't use WithProperty since that will concatenate, and we need to overwrite the
+                // value here
+                //msBuildSettings.WithProperty("ResolveNuGetPackages", "true");
+                msBuildSettings.Properties["ResolveNuGetPackages"] = new List<string>
+                { 
+                    "true"
+                };
+                
                 msBuildSettings.Restore = true;
                 noBuild = false;
             }

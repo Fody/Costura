@@ -153,8 +153,8 @@ public class DependenciesProcessor : ProcessorBase
             {
                 var codeSignToolFileName = FindSignToolFileName(BuildContext);
                 var codeSignVerifyCommand = $"verify /pa";
-                var codeSignCommand = string.Format("sign /a /t {0} /n {1} /fd certHash", BuildContext.General.CodeSign.TimeStampUri, 
-                    BuildContext.General.CodeSign.CertificateSubjectName);
+                var codeSignCommand = string.Format("sign /a /t {0} /n {1} /fd {2}", BuildContext.General.CodeSign.TimeStampUri, 
+                    BuildContext.General.CodeSign.CertificateSubjectName, BuildContext.General.CodeSign.HashAlgorithm);
 
                 msBuildSettings.WithProperty("CodeSignToolFileName", codeSignToolFileName);
                 msBuildSettings.WithProperty("CodeSignVerifyCommand", codeSignVerifyCommand);

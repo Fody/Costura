@@ -170,8 +170,8 @@ public class WpfProcessor : ProcessorBase
                 BuildContext.CakeContext.Information($"  - {dllSignFilesSearchPattern}");
                 projectFilesToSign.AddRange(BuildContext.CakeContext.GetFiles(dllSignFilesSearchPattern));
 
-                var signToolCommand = string.Format("sign /a /t {0} /n {1}  /fd certHash", BuildContext.General.CodeSign.TimeStampUri, 
-                    BuildContext.General.CodeSign.CertificateSubjectName);
+                var signToolCommand = string.Format("sign /a /t {0} /n {1} /fd {2}", BuildContext.General.CodeSign.TimeStampUri, 
+                    BuildContext.General.CodeSign.CertificateSubjectName, BuildContext.General.CodeSign.HashAlgorithm);
 
                 SignFiles(BuildContext, signToolCommand, projectFilesToSign);
             }            
