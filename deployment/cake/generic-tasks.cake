@@ -316,7 +316,8 @@ Task("CodeSign")
         filesToSign.AddRange(projectFilesToSign);
     }
 
-    var signToolCommand = string.Format("sign /a /t {0} /n {1}", buildContext.General.CodeSign.TimeStampUri, certificateSubjectName);
+    var signToolCommand = string.Format("sign /a /t {0} /n {1} /fd {2}", buildContext.General.CodeSign.TimeStampUri, 
+        certificateSubjectName, buildContext.General.CodeSign.HashAlgorithm);
 
     SignFiles(buildContext, signToolCommand, filesToSign);
 

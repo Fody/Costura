@@ -329,6 +329,7 @@ public class CodeSignContext : BuildContextBase
     public string WildCard { get; set; }
     public string CertificateSubjectName { get; set; }
     public string TimeStampUri { get; set; }
+    public string HashAlgorithm { get; set; }
 
     protected override void ValidateContext()
     {
@@ -337,7 +338,15 @@ public class CodeSignContext : BuildContextBase
     
     protected override void LogStateInfoForContext()
     {
-    
+        if (string.IsNullOrWhiteSpace(CertificateSubjectName))
+        {
+            CakeContext.Information($"Code signing is not configured");
+            return;
+        }
+
+        CakeContext.Information($"Code signing subject name: '{CertificateSubjectName}'");
+        CakeContext.Information($"Code signing timestamp uri: '{TimeStampUri}'");
+        CakeContext.Information($"Code signing hash algorithm: '{HashAlgorithm}'");
     }
 }
 
@@ -474,7 +483,8 @@ private GeneralContext InitializeGeneralContext(BuildContext buildContext, IBuil
     {
         WildCard = buildContext.BuildServer.GetVariable("CodeSignWildcard", showValue: true),
         CertificateSubjectName = buildContext.BuildServer.GetVariable("CodeSignCertificateSubjectName", showValue: true),
-        TimeStampUri = buildContext.BuildServer.GetVariable("CodeSignTimeStampUri", "http://timestamp.digicert.com", showValue: true)
+        TimeStampUri = buildContext.BuildServer.GetVariable("CodeSignTimeStampUri", "http://timestamp.digicert.com", showValue: true),
+        HashAlgorithm = buildContext.BuildServer.GetVariable("CodeSignHashAlgorithm", "SHA256", showValue: true)
     };
 
     data.Repository = new RepositoryContext(data)

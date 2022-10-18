@@ -54,8 +54,8 @@ public class MsixInstaller : IInstaller
         var signToolCommand = string.Empty;
         if (!string.IsNullOrWhiteSpace(BuildContext.General.CodeSign.CertificateSubjectName))
         {
-            signToolCommand = string.Format("sign /a /t {0} /n {1}", BuildContext.General.CodeSign.TimeStampUri, 
-                BuildContext.General.CodeSign.CertificateSubjectName);
+            signToolCommand = string.Format("sign /a /t {0} /n {1} /fd {2}", BuildContext.General.CodeSign.TimeStampUri, 
+                BuildContext.General.CodeSign.CertificateSubjectName, BuildContext.General.CodeSign.HashAlgorithm);
         }
         else
         {
@@ -154,9 +154,7 @@ public class MsixInstaller : IInstaller
             }
         }
 
-        // As documented at https://docs.microsoft.com/en-us/windows/msix/package/sign-app-package-using-signtool, we 
-        // must *always* specify the hash algorithm (/fd) for MSIX files
-        SignFile(BuildContext, signToolCommand, installerSourceFile, "/fd SHA256");
+        SignFile(BuildContext, signToolCommand, installerSourceFile);
 
         // Always copy the AppInstaller if available
         if (BuildContext.CakeContext.FileExists(msixUpdateScriptFileName))
