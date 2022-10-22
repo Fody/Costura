@@ -1,5 +1,5 @@
 #addin "nuget:?package=Cake.GitHub&version=0.1.0"
-#addin "nuget:?package=Octokit&version=4.0.0"
+#addin "nuget:?package=Octokit&version=4.0.1"
 
 //-------------------------------------------------------------
 
