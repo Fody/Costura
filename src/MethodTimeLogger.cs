@@ -8,7 +8,6 @@ using System.Globalization;
 /// </summary>
 internal static class MethodTimeLogger
 {
-    #region Methods
     public static void Log(MethodBase methodBase, long milliseconds, string message)
     {
         Log(methodBase.DeclaringType ?? typeof(object), methodBase.Name, milliseconds, message);
@@ -37,5 +36,4 @@ internal static class MethodTimeLogger
         // var logger = LogManager.GetLogger(type);
         // logger.Debug(finalMessage);
     }
-    #endregion
 }
