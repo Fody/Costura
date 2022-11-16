@@ -4,10 +4,70 @@
     <PackageReference Include="XAMLTools.MSBuild" Version="1.0.0-alpha0085" PrivateAssets="all" />
   </ItemGroup>
 
+  <!-- Note: to disable XAML tools during debug and development, use the following csproj:
+  
+  <PropertyGroup>
+    <XamlToolsDisableInDebugMode>true</XamlToolsDisableInDebugMode>
+  </PropertyGroup>  
+  
+  In order to make Resharper work properly add Extra condtions to your ItemGroup with XAMLCombineItems,
+  as in exmaple below:
+  
+  <ItemGroup Condition="'$(Configuration)' != 'Debug' Or '$(XamlToolsDisableInDebugMode)' != 'true'">
+    <XAMLCombineItems Include="Themes\Styles.xaml">
+      <TargetFile>Themes\Generic.generated.xaml</TargetFile>
+      <Visible>True</Visible>
+    </XAMLCombineItems>
+  ...
+  </ItemGroup>
+  -->
+
+  <ItemGroup>
+    <Page Remove="Themes\Generic.XamlTools.Disabled.xaml" />
+    <None Include="Themes\Generic.XamlTools.Disabled.xaml" />
+
+    <Page Remove="Themes\Generic.XamlTools.Enabled.xaml" />
+    <None Include="Themes\Generic.XamlTools.Enabled.xaml" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <XamlToolsDisable>false</XamlToolsDisable>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug' And '$(XamlToolsDisableInDebugMode)' == 'true'">
+    <XamlToolsDisable>true</XamlToolsDisable>
+  </PropertyGroup>
+
+  <!-- Generic shared properties -->
   <PropertyGroup>
     <XAMLColorSchemeGeneratorEnabled>False</XAMLColorSchemeGeneratorEnabled>
-    <XAMLCombineEnabled>True</XAMLCombineEnabled>
     <XAMLCombineImportMergedResourceDictionaryReferences>False</XAMLCombineImportMergedResourceDictionaryReferences>
     <RemoveXAMLCombineItemsFromPages>False</RemoveXAMLCombineItemsFromPages>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Enable by default -->
+    <XAMLCombineEnabled>True</XAMLCombineEnabled>
+  </PropertyGroup>
+
+   <!--Allow disabling XAML tools during debug mode--> 
+  <PropertyGroup Condition="'$(XamlToolsDisable)' == 'true'">
+    <XAMLCombineEnabled>False</XAMLCombineEnabled>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(XamlToolsDisable)' == 'true'">
+    <Page Remove="Themes\Generic.generated.xaml" />
+    <None Include="Themes\Generic.generated.xaml" />
+  </ItemGroup>
+
+   <!--Copy correct file based on whether it's enabled or not--> 
+  <Target Name="PreBuildXamlToolsDisabled" AfterTargets="PreBuildEvent"
+          Condition="'$(XamlToolsDisable)' == 'true'">
+    <Exec Command="xcopy /f /y &quot;$(ProjectDir)Themes\Generic.XamlTools.Disabled.xaml&quot; &quot;$(ProjectDir)Themes\Generic.xaml&quot;" />
+  </Target>
+
+  <Target Name="PreBuildXamlToolsEnabled" AfterTargets="PreBuildEvent"
+          Condition="'$(XamlToolsDisable)' != 'true'">
+    <Exec Command="xcopy /f /y &quot;$(ProjectDir)Themes\Generic.XamlTools.Enabled.xaml&quot; &quot;$(ProjectDir)Themes\Generic.xaml&quot;" />
+  </Target>
 </Project>
