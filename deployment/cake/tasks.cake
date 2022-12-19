@@ -27,7 +27,7 @@
 #addin "nuget:?package=Cake.FileHelpers&version=5.0.0"
 #addin "nuget:?package=Cake.Sonar&version=1.1.30"
 #addin "nuget:?package=MagicChunks&version=2.0.0.119"
-#addin "nuget:?package=Newtonsoft.Json&version=13.0.1"
+#addin "nuget:?package=Newtonsoft.Json&version=13.0.2"
 
 // Note: the SonarQube tool must be installed as a global .NET tool. If you are getting issues like this:
 //
@@ -36,7 +36,7 @@
 // It probably means the tool is not correctly installed.
 // `dotnet tool install --global dotnet-sonarscanner --ignore-failed-sources`
 //#tool "nuget:?package=MSBuild.SonarQube.Runner.Tool&version=4.8.0"
-#tool "nuget:?package=dotnet-sonarscanner&version=5.8.0"
+#tool "nuget:?package=dotnet-sonarscanner&version=5.9.2"
 
 //-------------------------------------------------------------
 // BACKWARDS COMPATIBILITY CODE - START
@@ -275,7 +275,7 @@ Task("Prepare")
     buildContext.AllProjects.AddRange(buildContext.Web.Items);
     buildContext.AllProjects.AddRange(buildContext.Wpf.Items);
 
-    buildContext.CakeContext.LogSeparator("Final check which test projects should be included");
+    buildContext.CakeContext.LogSeparator("Final check which test projects should be included (1/2)");
 
     // Once we know all the projects that will be built, we calculate which
     // test projects need to be built as well
@@ -294,7 +294,7 @@ Task("Prepare")
 
     buildContext.AllProjects.AddRange(buildContext.Tests.Items);
 
-    buildContext.CakeContext.LogSeparator("Final check which dependencies should be included");
+    buildContext.CakeContext.LogSeparator("Final check which dependencies should be included (2/2)");
 
     // Now we really really determined all projects to build, we can check the dependencies
     var dependenciesProcessor = (DependenciesProcessor)buildContext.Processors.First(x => x is DependenciesProcessor);

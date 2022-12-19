@@ -220,6 +220,23 @@ private static void RunUnitTests(BuildContext buildContext, string projectName)
 
 //-------------------------------------------------------------
 
+private static bool IsTestProject(BuildContext buildContext, string projectName)
+{
+    if (IsNUnitTestProject(buildContext, projectName))
+    {
+        return true;
+    }
+
+    if (IsXUnitTestProject(buildContext, projectName))
+    {
+        return true;
+    }
+
+    return false;
+}
+
+//-------------------------------------------------------------
+
 private static bool IsNUnitTestProject(BuildContext buildContext, string projectName)
 {
     var projectFileName = GetProjectFileName(buildContext, projectName);
