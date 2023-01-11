@@ -24,8 +24,8 @@
 #l "tests.cake"
 #l "templates-tasks.cake"
 
-#addin "nuget:?package=Cake.FileHelpers&version=5.0.0"
-#addin "nuget:?package=Cake.Sonar&version=1.1.30"
+#addin "nuget:?package=Cake.FileHelpers&version=6.0.0"
+#addin "nuget:?package=Cake.Sonar&version=1.1.31"
 #addin "nuget:?package=MagicChunks&version=2.0.0.119"
 #addin "nuget:?package=Newtonsoft.Json&version=13.0.2"
 

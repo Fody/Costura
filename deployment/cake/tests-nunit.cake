@@ -1,4 +1,4 @@
-#tool "nuget:?package=NUnit.ConsoleRunner&version=3.16.0"
+#tool "nuget:?package=NUnit.ConsoleRunner&version=3.16.1"
 
 //-------------------------------------------------------------
 
