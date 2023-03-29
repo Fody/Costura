@@ -128,9 +128,9 @@ public class WpfProcessor : ProcessorBase
 
         foreach (var wpfApp in BuildContext.Wpf.Items)
         {
-            if (!ShouldDeployProject(BuildContext, wpfApp))
+            if (!ShouldPackageProject(BuildContext, wpfApp))
             {
-                CakeContext.Information($"WPF app '{wpfApp}' should not be deployed");
+                CakeContext.Information($"WPF app '{wpfApp}' should not be packaged");
                 continue;
             }
 
