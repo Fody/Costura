@@ -99,9 +99,9 @@ public class WebProcessor : ProcessorBase
         
         foreach (var webApp in BuildContext.Web.Items)
         {
-            if (!ShouldDeployProject(BuildContext, webApp))
+            if (!ShouldPackageProject(BuildContext, webApp))
             {
-                CakeContext.Information("Web app '{0}' should not be deployed", webApp);
+                CakeContext.Information("Web app '{0}' should not be packaged", webApp);
                 continue;
             }
 

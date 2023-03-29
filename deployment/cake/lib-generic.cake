@@ -588,7 +588,9 @@ private static bool ShouldProcessProject(BuildContext buildContext, string proje
     // it can only work if they are not part of unit tests (but that should never happen)
     // if (buildContext.Tests.Items.Count == 0)
     // {
-        if (checkDeployment && !ShouldDeployProject(buildContext, projectName))
+        if (checkDeployment && 
+            !ShouldPackageProject(buildContext, projectName) && 
+            !ShouldDeployProject(buildContext, projectName))
         {
             buildContext.CakeContext.Warning("Project '{0}' should not be processed because this is not a CI build, does not contain tests and the project should not be deployed, removing from projects to process", projectName);
             return false;
@@ -646,6 +648,34 @@ private static bool ShouldBuildProject(BuildContext buildContext, string project
     buildContext.CakeContext.Information($"Value for '{keyToCheck}': {shouldBuild}");
 
     return shouldBuild;
+}
+
+//-------------------------------------------------------------
+
+private static bool ShouldPackageProject(BuildContext buildContext, string projectName)
+{
+    // Allow the build server to configure this via "Package[ProjectName]"
+    var slug = GetProjectSlug(projectName);
+    var keyToCheck = string.Format("Package{0}", slug);
+
+    var shouldPackage = buildContext.BuildServer.GetVariableAsBool(keyToCheck, true);
+
+    // If this is *only* a dependency, it should never be deployed
+    if (IsOnlyDependencyProject(buildContext, projectName))
+    {
+        shouldPackage = false;
+    }
+
+    if (shouldPackage && !ShouldProcessProject(buildContext, projectName, false))
+    {
+        buildContext.CakeContext.Information($"Project '{projectName}' should not be processed, excluding it anyway");
+        
+        shouldPackage = false;
+    }
+
+    buildContext.CakeContext.Information($"Value for '{keyToCheck}': {shouldPackage}");
+
+    return shouldPackage;
 }
 
 //-------------------------------------------------------------

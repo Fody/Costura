@@ -124,9 +124,9 @@ public class GitHubPagesProcessor : ProcessorBase
 
         foreach (var gitHubPage in BuildContext.GitHubPages.Items)
         {
-            if (!ShouldDeployProject(BuildContext, gitHubPage))
+            if (!ShouldPackageProject(BuildContext, gitHubPage))
             {
-                CakeContext.Information("GitHub page '{0}' should not be deployed", gitHubPage);
+                CakeContext.Information("GitHub page '{0}' should not be packaged", gitHubPage);
                 continue;
             }
 

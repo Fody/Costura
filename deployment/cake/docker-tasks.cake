@@ -203,9 +203,9 @@ public class DockerImagesProcessor : ProcessorBase
 
         foreach (var dockerImage in BuildContext.DockerImages.Items)
         {
-            if (!ShouldDeployProject(BuildContext, dockerImage))
+            if (!ShouldPackageProject(BuildContext, dockerImage))
             {
-                CakeContext.Information("Docker image '{0}' should not be deployed", dockerImage);
+                CakeContext.Information("Docker image '{0}' should not be packaged", dockerImage);
                 continue;
             }
 
