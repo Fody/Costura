@@ -1,4 +1,4 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras">
+<Project Sdk="MSBuild.Sdk.Extras">
   <PropertyGroup>
     <TargetFrameworks>netstandard1.0</TargetFrameworks>
     <AssemblyName>Costura</AssemblyName>
@@ -22,7 +22,7 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="Fody" Version="6.6.4" PrivateAssets="none" />
+    <PackageReference Include="Fody" Version="6.7.0" PrivateAssets="none" />
   </ItemGroup>
 
   <ItemGroup>
