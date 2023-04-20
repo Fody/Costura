@@ -1,4 +1,4 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras">
+<Project Sdk="MSBuild.Sdk.Extras">
   <PropertyGroup>
     <TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
     <AssemblyName>Costura.Fody.Tests</AssemblyName>
@@ -13,7 +13,7 @@
   
   <ItemGroup>
     <PackageReference Include="Catel.Core" Version="5.12.22" PrivateAssets="All" />
-    <PackageReference Include="Fody" Version="6.6.4" PrivateAssets="All" />
+    <PackageReference Include="Fody" Version="6.7.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" PrivateAssets="All" />
     <PackageReference Include="NUnit" Version="3.13.3" PrivateAssets="all" />
