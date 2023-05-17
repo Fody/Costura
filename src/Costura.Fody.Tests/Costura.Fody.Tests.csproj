@@ -19,7 +19,7 @@
     <PackageReference Include="ApprovalTests" Version="5.8.0" />
     <PackageReference Include="FodyHelpers" Version="6.7.0" />
     <PackageReference Include="Fody" Version="6.7.0" PrivateAssets="none" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
     <PackageReference Include="Moq" Version="4.18.4" />
     <PackageReference Include="NUnit" Version="3.13.3" PrivateAssets="all" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.4.2" PrivateAssets="all" />
