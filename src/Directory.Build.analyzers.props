@@ -6,7 +6,7 @@
   <ItemGroup>
     <PackageReference Include="Catel.Analyzers" Version="1.6.1" PrivateAssets="all" />
     <PackageReference Include="CatenaLogic.Analyzers" Version="1.4.3" PrivateAssets="all" />
-    <PackageReference Include="IDisposableAnalyzers" Version="4.0.4" PrivateAssets="all" />
+    <PackageReference Include="IDisposableAnalyzers" Version="4.0.6" PrivateAssets="all" />
     <PackageReference Include="WpfAnalyzers" Version="4.1.1" PrivateAssets="all" />
   </ItemGroup>
 
