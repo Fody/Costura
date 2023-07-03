@@ -17,7 +17,7 @@
 
   <ItemGroup>
     <PackageReference Include="ApprovalTests" Version="5.7.2" />
-    <PackageReference Include="FodyHelpers" Version="6.7.0" />
+    <PackageReference Include="FodyHelpers" Version="6.8.0" />
     <PackageReference Include="Fody" Version="6.8.0" PrivateAssets="none" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.3" />
     <PackageReference Include="Moq" Version="4.17.2" />
