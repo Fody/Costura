@@ -58,7 +58,7 @@ private static void ConfigureMsBuild(BuildContext buildContext, MSBuildSettings 
     // Only optimize in release mode
     if (!buildContext.General.IsLocalBuild)
     {
-        buildContext.CakeContext.Information($"This is NOT a local build, disabling building of project references");
+        buildContext.CakeContext.Information("This is NOT a local build, disabling building of project references");
 
         // Don't build project references (should already be built)
         msBuildSettings.WithProperty("BuildProjectReferences", "false");
@@ -67,7 +67,7 @@ private static void ConfigureMsBuild(BuildContext buildContext, MSBuildSettings 
     }
     else
     {
-        buildContext.CakeContext.Information($"This is a local build, disabling building of project references");
+        buildContext.CakeContext.Information("This is a local build, disabling building of project references");
     }
 
     // Continuous integration build
@@ -93,20 +93,26 @@ private static void ConfigureMsBuild(BuildContext buildContext, MSBuildSettings 
     msBuildSettings.MaxCpuCount = 0;
     
     // Enable for file logging
-    msBuildSettings.AddFileLogger(new MSBuildFileLogger
+    if (buildContext.General.EnableMsBuildFileLog)
     {
-        Verbosity = msBuildSettings.Verbosity,
-        //Verbosity = Verbosity.Diagnostic,
-        LogFile = System.IO.Path.Combine(buildContext.General.OutputRootDirectory, string.Format(@"MsBuild_{0}_{1}_log.log", projectName, action))
-    });
+        msBuildSettings.AddFileLogger(new MSBuildFileLogger
+        {
+            Verbosity = msBuildSettings.Verbosity,
+            //Verbosity = Verbosity.Diagnostic,
+            LogFile = System.IO.Path.Combine(buildContext.General.OutputRootDirectory, string.Format(@"MsBuild_{0}_{1}_log.log", projectName, action))
+        });
+    }
 
     // Enable for bin logging
-    msBuildSettings.BinaryLogger = new MSBuildBinaryLogSettings
+    if (buildContext.General.EnableMsBuildBinaryLog)
     {
-        Enabled = true,
-        Imports = MSBuildBinaryLogImports.Embed,
-        FileName = System.IO.Path.Combine(buildContext.General.OutputRootDirectory, string.Format(@"MsBuild_{0}_{1}_log.binlog", projectName, action))
-    };
+        msBuildSettings.BinaryLogger = new MSBuildBinaryLogSettings
+        {
+            Enabled = true,
+            Imports = MSBuildBinaryLogImports.Embed,
+            FileName = System.IO.Path.Combine(buildContext.General.OutputRootDirectory, string.Format(@"MsBuild_{0}_{1}_log.binlog", projectName, action))
+        };
+    }
 }
 
 //-------------------------------------------------------------
@@ -174,27 +180,33 @@ private static void ConfigureMsBuildForDotNet(BuildContext buildContext, DotNetM
     msBuildSettings.MaxCpuCount = 0;
     
     // Enable for file logging
-    msBuildSettings.AddFileLogger(new MSBuildFileLoggerSettings
+    if (buildContext.General.EnableMsBuildFileLog)
     {
-        Verbosity = msBuildSettings.Verbosity,
-        //Verbosity = Verbosity.Diagnostic,
-        LogFile = System.IO.Path.Combine(buildContext.General.OutputRootDirectory, string.Format(@"MsBuild_{0}_{1}_log.log", projectName, action))
-    });
+        msBuildSettings.AddFileLogger(new MSBuildFileLoggerSettings
+        {
+            Verbosity = msBuildSettings.Verbosity,
+            //Verbosity = Verbosity.Diagnostic,
+            LogFile = System.IO.Path.Combine(buildContext.General.OutputRootDirectory, string.Format(@"MsBuild_{0}_{1}_log.log", projectName, action))
+        });
+    }
 
     // Enable for bin logging
-    msBuildSettings.BinaryLogger = new MSBuildBinaryLoggerSettings
+    if (buildContext.General.EnableMsBuildBinaryLog)
     {
-        Enabled = true,
-        Imports = MSBuildBinaryLoggerImports.Embed,
-        FileName = System.IO.Path.Combine(buildContext.General.OutputRootDirectory, string.Format(@"MsBuild_{0}_{1}.binlog", projectName, action))
-    };
-    
-    // Note: this only works for direct .net core msbuild usage, not when this is
-    // being wrapped in a tool (such as 'dotnet pack')
-    var binLogArgs = string.Format("-bl:\"{0}\";ProjectImports=Embed", 
-        System.IO.Path.Combine(buildContext.General.OutputRootDirectory, string.Format(@"MsBuild_{0}_{1}_log.binlog", projectName, action)));
+        msBuildSettings.BinaryLogger = new MSBuildBinaryLoggerSettings
+        {
+            Enabled = true,
+            Imports = MSBuildBinaryLoggerImports.Embed,
+            FileName = System.IO.Path.Combine(buildContext.General.OutputRootDirectory, string.Format(@"MsBuild_{0}_{1}.binlog", projectName, action))
+        };
+        
+        // Note: this only works for direct .net core msbuild usage, not when this is
+        // being wrapped in a tool (such as 'dotnet pack')
+        var binLogArgs = string.Format("-bl:\"{0}\";ProjectImports=Embed", 
+            System.IO.Path.Combine(buildContext.General.OutputRootDirectory, string.Format(@"MsBuild_{0}_{1}_log.binlog", projectName, action)));
 
-    msBuildSettings.ArgumentCustomization = args => args.Append(binLogArgs);
+        msBuildSettings.ArgumentCustomization = args => args.Append(binLogArgs);
+    }
 }
 
 //-------------------------------------------------------------
@@ -218,8 +230,12 @@ private static void RunMsBuild(BuildContext buildContext, string projectName, st
     buildContext.CakeContext.CreateDirectory(buildContext.General.OutputRootDirectory);
 
     var logPath = System.IO.Path.Combine(buildContext.General.OutputRootDirectory, string.Format(@"MsBuild_{0}_{1}_log.xml", projectName, action));
-    msBuildSettings.WithLogger(buildContext.CakeContext.Tools.Resolve("MSBuild.ExtensionPack.Loggers.dll").FullPath, 
-        "XmlFileLogger", $"logfile=\"{logPath}\";verbosity=Detailed;encoding=UTF-8");
+    
+    if (buildContext.General.EnableMsBuildXmlLog)
+    {
+        msBuildSettings.WithLogger(buildContext.CakeContext.Tools.Resolve("MSBuild.ExtensionPack.Loggers.dll").FullPath, 
+            "XmlFileLogger", $"logfile=\"{logPath}\";verbosity=Detailed;encoding=UTF-8");
+    }
 
     var failBuild = false;
 
@@ -242,53 +258,56 @@ private static void RunMsBuild(BuildContext buildContext, string projectName, st
     buildContext.CakeContext.Information($"Investigating potential issues using '{logPath}'");
     buildContext.CakeContext.Information(string.Empty);
     
-    var investigationStopwatch = Stopwatch.StartNew();
-
-    var issuesContext = buildContext.CakeContext.MsBuildIssuesFromFilePath(logPath, buildContext.CakeContext.MsBuildXmlFileLoggerFormat());
-    //var issuesContext = buildContext.CakeContext.MsBuildIssuesFromFilePath(logPath, buildContext.CakeContext.MsBuildBinaryLogFileFormat());
-
-    buildContext.CakeContext.Debug("Created issue context");
-
-    var issues = buildContext.CakeContext.ReadIssues(issuesContext, buildContext.General.RootDirectory);
-
-    buildContext.CakeContext.Debug($"Found '{issues.Count()}' potential issues");
-
-    buildContext.CakeContext.Information(string.Empty);
-
-    var loggedIssues = new HashSet<string>();
-
-    foreach (var issue in issues)
+    if (System.IO.File.Exists(logPath))
     {
-        var priority = issue.Priority ?? 0;
+        var investigationStopwatch = Stopwatch.StartNew();
 
-        var message = $"{issue.AffectedFileRelativePath}({issue.Line},{issue.Column}): {issue.Rule}: {issue.MessageText}";
-        if (loggedIssues.Contains(message))
+        var issuesContext = buildContext.CakeContext.MsBuildIssuesFromFilePath(logPath, buildContext.CakeContext.MsBuildXmlFileLoggerFormat());
+        //var issuesContext = buildContext.CakeContext.MsBuildIssuesFromFilePath(logPath, buildContext.CakeContext.MsBuildBinaryLogFileFormat());
+
+        buildContext.CakeContext.Debug("Created issue context");
+
+        var issues = buildContext.CakeContext.ReadIssues(issuesContext, buildContext.General.RootDirectory);
+
+        buildContext.CakeContext.Debug($"Found '{issues.Count()}' potential issues");
+
+        buildContext.CakeContext.Information(string.Empty);
+
+        var loggedIssues = new HashSet<string>();
+
+        foreach (var issue in issues)
         {
-            continue;
+            var priority = issue.Priority ?? 0;
+
+            var message = $"{issue.AffectedFileRelativePath}({issue.Line},{issue.Column}): {issue.Rule}: {issue.MessageText}";
+            if (loggedIssues.Contains(message))
+            {
+                continue;
+            }
+
+            //buildContext.CakeContext.Information($"[{issue.Priority}] {message}");
+
+            if (priority == (int)IssuePriority.Warning)
+            {
+                buildContext.CakeContext.Warning($"WARNING: {message}");
+
+                loggedIssues.Add(message);
+            }
+            else if (priority == (int)IssuePriority.Error)
+            {
+                buildContext.CakeContext.Error($"ERROR: {message}");
+
+                loggedIssues.Add(message);
+
+                failBuild = true;
+            }
         }
 
-        //buildContext.CakeContext.Information($"[{issue.Priority}] {message}");
-
-        if (priority == (int)IssuePriority.Warning)
-        {
-            buildContext.CakeContext.Warning($"WARNING: {message}");
-
-            loggedIssues.Add(message);
-        }
-        else if (priority == (int)IssuePriority.Error)
-        {
-            buildContext.CakeContext.Error($"ERROR: {message}");
-
-            loggedIssues.Add(message);
-
-            failBuild = true;
-        }
+        buildContext.CakeContext.Information(string.Empty);
+        buildContext.CakeContext.Information($"Done investigating project, took '{investigationStopwatch.Elapsed}'");
+        buildContext.CakeContext.Information($"Total msbuild ({action} + investigation) took '{totalStopwatch.Elapsed}'");
+        buildContext.CakeContext.Information(string.Empty);
     }
-
-    buildContext.CakeContext.Information(string.Empty);
-    buildContext.CakeContext.Information($"Done investigating project, took '{investigationStopwatch.Elapsed}'");
-    buildContext.CakeContext.Information($"Total msbuild ({action} + investigation) took '{totalStopwatch.Elapsed}'");
-    buildContext.CakeContext.Information(string.Empty);
 
     if (failBuild)
     {    
