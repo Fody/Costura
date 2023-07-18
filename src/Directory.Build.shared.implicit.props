@@ -18,6 +18,11 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
 
+  <!-- Use relative paths in stack traces -->
+  <PropertyGroup>
+    <PathMap>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)'))=./</PathMap>
+  </PropertyGroup>
+
   <!-- Workaround for binding redirects in non exe assemblies, see https://github.com/Microsoft/msbuild/issues/1310#issuecomment-309596435 -->
   <Target Name="ForceGenerationOfBindingRedirects"
           AfterTargets="ResolveAssemblyReferences"
