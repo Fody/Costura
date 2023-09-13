@@ -10,7 +10,7 @@ public class WildcardTest
             "<Costura IncludeAssemblies=\"AssemblyToReference*\"/>",
             new[] { "AssemblyToReference.dll", "AssemblyToReferenceMixed.dll"}, "WildcardWeave");
 
-        var referencedAssemblies = wildcardWeave.Assembly.GetReferencedAssemblies().Select(x => x.Name).ToList();
+        var referencedAssemblies = wildcardWeave.Assembly.GetReferencedAssemblies().Select(_ => _.Name).ToList();
         Assert.Contains("AssemblyToReference", referencedAssemblies);
         Assert.Contains("AssemblyToReferencePreEmbedded", referencedAssemblies);
 

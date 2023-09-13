@@ -37,30 +37,30 @@ public partial class ModuleWeaver
 
             if (createTemporaryAssemblies)
             {
-                _sourceType = moduleDefinition.Types.Single(x => x.Name == "ILTemplateWithTempAssembly");
+                _sourceType = moduleDefinition.Types.Single(_ => _.Name == "ILTemplateWithTempAssembly");
                 DumpSource("ILTemplateWithTempAssembly");
             }
             else if (_hasUnmanaged)
             {
-                _sourceType = moduleDefinition.Types.Single(x => x.Name == "ILTemplateWithUnmanagedHandler");
+                _sourceType = moduleDefinition.Types.Single(_ => _.Name == "ILTemplateWithUnmanagedHandler");
                 DumpSource("ILTemplateWithUnmanagedHandler");
             }
             else
             {
-                _sourceType = moduleDefinition.Types.Single(x => x.Name == "ILTemplate");
+                _sourceType = moduleDefinition.Types.Single(_ => _.Name == "ILTemplate");
                 DumpSource("ILTemplate");
             }
-            _commonType = moduleDefinition.Types.Single(x => x.Name == "Common");
+            _commonType = moduleDefinition.Types.Single(_ => _.Name == "Common");
             DumpSource("Common");
 
             _targetType = new TypeDefinition("Costura", "AssemblyLoader", _sourceType.Attributes, Resolve(_sourceType.BaseType));
             _targetType.CustomAttributes.Add(new CustomAttribute(_compilerGeneratedAttributeCtor));
             ModuleDefinition.Types.Add(_targetType);
             CopyFields(_sourceType);
-            CopyMethod(_sourceType.Methods.Single(x => x.Name == "ResolveAssembly"));
+            CopyMethod(_sourceType.Methods.Single(_ => _.Name == "ResolveAssembly"));
 
-            _loaderCctor = CopyMethod(_sourceType.Methods.Single(x => x.IsConstructor && x.IsStatic));
-            _attachMethod = CopyMethod(_sourceType.Methods.Single(x => x.Name == "Attach"));
+            _loaderCctor = CopyMethod(_sourceType.Methods.Single(_ => _.IsConstructor && x.IsStatic));
+            _attachMethod = CopyMethod(_sourceType.Methods.Single(_ => _.Name == "Attach"));
         }
     }
 
@@ -301,12 +301,12 @@ public partial class ModuleWeaver
             var methodReference = reference;
             if (methodReference.DeclaringType == _sourceType || methodReference.DeclaringType == _commonType)
             {
-                var mr = _targetType.Methods.FirstOrDefault(x => x.Name == methodReference.Name && x.Parameters.Count == methodReference.Parameters.Count);
+                var mr = _targetType.Methods.FirstOrDefault(_ => _.Name == methodReference.Name && x.Parameters.Count == methodReference.Parameters.Count);
                 if (mr is null)
                 {
                     //little poetic license... :). .Resolve() doesn't work with "extern" methods
                     return CopyMethod(methodReference.DeclaringType.Resolve().Methods
-                                      .First(m => m.Name == methodReference.Name && m.Parameters.Count == methodReference.Parameters.Count),
+                                      .First(_ => _.Name == methodReference.Name && m.Parameters.Count == methodReference.Parameters.Count),
                         methodReference.DeclaringType != _sourceType);
                 }
                 return mr;

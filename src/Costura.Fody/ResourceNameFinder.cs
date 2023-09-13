@@ -9,7 +9,7 @@ public partial class ModuleWeaver
     private void BuildUpNameDictionary(bool createTemporaryAssemblies, List<string> preloadOrder)
     {
         var orderedResources = preloadOrder
-            .Join(ModuleDefinition.Resources, p => p.ToLowerInvariant(),
+            .Join(ModuleDefinition.Resources, _ => _.ToLowerInvariant(),
             r =>
             {
                 var parts = r.Name.Split('.');

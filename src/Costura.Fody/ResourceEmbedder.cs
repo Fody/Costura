@@ -232,7 +232,7 @@ public partial class ModuleWeaver : IDisposable
                 continue;
             }
 
-            if (references.Any(x => x.FullPath == fileName))
+            if (references.Any(_ => _.FullPath == fileName))
             {
                 continue;
             }
@@ -297,7 +297,7 @@ public partial class ModuleWeaver : IDisposable
         }
 
         // From this point, we want to exclude "CopyLocal=false"
-        references = references.Where(x => x.IsCopyLocal);
+        references = references.Where(_ => _.IsCopyLocal);
 
         var excludeList = config.ExcludeAssemblies;
         if (excludeList.Any())
@@ -336,7 +336,7 @@ public partial class ModuleWeaver : IDisposable
 
     private IEnumerable<Reference> GetFilteredRuntimeReferences(IEnumerable<Reference> references, Configuration config)
     {
-        references = references.Where(x => x.IsRuntimeReference);
+        references = references.Where(_ => _.IsRuntimeReference);
 
         var includeList = config.IncludeRuntimeAssemblies;
         if (includeList.Any())
@@ -381,7 +381,7 @@ public partial class ModuleWeaver : IDisposable
         }
 
         // From this point, we want to exclude "CopyLocal=false"
-        references = references.Where(x => x.IsCopyLocal);
+        references = references.Where(_ => _.IsCopyLocal);
 
         var excludeList = config.ExcludeRuntimeAssemblies;
         if (excludeList.Any())

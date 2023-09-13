@@ -62,12 +62,12 @@ public partial class ModuleWeaver
                                             | MethodAttributes.SpecialName
                                             | MethodAttributes.RTSpecialName;
 
-        var moduleClass = ModuleDefinition.Types.FirstOrDefault(x => x.Name == "<Module>");
+        var moduleClass = ModuleDefinition.Types.FirstOrDefault(_ => _.Name == "<Module>");
         if (moduleClass is null)
         {
             throw new WeavingException("Found no module class!");
         }
-        var cctor = moduleClass.Methods.FirstOrDefault(x => x.Name == ".cctor");
+        var cctor = moduleClass.Methods.FirstOrDefault(_ => _.Name == ".cctor");
         if (cctor is null)
         {
             cctor = new MethodDefinition(".cctor", attributes, TypeSystem.VoidReference);
