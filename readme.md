@@ -5,6 +5,8 @@ Embeds dependencies as resources.
 [![Chat on Gitter](https://img.shields.io/gitter/room/fody/fody.svg)](https://gitter.im/Fody/Fody)
 [![NuGet Status](https://img.shields.io/nuget/v/Costura.Fody.svg)](https://www.nuget.org/packages/Costura.Fody/)
 
+**See [Milestones](../../milestones?state=closed) for release notes.**
+
 
 ### This is an add-in for [Fody](https://github.com/Fody/Home/)
 
