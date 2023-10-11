@@ -292,54 +292,6 @@ Task("CodeSign")
 
     foreach (var projectToCodeSign in projectsToCodeSign)
     {
-        var codeSignWildCard = buildContext.General.CodeSign.WildCard;
-        if (string.IsNullOrWhiteSpace(codeSignWildCard))
-        {
-            // Empty, we need to override with project name for valid default value
-            codeSignWildCard = projectToCodeSign;
-        }
-
-        var outputDirectory = string.Format("{0}/{1}", buildContext.General.OutputRootDirectory, projectToCodeSign);
-
-        var projectFilesToSign = new List<FilePath>();
-
-        var exeSignFilesSearchPattern = string.Format("{0}/**/*{1}*.exe", outputDirectory, codeSignWildCard);
-        Information(exeSignFilesSearchPattern);
-        projectFilesToSign.AddRange(GetFiles(exeSignFilesSearchPattern));
-
-        var dllSignFilesSearchPattern = string.Format("{0}/**/*{1}*.dll", outputDirectory, codeSignWildCard);
-        Information(dllSignFilesSearchPattern);
-        projectFilesToSign.AddRange(GetFiles(dllSignFilesSearchPattern));
-
-        Information("Found '{0}' files to code sign for '{1}'", projectFilesToSign.Count, projectToCodeSign);
-
-        filesToSign.AddRange(projectFilesToSign);
+        SignProjectFiles(buildContext, projectToCodeSign);
     }
-
-    var signToolCommand = string.Format("sign /a /t {0} /n {1} /fd {2}", buildContext.General.CodeSign.TimeStampUri, 
-        certificateSubjectName, buildContext.General.CodeSign.HashAlgorithm);
-
-    SignFiles(buildContext, signToolCommand, filesToSign);
-
-    // var signToolSignSettings = new SignToolSignSettings 
-    // {
-    //     AppendSignature = false,
-    //     TimeStampUri = new Uri(buildContext.General.CodeSign.TimeStampUri),
-    //     CertSubjectName = certificateSubjectName
-    // };
-
-    // Sign(filesToSign, signToolSignSettings);
-
-    // Note parallel doesn't seem to be faster in an example repository:
-    // 1 thread:   1m 30s
-    // 4 threads:  1m 30s
-    // 10 threads: 1m 30s
-    // Parallel.ForEach(filesToSign, new ParallelOptions 
-    //     { 
-    //         MaxDegreeOfParallelism = 10 
-    //     },
-    //     fileToSign => 
-    //     { 
-    //         Sign(fileToSign, signToolSignSettings);
-    //     });
 });

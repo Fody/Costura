@@ -4,6 +4,13 @@ private static string _signToolFileName;
 
 public static bool ShouldSignImmediately(BuildContext buildContext, string projectName)
 {
+	// Sometimes unit tests require signed assemblies, but only sign immediately when it's in the list
+    if (buildContext.CodeSigning.ProjectsToSignImmediately.Contains(projectName))
+    {   
+        buildContext.CakeContext.Information($"Immediately code signing '{projectName}' files");
+        return true;
+    }
+
     if (buildContext.General.IsLocalBuild ||
         buildContext.General.IsCiBuild)
     {
@@ -11,13 +18,45 @@ public static bool ShouldSignImmediately(BuildContext buildContext, string proje
         return false;
     }
 
-    if (buildContext.CodeSigning.ProjectsToSignImmediately.Contains(projectName))
-    {   
-        buildContext.CakeContext.Information($"Immediately code signing '{projectName}' files");
-        return true;
+    return false;
+}
+
+//-------------------------------------------------------------
+
+public static void SignProjectFiles(BuildContext buildContext, string projectName)
+{
+    var certificateSubjectName = buildContext.General.CodeSign.CertificateSubjectName;
+    if (string.IsNullOrWhiteSpace(certificateSubjectName))
+    {
+        buildContext.CakeContext.Information("Skipping code signing because the certificate subject name was not specified");
+        return;
     }
 
-    return false;
+    var codeSignWildCard = buildContext.General.CodeSign.WildCard;
+    if (string.IsNullOrWhiteSpace(codeSignWildCard))
+    {
+        // Empty, we need to override with project name for valid default value
+        codeSignWildCard = projectName;
+    }
+
+    var outputDirectory = string.Format("{0}/{1}", buildContext.General.OutputRootDirectory, projectName);
+
+    var projectFilesToSign = new List<FilePath>();
+
+    var exeSignFilesSearchPattern = string.Format("{0}/**/*{1}*.exe", outputDirectory, codeSignWildCard);
+    buildContext.CakeContext.Information(exeSignFilesSearchPattern);
+    projectFilesToSign.AddRange(buildContext.CakeContext.GetFiles(exeSignFilesSearchPattern));
+
+    var dllSignFilesSearchPattern = string.Format("{0}/**/*{1}*.dll", outputDirectory, codeSignWildCard);
+    buildContext.CakeContext.Information(dllSignFilesSearchPattern);
+    projectFilesToSign.AddRange(buildContext.CakeContext.GetFiles(dllSignFilesSearchPattern));
+
+    buildContext.CakeContext.Information("Found '{0}' files to code sign for '{1}'", projectFilesToSign.Count, projectName);
+
+    var signToolCommand = string.Format("sign /a /t {0} /n {1} /fd {2}", buildContext.General.CodeSign.TimeStampUri, 
+        certificateSubjectName, buildContext.General.CodeSign.HashAlgorithm);
+
+    SignFiles(buildContext, signToolCommand, projectFilesToSign);
 }
 
 //-------------------------------------------------------------
@@ -55,13 +94,6 @@ public static void SignFiles(BuildContext buildContext, string signToolCommand, 
 public static void SignFile(BuildContext buildContext, string signToolCommand, string fileName, string additionalCommandLineArguments = null)
 {
     // Skip code signing in specific scenarios
-    if (buildContext.General.IsCiBuild ||
-        buildContext.General.IsLocalBuild)
-    {
-        buildContext.CakeContext.Information("Skipping signing because this is a local or CI build");
-        return;
-    }
-    
     if (string.IsNullOrWhiteSpace(signToolCommand))
     {
         return;
