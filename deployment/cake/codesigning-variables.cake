@@ -28,7 +28,7 @@ private CodeSigningContext InitializeCodeSigningContext(BuildContext buildContex
 {
     var data = new CodeSigningContext(parentBuildContext)
     {
-        ProjectsToSignImmediately = CodeSignImmediately ?? new List<string>(),
+        ProjectsToSignImmediately = CodeSignImmediately,
     };
 
     return data;
