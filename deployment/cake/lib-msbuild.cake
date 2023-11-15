@@ -255,11 +255,13 @@ private static void RunMsBuild(BuildContext buildContext, string projectName, st
     buildContext.CakeContext.Information(string.Empty);
     buildContext.CakeContext.Information($"Done {action}ing project, took '{buildStopwatch.Elapsed}'");
     buildContext.CakeContext.Information(string.Empty);
-    buildContext.CakeContext.Information($"Investigating potential issues using '{logPath}'");
-    buildContext.CakeContext.Information(string.Empty);
     
-    if (System.IO.File.Exists(logPath))
+    if (buildContext.General.EnableMsBuildXmlLog &&
+        System.IO.File.Exists(logPath))
     {
+        buildContext.CakeContext.Information($"Investigating potential issues using '{logPath}'");
+        buildContext.CakeContext.Information(string.Empty);
+
         var investigationStopwatch = Stopwatch.StartNew();
 
         var issuesContext = buildContext.CakeContext.MsBuildIssuesFromFilePath(logPath, buildContext.CakeContext.MsBuildXmlFileLoggerFormat());
@@ -301,9 +303,12 @@ private static void RunMsBuild(BuildContext buildContext, string projectName, st
 
                 failBuild = true;
             }
+
+            buildContext.CakeContext.Information(string.Empty);
+            buildContext.CakeContext.Information($"Done investigating project, took '{investigationStopwatch.Elapsed}'");
+            buildContext.CakeContext.Information(string.Empty);
         }
 
-        buildContext.CakeContext.Information(string.Empty);
         buildContext.CakeContext.Information($"Done investigating project, took '{investigationStopwatch.Elapsed}'");
         buildContext.CakeContext.Information($"Total msbuild ({action} + investigation) took '{totalStopwatch.Elapsed}'");
         buildContext.CakeContext.Information(string.Empty);
