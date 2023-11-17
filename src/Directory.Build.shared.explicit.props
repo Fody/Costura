@@ -230,6 +230,30 @@
     <Page Include="Platforms\net\**\*.xaml" SubType="Designer" Generator="MSBuild:Compile" />
     <Compile Update="Platforms\net\**\*.xaml.cs" SubType="Code" DependentUpon="%(Filename)" />
   </ItemGroup>
+  
+  <!-- .NET 9.0 -->
+  <PropertyGroup Condition=" $(TargetFramework.StartsWith('net9.0')) ">
+    <DefineConstants>$(DefineConstants);NETCORE;NETCORE9;NETCORE9_0;NET9;NET9_0</DefineConstants>
+  </PropertyGroup>
+  
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('net9.0')) ">
+    <None Remove="Platforms\net\**\*.cs;Platforms\net\**\*.xaml;Platforms\net\**\*.xaml.cs" />
+    <Compile Include="Platforms\net\**\*.cs" DependentUpon="%(Filename)" />
+    <Page Include="Platforms\net\**\*.xaml" SubType="Designer" Generator="MSBuild:Compile" />
+    <Compile Update="Platforms\net\**\*.xaml.cs" SubType="Code" DependentUpon="%(Filename)" />
+  </ItemGroup>
+  
+  <!-- .NET 10.0 -->
+  <PropertyGroup Condition=" $(TargetFramework.StartsWith('net10.0')) ">
+    <DefineConstants>$(DefineConstants);NETCORE;NETCORE10;NETCORE10_0;NET10;NET10_0</DefineConstants>
+  </PropertyGroup>
+  
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('net10.0')) ">
+    <None Remove="Platforms\net\**\*.cs;Platforms\net\**\*.xaml;Platforms\net\**\*.xaml.cs" />
+    <Compile Include="Platforms\net\**\*.cs" DependentUpon="%(Filename)" />
+    <Page Include="Platforms\net\**\*.xaml" SubType="Designer" Generator="MSBuild:Compile" />
+    <Compile Update="Platforms\net\**\*.xaml.cs" SubType="Code" DependentUpon="%(Filename)" />
+  </ItemGroup>
 
   <!-- .NET Standard 2.0 -->
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">

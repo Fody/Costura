@@ -62,11 +62,11 @@ public class SquirrelInstaller : IInstaller
 
         if (!BuildContext.CakeContext.FileExists(nuSpecTemplateFileName))
         {
-            BuildContext.CakeContext.Information("Skip packaging of WPF app '{0}' using Squirrel since no Squirrel template is present");
+            BuildContext.CakeContext.Information($"Skip packaging of WPF app '{projectName}' using Squirrel since no Squirrel template is present");
             return;
         }
 
-        BuildContext.CakeContext.LogSeparator("Packaging WPF app '{0}' using Squirrel", projectName);
+        BuildContext.CakeContext.LogSeparator($"Packaging WPF app '{projectName}' using Squirrel");
 
         BuildContext.CakeContext.CreateDirectory(squirrelReleasesRoot);
         BuildContext.CakeContext.CreateDirectory(squirrelOutputIntermediate);
@@ -98,7 +98,7 @@ public class SquirrelInstaller : IInstaller
         var appSourceDirectory = System.IO.Path.Combine(BuildContext.General.OutputRootDirectory, projectName);
         var appTargetDirectory = System.IO.Path.Combine(squirrelOutputIntermediate, "lib");
 
-        BuildContext.CakeContext.Information("Copying files from '{0}' => '{1}'", appSourceDirectory, appTargetDirectory);
+        BuildContext.CakeContext.Information($"Copying files from '{appSourceDirectory}' => '{appTargetDirectory}'");
 
         BuildContext.CakeContext.CopyDirectory(appSourceDirectory, appTargetDirectory);
 
@@ -110,7 +110,7 @@ public class SquirrelInstaller : IInstaller
         {
             var squirrelTargetFile = System.IO.Path.Combine(appTargetDirectory, subDirectory.Segments[subDirectory.Segments.Length - 1], "Squirrel.exe");
 
-            BuildContext.CakeContext.Information("Copying Squirrel.exe to support self-updates from '{0}' => '{1}'", squirrelSourceFile, squirrelTargetFile);
+            BuildContext.CakeContext.Information($"Copying Squirrel.exe to support self-updates from '{squirrelSourceFile}' => '{squirrelTargetFile}'");
 
             BuildContext.CakeContext.CopyFile(squirrelSourceFile, squirrelTargetFile);
         }
@@ -144,7 +144,7 @@ public class SquirrelInstaller : IInstaller
             var sourcePackageFileName = System.IO.Path.Combine(squirrelOutputIntermediate, $"{projectSlug}{setupSuffix}.{BuildContext.General.Version.NuGet}.nupkg");
             var targetPackageFileName = System.IO.Path.Combine(squirrelOutputIntermediate, $"{projectName}.{BuildContext.General.Version.NuGet}.nupkg");
 
-            BuildContext.CakeContext.Information("Moving file from '{0}' => '{1}'", sourcePackageFileName, targetPackageFileName);
+            BuildContext.CakeContext.Information($"Moving file from '{sourcePackageFileName}' => '{targetPackageFileName}'");
 
             BuildContext.CakeContext.MoveFile(sourcePackageFileName, targetPackageFileName);
         }
@@ -157,7 +157,7 @@ public class SquirrelInstaller : IInstaller
         BuildContext.CakeContext.CreateDirectory(releasesSourceDirectory);
         BuildContext.CakeContext.CreateDirectory(releasesTargetDirectory);
 
-        BuildContext.CakeContext.Information("Copying releases from '{0}' => '{1}'", releasesSourceDirectory, releasesTargetDirectory);
+        BuildContext.CakeContext.Information($"Copying releases from '{releasesSourceDirectory}' => '{releasesTargetDirectory}'");
 
         BuildContext.CakeContext.CopyDirectory(releasesSourceDirectory, releasesTargetDirectory);
 
@@ -185,7 +185,7 @@ public class SquirrelInstaller : IInstaller
 
         if (BuildContext.Wpf.UpdateDeploymentsShare)
         {
-            BuildContext.CakeContext.Information("Copying updated Squirrel files back to deployments share at '{0}'", releasesSourceDirectory);
+            BuildContext.CakeContext.Information($"Copying updated Squirrel files back to deployments share at '{releasesSourceDirectory}'");
 
             // Copy the following files:
             // - [version]-full.nupkg
