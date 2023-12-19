@@ -9,13 +9,11 @@ public class GitHubSourceControl : ISourceControl
     {
         BuildContext = buildContext;
 
-        UserName = buildContext.BuildServer.GetVariable("GitHubUserName", buildContext.General.Repository.Username, showValue: true);
         ApiKey = buildContext.BuildServer.GetVariable("GitHubApiKey", buildContext.General.Repository.Password, showValue: false);
         OwnerName = buildContext.BuildServer.GetVariable("GitHubOwnerName", buildContext.General.Copyright.Company, showValue: true);
         ProjectName = buildContext.BuildServer.GetVariable("GitHubProjectName", buildContext.General.Solution.Name, showValue: true);
 
-        if (!string.IsNullOrWhiteSpace(UserName) &&
-            !string.IsNullOrWhiteSpace(ApiKey) &&
+        if (!string.IsNullOrWhiteSpace(ApiKey) &&
             !string.IsNullOrWhiteSpace(OwnerName) &&
             !string.IsNullOrWhiteSpace(ProjectName))
         {
@@ -25,7 +23,6 @@ public class GitHubSourceControl : ISourceControl
 
     public BuildContext BuildContext { get; private set; }
 
-    public string UserName { get; set; }
     public string ApiKey { get; set; }
     public string OwnerName { get; set; }
     public string ProjectName { get; set; }
@@ -66,7 +63,8 @@ public class GitHubSourceControl : ISourceControl
 
         var commitSha = BuildContext.General.Repository.CommitId;
 
-        BuildContext.CakeContext.GitHubStatus(UserName, ApiKey, OwnerName, ProjectName, commitSha, new GitHubStatusSettings
+        // Note: UserName is not really required, use string.Empty, then only api key is needed
+        BuildContext.CakeContext.GitHubStatus(string.Empty, ApiKey, OwnerName, ProjectName, commitSha, new GitHubStatusSettings
         {
             State = state,
             TargetUrl = null,// "url-to-build-server",
