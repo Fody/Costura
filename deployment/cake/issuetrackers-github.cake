@@ -8,13 +8,11 @@ public class GitHubIssueTracker : IIssueTracker
     {
         BuildContext = buildContext;
 
-        UserName = buildContext.BuildServer.GetVariable("GitHubUserName", showValue: true);
         ApiKey = buildContext.BuildServer.GetVariable("GitHubApiKey", showValue: false);
         OwnerName = buildContext.BuildServer.GetVariable("GitHubOwnerName", buildContext.General.Copyright.Company, showValue: true);
         ProjectName = buildContext.BuildServer.GetVariable("GitHubProjectName", buildContext.General.Solution.Name, showValue: true);
 
-        if (!string.IsNullOrWhiteSpace(UserName) &&
-            !string.IsNullOrWhiteSpace(ApiKey) &&
+        if (!string.IsNullOrWhiteSpace(ApiKey) &&
             !string.IsNullOrWhiteSpace(OwnerName) &&
             !string.IsNullOrWhiteSpace(ProjectName))
         {
@@ -24,7 +22,6 @@ public class GitHubIssueTracker : IIssueTracker
 
     public BuildContext BuildContext { get; private set; }
 
-    public string UserName { get; set; }
     public string ApiKey { get; set; }
     public string OwnerName { get; set; }
     public string ProjectName { get; set; }
