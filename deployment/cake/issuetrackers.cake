@@ -34,7 +34,7 @@ public class IssueTrackerIntegration : IntegrationBase
             }
             catch (Exception ex)
             {
-                BuildContext.CakeContext.Warning(ex.Message);
+                BuildContext.CakeContext.Error(ex.Message);
             }
         }
     }
