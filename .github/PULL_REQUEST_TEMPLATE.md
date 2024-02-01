@@ -27,7 +27,7 @@ None
 ### PR Checklist ###
 
 - [ ] I have included examples or tests
-- [ ] I have updated the change log
-- [ ] I am listed in the CONTRIBUTORS file
+- [ ] I have updated the change log or created a GitHub ticket with the change
+- [ ] I am listed in the CONTRIBUTORS file (if it exists)
 - [ ] Changes adhere to coding standard
 - [ ] I checked the licenses of Third Party software and discussed new dependencies with at least 1 other team member

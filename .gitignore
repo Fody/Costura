@@ -132,7 +132,6 @@ build.cakeoverrides
 TestResults
 .vs/
 .sonarqube/
-.github/
 BundleArtifacts/
 
 # docker / tye
