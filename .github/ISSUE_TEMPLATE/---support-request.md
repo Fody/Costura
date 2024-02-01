@@ -9,7 +9,7 @@ assignees: ''
 
 ---
 
-ONLY active OSS contributors OR people who buy me a coffee can ask questions here.  If you don't do either of these things - DO NOT FILE HERE OR I WILL SIMPLY REMOVE YOUR ACCOUNT :)
+ONLY active OSS contributors OR people who buy us a coffee can ask questions here. If you don't do either of these things - DO NOT FILE HERE :)
 
 Give as much details as humanly possible if you want any sort of answer!
 

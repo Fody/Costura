@@ -1,0 +1,36 @@
+name: Build and test
+
+on:
+  push:
+    branches:
+      - develop
+      - master
+  pull_request:
+  
+#permissions:
+  #pull-requests: write
+  #contents: write
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest # Required for some (WPF) projects
+  
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        id: checkout
+        with:
+          fetch-depth: 0
+          
+      - name: Setup .NET Core
+        id: setup-dotnet
+        uses: actions/setup-dotnet@4d6c8fcf3c8f7a60068d26b594648e99df24cee3 # v4.0.0
+        with:
+          dotnet-version: '8.0.x'    
+    
+      - name: Cake Action
+        id: cake-action
+        uses: cake-build/cake-action@a6eb054329257c9e70a6c6bf01747ad6e1d9d52b #v1.4.1
+        with:
+          target: BuildAndTest
+          arguments: |
+            IsCiBuild: true
