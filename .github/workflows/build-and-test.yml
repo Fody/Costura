@@ -29,7 +29,7 @@ jobs:
     
       - name: Cake Action
         id: cake-action
-        uses: cake-build/cake-action@a6eb054329257c9e70a6c6bf01747ad6e1d9d52b #v1.4.1
+        uses: cake-build/cake-action@1223b6fa067ad192159f43b50cd4f953679b0934 #v2.0.0
         with:
           target: BuildAndTest
           arguments: |
