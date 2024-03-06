@@ -400,7 +400,7 @@ public class SonarQubeContext : BuildContextBase
     public string Url { get; set; }
     public string Organization { get; set; }
     public string Username { get; set; }
-    public string Password { get; set; }
+    public string Token { get; set; }
     public string Project { get; set; }
 
     protected override void ValidateContext()
@@ -514,7 +514,7 @@ private GeneralContext InitializeGeneralContext(BuildContext buildContext, IBuil
         Url = buildContext.BuildServer.GetVariable("SonarUrl", showValue: true),
         Organization = buildContext.BuildServer.GetVariable("SonarOrganization", showValue: true),
         Username = buildContext.BuildServer.GetVariable("SonarUsername", showValue: false),
-        Password = buildContext.BuildServer.GetVariable("SonarPassword", showValue: false),
+        Token = buildContext.BuildServer.GetVariable("SonarToken", showValue: false),
         Project = buildContext.BuildServer.GetVariable("SonarProject", data.Solution.Name, showValue: true)
     };
 
