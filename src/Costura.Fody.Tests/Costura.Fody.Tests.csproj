@@ -25,7 +25,7 @@
     <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" PrivateAssets="all" />
   </ItemGroup>
 
-  <ItemGroup>    
+  <ItemGroup>
     <PackageReference Update="NETStandard.Library" Version="2.0.3" />
   </ItemGroup>
 
