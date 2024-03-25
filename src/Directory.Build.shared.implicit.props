@@ -53,6 +53,14 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
+  <!-- NuGet auditing -->
+  <PropertyGroup>
+    <!-- All means even indirect packages -->
+    <NuGetAuditMode>all</NuGetAuditMode>
+    <!-- Low means even low vulnerabilities will be reported -->
+    <NuGetAuditLevel>low</NuGetAuditLevel>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Include="..\*.cs">
       <SonarQubeExclude>true</SonarQubeExclude>
