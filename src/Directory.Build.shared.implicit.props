@@ -53,12 +53,12 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
-  <!-- NuGet auditing -->
+  <!-- NuGet auditing, see https://learn.microsoft.com/en-us/nuget/concepts/auditing-packages -->
   <PropertyGroup>
-    <!-- All means even indirect packages -->
-    <!-- <NuGetAuditMode>all</NuGetAuditMode>-->
+    <!-- 'all' means even indirect packages, 'direct' means only direct dependencies -->
+    <NuGetAuditMode>direct</NuGetAuditMode>
     <!-- Low means even low vulnerabilities will be reported -->
-    <!-- <NuGetAuditLevel>low</NuGetAuditLevel>-->
+    <NuGetAuditLevel>low</NuGetAuditLevel>
   </PropertyGroup>
 
   <ItemGroup>
