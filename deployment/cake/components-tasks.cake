@@ -291,7 +291,13 @@ public class ComponentsProcessor : ProcessorBase
 
             if (isPackageContainerProject)
             {
-                noBuild = false;
+                // In debug / local builds, automatic building of reference projects
+                // is enabled for convenience. If that is the case, noBuild must be
+                // set to false, but *only* in debug mode
+                if (BuildContext.General.IsLocalBuild)
+                {
+                    noBuild = false;
+                }
             }
 
             // As described in the this issue: https://github.com/NuGet/Home/issues/4360

@@ -67,7 +67,7 @@ private static void ConfigureMsBuild(BuildContext buildContext, MSBuildSettings 
     }
     else
     {
-        buildContext.CakeContext.Information("This is a local build, disabling building of project references");
+        buildContext.CakeContext.Information("This is a local build, not disabling building of project references");
     }
 
     // Continuous integration build
@@ -154,7 +154,7 @@ private static void ConfigureMsBuildForDotNet(BuildContext buildContext, DotNetM
     }
     else
     {
-        buildContext.CakeContext.Information($"This is a local build, disabling building of project references");
+        buildContext.CakeContext.Information($"This is a local build, not disabling building of project references");
     }
 
     // Continuous integration build
