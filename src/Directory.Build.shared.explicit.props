@@ -50,6 +50,11 @@
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
   
+  <!-- Disable Fody warnings as errors because of ObsoleteEx, etc breaking the code to an unrepairable state -->
+  <PropertyGroup>
+    <FodyTreatWarningsAsErrors>false</FodyTreatWarningsAsErrors>
+  </PropertyGroup>
+  
   <!-- 
     Fix for .NET Core 3.0, see https://github.com/dotnet/core-sdk/issues/192, it 
     uses obj/release instead of [outputdirectory] 

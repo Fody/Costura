@@ -440,6 +440,35 @@ private static bool IsCppProject(string projectName)
     return projectName.EndsWith(".vcxproj");
 }
 
+//--------------------------------------------------------------
+
+private static bool IsPackageContainerProject(BuildContext buildContext, string projectName)
+{
+    var isPackageContainer = false;
+
+    var projectFileName = CreateInlinedProjectXml(buildContext, projectName);
+
+    var projectFileContents = System.IO.File.ReadAllText(projectFileName);
+
+    var xmlDocument = XDocument.Parse(projectFileContents);
+    var projectElement = xmlDocument.Root;
+
+    foreach (var propertyGroupElement in projectElement.Elements("PropertyGroup"))
+    {
+        var packageContainerElement = propertyGroupElement.Element("PackageContainer");
+        if (packageContainerElement != null)
+        {
+            if (packageContainerElement.Value.ToLower() == "true")
+            {
+                isPackageContainer = true;
+            }		
+            break;
+        }
+    }
+
+    return isPackageContainer;
+}
+
 //-------------------------------------------------------------
 
 private static bool IsBlazorProject(BuildContext buildContext, string projectName)
@@ -593,6 +622,40 @@ private static bool ShouldProcessProject(BuildContext buildContext, string proje
     //}
 
     return true;
+}
+
+private static string CreateInlinedProjectXml(BuildContext buildContext, string projectName)
+{
+    buildContext.CakeContext.Information($"Running 'msbuild /pp' for project '{projectName}'");
+
+    var projectInlinedFileName = System.IO.Path.Combine(GetProjectOutputDirectory(buildContext, projectName),
+        "..", $"{projectName}.inlined.xml");
+
+    // Note: disabled caching until we correctly clean up everything
+    //if (!buildContext.CakeContext.FileExists(projectInlinedFileName))
+    {
+        // Run "msbuild /pp" to create a single project file
+        
+        var msBuildSettings = new MSBuildSettings 
+        {
+            Verbosity = Verbosity.Quiet,
+            ToolVersion = MSBuildToolVersion.Default,
+            Configuration = buildContext.General.Solution.ConfigurationName,
+            MSBuildPlatform = MSBuildPlatform.x86, // Always require x86, see platform for actual target platform
+            PlatformTarget = PlatformTarget.MSIL
+        };
+
+        ConfigureMsBuild(buildContext, msBuildSettings, projectName, "pp");
+
+        msBuildSettings.Target = string.Empty;
+        msBuildSettings.ArgumentCustomization = args => args.Append($"/pp:{projectInlinedFileName}");
+
+        var projectFileName = GetProjectFileName(buildContext, projectName);
+
+        RunMsBuild(buildContext, projectName, projectFileName, msBuildSettings, "pp");
+    }
+
+    return projectInlinedFileName;
 }
 
 //-------------------------------------------------------------
