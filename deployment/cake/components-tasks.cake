@@ -190,8 +190,10 @@ public class ComponentsProcessor : ProcessorBase
 
             // Special exception for Blazor projects
             var isBlazorProject = IsBlazorProject(BuildContext, component);
+            var isPackageContainerProject = IsPackageContainerProject(BuildContext, component);
 
             BuildContext.CakeContext.LogSeparator("Packaging component '{0}'", component);
+            CakeContext.Information("IsPackageContainerProject = '{0}'", isPackageContainerProject);
 
             var projectDirectory = GetProjectDirectory(component);
             var projectFileName = GetProjectFileName(BuildContext, component);
@@ -284,6 +286,11 @@ public class ComponentsProcessor : ProcessorBase
                 };
                 
                 msBuildSettings.Restore = true;
+                noBuild = false;
+            }
+
+            if (isPackageContainerProject)
+            {
                 noBuild = false;
             }
 
