@@ -461,7 +461,7 @@ private static bool IsPackageContainerProject(BuildContext buildContext, string 
             if (packageContainerElement.Value.ToLower() == "true")
             {
                 isPackageContainer = true;
-            }		
+            }
             break;
         }
     }
