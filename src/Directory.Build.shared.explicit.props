@@ -132,6 +132,7 @@
         <WithCulture>false</WithCulture>
     </EmbeddedResource>
     <Resource Include="Resources\Fonts\**\*.ttf" />
+    <Resource Include="Resources\Icons\**\*.ico" />
     <Resource Include="Resources\Images\**\*.png" />
     <Resource Include="Resources\Images\**\*.gif" />
     <Resource Include="Resources\Images\**\*.jpg" />
