@@ -21,8 +21,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Enable auto-merge for Dependabot PRs
         if: |
-            (startsWith(steps.dependabot-metadata.outputs.dependency-names, 'approvaltests.') || 
-             startsWith(steps.dependabot-metadata.outputs.dependency-names, 'catel.') ||
+            (startsWith(steps.dependabot-metadata.outputs.dependency-names, 'catel.') ||
              startsWith(steps.dependabot-metadata.outputs.dependency-names, 'fody') ||
              endsWith(steps.dependabot-metadata.outputs.dependency-names,   '.fody') ||
              startsWith(steps.dependabot-metadata.outputs.dependency-names, 'microsoft.') ||
