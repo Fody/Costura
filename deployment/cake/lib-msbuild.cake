@@ -1,5 +1,5 @@
-#addin "nuget:?package=Cake.Issues&version=4.9.0"
-#addin "nuget:?package=Cake.Issues.MsBuild&version=4.9.0"
+#addin "nuget:?package=Cake.Issues&version=4.10.0"
+#addin "nuget:?package=Cake.Issues.MsBuild&version=4.10.0"
 #addin "nuget:?package=System.Configuration.ConfigurationManager&version=8.0.0"
 
 #tool "nuget:?package=MSBuild.Extension.Pack&version=1.9.1"
