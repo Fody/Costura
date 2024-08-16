@@ -86,7 +86,7 @@ internal static class Common
     {
         if (culture is null)
         {
-            return "";
+            return string.Empty;
         }
 
         return culture.Name;

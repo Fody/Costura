@@ -71,7 +71,7 @@ public sealed class NetStandardAssemblyResolver : IAssemblyResolver
         var added = _resolvedReferences.Add(name);
         if (added)
         {
-            var toFileName = string.IsNullOrEmpty(assemblyDefinition.MainModule.FileName) ? "" : $" to {assemblyDefinition.MainModule.FileName}";
+            var toFileName = string.IsNullOrEmpty(assemblyDefinition.MainModule.FileName) ? string.Empty : $" to {assemblyDefinition.MainModule.FileName}";
             _weaver.WriteDebug($"\t\tResolved {name}{toFileName}");
         }
 
