@@ -59,7 +59,7 @@ public partial class ModuleWeaver
             CopyFields(_sourceType);
             CopyMethod(_sourceType.Methods.Single(_ => _.Name == "ResolveAssembly"));
 
-            _loaderCctor = CopyMethod(_sourceType.Methods.Single(_ => _.IsConstructor && x.IsStatic));
+            _loaderCctor = CopyMethod(_sourceType.Methods.Single(_ => _.IsConstructor && _.IsStatic));
             _attachMethod = CopyMethod(_sourceType.Methods.Single(_ => _.Name == "Attach"));
         }
     }
@@ -301,12 +301,12 @@ public partial class ModuleWeaver
             var methodReference = reference;
             if (methodReference.DeclaringType == _sourceType || methodReference.DeclaringType == _commonType)
             {
-                var mr = _targetType.Methods.FirstOrDefault(_ => _.Name == methodReference.Name && x.Parameters.Count == methodReference.Parameters.Count);
+                var mr = _targetType.Methods.FirstOrDefault(_ => _.Name == methodReference.Name && _.Parameters.Count == methodReference.Parameters.Count);
                 if (mr is null)
                 {
                     //little poetic license... :). .Resolve() doesn't work with "extern" methods
                     return CopyMethod(methodReference.DeclaringType.Resolve().Methods
-                                      .First(_ => _.Name == methodReference.Name && m.Parameters.Count == methodReference.Parameters.Count),
+                                      .First(_ => _.Name == methodReference.Name && _.Parameters.Count == methodReference.Parameters.Count),
                         methodReference.DeclaringType != _sourceType);
                 }
                 return mr;
