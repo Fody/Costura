@@ -17,7 +17,7 @@
             {
                 var actualOutput = moduleWeaver.GetCacheFile(CacheRoot, resourceName, true, DummyShaChecksum);
 
-                Assert.AreEqual(expectedOutput, actualOutput);
+                Assert.That(actualOutput, Is.EqualTo(expectedOutput));
             }
         }
     }

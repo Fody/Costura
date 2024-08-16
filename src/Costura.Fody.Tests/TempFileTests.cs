@@ -17,6 +17,6 @@ public class TempFileTests : BasicTests
     public void ExecutableRunsSuccessfully()
     {
         var output = RunHelper.RunExecutable(TestResult.AssemblyPath);
-        Assert.AreEqual("Run-OK", output);
+        Assert.That(output, Is.EqualTo("Run-OK"));
     }
 }
