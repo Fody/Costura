@@ -1,6 +1,6 @@
 <Project Sdk="MSBuild.Sdk.Extras">
   <PropertyGroup>
-    <TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net472;net8.0</TargetFrameworks>
     <AssemblyName>Costura.Fody.Tests</AssemblyName>
     <RootNamespace>Costura.Fody.Tests</RootNamespace>
     <DefaultLanguage>en-US</DefaultLanguage>
