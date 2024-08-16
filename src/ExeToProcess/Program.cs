@@ -1,8 +1,8 @@
 ﻿using System;
 
-class Program
+internal class Program
 {
-    static void Main()
+    private static void Main()
     {
         // When the AppContext switches are properly initialized with the executable targeting ".NETFramework,Version=v4.7.2",
         // the "Switch.System.Diagnostics.IgnorePortablePDBsInStackTraces" is _not_ set at all.

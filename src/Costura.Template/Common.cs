@@ -23,7 +23,7 @@ internal static class Common
         Debug.WriteLine("=== COSTURA === " + string.Format(format, args));
     }
 
-    static void CopyTo(Stream source, Stream destination)
+    private static void CopyTo(Stream source, Stream destination)
     {
         var array = new byte[81920];
         int count;
@@ -33,7 +33,7 @@ internal static class Common
         }
     }
 
-    static void CreateDirectory(string tempBasePath)
+    private static void CreateDirectory(string tempBasePath)
     {
         if (!Directory.Exists(tempBasePath))
         {
@@ -41,7 +41,7 @@ internal static class Common
         }
     }
 
-    static byte[] ReadStream(Stream stream)
+    private static byte[] ReadStream(Stream stream)
     {
         var data = new byte[stream.Length];
         stream.Read(data, 0, data.Length);
@@ -82,7 +82,7 @@ internal static class Common
         return null;
     }
 
-    static string CultureToString(CultureInfo culture)
+    private static string CultureToString(CultureInfo culture)
     {
         if (culture is null)
         {
@@ -156,7 +156,7 @@ internal static class Common
         return Assembly.Load(assemblyData);
     }
 
-    static Stream LoadStream(Dictionary<string, string> resourceNames, string name)
+    private static Stream LoadStream(Dictionary<string, string> resourceNames, string name)
     {
         if (resourceNames.TryGetValue(name, out var value))
         {
@@ -166,7 +166,7 @@ internal static class Common
         return null;
     }
 
-    static Stream LoadStream(string fullName)
+    private static Stream LoadStream(string fullName)
     {
         var executingAssembly = Assembly.GetExecutingAssembly();
 
@@ -222,7 +222,7 @@ internal static class Common
         }
     }
 
-    static void InternalPreloadUnmanagedLibraries(string tempBasePath, IList<string> libs, Dictionary<string, string> checksums)
+    private static void InternalPreloadUnmanagedLibraries(string tempBasePath, IList<string> libs, Dictionary<string, string> checksums)
     {
         string name;
 
@@ -281,8 +281,9 @@ internal static class Common
     }
 
     [DllImport("kernel32.dll")]
-    static extern uint SetErrorMode(uint uMode);
-    static string ResourceNameToPath(string lib)
+    private static extern uint SetErrorMode(uint uMode);
+
+    private static string ResourceNameToPath(string lib)
     {
         var bittyness = IntPtr.Size == 8 ? "64" : "32";
 

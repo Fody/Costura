@@ -7,20 +7,20 @@ using System.Threading;
 
 internal static class ILTemplateWithUnmanagedHandler
 {
-    static object nullCacheLock = new object();
-    static Dictionary<string, bool> nullCache = new Dictionary<string, bool>();
+    private static object nullCacheLock = new object();
+    private static Dictionary<string, bool> nullCache = new Dictionary<string, bool>();
 
-    static string tempBasePath;
+    private static string tempBasePath;
 
-    static Dictionary<string, string> assemblyNames = new Dictionary<string, string>();
-    static Dictionary<string, string> symbolNames = new Dictionary<string, string>();
+    private static Dictionary<string, string> assemblyNames = new Dictionary<string, string>();
+    private static Dictionary<string, string> symbolNames = new Dictionary<string, string>();
 
-    static List<string> preload32List = new List<string>();
-    static List<string> preload64List = new List<string>();
+    private static List<string> preload32List = new List<string>();
+    private static List<string> preload64List = new List<string>();
 
-    static Dictionary<string, string> checksums = new Dictionary<string, string>();
+    private static Dictionary<string, string> checksums = new Dictionary<string, string>();
 
-    static int isAttached;
+    private static int isAttached;
 
     public static void Attach()
     {
