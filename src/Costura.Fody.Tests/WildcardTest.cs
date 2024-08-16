@@ -11,11 +11,11 @@ public class WildcardTest
             new[] { "AssemblyToReference.dll", "AssemblyToReferenceMixed.dll"}, "WildcardWeave");
 
         var referencedAssemblies = wildcardWeave.Assembly.GetReferencedAssemblies().Select(_ => _.Name).ToList();
-        Assert.Contains("AssemblyToReference", referencedAssemblies);
-        Assert.Contains("AssemblyToReferencePreEmbedded", referencedAssemblies);
+        Assert.That(referencedAssemblies, Does.Contain("AssemblyToReference"));
+        Assert.That(referencedAssemblies, Does.Contain("AssemblyToReferencePreEmbedded"));
 
         var instance = wildcardWeave.GetInstance("ClassToTest");
-        Assert.AreEqual("Hello", instance.Simple());
-        Assert.AreEqual("Hello", instance.SimplePreEmbed());
+        Assert.That("Hello", Is.EqualTo(instance.Simple()));
+        Assert.That("Hello", Is.EqualTo(instance.SimplePreEmbed()));
     }
 }

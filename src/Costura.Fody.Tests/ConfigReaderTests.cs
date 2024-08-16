@@ -9,14 +9,14 @@ public class ConfigReaderTests
     public void CanReadFalseNode()
     {
         var xElement = XElement.Parse("<Node attr='false'/>");
-        Assert.False(Configuration.ReadBool(xElement, "attr", true));
+        Assert.That(Configuration.ReadBool(xElement, "attr", true), Is.False);
     }
 
     [Test]
     public void CanReadTrueNode()
     {
         var xElement = XElement.Parse("<Node attr='true'/>");
-        Assert.True(Configuration.ReadBool(xElement, "attr", false));
+        Assert.That(Configuration.ReadBool(xElement, "attr", false), Is.True);
     }
 
     // These next 2 tests are because of https://github.com/Fody/Costura/issues/204
@@ -52,7 +52,7 @@ public class ConfigReaderTests
     {
         var xElement = XElement.Parse("<Costura IncludeDebugSymbols='false'/>");
         var config = new Configuration(xElement);
-        Assert.False(config.IncludeDebugSymbols);
+        Assert.That(config.IncludeDebugSymbols, Is.False);
     }
 
     [Test]
@@ -60,7 +60,7 @@ public class ConfigReaderTests
     {
         var xElement = XElement.Parse("<Costura IncludeDebugSymbols='0'/>");
         var config = new Configuration(xElement);
-        Assert.False(config.IncludeDebugSymbols);
+        Assert.That(config.IncludeDebugSymbols, Is.False);
     }
 
     [Test]
@@ -68,7 +68,7 @@ public class ConfigReaderTests
     {
         var xElement = XElement.Parse("<Costura DisableCompression='true'/>");
         var config = new Configuration(xElement);
-        Assert.True(config.DisableCompression);
+        Assert.That(config.DisableCompression, Is.True);
     }
 
     [Test]
@@ -76,7 +76,7 @@ public class ConfigReaderTests
     {
         var xElement = XElement.Parse("<Costura DisableCompression='1'/>");
         var config = new Configuration(xElement);
-        Assert.True(config.DisableCompression);
+        Assert.That(config.DisableCompression, Is.True);
     }
 
     [Test]
@@ -84,7 +84,7 @@ public class ConfigReaderTests
     {
         var xElement = XElement.Parse("<Costura DisableCleanup='true'/>");
         var config = new Configuration(xElement);
-        Assert.True(config.DisableCleanup);
+        Assert.That(config.DisableCleanup, Is.True);
     }
 
     [Test]
@@ -92,7 +92,7 @@ public class ConfigReaderTests
     {
         var xElement = XElement.Parse("<Costura DisableCleanup='1'/>");
         var config = new Configuration(xElement);
-        Assert.True(config.DisableCleanup);
+        Assert.That(config.DisableCleanup, Is.True);
     }
 
     [Test]
@@ -100,7 +100,7 @@ public class ConfigReaderTests
     {
         var xElement = XElement.Parse("<Costura LoadAtModuleInit='false'/>");
         var config = new Configuration(xElement);
-        Assert.False(config.LoadAtModuleInit);
+        Assert.That(config.LoadAtModuleInit, Is.False);
     }
 
     [Test]
@@ -108,7 +108,7 @@ public class ConfigReaderTests
     {
         var xElement = XElement.Parse("<Costura CreateTemporaryAssemblies='true'/>");
         var config = new Configuration(xElement);
-        Assert.True(config.CreateTemporaryAssemblies);
+        Assert.That(config.CreateTemporaryAssemblies, Is.True);
     }
 
     [Test]
@@ -116,7 +116,7 @@ public class ConfigReaderTests
     {
         var xElement = XElement.Parse("<Costura CreateTemporaryAssemblies='1'/>");
         var config = new Configuration(xElement);
-        Assert.True(config.CreateTemporaryAssemblies);
+        Assert.That(config.CreateTemporaryAssemblies, Is.True);
     }
 
     [Test]
@@ -330,6 +330,6 @@ Bar
 <Costura IgnoreSatelliteAssemblies='True'>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.True(config.IgnoreSatelliteAssemblies);
+        Assert.That(config.IgnoreSatelliteAssemblies, Is.True);
     }
 }

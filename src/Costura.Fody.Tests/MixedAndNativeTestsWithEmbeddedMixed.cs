@@ -15,21 +15,21 @@ public class MixedAndNativeTestsWithEmbeddedMixed : BaseCosturaTest
     public void Native()
     {
         var instance1 = TestResult.GetInstance("ClassToTest");
-        Assert.AreEqual("Hello", instance1.NativeFoo());
+        Assert.That("Hello", Is.EqualTo(instance1.NativeFoo()));
     }
 
     [Test]
     public void Mixed()
     {
         var instance1 = TestResult.GetInstance("ClassToTest");
-        Assert.AreEqual("Hello", instance1.MixedFoo());
+        Assert.That("Hello", Is.EqualTo(instance1.MixedFoo()));
     }
 
     [Test]
     public void MixedPInvoke()
     {
         var instance1 = TestResult.GetInstance("ClassToTest");
-        Assert.AreEqual("Hello", instance1.MixedFooPInvoke());
+        Assert.That("Hello", Is.EqualTo(instance1.MixedFooPInvoke()));
     }
 
     [Test]

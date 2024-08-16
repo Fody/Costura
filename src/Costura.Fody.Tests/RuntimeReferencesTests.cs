@@ -25,7 +25,7 @@
             DeleteRuntimeReferencesFolder();
 
             var instance = TestResult.GetInstance("ClassToTest");
-            Assert.AreEqual("Hello", instance.RuntimeReferences());
+            Assert.That("Hello", Is.EqualTo(instance.RuntimeReferences()));
         }
 
         private void DeleteRuntimeReferencesFolder()

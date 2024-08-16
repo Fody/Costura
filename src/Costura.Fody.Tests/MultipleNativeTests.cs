@@ -18,6 +18,6 @@ public class MultipleNativeTests : BaseCosturaTest
     public void Native()
     {
         var instance1 = TestResult.GetInstance("ExeToProcessWithMultipleNative.Program");
-        Assert.AreEqual(42, instance1.Test());
+        Assert.That(42, Is.EqualTo(instance1.Test()));
     }
 }

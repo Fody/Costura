@@ -31,7 +31,7 @@ public class CultureResourceTests : BaseCosturaTest
         {
             Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("fr-FR");
             var instance1 = testResult.GetInstance("ClassToTest");
-            Assert.AreEqual("Salut", instance1.InternationalFoo());
+            Assert.That("Salut", Is.EqualTo(instance1.InternationalFoo()));
         }
         finally
         {
