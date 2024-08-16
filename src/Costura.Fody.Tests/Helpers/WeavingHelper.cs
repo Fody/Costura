@@ -22,6 +22,14 @@ public static class WeavingHelper
                 assemblyPath = Path.Combine(currentDirectory, assemblyPath);
             }
 
+#if NETCORE
+            // Exe are now native, use .dll instead
+            if (assemblyPath.EndsWith(".exe", System.StringComparison.OrdinalIgnoreCase))
+            {
+                assemblyPath = Path.ChangeExtension(assemblyPath, ".dll");
+            }
+#endif
+
             return weaver.ExecuteTestRun(
                 assemblyPath,
                 assemblyName: assemblyName,
