@@ -26,7 +26,10 @@ public static class WeavingHelper
             // Exe are now native, use .dll instead
             if (assemblyPath.EndsWith(".exe", System.StringComparison.OrdinalIgnoreCase))
             {
-                assemblyPath = Path.ChangeExtension(assemblyPath, ".dll");
+                if (!AssemblyHelper.IsManagedAssembly(assemblyPath))
+                {
+                    assemblyPath = Path.ChangeExtension(assemblyPath, ".dll");
+                }
             }
 #endif
 

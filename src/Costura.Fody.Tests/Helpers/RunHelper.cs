@@ -1,9 +1,15 @@
 ﻿using System.Diagnostics;
+using System.IO;
 
 internal static class RunHelper
 {
     public static string RunExecutable(string executablePath)
     {
+        if (executablePath.EndsWith(".dll"))
+        {
+            executablePath = Path.ChangeExtension(executablePath, ".exe");
+        }
+
         var startInfo = new ProcessStartInfo(executablePath)
         {
             CreateNoWindow = true,
