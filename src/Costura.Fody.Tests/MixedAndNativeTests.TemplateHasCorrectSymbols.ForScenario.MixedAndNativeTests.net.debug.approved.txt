@@ -1,6 +1,11 @@
 ﻿.class private abstract auto ansi sealed beforefieldinit Costura.AssemblyLoader
 extends [mscorlib]System.Object
 {
+.class abstract auto ansi sealed nested private beforefieldinit '<>O'
+extends [mscorlib]System.Object
+{
+.field public static class [mscorlib]System.ResolveEventHandler '<0>__ResolveAssembly'
+}
 .field private static object nullCacheLock
 .field private static class [mscorlib]System.Collections.Generic.Dictionary`2<string,bool> nullCache
 .field private static string tempBasePath
@@ -1305,7 +1310,7 @@ IL_000f:  stloc.s    V_6
 IL_0011:  ldloc.s    V_6
 IL_0013:  brfalse.s  IL_001b
 IL_0015:  nop
-IL_0016:  br         IL_0129
+IL_0016:  br         IL_0138
 IL_001b:  call       class [mscorlib]System.AppDomain [mscorlib]System.AppDomain::get_CurrentDomain()
 IL_0020:  stloc.0
 IL_0021:  ldloc.0
@@ -1415,13 +1420,19 @@ class [mscorlib]System.Collections.Generic.List`1<string>,
 class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>)
 IL_0115:  nop
 IL_0116:  ldloc.0
-IL_0117:  ldnull
-IL_0118:  ldftn      class [mscorlib]System.Reflection.Assembly Costura.AssemblyLoader::ResolveAssembly(object,
+IL_0117:  ldsfld     class [mscorlib]System.ResolveEventHandler Costura.AssemblyLoader/'<>O'::'<0>__ResolveAssembly'
+IL_011c:  dup
+IL_011d:  brtrue.s   IL_0132
+IL_011f:  pop
+IL_0120:  ldnull
+IL_0121:  ldftn      class [mscorlib]System.Reflection.Assembly Costura.AssemblyLoader::ResolveAssembly(object,
 class [mscorlib]System.ResolveEventArgs)
-IL_011e:  newobj     instance void [mscorlib]System.ResolveEventHandler::.ctor(object,
+IL_0127:  newobj     instance void [mscorlib]System.ResolveEventHandler::.ctor(object,
 native int)
-IL_0123:  callvirt   instance void [mscorlib]System.AppDomain::add_AssemblyResolve(class [mscorlib]System.ResolveEventHandler)
-IL_0128:  nop
-IL_0129:  ret
+IL_012c:  dup
+IL_012d:  stsfld     class [mscorlib]System.ResolveEventHandler Costura.AssemblyLoader/'<>O'::'<0>__ResolveAssembly'
+IL_0132:  callvirt   instance void [mscorlib]System.AppDomain::add_AssemblyResolve(class [mscorlib]System.ResolveEventHandler)
+IL_0137:  nop
+IL_0138:  ret
 }
 }

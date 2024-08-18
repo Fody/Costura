@@ -1,6 +1,11 @@
 ﻿.class private abstract auto ansi sealed beforefieldinit Costura.AssemblyLoader
 extends [mscorlib]System.Object
 {
+.class abstract auto ansi sealed nested private beforefieldinit '<>O'
+extends [mscorlib]System.Object
+{
+.field public static class [mscorlib]System.ResolveEventHandler '<0>__ResolveAssembly'
+}
 .field private static object nullCacheLock
 .field private static class [mscorlib]System.Collections.Generic.Dictionary`2<string,bool> nullCache
 .field private static class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> assemblyNames
@@ -635,17 +640,23 @@ IL_000f:  stloc.1
 IL_0010:  ldloc.1
 IL_0011:  brfalse.s  IL_0016
 IL_0013:  nop
-IL_0014:  br.s       IL_002f
+IL_0014:  br.s       IL_003e
 IL_0016:  call       class [mscorlib]System.AppDomain [mscorlib]System.AppDomain::get_CurrentDomain()
 IL_001b:  stloc.0
 IL_001c:  ldloc.0
-IL_001d:  ldnull
-IL_001e:  ldftn      class [mscorlib]System.Reflection.Assembly Costura.AssemblyLoader::ResolveAssembly(object,
+IL_001d:  ldsfld     class [mscorlib]System.ResolveEventHandler Costura.AssemblyLoader/'<>O'::'<0>__ResolveAssembly'
+IL_0022:  dup
+IL_0023:  brtrue.s   IL_0038
+IL_0025:  pop
+IL_0026:  ldnull
+IL_0027:  ldftn      class [mscorlib]System.Reflection.Assembly Costura.AssemblyLoader::ResolveAssembly(object,
 class [mscorlib]System.ResolveEventArgs)
-IL_0024:  newobj     instance void [mscorlib]System.ResolveEventHandler::.ctor(object,
+IL_002d:  newobj     instance void [mscorlib]System.ResolveEventHandler::.ctor(object,
 native int)
-IL_0029:  callvirt   instance void [mscorlib]System.AppDomain::add_AssemblyResolve(class [mscorlib]System.ResolveEventHandler)
-IL_002e:  nop
-IL_002f:  ret
+IL_0032:  dup
+IL_0033:  stsfld     class [mscorlib]System.ResolveEventHandler Costura.AssemblyLoader/'<>O'::'<0>__ResolveAssembly'
+IL_0038:  callvirt   instance void [mscorlib]System.AppDomain::add_AssemblyResolve(class [mscorlib]System.ResolveEventHandler)
+IL_003d:  nop
+IL_003e:  ret
 }
 }
