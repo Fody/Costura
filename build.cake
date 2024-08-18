@@ -29,6 +29,7 @@ Parameters["TestProcessBit"] = "X86";
 // DEFINE COMPONENTS TO BUILD / PACKAGE
 //=======================================================
 
+Dependencies.Add("ExeToReference");
 Dependencies.Add("AssemblyToReference");
 Dependencies.Add("AssemblyToReferenceNative");
 Dependencies.Add("AssemblyToReferenceMixed");
@@ -38,7 +39,6 @@ Dependencies.Add("AssemblyToProcess");
 Dependencies.Add("ExeToProcess");
 Dependencies.Add("ExeToProcessWithNative");
 Dependencies.Add("ExeToProcessWithNativeAndEmbeddedMixed");
-Dependencies.Add("ExeToReference");
 Dependencies.Add("Costura.Template");
 
 Components.Add("Costura.Fody");
