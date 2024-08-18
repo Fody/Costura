@@ -20,7 +20,7 @@ IL_0005:  stloc.0
 IL_0006:  ldloc.0
 IL_0007:  brfalse.s  IL_0012
 IL_0009:  nop
-IL_000a:  ldstr      ""
+IL_000a:  ldsfld     string [System.Private.CoreLib]System.String::Empty
 IL_000f:  stloc.1
 IL_0010:  br.s       IL_001b
 IL_0012:  ldarg.0
