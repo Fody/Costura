@@ -1,6 +1,11 @@
 ﻿.class private abstract auto ansi sealed beforefieldinit Costura.AssemblyLoader
 extends [mscorlib]System.Object
 {
+.class abstract auto ansi sealed nested private beforefieldinit '<>O'
+extends [mscorlib]System.Object
+{
+.field public static class [mscorlib]System.ResolveEventHandler '<0>__ResolveAssembly'
+}
 .field private static object nullCacheLock
 .field private static class [mscorlib]System.Collections.Generic.Dictionary`2<string,bool> nullCache
 .field private static class [mscorlib]System.Collections.Generic.Dictionary`2<string,string> assemblyNames
@@ -12,7 +17,7 @@ CultureToString(class [mscorlib]System.Globalization.CultureInfo culture) cil ma
 .maxstack  8
 IL_0000:  ldarg.0
 IL_0001:  brtrue.s   IL_0009
-IL_0003:  ldstr      ""
+IL_0003:  ldsfld     string [mscorlib]System.String::Empty
 IL_0008:  ret
 IL_0009:  ldarg.0
 IL_000a:  callvirt   instance string [mscorlib]System.Globalization.CultureInfo::get_Name()
@@ -468,12 +473,18 @@ IL_000e:  ret
 IL_000f:  call       class [mscorlib]System.AppDomain [mscorlib]System.AppDomain::get_CurrentDomain()
 IL_0014:  stloc.0
 IL_0015:  ldloc.0
-IL_0016:  ldnull
-IL_0017:  ldftn      class [mscorlib]System.Reflection.Assembly Costura.AssemblyLoader::ResolveAssembly(object,
+IL_0016:  ldsfld     class [mscorlib]System.ResolveEventHandler Costura.AssemblyLoader/'<>O'::'<0>__ResolveAssembly'
+IL_001b:  dup
+IL_001c:  brtrue.s   IL_0031
+IL_001e:  pop
+IL_001f:  ldnull
+IL_0020:  ldftn      class [mscorlib]System.Reflection.Assembly Costura.AssemblyLoader::ResolveAssembly(object,
 class [mscorlib]System.ResolveEventArgs)
-IL_001d:  newobj     instance void [mscorlib]System.ResolveEventHandler::.ctor(object,
+IL_0026:  newobj     instance void [mscorlib]System.ResolveEventHandler::.ctor(object,
 native int)
-IL_0022:  callvirt   instance void [mscorlib]System.AppDomain::add_AssemblyResolve(class [mscorlib]System.ResolveEventHandler)
-IL_0027:  ret
+IL_002b:  dup
+IL_002c:  stsfld     class [mscorlib]System.ResolveEventHandler Costura.AssemblyLoader/'<>O'::'<0>__ResolveAssembly'
+IL_0031:  callvirt   instance void [mscorlib]System.AppDomain::add_AssemblyResolve(class [mscorlib]System.ResolveEventHandler)
+IL_0036:  ret
 }
 }
