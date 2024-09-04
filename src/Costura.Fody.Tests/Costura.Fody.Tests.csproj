@@ -20,7 +20,7 @@
     <PackageReference Include="FodyHelpers" Version="6.8.1" />
     <PackageReference Include="Fody" Version="6.8.1" PrivateAssets="none" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.0" />
-    <PackageReference Include="Moq" Version="4.20.70" />
+    <PackageReference Include="Moq" Version="4.20.71" />
     <PackageReference Include="NUnit" Version="4.2.2" PrivateAssets="all" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" PrivateAssets="all" />
   </ItemGroup>
