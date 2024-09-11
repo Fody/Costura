@@ -23,21 +23,38 @@ public static class WeavingHelper
             }
 
 #if NETCORE
-            // Exe are now native, use .dll instead
+            var shouldCopy = false;
+            var originalExe = string.Empty;
+
+            // Exe are now native, use .dll instead, but copy the exe
             if (assemblyPath.EndsWith(".exe", System.StringComparison.OrdinalIgnoreCase))
             {
                 if (!AssemblyHelper.IsManagedAssembly(assemblyPath))
                 {
+                    shouldCopy = true;
+                    originalExe = assemblyPath;
+
                     assemblyPath = Path.ChangeExtension(assemblyPath, ".dll");
                 }
             }
 #endif
 
-            return weaver.ExecuteTestRun(
+            var assembly = weaver.ExecuteTestRun(
                 assemblyPath,
                 assemblyName: assemblyName,
                 ignoreCodes: new[] { "0x80131869" },
                 runPeVerify: false);
+
+#if NETCORE
+            if (shouldCopy && !string.IsNullOrWhiteSpace(originalExe))
+            {
+                var destinationExe = Path.ChangeExtension(assembly.AssemblyPath, ".exe");
+
+                File.Copy(originalExe, destinationExe, true);
+            }
+#endif
+
+            return assembly;
         }
     }
 }
