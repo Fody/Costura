@@ -26,7 +26,6 @@ internal static class ILTemplate
 
 #if NETCORE
         AssemblyLoadContext.Default.Resolving += ResolveAssembly;
-
 #else
         var currentDomain = AppDomain.CurrentDomain;
         currentDomain.AssemblyResolve += ResolveAssembly;

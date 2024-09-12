@@ -101,7 +101,7 @@ internal static class Common
             name = $"{requestedAssemblyName.CultureInfo.Name}.{name}";
         }
 
-        var bittyness = IntPtr.Size == 8 ? "64" : "32";
+        var platformName = GetPlatformName();
         var assemblyTempFilePath = Path.Combine(tempBasePath, string.Concat(name, ".dll"));
         if (File.Exists(assemblyTempFilePath))
         {
@@ -112,7 +112,7 @@ internal static class Common
         {
             return Assembly.LoadFile(assemblyTempFilePath);
         }
-        assemblyTempFilePath = Path.Combine(Path.Combine(tempBasePath, bittyness), string.Concat(name, ".dll"));
+        assemblyTempFilePath = Path.Combine(Path.Combine(tempBasePath, platformName), string.Concat(name, ".dll"));
         if (File.Exists(assemblyTempFilePath))
         {
             return Assembly.LoadFile(assemblyTempFilePath);
@@ -208,8 +208,9 @@ internal static class Common
                     hasHandle = true;
                 }
 
-                var bittyness = IntPtr.Size == 8 ? "64" : "32";
-                CreateDirectory(Path.Combine(tempBasePath, bittyness));
+                var platformName = GetPlatformName();
+
+                CreateDirectory(Path.Combine(tempBasePath, platformName));
                 InternalPreloadUnmanagedLibraries(tempBasePath, libs, checksums);
             }
             finally
@@ -285,13 +286,12 @@ internal static class Common
 
     private static string ResourceNameToPath(string lib)
     {
-        var bittyness = IntPtr.Size == 8 ? "64" : "32";
-
+        var platformName = GetPlatformName();
         var name = lib;
 
-        if (lib.StartsWith(string.Concat("costura", bittyness, ".")))
+        if (lib.StartsWith(string.Concat("costura", platformName, ".")))
         {
-            name = Path.Combine(bittyness, lib.Substring(10));
+            name = Path.Combine(platformName, lib.Substring(10));
         }
         else if (lib.StartsWith("costura."))
         {
@@ -304,5 +304,29 @@ internal static class Common
         }
 
         return name;
+    }
+
+    private static string GetPlatformName()
+    {
+#if NETCORE
+        switch (RuntimeInformation.ProcessArchitecture)
+        {
+            case Architecture.Arm64:
+                return "arm64";
+
+            case Architecture.X86:
+                return "x86";
+
+            case Architecture.X64:
+                return "x64";
+
+            default:
+                throw new NotSupportedException($"Architecture '{RuntimeInformation.ProcessArchitecture}' not supported");
+        }
+#else
+
+        var bittyness = IntPtr.Size == 8 ? "64" : "32";
+        return $"x{bittyness}";
+#endif
     }
 }

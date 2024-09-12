@@ -21,7 +21,12 @@
     <EmbeddedResource Include="$(OverridableOutputRootPath)\Costura.Template\netstandard2.0\Costura.Template.dll">
       <Link>bin\Template.dll</Link>
       <InProject>false</InProject>
-      <LogicalName>Costura.Template.dll</LogicalName>
+      <LogicalName>Costura.Template.netstandard2.0.dll</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(OverridableOutputRootPath)\Costura.Template\net6.0\Costura.Template.dll">
+      <Link>bin\Template.dll</Link>
+      <InProject>false</InProject>
+      <LogicalName>Costura.Template.net6.0.dll</LogicalName>
     </EmbeddedResource>
 
     <EmbeddedResource Include="$(PkgMicrosoft_NETFramework_ReferenceAssemblies_net48)\build\.NETFramework\v4.8\Facades\netstandard.dll">

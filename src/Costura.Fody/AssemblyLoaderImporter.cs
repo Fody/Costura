@@ -31,7 +31,19 @@ public partial class ModuleWeaver
             SymbolReaderProvider = new PdbReaderProvider()
         };
 
-        using (var resourceStream = GetType().Assembly.GetManifestResourceStream("Costura.Template.dll"))
+        // Default version always used by Costura
+        var targetFramework = "netstandard2.0";
+
+        var systemRuntimeReference = ModuleDefinition.AssemblyReferences.FirstOrDefault(x => x.Name == "System.Runtime");
+        if (systemRuntimeReference is not null)
+        {
+            if (systemRuntimeReference.Version.Major >= 6)
+            {
+                targetFramework = "net6.0";
+            }
+        }
+
+        using (var resourceStream = GetType().Assembly.GetManifestResourceStream($"Costura.Template.{targetFramework}.dll"))
         {
             var moduleDefinition = ModuleDefinition.ReadModule(resourceStream, readerParameters);
 
@@ -64,12 +76,6 @@ public partial class ModuleWeaver
             _loaderCctor = CopyMethod(_targetType, _sourceType.Methods.Single(_ => _.IsConstructor && _.IsStatic));
             _attachMethod = CopyMethod(_targetType, _sourceType.Methods.Single(_ => _.Name == "Attach"));
         }
-
-        //var costuraTemplateReference = ModuleDefinition.AssemblyReferences.FirstOrDefault(x => string.Equals(x.Name, "Costura.Template"));
-        //if (costuraTemplateReference is not null)
-        //{
-        //    ModuleDefinition.AssemblyReferences.Remove(costuraTemplateReference);
-        //}
     }
 
     private void DumpSource(string file)
@@ -179,7 +185,10 @@ public partial class ModuleWeaver
 
         if (baseType.IsGenericInstance)
         {
-            typeReference = typeReference.MakeGenericInstanceType(baseType.GetGenericInstanceArguments().ToArray());
+            typeReference = typeReference.MakeGenericInstanceType(baseType
+                .GetGenericInstanceArguments()
+                .Select(x => ModuleDefinition.ImportReference(x))
+                .ToArray());
         }
 
         return typeReference;
@@ -365,7 +374,9 @@ public partial class ModuleWeaver
             if (methodReference.DeclaringType.IsGenericInstance)
             {
                 return ModuleDefinition.ImportReference(methodReference.Resolve())
-                    .MakeHostInstanceGeneric(methodReference.DeclaringType.GetGenericInstanceArguments().ToArray());
+                    .MakeHostInstanceGeneric(methodReference.DeclaringType
+                        .GetGenericInstanceArguments()
+                        .Select(x => ModuleDefinition.ImportReference(x)).ToArray());
             }
             return ModuleDefinition.ImportReference(methodReference.Resolve());
         }
