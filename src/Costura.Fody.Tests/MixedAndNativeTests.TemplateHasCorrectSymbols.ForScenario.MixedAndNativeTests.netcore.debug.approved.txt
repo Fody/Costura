@@ -51,7 +51,7 @@ IL_0008:  call       string [System.Private.CoreLib]System.String::Format(string
 object[])
 IL_000d:  call       string [System.Private.CoreLib]System.String::Concat(string,
 string)
-IL_0012:  call       void [System.Private.CoreLib]System.Diagnostics.Debug::WriteLine(string)
+IL_0012:  call       void [System.Console]System.Console::WriteLine(string)
 IL_0017:  nop
 IL_0018:  ret
 }
@@ -143,6 +143,59 @@ IL_008f:  br.s       IL_0091
 IL_0091:  ldloc.s    V_7
 IL_0093:  ret
 }
+.method private hidebysig static string
+GetPlatformName() cil managed
+{
+.maxstack  3
+.locals init (valuetype [System.Private.CoreLib]System.Runtime.InteropServices.Architecture V_0,
+valuetype [System.Private.CoreLib]System.Runtime.InteropServices.Architecture V_1,
+string V_2,
+valuetype [System.Private.CoreLib]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler V_3)
+IL_0000:  nop
+IL_0001:  call       valuetype [System.Private.CoreLib]System.Runtime.InteropServices.Architecture [System.Private.CoreLib]System.Runtime.InteropServices.RuntimeInformation::get_ProcessArchitecture()
+IL_0006:  stloc.1
+IL_0007:  ldloc.1
+IL_0008:  stloc.0
+IL_0009:  ldloc.0
+IL_000a:  switch     (
+IL_0029,
+IL_0031,
+IL_0039,
+IL_0021)
+IL_001f:  br.s       IL_0039
+IL_0021:  ldstr      "arm64"
+IL_0026:  stloc.2
+IL_0027:  br.s       IL_0077
+IL_0029:  ldstr      "x86"
+IL_002e:  stloc.2
+IL_002f:  br.s       IL_0077
+IL_0031:  ldstr      "x64"
+IL_0036:  stloc.2
+IL_0037:  br.s       IL_0077
+IL_0039:  ldloca.s   V_3
+IL_003b:  ldc.i4.s   29
+IL_003d:  ldc.i4.1
+IL_003e:  call       instance void [System.Private.CoreLib]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::.ctor(int32,
+int32)
+IL_0043:  ldloca.s   V_3
+IL_0045:  ldstr      "Architecture '"
+IL_004a:  call       instance void [System.Private.CoreLib]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendLiteral(string)
+IL_004f:  nop
+IL_0050:  ldloca.s   V_3
+IL_0052:  call       valuetype [System.Private.CoreLib]System.Runtime.InteropServices.Architecture [System.Private.CoreLib]System.Runtime.InteropServices.RuntimeInformation::get_ProcessArchitecture()
+IL_0057:  call       instance void [System.Private.CoreLib]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendFormatted<[1]>(!!0)
+IL_005c:  nop
+IL_005d:  ldloca.s   V_3
+IL_005f:  ldstr      "' not supported"
+IL_0064:  call       instance void [System.Private.CoreLib]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendLiteral(string)
+IL_0069:  nop
+IL_006a:  ldloca.s   V_3
+IL_006c:  call       instance string [System.Private.CoreLib]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::ToStringAndClear()
+IL_0071:  newobj     instance void [System.Private.CoreLib]System.NotSupportedException::.ctor(string)
+IL_0076:  throw
+IL_0077:  ldloc.2
+IL_0078:  ret
+}
 .method private hidebysig static class [System.Private.CoreLib]System.Reflection.Assembly
 ReadFromDiskCache(string tempBasePath,
 class [System.Private.CoreLib]System.Reflection.AssemblyName requestedAssemblyName) cil managed
@@ -187,87 +240,82 @@ string,
 string)
 IL_0046:  stloc.0
 IL_0047:  nop
-IL_0048:  call       int32 [System.Private.CoreLib]System.IntPtr::get_Size()
-IL_004d:  ldc.i4.8
-IL_004e:  beq.s      IL_0057
-IL_0050:  ldstr      "32"
-IL_0055:  br.s       IL_005c
-IL_0057:  ldstr      "64"
-IL_005c:  stloc.1
-IL_005d:  ldarg.0
-IL_005e:  ldloc.0
-IL_005f:  ldstr      ".dll"
-IL_0064:  call       string [System.Private.CoreLib]System.String::Concat(string,
+IL_0048:  call       string Costura.AssemblyLoader::GetPlatformName()
+IL_004d:  stloc.1
+IL_004e:  ldarg.0
+IL_004f:  ldloc.0
+IL_0050:  ldstr      ".dll"
+IL_0055:  call       string [System.Private.CoreLib]System.String::Concat(string,
 string)
-IL_0069:  call       string [System.Private.CoreLib]System.IO.Path::Combine(string,
+IL_005a:  call       string [System.Private.CoreLib]System.IO.Path::Combine(string,
 string)
-IL_006e:  stloc.2
-IL_006f:  ldloc.2
-IL_0070:  call       bool [System.Private.CoreLib]System.IO.File::Exists(string)
-IL_0075:  stloc.s    V_4
-IL_0077:  ldloc.s    V_4
-IL_0079:  brfalse.s  IL_0086
-IL_007b:  nop
-IL_007c:  ldloc.2
-IL_007d:  call       class [System.Private.CoreLib]System.Reflection.Assembly [System.Private.CoreLib]System.Reflection.Assembly::LoadFile(string)
-IL_0082:  stloc.s    V_5
-IL_0084:  br.s       IL_0100
-IL_0086:  ldloc.2
-IL_0087:  ldstr      "exe"
-IL_008c:  call       string [System.Private.CoreLib]System.IO.Path::ChangeExtension(string,
+IL_005f:  stloc.2
+IL_0060:  ldloc.2
+IL_0061:  call       bool [System.Private.CoreLib]System.IO.File::Exists(string)
+IL_0066:  stloc.s    V_4
+IL_0068:  ldloc.s    V_4
+IL_006a:  brfalse.s  IL_0077
+IL_006c:  nop
+IL_006d:  ldloc.2
+IL_006e:  call       class [System.Private.CoreLib]System.Reflection.Assembly [System.Private.CoreLib]System.Reflection.Assembly::LoadFile(string)
+IL_0073:  stloc.s    V_5
+IL_0075:  br.s       IL_00f1
+IL_0077:  ldloc.2
+IL_0078:  ldstr      "exe"
+IL_007d:  call       string [System.Private.CoreLib]System.IO.Path::ChangeExtension(string,
 string)
-IL_0091:  stloc.2
-IL_0092:  ldloc.2
-IL_0093:  call       bool [System.Private.CoreLib]System.IO.File::Exists(string)
-IL_0098:  stloc.s    V_6
-IL_009a:  ldloc.s    V_6
-IL_009c:  brfalse.s  IL_00a9
-IL_009e:  nop
-IL_009f:  ldloc.2
-IL_00a0:  call       class [System.Private.CoreLib]System.Reflection.Assembly [System.Private.CoreLib]System.Reflection.Assembly::LoadFile(string)
-IL_00a5:  stloc.s    V_5
-IL_00a7:  br.s       IL_0100
-IL_00a9:  ldarg.0
-IL_00aa:  ldloc.1
-IL_00ab:  call       string [System.Private.CoreLib]System.IO.Path::Combine(string,
+IL_0082:  stloc.2
+IL_0083:  ldloc.2
+IL_0084:  call       bool [System.Private.CoreLib]System.IO.File::Exists(string)
+IL_0089:  stloc.s    V_6
+IL_008b:  ldloc.s    V_6
+IL_008d:  brfalse.s  IL_009a
+IL_008f:  nop
+IL_0090:  ldloc.2
+IL_0091:  call       class [System.Private.CoreLib]System.Reflection.Assembly [System.Private.CoreLib]System.Reflection.Assembly::LoadFile(string)
+IL_0096:  stloc.s    V_5
+IL_0098:  br.s       IL_00f1
+IL_009a:  ldarg.0
+IL_009b:  ldloc.1
+IL_009c:  call       string [System.Private.CoreLib]System.IO.Path::Combine(string,
 string)
-IL_00b0:  ldloc.0
-IL_00b1:  ldstr      ".dll"
-IL_00b6:  call       string [System.Private.CoreLib]System.String::Concat(string,
+IL_00a1:  ldloc.0
+IL_00a2:  ldstr      ".dll"
+IL_00a7:  call       string [System.Private.CoreLib]System.String::Concat(string,
 string)
-IL_00bb:  call       string [System.Private.CoreLib]System.IO.Path::Combine(string,
+IL_00ac:  call       string [System.Private.CoreLib]System.IO.Path::Combine(string,
 string)
-IL_00c0:  stloc.2
-IL_00c1:  ldloc.2
-IL_00c2:  call       bool [System.Private.CoreLib]System.IO.File::Exists(string)
-IL_00c7:  stloc.s    V_7
-IL_00c9:  ldloc.s    V_7
-IL_00cb:  brfalse.s  IL_00d8
-IL_00cd:  nop
-IL_00ce:  ldloc.2
-IL_00cf:  call       class [System.Private.CoreLib]System.Reflection.Assembly [System.Private.CoreLib]System.Reflection.Assembly::LoadFile(string)
-IL_00d4:  stloc.s    V_5
-IL_00d6:  br.s       IL_0100
-IL_00d8:  ldloc.2
-IL_00d9:  ldstr      "exe"
-IL_00de:  call       string [System.Private.CoreLib]System.IO.Path::ChangeExtension(string,
+IL_00b1:  stloc.2
+IL_00b2:  ldloc.2
+IL_00b3:  call       bool [System.Private.CoreLib]System.IO.File::Exists(string)
+IL_00b8:  stloc.s    V_7
+IL_00ba:  ldloc.s    V_7
+IL_00bc:  brfalse.s  IL_00c9
+IL_00be:  nop
+IL_00bf:  ldloc.2
+IL_00c0:  call       class [System.Private.CoreLib]System.Reflection.Assembly [System.Private.CoreLib]System.Reflection.Assembly::LoadFile(string)
+IL_00c5:  stloc.s    V_5
+IL_00c7:  br.s       IL_00f1
+IL_00c9:  ldloc.2
+IL_00ca:  ldstr      "exe"
+IL_00cf:  call       string [System.Private.CoreLib]System.IO.Path::ChangeExtension(string,
 string)
-IL_00e3:  stloc.2
-IL_00e4:  ldloc.2
-IL_00e5:  call       bool [System.Private.CoreLib]System.IO.File::Exists(string)
-IL_00ea:  stloc.s    V_8
-IL_00ec:  ldloc.s    V_8
-IL_00ee:  brfalse.s  IL_00fb
-IL_00f0:  nop
-IL_00f1:  ldloc.2
-IL_00f2:  call       class [System.Private.CoreLib]System.Reflection.Assembly [System.Private.CoreLib]System.Reflection.Assembly::LoadFile(string)
-IL_00f7:  stloc.s    V_5
-IL_00f9:  br.s       IL_0100
-IL_00fb:  ldnull
-IL_00fc:  stloc.s    V_5
-IL_00fe:  br.s       IL_0100
-IL_0100:  ldloc.s    V_5
-IL_0102:  ret
+IL_00d4:  stloc.2
+IL_00d5:  ldloc.2
+IL_00d6:  call       bool [System.Private.CoreLib]System.IO.File::Exists(string)
+IL_00db:  stloc.s    V_8
+IL_00dd:  ldloc.s    V_8
+IL_00df:  brfalse.s  IL_00ec
+IL_00e1:  nop
+IL_00e2:  ldloc.2
+IL_00e3:  call       class [System.Private.CoreLib]System.Reflection.Assembly [System.Private.CoreLib]System.Reflection.Assembly::LoadFile(string)
+IL_00e8:  stloc.s    V_5
+IL_00ea:  br.s       IL_00f1
+IL_00ec:  ldnull
+IL_00ed:  stloc.s    V_5
+IL_00ef:  br.s       IL_00f1
+IL_00f1:  ldloc.s    V_5
+IL_00f3:  ret
 }
 .method private hidebysig static void  CopyTo(class [System.Private.CoreLib]System.IO.Stream source,
 class [System.Private.CoreLib]System.IO.Stream destination) cil managed
@@ -798,70 +846,65 @@ bool V_3,
 bool V_4,
 string V_5)
 IL_0000:  nop
-IL_0001:  call       int32 [System.Private.CoreLib]System.IntPtr::get_Size()
-IL_0006:  ldc.i4.8
-IL_0007:  beq.s      IL_0010
-IL_0009:  ldstr      "32"
-IL_000e:  br.s       IL_0015
-IL_0010:  ldstr      "64"
-IL_0015:  stloc.0
-IL_0016:  ldarg.0
-IL_0017:  stloc.1
-IL_0018:  ldarg.0
-IL_0019:  ldstr      "costura"
-IL_001e:  ldloc.0
-IL_001f:  ldstr      "."
-IL_0024:  call       string [System.Private.CoreLib]System.String::Concat(string,
+IL_0001:  call       string Costura.AssemblyLoader::GetPlatformName()
+IL_0006:  stloc.0
+IL_0007:  ldarg.0
+IL_0008:  stloc.1
+IL_0009:  ldarg.0
+IL_000a:  ldstr      "costura"
+IL_000f:  ldloc.0
+IL_0010:  ldstr      "."
+IL_0015:  call       string [System.Private.CoreLib]System.String::Concat(string,
 string,
 string)
-IL_0029:  callvirt   instance bool [System.Private.CoreLib]System.String::StartsWith(string)
-IL_002e:  stloc.2
-IL_002f:  ldloc.2
-IL_0030:  brfalse.s  IL_0045
-IL_0032:  nop
-IL_0033:  ldloc.0
-IL_0034:  ldarg.0
-IL_0035:  ldc.i4.s   10
-IL_0037:  callvirt   instance string [System.Private.CoreLib]System.String::Substring(int32)
-IL_003c:  call       string [System.Private.CoreLib]System.IO.Path::Combine(string,
+IL_001a:  callvirt   instance bool [System.Private.CoreLib]System.String::StartsWith(string)
+IL_001f:  stloc.2
+IL_0020:  ldloc.2
+IL_0021:  brfalse.s  IL_0036
+IL_0023:  nop
+IL_0024:  ldloc.0
+IL_0025:  ldarg.0
+IL_0026:  ldc.i4.s   10
+IL_0028:  callvirt   instance string [System.Private.CoreLib]System.String::Substring(int32)
+IL_002d:  call       string [System.Private.CoreLib]System.IO.Path::Combine(string,
 string)
-IL_0041:  stloc.1
-IL_0042:  nop
-IL_0043:  br.s       IL_005e
-IL_0045:  ldarg.0
-IL_0046:  ldstr      "costura."
-IL_004b:  callvirt   instance bool [System.Private.CoreLib]System.String::StartsWith(string)
-IL_0050:  stloc.3
-IL_0051:  ldloc.3
-IL_0052:  brfalse.s  IL_005e
-IL_0054:  nop
-IL_0055:  ldarg.0
-IL_0056:  ldc.i4.8
-IL_0057:  callvirt   instance string [System.Private.CoreLib]System.String::Substring(int32)
-IL_005c:  stloc.1
-IL_005d:  nop
-IL_005e:  ldloc.1
-IL_005f:  ldstr      ".compressed"
-IL_0064:  callvirt   instance bool [System.Private.CoreLib]System.String::EndsWith(string)
-IL_0069:  stloc.s    V_4
-IL_006b:  ldloc.s    V_4
-IL_006d:  brfalse.s  IL_0082
-IL_006f:  nop
-IL_0070:  ldloc.1
-IL_0071:  ldc.i4.0
-IL_0072:  ldloc.1
-IL_0073:  callvirt   instance int32 [System.Private.CoreLib]System.String::get_Length()
-IL_0078:  ldc.i4.s   11
-IL_007a:  sub
-IL_007b:  callvirt   instance string [System.Private.CoreLib]System.String::Substring(int32,
+IL_0032:  stloc.1
+IL_0033:  nop
+IL_0034:  br.s       IL_004f
+IL_0036:  ldarg.0
+IL_0037:  ldstr      "costura."
+IL_003c:  callvirt   instance bool [System.Private.CoreLib]System.String::StartsWith(string)
+IL_0041:  stloc.3
+IL_0042:  ldloc.3
+IL_0043:  brfalse.s  IL_004f
+IL_0045:  nop
+IL_0046:  ldarg.0
+IL_0047:  ldc.i4.8
+IL_0048:  callvirt   instance string [System.Private.CoreLib]System.String::Substring(int32)
+IL_004d:  stloc.1
+IL_004e:  nop
+IL_004f:  ldloc.1
+IL_0050:  ldstr      ".compressed"
+IL_0055:  callvirt   instance bool [System.Private.CoreLib]System.String::EndsWith(string)
+IL_005a:  stloc.s    V_4
+IL_005c:  ldloc.s    V_4
+IL_005e:  brfalse.s  IL_0073
+IL_0060:  nop
+IL_0061:  ldloc.1
+IL_0062:  ldc.i4.0
+IL_0063:  ldloc.1
+IL_0064:  callvirt   instance int32 [System.Private.CoreLib]System.String::get_Length()
+IL_0069:  ldc.i4.s   11
+IL_006b:  sub
+IL_006c:  callvirt   instance string [System.Private.CoreLib]System.String::Substring(int32,
 int32)
-IL_0080:  stloc.1
-IL_0081:  nop
-IL_0082:  ldloc.1
-IL_0083:  stloc.s    V_5
-IL_0085:  br.s       IL_0087
-IL_0087:  ldloc.s    V_5
-IL_0089:  ret
+IL_0071:  stloc.1
+IL_0072:  nop
+IL_0073:  ldloc.1
+IL_0074:  stloc.s    V_5
+IL_0076:  br.s       IL_0078
+IL_0078:  ldloc.s    V_5
+IL_007a:  ret
 }
 .method private hidebysig static string
 CalculateChecksum(string filename) cil managed
@@ -869,7 +912,7 @@ CalculateChecksum(string filename) cil managed
 .maxstack  4
 .locals init (class [System.Private.CoreLib]System.IO.FileStream V_0,
 class [System.Private.CoreLib]System.IO.BufferedStream V_1,
-class [System.Security.Cryptography]System.Security.Cryptography.SHA1CryptoServiceProvider V_2,
+class [System.Security.Cryptography]System.Security.Cryptography.SHA1 V_2,
 uint8[] V_3,
 class [System.Private.CoreLib]System.Text.StringBuilder V_4,
 uint8[] V_5,
@@ -893,7 +936,7 @@ IL_000c:  newobj     instance void [System.Private.CoreLib]System.IO.BufferedStr
 IL_0011:  stloc.1
 .try
 {
-IL_0012:  newobj     instance void [System.Security.Cryptography]System.Security.Cryptography.SHA1CryptoServiceProvider::.ctor()
+IL_0012:  call       class [System.Security.Cryptography]System.Security.Cryptography.SHA1 [System.Security.Cryptography]System.Security.Cryptography.SHA1::Create()
 IL_0017:  stloc.2
 .try
 {
@@ -1233,57 +1276,52 @@ IL_0043:  stloc.2
 IL_0044:  nop
 IL_0045:  leave.s    IL_0047
 }  // end handler
-IL_0047:  call       int32 [System.Private.CoreLib]System.IntPtr::get_Size()
-IL_004c:  ldc.i4.8
-IL_004d:  beq.s      IL_0056
-IL_004f:  ldstr      "32"
-IL_0054:  br.s       IL_005b
-IL_0056:  ldstr      "64"
-IL_005b:  stloc.3
-IL_005c:  ldarg.1
-IL_005d:  ldloc.3
-IL_005e:  call       string [System.Private.CoreLib]System.IO.Path::Combine(string,
+IL_0047:  call       string Costura.AssemblyLoader::GetPlatformName()
+IL_004c:  stloc.3
+IL_004d:  ldarg.1
+IL_004e:  ldloc.3
+IL_004f:  call       string [System.Private.CoreLib]System.IO.Path::Combine(string,
 string)
-IL_0063:  call       void Costura.AssemblyLoader::CreateDirectory(string)
-IL_0068:  nop
-IL_0069:  ldarg.1
-IL_006a:  ldarg.2
-IL_006b:  ldarg.3
-IL_006c:  call       void Costura.AssemblyLoader::InternalPreloadUnmanagedLibraries(string,
+IL_0054:  call       void Costura.AssemblyLoader::CreateDirectory(string)
+IL_0059:  nop
+IL_005a:  ldarg.1
+IL_005b:  ldarg.2
+IL_005c:  ldarg.3
+IL_005d:  call       void Costura.AssemblyLoader::InternalPreloadUnmanagedLibraries(string,
 class [System.Private.CoreLib]System.Collections.Generic.IList`1<string>,
 class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string>)
-IL_0071:  nop
-IL_0072:  nop
-IL_0073:  leave.s    IL_0088
+IL_0062:  nop
+IL_0063:  nop
+IL_0064:  leave.s    IL_0079
 }  // end .try
 finally
 {
+IL_0066:  nop
+IL_0067:  ldloc.2
+IL_0068:  stloc.s    V_5
+IL_006a:  ldloc.s    V_5
+IL_006c:  brfalse.s  IL_0077
+IL_006e:  nop
+IL_006f:  ldloc.1
+IL_0070:  callvirt   instance void [System.Private.CoreLib]System.Threading.Mutex::ReleaseMutex()
 IL_0075:  nop
-IL_0076:  ldloc.2
-IL_0077:  stloc.s    V_5
-IL_0079:  ldloc.s    V_5
-IL_007b:  brfalse.s  IL_0086
-IL_007d:  nop
-IL_007e:  ldloc.1
-IL_007f:  callvirt   instance void [System.Private.CoreLib]System.Threading.Mutex::ReleaseMutex()
-IL_0084:  nop
-IL_0085:  nop
-IL_0086:  nop
-IL_0087:  endfinally
+IL_0076:  nop
+IL_0077:  nop
+IL_0078:  endfinally
 }  // end handler
-IL_0088:  nop
-IL_0089:  leave.s    IL_0096
+IL_0079:  nop
+IL_007a:  leave.s    IL_0087
 }  // end .try
 finally
 {
-IL_008b:  ldloc.1
-IL_008c:  brfalse.s  IL_0095
-IL_008e:  ldloc.1
-IL_008f:  callvirt   instance void [System.Private.CoreLib]System.IDisposable::Dispose()
-IL_0094:  nop
-IL_0095:  endfinally
+IL_007c:  ldloc.1
+IL_007d:  brfalse.s  IL_0086
+IL_007f:  ldloc.1
+IL_0080:  callvirt   instance void [System.Private.CoreLib]System.IDisposable::Dispose()
+IL_0085:  nop
+IL_0086:  endfinally
 }  // end handler
-IL_0096:  ret
+IL_0087:  ret
 }
 .method public hidebysig static void  Attach() cil managed
 {

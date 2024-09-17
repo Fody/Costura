@@ -23,7 +23,7 @@ public static class WeavingHelper
             }
 
 #if NETCORE
-            var shouldCopy = false;
+            var shouldCopyExe = false;
             var originalExe = string.Empty;
 
             // Exe are now native, use .dll instead, but copy the exe
@@ -31,7 +31,7 @@ public static class WeavingHelper
             {
                 if (!AssemblyHelper.IsManagedAssembly(assemblyPath))
                 {
-                    shouldCopy = true;
+                    shouldCopyExe = true;
                     originalExe = assemblyPath;
 
                     assemblyPath = Path.ChangeExtension(assemblyPath, ".dll");
@@ -41,16 +41,33 @@ public static class WeavingHelper
 
             var assembly = weaver.ExecuteTestRun(
                 assemblyPath,
-                assemblyName: assemblyName,
+                folderName: assemblyName,
                 ignoreCodes: new[] { "0x80131869" },
                 runPeVerify: false);
 
 #if NETCORE
-            if (shouldCopy && !string.IsNullOrWhiteSpace(originalExe))
+            if (shouldCopyExe && !string.IsNullOrWhiteSpace(originalExe))
             {
                 var destinationExe = Path.ChangeExtension(assembly.AssemblyPath, ".exe");
 
                 File.Copy(originalExe, destinationExe, true);
+            }
+
+            var extensionsToCopy = new[]
+            {
+                ".runtimeconfig.json",
+                ".pdb"
+            };
+
+            foreach (var extensionToCopy in extensionsToCopy)
+            {
+                var targetFile = Path.ChangeExtension(assembly.AssemblyPath, extensionToCopy);
+                var sourceFile = Path.Combine(currentDirectory, Path.GetFileName(targetFile));
+                
+                if (File.Exists(sourceFile))
+                {
+                    File.Copy(sourceFile, targetFile, true);
+                }
             }
 #endif
 

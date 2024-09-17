@@ -19,8 +19,12 @@ internal static class Common
     [Conditional("DEBUG")]
     public static void Log(string format, params object[] args)
     {
+#if DEBUG
+        Console.WriteLine("=== COSTURA === " + string.Format(format, args));
+#else
         // Should this be trace?
         Debug.WriteLine("=== COSTURA === " + string.Format(format, args));
+#endif
     }
 
     private static void CopyTo(Stream source, Stream destination)
