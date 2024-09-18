@@ -265,7 +265,7 @@ Or as an attribute with items delimited by a pipe `|`.
 ```
 
 
-### Unmanaged32Assemblies & Unmanaged64Assemblies
+### Unmanaged32Assemblies & Unmanaged64Assemblies & UnmanagedArm64Assemblies
 
 Mixed-mode assemblies cannot be loaded the same way as managed assemblies.
 
@@ -289,6 +289,10 @@ As an element with items delimited by a newline.
     Foo64
     Bar64
   </Unmanaged64Assemblies>
+  <UnmanagedArm64Assemblies>
+    FooArm64
+    BarArm64
+  </UnmanagedArm64Assemblies>
 </Costura>
 ```
 
@@ -297,13 +301,14 @@ Or as a attribute with items delimited by a pipe `|`.
 ```xml
 <Costura
     Unmanaged32Assemblies='Foo32|Bar32' 
-    Unmanaged64Assemblies='Foo64|Bar64' />
+    Unmanaged64Assemblies='Foo64|Bar64' 
+    UnmanagedArm64Assemblies='FooArm64|BarArm64'/>
 ```
 
 
 ### Native Libraries and PreloadOrder
 
-Native libraries can be loaded by Costura automatically. To include a native library include it in your project as an Embedded Resource in a folder called `costura32` or `costura64` depending on the bittyness of the library.
+Native libraries can be loaded by Costura automatically. To include a native library include it in your project as an Embedded Resource in a folder called `costuraX86`, `costuraX64` or `costuraArm64` depending on the runtime platform of the library.
 
 Optionally you can also specify the order that preloaded libraries are loaded. When using temporary assemblies from disk mixed mode assemblies are also preloaded.
 

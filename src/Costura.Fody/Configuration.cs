@@ -23,8 +23,9 @@ public class Configuration
         ExcludeAssemblies = new List<string>();
         IncludeRuntimeAssemblies = new List<string>();
         ExcludeRuntimeAssemblies = new List<string>();
-        Unmanaged32Assemblies = new List<string>();
-        Unmanaged64Assemblies = new List<string>();
+        UnmanagedX86Assemblies = new List<string>();
+        UnmanagedX64Assemblies = new List<string>();
+        UnmanagedArm64Assemblies = new List<string>();
         PreloadOrder = new List<string>();
 
         if (config is null)
@@ -57,8 +58,23 @@ public class Configuration
         IncludeAssemblies = ReadList(config, "IncludeAssemblies");
         ExcludeRuntimeAssemblies = ReadList(config, "ExcludeRuntimeAssemblies");
         IncludeRuntimeAssemblies = ReadList(config, "IncludeRuntimeAssemblies");
-        Unmanaged32Assemblies = ReadList(config, "Unmanaged32Assemblies");
-        Unmanaged64Assemblies = ReadList(config, "Unmanaged64Assemblies");
+
+        UnmanagedX86Assemblies = ReadList(config, "UnmanagedX86Assemblies");
+        if (!UnmanagedX86Assemblies.Any())
+        {
+            // Backwards compatibility
+            UnmanagedX86Assemblies = ReadList(config, "Unmanaged32Assemblies");
+        }
+
+        UnmanagedX64Assemblies = ReadList(config, "UnmanagedX64Assemblies");
+        if (!UnmanagedX64Assemblies.Any())
+        {
+            // Backwards compatibility
+            UnmanagedX64Assemblies = ReadList(config, "Unmanaged64Assemblies");
+        }
+
+        UnmanagedArm64Assemblies = ReadList(config, "UnmanagedArm64Assemblies");
+
         PreloadOrder = ReadList(config, "PreloadOrder");
 
         if (IncludeAssemblies.Any() && ExcludeAssemblies.Any())
@@ -81,8 +97,9 @@ public class Configuration
     public List<string> ExcludeAssemblies { get; }
     public List<string> IncludeRuntimeAssemblies { get; }
     public List<string> ExcludeRuntimeAssemblies { get; }
-    public List<string> Unmanaged32Assemblies { get; }
-    public List<string> Unmanaged64Assemblies { get; }
+    public List<string> UnmanagedX86Assemblies { get; }
+    public List<string> UnmanagedX64Assemblies { get; }
+    public List<string> UnmanagedArm64Assemblies { get; }
     public List<string> PreloadOrder { get; }
 
     public static bool ReadBool(XElement config, string nodeName, bool @default)

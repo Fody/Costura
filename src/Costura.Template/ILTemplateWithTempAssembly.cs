@@ -7,6 +7,7 @@ using System.Threading;
 
 #if NETCORE
 using System.Runtime.Loader;
+using System.Runtime.InteropServices;
 #endif
 
 internal static class ILTemplateWithTempAssembly
@@ -17,8 +18,9 @@ internal static class ILTemplateWithTempAssembly
     private static string tempBasePath;
 
     private static List<string> preloadList = new List<string>();
-    private static List<string> preload32List = new List<string>();
-    private static List<string> preload64List = new List<string>();
+    private static List<string> preloadX86List = new List<string>();
+    private static List<string> preloadX64List = new List<string>();
+    private static List<string> preloadArm64List = new List<string>();
 
     private static Dictionary<string, string> checksums = new Dictionary<string, string>();
 
@@ -55,7 +57,7 @@ internal static class ILTemplateWithTempAssembly
         tempBasePath = Path.Combine(prefixPath, md5Hash);
 
         // Preload
-        var unmanagedAssemblies = IntPtr.Size == 8 ? preload64List : preload32List;
+        var unmanagedAssemblies = GetUnmanagedAssemblies();
         var libList = new List<string>();
         libList.AddRange(unmanagedAssemblies);
         libList.AddRange(preloadList);
@@ -115,5 +117,31 @@ internal static class ILTemplateWithTempAssembly
         }
 
         return assembly;
+    }
+
+    private static List<string> GetUnmanagedAssemblies()
+    {
+#if NETCORE
+        var processorArchitecture = RuntimeInformation.ProcessArchitecture;
+
+        switch (processorArchitecture)
+        {
+            case Architecture.Arm64:
+                return preloadArm64List;
+
+            case Architecture.X86:
+                return preloadX86List;
+
+            case Architecture.X64:
+                return preloadX64List;
+
+            default:
+                // Note: somehow copying string interpolation doesn't work correctly, hence using string.Format instead
+                //throw new NotSupportedException($"Architecture '{processorArchitecture}' not supported");
+                throw new NotSupportedException(string.Format("Architecture '{0}' not supported", processorArchitecture));
+        }
+#else
+        return IntPtr.Size == 8 ? preloadX64List : preloadX86List;
+#endif
     }
 }
