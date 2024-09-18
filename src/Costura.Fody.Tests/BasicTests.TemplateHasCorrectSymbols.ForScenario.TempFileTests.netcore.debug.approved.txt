@@ -10,8 +10,9 @@ extends [System.Private.CoreLib]System.Object
 .field private static class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,bool> nullCache
 .field private static string tempBasePath
 .field private static class [System.Private.CoreLib]System.Collections.Generic.List`1<string> preloadList
-.field private static class [System.Private.CoreLib]System.Collections.Generic.List`1<string> preload32List
-.field private static class [System.Private.CoreLib]System.Collections.Generic.List`1<string> preload64List
+.field private static class [System.Private.CoreLib]System.Collections.Generic.List`1<string> preloadX86List
+.field private static class [System.Private.CoreLib]System.Collections.Generic.List`1<string> preloadX64List
+.field private static class [System.Private.CoreLib]System.Collections.Generic.List`1<string> preloadArm64List
 .field private static class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string> checksums
 .field private static int32 isAttached
 .method private hidebysig static string
@@ -459,62 +460,105 @@ IL_000f:  stsfld     class [System.Private.CoreLib]System.Collections.Generic.Di
 IL_0014:  newobj     instance void class [System.Private.CoreLib]System.Collections.Generic.List`1<string>::.ctor()
 IL_0019:  stsfld     class [System.Private.CoreLib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::preloadList
 IL_001e:  newobj     instance void class [System.Private.CoreLib]System.Collections.Generic.List`1<string>::.ctor()
-IL_0023:  stsfld     class [System.Private.CoreLib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::preload32List
+IL_0023:  stsfld     class [System.Private.CoreLib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::preloadX86List
 IL_0028:  newobj     instance void class [System.Private.CoreLib]System.Collections.Generic.List`1<string>::.ctor()
-IL_002d:  stsfld     class [System.Private.CoreLib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::preload64List
-IL_0032:  newobj     instance void class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string>::.ctor()
-IL_0037:  stsfld     class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
-IL_003c:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
-IL_0041:  ldstr      "costura.assemblytoreference.dll.compressed"
-IL_0046:  ldstr      "[CHECKSUM]"
-IL_004b:  callvirt   instance void class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
+IL_002d:  stsfld     class [System.Private.CoreLib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::preloadX64List
+IL_0032:  newobj     instance void class [System.Private.CoreLib]System.Collections.Generic.List`1<string>::.ctor()
+IL_0037:  stsfld     class [System.Private.CoreLib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::preloadArm64List
+IL_003c:  newobj     instance void class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string>::.ctor()
+IL_0041:  stsfld     class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
+IL_0046:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
+IL_004b:  ldstr      "costura.assemblytoreference.dll.compressed"
+IL_0050:  ldstr      "[CHECKSUM]"
+IL_0055:  callvirt   instance void class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
 !1)
-IL_0050:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
-IL_0055:  ldstr      "costura.assemblytoreference.pdb.compressed"
-IL_005a:  ldstr      "[CHECKSUM]"
-IL_005f:  callvirt   instance void class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
+IL_005a:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
+IL_005f:  ldstr      "costura.assemblytoreference.pdb.compressed"
+IL_0064:  ldstr      "[CHECKSUM]"
+IL_0069:  callvirt   instance void class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
 !1)
-IL_0064:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
-IL_0069:  ldstr      "costura.assemblytoreferencepreembedded.dll"
-IL_006e:  ldstr      "[CHECKSUM]"
-IL_0073:  callvirt   instance void class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
+IL_006e:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
+IL_0073:  ldstr      "costura.assemblytoreferencepreembedded.dll"
+IL_0078:  ldstr      "[CHECKSUM]"
+IL_007d:  callvirt   instance void class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
 !1)
-IL_0078:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
-IL_007d:  ldstr      "costura.assemblytoreferencepreembedded.pdb.compres"
+IL_0082:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
+IL_0087:  ldstr      "costura.assemblytoreferencepreembedded.pdb.compres"
 + "sed"
-IL_0082:  ldstr      "[CHECKSUM]"
-IL_0087:  callvirt   instance void class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
+IL_008c:  ldstr      "[CHECKSUM]"
+IL_0091:  callvirt   instance void class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
 !1)
-IL_008c:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
-IL_0091:  ldstr      "costura.exetoreference.exe.compressed"
-IL_0096:  ldstr      "[CHECKSUM]"
-IL_009b:  callvirt   instance void class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
+IL_0096:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
+IL_009b:  ldstr      "costura.exetoreference.exe.compressed"
+IL_00a0:  ldstr      "[CHECKSUM]"
+IL_00a5:  callvirt   instance void class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
 !1)
-IL_00a0:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
-IL_00a5:  ldstr      "costura.exetoreference.pdb.compressed"
-IL_00aa:  ldstr      "[CHECKSUM]"
-IL_00af:  callvirt   instance void class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
+IL_00aa:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
+IL_00af:  ldstr      "costura.exetoreference.pdb.compressed"
+IL_00b4:  ldstr      "[CHECKSUM]"
+IL_00b9:  callvirt   instance void class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
 !1)
-IL_00b4:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::preloadList
-IL_00b9:  ldstr      "costura.assemblytoreference.dll.compressed"
-IL_00be:  callvirt   instance void class [System.Private.CoreLib]System.Collections.Generic.List`1<string>::Add(!0)
-IL_00c3:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::preloadList
-IL_00c8:  ldstr      "costura.assemblytoreference.pdb.compressed"
-IL_00cd:  callvirt   instance void class [System.Private.CoreLib]System.Collections.Generic.List`1<string>::Add(!0)
-IL_00d2:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::preloadList
-IL_00d7:  ldstr      "costura.assemblytoreferencepreembedded.dll"
-IL_00dc:  callvirt   instance void class [System.Private.CoreLib]System.Collections.Generic.List`1<string>::Add(!0)
-IL_00e1:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::preloadList
-IL_00e6:  ldstr      "costura.assemblytoreferencepreembedded.pdb.compres"
+IL_00be:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::preloadList
+IL_00c3:  ldstr      "costura.assemblytoreference.dll.compressed"
+IL_00c8:  callvirt   instance void class [System.Private.CoreLib]System.Collections.Generic.List`1<string>::Add(!0)
+IL_00cd:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::preloadList
+IL_00d2:  ldstr      "costura.assemblytoreference.pdb.compressed"
+IL_00d7:  callvirt   instance void class [System.Private.CoreLib]System.Collections.Generic.List`1<string>::Add(!0)
+IL_00dc:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::preloadList
+IL_00e1:  ldstr      "costura.assemblytoreferencepreembedded.dll"
+IL_00e6:  callvirt   instance void class [System.Private.CoreLib]System.Collections.Generic.List`1<string>::Add(!0)
+IL_00eb:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::preloadList
+IL_00f0:  ldstr      "costura.assemblytoreferencepreembedded.pdb.compres"
 + "sed"
-IL_00eb:  callvirt   instance void class [System.Private.CoreLib]System.Collections.Generic.List`1<string>::Add(!0)
-IL_00f0:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::preloadList
-IL_00f5:  ldstr      "costura.exetoreference.exe.compressed"
-IL_00fa:  callvirt   instance void class [System.Private.CoreLib]System.Collections.Generic.List`1<string>::Add(!0)
-IL_00ff:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::preloadList
-IL_0104:  ldstr      "costura.exetoreference.pdb.compressed"
-IL_0109:  callvirt   instance void class [System.Private.CoreLib]System.Collections.Generic.List`1<string>::Add(!0)
-IL_010e:  ret
+IL_00f5:  callvirt   instance void class [System.Private.CoreLib]System.Collections.Generic.List`1<string>::Add(!0)
+IL_00fa:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::preloadList
+IL_00ff:  ldstr      "costura.exetoreference.exe.compressed"
+IL_0104:  callvirt   instance void class [System.Private.CoreLib]System.Collections.Generic.List`1<string>::Add(!0)
+IL_0109:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::preloadList
+IL_010e:  ldstr      "costura.exetoreference.pdb.compressed"
+IL_0113:  callvirt   instance void class [System.Private.CoreLib]System.Collections.Generic.List`1<string>::Add(!0)
+IL_0118:  ret
+}
+.method private hidebysig static class [System.Private.CoreLib]System.Collections.Generic.List`1<string>
+GetUnmanagedAssemblies() cil managed
+{
+.maxstack  2
+.locals init (valuetype [System.Private.CoreLib]System.Runtime.InteropServices.Architecture V_0,
+valuetype [System.Private.CoreLib]System.Runtime.InteropServices.Architecture V_1,
+valuetype [System.Private.CoreLib]System.Runtime.InteropServices.Architecture V_2,
+class [System.Private.CoreLib]System.Collections.Generic.List`1<string> V_3)
+IL_0000:  nop
+IL_0001:  call       valuetype [System.Private.CoreLib]System.Runtime.InteropServices.Architecture [System.Private.CoreLib]System.Runtime.InteropServices.RuntimeInformation::get_ProcessArchitecture()
+IL_0006:  stloc.0
+IL_0007:  ldloc.0
+IL_0008:  stloc.2
+IL_0009:  ldloc.2
+IL_000a:  stloc.1
+IL_000b:  ldloc.1
+IL_000c:  switch     (
+IL_002b,
+IL_0033,
+IL_003b,
+IL_0023)
+IL_0021:  br.s       IL_003b
+IL_0023:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::preloadArm64List
+IL_0028:  stloc.3
+IL_0029:  br.s       IL_0051
+IL_002b:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::preloadX86List
+IL_0030:  stloc.3
+IL_0031:  br.s       IL_0051
+IL_0033:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::preloadX64List
+IL_0038:  stloc.3
+IL_0039:  br.s       IL_0051
+IL_003b:  ldstr      "Architecture '{0}' not supported"
+IL_0040:  ldloc.0
+IL_0041:  box        [System.Private.CoreLib]System.Runtime.InteropServices.Architecture
+IL_0046:  call       string [System.Private.CoreLib]System.String::Format(string,
+object)
+IL_004b:  newobj     instance void [System.Private.CoreLib]System.NotSupportedException::.ctor(string)
+IL_0050:  throw
+IL_0051:  ldloc.3
+IL_0052:  ret
 }
 .method private hidebysig static void  CreateDirectory(string tempBasePath) cil managed
 {
@@ -1157,61 +1201,56 @@ IL_000c:  ldc.i4.1
 IL_000d:  ceq
 IL_000f:  stloc.s    V_4
 IL_0011:  ldloc.s    V_4
-IL_0013:  brfalse.s  IL_001b
+IL_0013:  brfalse.s  IL_0018
 IL_0015:  nop
-IL_0016:  br         IL_00a4
-IL_001b:  ldstr      "[CHECKSUM]"
-IL_0020:  stloc.0
-IL_0021:  call       string [System.Private.CoreLib]System.IO.Path::GetTempPath()
-IL_0026:  ldstr      "Costura"
-IL_002b:  call       string [System.Private.CoreLib]System.IO.Path::Combine(string,
+IL_0016:  br.s       IL_0092
+IL_0018:  ldstr      "[CHECKSUM]"
+IL_001d:  stloc.0
+IL_001e:  call       string [System.Private.CoreLib]System.IO.Path::GetTempPath()
+IL_0023:  ldstr      "Costura"
+IL_0028:  call       string [System.Private.CoreLib]System.IO.Path::Combine(string,
 string)
-IL_0030:  stloc.1
-IL_0031:  ldloc.1
-IL_0032:  ldloc.0
-IL_0033:  call       string [System.Private.CoreLib]System.IO.Path::Combine(string,
+IL_002d:  stloc.1
+IL_002e:  ldloc.1
+IL_002f:  ldloc.0
+IL_0030:  call       string [System.Private.CoreLib]System.IO.Path::Combine(string,
 string)
-IL_0038:  stsfld     string Costura.AssemblyLoader::tempBasePath
-IL_003d:  call       int32 [System.Private.CoreLib]System.IntPtr::get_Size()
-IL_0042:  ldc.i4.8
-IL_0043:  beq.s      IL_004c
-IL_0045:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::preload32List
-IL_004a:  br.s       IL_0051
-IL_004c:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::preload64List
-IL_0051:  stloc.2
-IL_0052:  newobj     instance void class [System.Private.CoreLib]System.Collections.Generic.List`1<string>::.ctor()
-IL_0057:  stloc.3
-IL_0058:  ldloc.3
-IL_0059:  ldloc.2
-IL_005a:  callvirt   instance void class [System.Private.CoreLib]System.Collections.Generic.List`1<string>::AddRange(class [System.Private.CoreLib]System.Collections.Generic.IEnumerable`1<!0>)
-IL_005f:  nop
+IL_0035:  stsfld     string Costura.AssemblyLoader::tempBasePath
+IL_003a:  call       class [System.Private.CoreLib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::GetUnmanagedAssemblies()
+IL_003f:  stloc.2
+IL_0040:  newobj     instance void class [System.Private.CoreLib]System.Collections.Generic.List`1<string>::.ctor()
+IL_0045:  stloc.3
+IL_0046:  ldloc.3
+IL_0047:  ldloc.2
+IL_0048:  callvirt   instance void class [System.Private.CoreLib]System.Collections.Generic.List`1<string>::AddRange(class [System.Private.CoreLib]System.Collections.Generic.IEnumerable`1<!0>)
+IL_004d:  nop
+IL_004e:  ldloc.3
+IL_004f:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::preloadList
+IL_0054:  callvirt   instance void class [System.Private.CoreLib]System.Collections.Generic.List`1<string>::AddRange(class [System.Private.CoreLib]System.Collections.Generic.IEnumerable`1<!0>)
+IL_0059:  nop
+IL_005a:  ldloc.0
+IL_005b:  ldsfld     string Costura.AssemblyLoader::tempBasePath
 IL_0060:  ldloc.3
-IL_0061:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::preloadList
-IL_0066:  callvirt   instance void class [System.Private.CoreLib]System.Collections.Generic.List`1<string>::AddRange(class [System.Private.CoreLib]System.Collections.Generic.IEnumerable`1<!0>)
-IL_006b:  nop
-IL_006c:  ldloc.0
-IL_006d:  ldsfld     string Costura.AssemblyLoader::tempBasePath
-IL_0072:  ldloc.3
-IL_0073:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
-IL_0078:  call       void Costura.AssemblyLoader::PreloadUnmanagedLibraries(string,
+IL_0061:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
+IL_0066:  call       void Costura.AssemblyLoader::PreloadUnmanagedLibraries(string,
 string,
 class [System.Private.CoreLib]System.Collections.Generic.List`1<string>,
 class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string>)
-IL_007d:  nop
-IL_007e:  call       class [System.Private.CoreLib]System.Runtime.Loader.AssemblyLoadContext [System.Private.CoreLib]System.Runtime.Loader.AssemblyLoadContext::get_Default()
-IL_0083:  ldsfld     class [System.Private.CoreLib]System.Func`3<class [System.Runtime.Loader]System.Runtime.Loader.AssemblyLoadContext,class [System.Runtime]System.Reflection.AssemblyName,class [System.Runtime]System.Reflection.Assembly> Costura.AssemblyLoader/'<>O'::'<0>__ResolveAssembly'
-IL_0088:  dup
-IL_0089:  brtrue.s   IL_009e
-IL_008b:  pop
-IL_008c:  ldnull
-IL_008d:  ldftn      class [System.Private.CoreLib]System.Reflection.Assembly Costura.AssemblyLoader::ResolveAssembly(class [System.Private.CoreLib]System.Runtime.Loader.AssemblyLoadContext,
+IL_006b:  nop
+IL_006c:  call       class [System.Private.CoreLib]System.Runtime.Loader.AssemblyLoadContext [System.Private.CoreLib]System.Runtime.Loader.AssemblyLoadContext::get_Default()
+IL_0071:  ldsfld     class [System.Private.CoreLib]System.Func`3<class [System.Runtime.Loader]System.Runtime.Loader.AssemblyLoadContext,class [System.Runtime]System.Reflection.AssemblyName,class [System.Runtime]System.Reflection.Assembly> Costura.AssemblyLoader/'<>O'::'<0>__ResolveAssembly'
+IL_0076:  dup
+IL_0077:  brtrue.s   IL_008c
+IL_0079:  pop
+IL_007a:  ldnull
+IL_007b:  ldftn      class [System.Private.CoreLib]System.Reflection.Assembly Costura.AssemblyLoader::ResolveAssembly(class [System.Private.CoreLib]System.Runtime.Loader.AssemblyLoadContext,
 class [System.Private.CoreLib]System.Reflection.AssemblyName)
-IL_0093:  newobj     instance void class [System.Private.CoreLib]System.Func`3<class [System.Runtime.Loader]System.Runtime.Loader.AssemblyLoadContext,class [System.Runtime]System.Reflection.AssemblyName,class [System.Runtime]System.Reflection.Assembly>::.ctor(object,
+IL_0081:  newobj     instance void class [System.Private.CoreLib]System.Func`3<class [System.Runtime.Loader]System.Runtime.Loader.AssemblyLoadContext,class [System.Runtime]System.Reflection.AssemblyName,class [System.Runtime]System.Reflection.Assembly>::.ctor(object,
 native int)
-IL_0098:  dup
-IL_0099:  stsfld     class [System.Private.CoreLib]System.Func`3<class [System.Runtime.Loader]System.Runtime.Loader.AssemblyLoadContext,class [System.Runtime]System.Reflection.AssemblyName,class [System.Runtime]System.Reflection.Assembly> Costura.AssemblyLoader/'<>O'::'<0>__ResolveAssembly'
-IL_009e:  callvirt   instance void [System.Private.CoreLib]System.Runtime.Loader.AssemblyLoadContext::add_Resolving(class [System.Private.CoreLib]System.Func`3<class [System.Private.CoreLib]System.Runtime.Loader.AssemblyLoadContext,class [System.Private.CoreLib]System.Reflection.AssemblyName,class [System.Private.CoreLib]System.Reflection.Assembly>)
-IL_00a3:  nop
-IL_00a4:  ret
+IL_0086:  dup
+IL_0087:  stsfld     class [System.Private.CoreLib]System.Func`3<class [System.Runtime.Loader]System.Runtime.Loader.AssemblyLoadContext,class [System.Runtime]System.Reflection.AssemblyName,class [System.Runtime]System.Reflection.Assembly> Costura.AssemblyLoader/'<>O'::'<0>__ResolveAssembly'
+IL_008c:  callvirt   instance void [System.Private.CoreLib]System.Runtime.Loader.AssemblyLoadContext::add_Resolving(class [System.Private.CoreLib]System.Func`3<class [System.Private.CoreLib]System.Runtime.Loader.AssemblyLoadContext,class [System.Private.CoreLib]System.Reflection.AssemblyName,class [System.Private.CoreLib]System.Reflection.Assembly>)
+IL_0091:  nop
+IL_0092:  ret
 }
 }

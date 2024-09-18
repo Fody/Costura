@@ -118,13 +118,19 @@ public partial class ModuleWeaver : IDisposable
 
             if (config.UnmanagedX86Assemblies.Any(x => string.Equals(x, Path.GetFileNameWithoutExtension(reference.FullPath), StringComparison.OrdinalIgnoreCase)))
             {
-                prefix = "costura32.";
+                prefix = "costuraX86.";
                 _hasUnmanaged = true;
             }
 
             if (config.UnmanagedX64Assemblies.Any(x => string.Equals(x, Path.GetFileNameWithoutExtension(reference.FullPath), StringComparison.OrdinalIgnoreCase)))
             {
-                prefix = "costura64.";
+                prefix = "costuraX64.";
+                _hasUnmanaged = true;
+            }
+
+            if (config.UnmanagedArm64Assemblies.Any(x => string.Equals(x, Path.GetFileNameWithoutExtension(reference.FullPath), StringComparison.OrdinalIgnoreCase)))
+            {
+                prefix = "costuraArm64.";
                 _hasUnmanaged = true;
             }
 

@@ -21,8 +21,9 @@
     </ItemGroup>
     <ItemGroup>
       <EmbeddedResource Include="@(LibrdkafkaNativeLibraries)">
-        <Link Condition="$([MSBuild]::ValueOrDefault('%(Identity)', '').Contains('x86'))">costura32\%(Filename)%(Extension)</Link>
-        <Link Condition="$([MSBuild]::ValueOrDefault('%(Identity)', '').Contains('x64'))">costura64\%(Filename)%(Extension)</Link>
+        <Link Condition="$([MSBuild]::ValueOrDefault('%(Identity)', '').Contains('x86'))">costuraX86\%(Filename)%(Extension)</Link>
+        <Link Condition="$([MSBuild]::ValueOrDefault('%(Identity)', '').Contains('x64'))">costuraX64\%(Filename)%(Extension)</Link>
+        <Link Condition="$([MSBuild]::ValueOrDefault('%(Identity)', '').Contains('Arm64'))">costuraArm64\%(Filename)%(Extension)</Link>
       </EmbeddedResource>
     </ItemGroup>
   </Target>
