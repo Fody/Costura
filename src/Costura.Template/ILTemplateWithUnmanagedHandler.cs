@@ -5,6 +5,10 @@ using System.Reflection;
 using System.Runtime.Versioning;
 using System.Threading;
 
+#if NETCORE
+using System.Runtime.Loader;
+#endif
+
 internal static class ILTemplateWithUnmanagedHandler
 {
     private static object nullCacheLock = new object();
@@ -29,6 +33,7 @@ internal static class ILTemplateWithUnmanagedHandler
             return;
         }
 
+#if !NETCORE
         var currentDomain = AppDomain.CurrentDomain;
 
         // Make sure the target framework is set in order not to interfere with AppContext switches initialization
@@ -44,6 +49,7 @@ internal static class ILTemplateWithUnmanagedHandler
                 currentDomain.SetData("TargetFrameworkName", targetFrameworkName);
             }
         }
+#endif
 
         //Create a unique Temp directory for the application path.
         var md5Hash = "To be replaced at compile time";
@@ -54,20 +60,34 @@ internal static class ILTemplateWithUnmanagedHandler
         var unmanagedAssemblies = IntPtr.Size == 8 ? preload64List : preload32List;
         Common.PreloadUnmanagedLibraries(md5Hash, tempBasePath, unmanagedAssemblies, checksums);
 
+#if NETCORE
+        AssemblyLoadContext.Default.Resolving += ResolveAssembly;
+#else
         currentDomain.AssemblyResolve += ResolveAssembly;
+#endif
     }
 
+#if NETCORE
+    public static Assembly ResolveAssembly(AssemblyLoadContext assemblyLoadContext, AssemblyName assemblyName)
+#else
     public static Assembly ResolveAssembly(object sender, ResolveEventArgs e)
+#endif
     {
+#if NETCORE
+        var assemblyNameAsString = assemblyName.Name;
+#else
+        var assemblyNameAsString = e.Name;
+        var assemblyName = new AssemblyName(assemblyNameAsString);
+#endif
         lock (nullCacheLock)
         {
-            if (nullCache.ContainsKey(e.Name))
+            if (nullCache.ContainsKey(assemblyNameAsString))
             {
                 return null;
             }
         }
 
-        var requestedAssemblyName = new AssemblyName(e.Name);
+        var requestedAssemblyName = new AssemblyName(assemblyNameAsString);
 
         var assembly = Common.ReadExistingAssembly(requestedAssemblyName);
         if (assembly is not null)
@@ -88,7 +108,7 @@ internal static class ILTemplateWithUnmanagedHandler
         {
             lock (nullCacheLock)
             {
-                nullCache[e.Name] = true;
+                nullCache[assemblyNameAsString] = true;
             }
 
             // Handles re-targeted assemblies like PCL
@@ -97,6 +117,7 @@ internal static class ILTemplateWithUnmanagedHandler
                 assembly = Assembly.Load(requestedAssemblyName);
             }
         }
+
         return assembly;
     }
 }

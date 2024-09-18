@@ -75,6 +75,7 @@ internal static class ILTemplate
                 assembly = Assembly.Load(assemblyName);
             }
         }
+
         return assembly;
     }
 }

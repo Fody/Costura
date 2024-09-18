@@ -41,6 +41,13 @@ public partial class ModuleWeaver
             {
                 targetFramework = "net6.0";
             }
+
+            if (systemRuntimeReference.Version.Major >= 8)
+            {
+                targetFramework = "net8.0";
+            }
+
+            // Add more supported platforms once added
         }
 
         using (var resourceStream = GetType().Assembly.GetManifestResourceStream($"Costura.Template.{targetFramework}.dll"))
@@ -62,6 +69,7 @@ public partial class ModuleWeaver
                 _sourceType = moduleDefinition.Types.Single(_ => _.Name == "ILTemplate");
                 DumpSource("ILTemplate");
             }
+
             _commonType = moduleDefinition.Types.Single(_ => _.Name == "Common");
             DumpSource("Common");
 

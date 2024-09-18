@@ -313,7 +313,9 @@ internal static class Common
     private static string GetPlatformName()
     {
 #if NETCORE
-        switch (RuntimeInformation.ProcessArchitecture)
+        var processorArchitecture = RuntimeInformation.ProcessArchitecture;
+
+        switch (processorArchitecture)
         {
             case Architecture.Arm64:
                 return "arm64";
@@ -325,10 +327,11 @@ internal static class Common
                 return "x64";
 
             default:
-                throw new NotSupportedException($"Architecture '{RuntimeInformation.ProcessArchitecture}' not supported");
+                // Note: somehow copying string interpolation doesn't work correctly, hence using string.Format instead
+                //throw new NotSupportedException($"Architecture '{processorArchitecture}' not supported");
+                throw new NotSupportedException(string.Format("Architecture '{0}' not supported", processorArchitecture));
         }
 #else
-
         var bittyness = IntPtr.Size == 8 ? "64" : "32";
         return $"x{bittyness}";
 #endif
