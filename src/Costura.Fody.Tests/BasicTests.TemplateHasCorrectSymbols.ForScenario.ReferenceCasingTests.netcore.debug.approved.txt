@@ -47,7 +47,7 @@ IL_0008:  call       string [System.Private.CoreLib]System.String::Format(string
 object[])
 IL_000d:  call       string [System.Private.CoreLib]System.String::Concat(string,
 string)
-IL_0012:  call       void [System.Console]System.Console::WriteLine(string)
+IL_0012:  call       void [System.Private.CoreLib]System.Diagnostics.Debug::WriteLine(string)
 IL_0017:  nop
 IL_0018:  ret
 }
