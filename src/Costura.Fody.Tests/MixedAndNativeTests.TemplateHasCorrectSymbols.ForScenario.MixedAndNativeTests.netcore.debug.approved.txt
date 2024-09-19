@@ -783,22 +783,30 @@ IL_0041:  stsfld     class [System.Private.CoreLib]System.Collections.Generic.Li
 IL_0046:  newobj     instance void class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string>::.ctor()
 IL_004b:  stsfld     class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
 IL_0050:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
-IL_0055:  ldstr      "costuraX86.assemblytoreferencemixed.dll.compressed"
+IL_0055:  ldstr      "costurax86.assemblytoreferencenative.dll"
 IL_005a:  ldstr      "[CHECKSUM]"
 IL_005f:  callvirt   instance void class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
 !1)
 IL_0064:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
-IL_0069:  ldstr      "costuraX86.assemblytoreferencemixed.pdb.compressed"
+IL_0069:  ldstr      "costuraX86.assemblytoreferencemixed.dll.compressed"
 IL_006e:  ldstr      "[CHECKSUM]"
 IL_0073:  callvirt   instance void class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
 !1)
-IL_0078:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::preloadX86List
-IL_007d:  ldstr      "costuraX86.assemblytoreferencemixed.dll.compressed"
-IL_0082:  callvirt   instance void class [System.Private.CoreLib]System.Collections.Generic.List`1<string>::Add(!0)
-IL_0087:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::preloadX86List
-IL_008c:  ldstr      "costuraX86.assemblytoreferencemixed.pdb.compressed"
-IL_0091:  callvirt   instance void class [System.Private.CoreLib]System.Collections.Generic.List`1<string>::Add(!0)
-IL_0096:  ret
+IL_0078:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string> Costura.AssemblyLoader::checksums
+IL_007d:  ldstr      "costuraX86.assemblytoreferencemixed.pdb.compressed"
+IL_0082:  ldstr      "[CHECKSUM]"
+IL_0087:  callvirt   instance void class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string>::Add(!0,
+!1)
+IL_008c:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::preloadX86List
+IL_0091:  ldstr      "costuraX86.assemblytoreferencemixed.dll.compressed"
+IL_0096:  callvirt   instance void class [System.Private.CoreLib]System.Collections.Generic.List`1<string>::Add(!0)
+IL_009b:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::preloadX86List
+IL_00a0:  ldstr      "costuraX86.assemblytoreferencemixed.pdb.compressed"
+IL_00a5:  callvirt   instance void class [System.Private.CoreLib]System.Collections.Generic.List`1<string>::Add(!0)
+IL_00aa:  ldsfld     class [System.Private.CoreLib]System.Collections.Generic.List`1<string> Costura.AssemblyLoader::preloadX86List
+IL_00af:  ldstr      "costurax86.assemblytoreferencenative.dll"
+IL_00b4:  callvirt   instance void class [System.Private.CoreLib]System.Collections.Generic.List`1<string>::Add(!0)
+IL_00b9:  ret
 }
 .method private hidebysig static class [System.Private.CoreLib]System.Collections.Generic.List`1<string>
 GetUnmanagedAssemblies() cil managed

@@ -19,12 +19,15 @@ internal static class Common
     [Conditional("DEBUG")]
     public static void Log(string format, params object[] args)
     {
-#if DEBUG
-        Console.WriteLine("=== COSTURA === " + string.Format(format, args));
-#else
+        //#if DEBUG
+        //        Console.WriteLine("=== COSTURA === " + string.Format(format, args));
+        //#else
+        //        // Should this be trace?
+        //        Debug.WriteLine("=== COSTURA === " + string.Format(format, args));
+        //#endif
+
         // Should this be trace?
         Debug.WriteLine("=== COSTURA === " + string.Format(format, args));
-#endif
     }
 
     private static void CopyTo(Stream source, Stream destination)
@@ -214,7 +217,11 @@ internal static class Common
 
                 var platformName = GetPlatformName();
 
-                CreateDirectory(Path.Combine(tempBasePath, platformName));
+                var path = Path.Combine(tempBasePath, platformName);
+
+                Log("Preloading unmanaged libraries to '{0}'", path);
+
+                CreateDirectory(path);
                 InternalPreloadUnmanagedLibraries(tempBasePath, libs, checksums);
             }
             finally
@@ -236,6 +243,8 @@ internal static class Common
             name = ResourceNameToPath(lib);
 
             var assemblyTempFilePath = Path.Combine(tempBasePath, name);
+
+            Log("Preloading unmanaged library '{0}' to '{1}'", name, assemblyTempFilePath);
 
             if (File.Exists(assemblyTempFilePath))
             {
@@ -293,13 +302,16 @@ internal static class Common
         var platformName = GetPlatformName();
         var name = lib;
 
-        if (lib.StartsWith(string.Concat("costura", platformName, ".")))
+        var platformPrefix = string.Concat("costura", platformName, ".");
+        var costuraPrefix = "costura.";
+
+        if (lib.StartsWith(platformPrefix))
         {
-            name = Path.Combine(platformName, lib.Substring(10));
+            name = Path.Combine(platformName, lib.Substring(platformPrefix.Length));
         }
-        else if (lib.StartsWith("costura."))
+        else if (lib.StartsWith(costuraPrefix))
         {
-            name = lib.Substring(8);
+            name = lib.Substring(costuraPrefix.Length);
         }
 
         if (name.EndsWith(".compressed"))
@@ -332,7 +344,7 @@ internal static class Common
                 throw new NotSupportedException(string.Format("Architecture '{0}' not supported", processorArchitecture));
         }
 #else
-        var bittyness = IntPtr.Size == 8 ? "64" : "32";
+        var bittyness = IntPtr.Size == 8 ? "64" : "86";
         return $"x{bittyness}";
 #endif
     }

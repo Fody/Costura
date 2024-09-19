@@ -8,8 +8,8 @@ public partial class ModuleWeaver
 {
     private void ProcessNativeResources(bool compress)
     {
-        var unprocessedNameMatch = new Regex(@"^(.*\.)?costura(32|64)\.", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
-        var processedNameMatch = new Regex(@"^costura(32|64)\.", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+        var unprocessedNameMatch = new Regex(@"^(.*\.)?costura(X86|X64|Arm64|32|64)\.", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+        var processedNameMatch = new Regex(@"^costura(X86|X64|Arm64|32|64)\.", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
         foreach (var resource in ModuleDefinition.Resources.OfType<EmbeddedResource>())
         {
