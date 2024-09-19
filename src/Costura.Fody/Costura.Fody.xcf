@@ -23,25 +23,25 @@
         </xs:element>
         <xs:element  minOccurs="0" maxOccurs="1" name="Unmanaged32Assemblies" type="xs:string">
             <xs:annotation>
-                <xs:documentation>Obsolete, use UnmanagedX86Assemblies instead</xs:documentation>
+                <xs:documentation>Obsolete, use UnmanagedWinX86Assemblies instead</xs:documentation>
             </xs:annotation>
         </xs:element>
-        <xs:element  minOccurs="0" maxOccurs="1" name="UnmanagedX86Assemblies" type="xs:string">
+        <xs:element  minOccurs="0" maxOccurs="1" name="UnmanagedWinX86Assemblies" type="xs:string">
             <xs:annotation>
                 <xs:documentation>A list of unmanaged X86 (32 bit) assembly names to include, delimited with line breaks.</xs:documentation>
             </xs:annotation>
         </xs:element>
         <xs:element  minOccurs="0" maxOccurs="1" name="Unmanaged64Assemblies" type="xs:string">
             <xs:annotation>
-                <xs:documentation>Obsolete, use UnmanagedX64Assemblies instead.</xs:documentation>
+                <xs:documentation>Obsolete, use UnmanagedWinX64Assemblies instead.</xs:documentation>
             </xs:annotation>
         </xs:element>
-        <xs:element  minOccurs="0" maxOccurs="1" name="UnmanagedX64Assemblies" type="xs:string">
+        <xs:element  minOccurs="0" maxOccurs="1" name="UnmanagedWinX64Assemblies" type="xs:string">
             <xs:annotation>
                 <xs:documentation>A list of unmanaged X64 (64 bit) assembly names to include, delimited with line breaks.</xs:documentation>
             </xs:annotation>
         </xs:element>
-        <xs:element  minOccurs="0" maxOccurs="1" name="UnmanagedArm64Assemblies" type="xs:string">
+        <xs:element  minOccurs="0" maxOccurs="1" name="UnmanagedWinArm64Assemblies" type="xs:string">
             <xs:annotation>
                 <xs:documentation>A list of unmanaged Arm64 (64 bit) assembly names to include, delimited with line breaks.</xs:documentation>
             </xs:annotation>
@@ -114,25 +114,25 @@
     </xs:attribute>
     <xs:attribute name="Unmanaged32Assemblies" type="xs:string">
         <xs:annotation>
-            <xs:documentation>Obsolete, use UnmanagedX64Assemblies instead</xs:documentation>
+            <xs:documentation>Obsolete, use UnmanagedWinX86Assemblies instead</xs:documentation>
         </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="UnmanagedX86Assemblies" type="xs:string">
+    <xs:attribute name="UnmanagedWinX86Assemblies" type="xs:string">
         <xs:annotation>
             <xs:documentation>A list of unmanaged X86 (32 bit) assembly names to include, delimited with |.</xs:documentation>
         </xs:annotation>
     </xs:attribute>
     <xs:attribute name="Unmanaged64Assemblies" type="xs:string">
         <xs:annotation>
-            <xs:documentation>Obsolete, use UnmanagedX64Assemblies instead</xs:documentation>
+            <xs:documentation>Obsolete, use UnmanagedWinX64Assemblies instead</xs:documentation>
         </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="UnmanagedX64Assemblies" type="xs:string">
+    <xs:attribute name="UnmanagedWinX64Assemblies" type="xs:string">
         <xs:annotation>
             <xs:documentation>A list of unmanaged X64 (64 bit) assembly names to include, delimited with |.</xs:documentation>
         </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="UnmanagedArm64Assemblies" type="xs:string">
+    <xs:attribute name="UnmanagedWinArm64Assemblies" type="xs:string">
         <xs:annotation>
             <xs:documentation>A list of unmanaged Arm64 (64 bit) assembly names to include, delimited with |.</xs:documentation>
         </xs:annotation>

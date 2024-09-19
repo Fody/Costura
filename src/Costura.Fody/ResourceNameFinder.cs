@@ -51,28 +51,28 @@ public partial class ModuleWeaver
                 }
             }
             else if (string.Equals(parts[0], "costura32", StringComparison.OrdinalIgnoreCase) ||
-                     string.Equals(parts[0], "costuraX86", StringComparison.OrdinalIgnoreCase))
+                     string.Equals(parts[0], "costura_win_x86", StringComparison.OrdinalIgnoreCase))
             {
                 if (string.Equals(parts[0], "costura32", StringComparison.OrdinalIgnoreCase))
                 {
                     WriteWarning("It's recommended to use costuraX86 instead of costura32 for native assemblies");
                 }
 
-                AddToList(_preloadX86ListField, resource);
+                AddToList(_preloadWinX86ListField, resource);
             }
             else if (string.Equals(parts[0], "costura64", StringComparison.OrdinalIgnoreCase) ||
-                     string.Equals(parts[0], "costuraX64", StringComparison.OrdinalIgnoreCase))
+                     string.Equals(parts[0], "costura_win_x64", StringComparison.OrdinalIgnoreCase))
             {
                 if (string.Equals(parts[0], "costura64", StringComparison.OrdinalIgnoreCase))
                 {
                     WriteWarning("It's recommended to use costuraX64 instead of costura64 for native assemblies");
                 }
 
-                AddToList(_preloadX64ListField, resource);
+                AddToList(_preloadWinX64ListField, resource);
             }
-            else if (string.Equals(parts[0], "costuraArm64", StringComparison.OrdinalIgnoreCase))
+            else if (string.Equals(parts[0], "costura_win_arm64", StringComparison.OrdinalIgnoreCase))
             {
-                AddToList(_preloadArm64ListField, resource);
+                AddToList(_preloadWinArm64ListField, resource);
             }
         }
     }

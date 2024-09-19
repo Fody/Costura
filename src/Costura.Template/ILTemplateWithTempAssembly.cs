@@ -18,9 +18,9 @@ internal static class ILTemplateWithTempAssembly
     private static string tempBasePath;
 
     private static List<string> preloadList = new List<string>();
-    private static List<string> preloadX86List = new List<string>();
-    private static List<string> preloadX64List = new List<string>();
-    private static List<string> preloadArm64List = new List<string>();
+    private static List<string> preloadWinX86List = new List<string>();
+    private static List<string> preloadWinX64List = new List<string>();
+    private static List<string> preloadWinArm64List = new List<string>();
 
     private static Dictionary<string, string> checksums = new Dictionary<string, string>();
 
@@ -124,24 +124,30 @@ internal static class ILTemplateWithTempAssembly
 #if NETCORE
         var processorArchitecture = RuntimeInformation.ProcessArchitecture;
 
-        switch (processorArchitecture)
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            case Architecture.Arm64:
-                return preloadArm64List;
+            switch (processorArchitecture)
+            {
+                case Architecture.Arm64:
+                    return preloadWinArm64List;
 
-            case Architecture.X86:
-                return preloadX86List;
+                case Architecture.X86:
+                    return preloadWinX86List;
 
-            case Architecture.X64:
-                return preloadX64List;
+                case Architecture.X64:
+                    return preloadWinX64List;
 
-            default:
-                // Note: somehow copying string interpolation doesn't work correctly, hence using string.Format instead
-                //throw new NotSupportedException($"Architecture '{processorArchitecture}' not supported");
-                throw new NotSupportedException(string.Format("Architecture '{0}' not supported", processorArchitecture));
+                default:
+                    // Note: somehow copying string interpolation doesn't work correctly, hence using string.Format instead
+                    //throw new NotSupportedException($"Architecture '{processorArchitecture}' not supported");
+                    throw new NotSupportedException(string.Format("Architecture '{0}' not supported", processorArchitecture));
+            }
         }
+
+        throw new NotSupportedException("Platform is not (yet) supported");
 #else
-        return IntPtr.Size == 8 ? preloadX64List : preloadX86List;
+        // Only support Windows
+        return IntPtr.Size == 8 ? preloadWinX64List : preloadWinX86List;
 #endif
     }
 }

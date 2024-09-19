@@ -302,7 +302,9 @@ internal static class Common
         var platformName = GetPlatformName();
         var name = lib;
 
-        var platformPrefix = string.Concat("costura", platformName, ".");
+        // _ instead of - since '-' is not supported in resource names
+        var platformPrefix = string.Concat("costura-", platformName, ".")
+            .Replace("-", "_");
         var costuraPrefix = "costura.";
 
         if (lib.StartsWith(platformPrefix))
@@ -325,18 +327,34 @@ internal static class Common
     private static string GetPlatformName()
     {
 #if NETCORE
+        var os = "win";
+
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            throw new NotSupportedException("Platform is not (yet) supported");
+        }
+
+        //if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        //{
+        //    os = "osx";
+        //}
+        //else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        //{
+        //    os = "linux";
+        //}
+
         var processorArchitecture = RuntimeInformation.ProcessArchitecture;
 
         switch (processorArchitecture)
         {
             case Architecture.Arm64:
-                return "arm64";
+                return string.Format("{0}-{1}", os, "arm64");
 
             case Architecture.X86:
-                return "x86";
+                return string.Format("{0}-{1}", os, "x86");
 
             case Architecture.X64:
-                return "x64";
+                return string.Format("{0}-{1}", os, "x64");
 
             default:
                 // Note: somehow copying string interpolation doesn't work correctly, hence using string.Format instead
@@ -345,7 +363,7 @@ internal static class Common
         }
 #else
         var bittyness = IntPtr.Size == 8 ? "64" : "86";
-        return $"x{bittyness}";
+        return $"win-x{bittyness}";
 #endif
     }
 }

@@ -21,9 +21,9 @@
     </ItemGroup>
     <ItemGroup>
       <EmbeddedResource Include="@(LibrdkafkaNativeLibraries)">
-        <Link Condition="$([MSBuild]::ValueOrDefault('%(Identity)', '').Contains('x86'))">costuraX86\%(Filename)%(Extension)</Link>
-        <Link Condition="$([MSBuild]::ValueOrDefault('%(Identity)', '').Contains('x64'))">costuraX64\%(Filename)%(Extension)</Link>
-        <Link Condition="$([MSBuild]::ValueOrDefault('%(Identity)', '').Contains('Arm64'))">costuraArm64\%(Filename)%(Extension)</Link>
+        <Link Condition="$([MSBuild]::ValueOrDefault('%(Identity)', '').Contains('x86'))">costura-win-x86\%(Filename)%(Extension)</Link>
+        <Link Condition="$([MSBuild]::ValueOrDefault('%(Identity)', '').Contains('x64'))">costura-win-x64\%(Filename)%(Extension)</Link>
+        <Link Condition="$([MSBuild]::ValueOrDefault('%(Identity)', '').Contains('Arm64'))">costura-win-arm64\%(Filename)%(Extension)</Link>
       </EmbeddedResource>
     </ItemGroup>
   </Target>
@@ -39,74 +39,74 @@
     <!-- X86 -->
     <ItemGroup>
       <!--<EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x86\native\libcrypto-1_1.dll">
-        <Link>costuraX86\libcrypto-1_1.dll</Link>
+        <Link>costura-win-x86\libcrypto-1_1.dll</Link>
       </EmbeddedResource>-->
       <EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x86\native\libcrypto-3.dll">
-        <Link>costuraX86\libcrypto-3.dll</Link>
+        <Link>costura-win-x86\libcrypto-3.dll</Link>
       </EmbeddedResource>
       <EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x86\native\libcurl.dll">
-        <Link>costuraX86\libcurl.dll</Link>
+        <Link>costura-win-x86\libcurl.dll</Link>
       </EmbeddedResource>
       <EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x86\native\librdkafka.dll">
-        <Link>costuraX86\librdkafka.dll</Link>
+        <Link>costura-win-x86\librdkafka.dll</Link>
       </EmbeddedResource>
       <EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x86\native\librdkafkacpp.dll">
-        <Link>costuraX86\librdkafkacpp.dll</Link>
+        <Link>costura-win-x86\librdkafkacpp.dll</Link>
       </EmbeddedResource>
       <!--<EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x86\native\libssl-1_1.dll">
-        <Link>costuraX86\libssl-1_1.dll</Link>
+        <Link>costura-win-x86\libssl-1_1.dll</Link>
       </EmbeddedResource>-->
       <EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x86\native\libssl-3.dll">
-        <Link>costuraX86\libssl-3.dll</Link>
+        <Link>costura-win-x86\libssl-3.dll</Link>
       </EmbeddedResource>
       <EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x86\native\msvcp140.dll">
-        <Link>costuraX86\msvcp140.dll</Link>
+        <Link>costura-win-x86\msvcp140.dll</Link>
       </EmbeddedResource>
       <EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x86\native\vcruntime140.dll">
-        <Link>costuraX86\vcruntime140.dll</Link>
+        <Link>costura-win-x86\vcruntime140.dll</Link>
       </EmbeddedResource>
       <EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x86\native\zlib1.dll">
-        <Link>costuraX86\zlib1.dll</Link>
+        <Link>costura-win-x86\zlib1.dll</Link>
       </EmbeddedResource>
       <EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x86\native\zstd.dll">
-        <Link>costuraX86\zstd.dll</Link>
+        <Link>costura-win-x86\zstd.dll</Link>
       </EmbeddedResource>
     </ItemGroup>
 
     <!-- X64 -->
     <ItemGroup>
       <!--<EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x64\native\libcrypto-1_1-x64.dll">
-        <Link>costuraX64\libcrypto-1_1-x64.dll</Link>
+        <Link>costura-win-x64\libcrypto-1_1-x64.dll</Link>
       </EmbeddedResource>-->
       <EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x64\native\libcrypto-3-x64.dll">
-        <Link>costuraX64\libcrypto-3-x64.dll</Link>
+        <Link>costura-win-x64\libcrypto-3-x64.dll</Link>
       </EmbeddedResource>
       <EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x64\native\libcurl.dll">
-        <Link>costuraX64\libcurl.dll</Link>
+        <Link>costura-win-x64\libcurl.dll</Link>
       </EmbeddedResource>
       <EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x64\native\librdkafka.dll">
-        <Link>costuraX64\librdkafka.dll</Link>
+        <Link>costura-win-x64\librdkafka.dll</Link>
       </EmbeddedResource>
       <EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x64\native\librdkafkacpp.dll">
-        <Link>costuraX64\librdkafkacpp.dll</Link>
+        <Link>costura-win-x64\librdkafkacpp.dll</Link>
       </EmbeddedResource>
       <!--<EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x64\native\libssl-1_1-x64.dll">
-        <Link>costuraX64\libssl-1_1-x64.dll</Link>
+        <Link>costura-win-x64\libssl-1_1-x64.dll</Link>
       </EmbeddedResource>-->
       <EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x64\native\libssl-3-x64.dll">
-        <Link>costuraX64\libssl-3-x64.dll</Link>
+        <Link>costura-win-x64\libssl-3-x64.dll</Link>
       </EmbeddedResource>
       <EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x64\native\msvcp140.dll">
-        <Link>costuraX64\msvcp140.dll</Link>
+        <Link>costura-win-x64\msvcp140.dll</Link>
       </EmbeddedResource>
       <EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x64\native\vcruntime140.dll">
-        <Link>costuraX64\vcruntime140.dll</Link>
+        <Link>costura-win-x64\vcruntime140.dll</Link>
       </EmbeddedResource>
       <EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x64\native\zlib1.dll">
-        <Link>costuraX64\zlib1.dll</Link>
+        <Link>costura-win-x64\zlib1.dll</Link>
       </EmbeddedResource>
       <EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x64\native\zstd.dll">
-        <Link>costuraX64\zstd.dll</Link>
+        <Link>costura-win-x64\zstd.dll</Link>
       </EmbeddedResource>
     </ItemGroup>
   </Target>

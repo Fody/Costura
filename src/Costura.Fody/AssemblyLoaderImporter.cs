@@ -18,9 +18,9 @@ public partial class ModuleWeaver
     private FieldDefinition _assemblyNamesField;
     private FieldDefinition _symbolNamesField;
     private FieldDefinition _preloadListField;
-    private FieldDefinition _preloadX86ListField;
-    private FieldDefinition _preloadX64ListField;
-    private FieldDefinition _preloadArm64ListField;
+    private FieldDefinition _preloadWinX86ListField;
+    private FieldDefinition _preloadWinX64ListField;
+    private FieldDefinition _preloadWinArm64ListField;
     private FieldDefinition _checksumsField;
 
     private void ImportAssemblyLoader(bool createTemporaryAssemblies)
@@ -160,19 +160,19 @@ public partial class ModuleWeaver
                 _preloadListField = newField;
             }
 
-            if (field.Name == "preloadX86List")
+            if (field.Name == "preloadWinX86List")
             {
-                _preloadX86ListField = newField;
+                _preloadWinX86ListField = newField;
             }
             
-            if (field.Name == "preloadX64List")
+            if (field.Name == "preloadWinX64List")
             {
-                _preloadX64ListField = newField;
+                _preloadWinX64ListField = newField;
             }
 
-            if (field.Name == "preloadArm64List")
+            if (field.Name == "preloadWinArm64List")
             {
-                _preloadArm64ListField = newField;
+                _preloadWinArm64ListField = newField;
             }
 
             if (field.Name == "checksums")

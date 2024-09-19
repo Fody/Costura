@@ -217,8 +217,8 @@ Bar
     </Unmanaged32Assemblies>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.That(config.UnmanagedX86Assemblies[0], Is.EqualTo("Foo"));
-        Assert.That(config.UnmanagedX86Assemblies[1], Is.EqualTo("Bar"));
+        Assert.That(config.UnmanagedWinX86Assemblies[0], Is.EqualTo("Foo"));
+        Assert.That(config.UnmanagedWinX86Assemblies[1], Is.EqualTo("Bar"));
     }
 
     [Test]
@@ -227,8 +227,8 @@ Bar
         var xElement = XElement.Parse(@"
 <Costura Unmanaged32Assemblies='Foo|Bar'/>");
         var config = new Configuration(xElement);
-        Assert.That(config.UnmanagedX86Assemblies[0], Is.EqualTo("Foo"));
-        Assert.That(config.UnmanagedX86Assemblies[1], Is.EqualTo("Bar"));
+        Assert.That(config.UnmanagedWinX86Assemblies[0], Is.EqualTo("Foo"));
+        Assert.That(config.UnmanagedWinX86Assemblies[1], Is.EqualTo("Bar"));
     }
 
     [Test]
@@ -241,8 +241,8 @@ Bar
     </Unmanaged32Assemblies>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.That(config.UnmanagedX86Assemblies[0], Is.EqualTo("Foo"));
-        Assert.That(config.UnmanagedX86Assemblies[1], Is.EqualTo("Bar"));
+        Assert.That(config.UnmanagedWinX86Assemblies[0], Is.EqualTo("Foo"));
+        Assert.That(config.UnmanagedWinX86Assemblies[1], Is.EqualTo("Bar"));
     }
 
     [Test]
@@ -250,38 +250,38 @@ Bar
     {
         var xElement = XElement.Parse(@"
 <Costura>
-    <UnmanagedX86Assemblies>
+    <UnmanagedWinX86Assemblies>
 Foo
 Bar
-    </UnmanagedX86Assemblies>
+    </UnmanagedWinX86Assemblies>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.That(config.UnmanagedX86Assemblies[0], Is.EqualTo("Foo"));
-        Assert.That(config.UnmanagedX86Assemblies[1], Is.EqualTo("Bar"));
+        Assert.That(config.UnmanagedWinX86Assemblies[0], Is.EqualTo("Foo"));
+        Assert.That(config.UnmanagedWinX86Assemblies[1], Is.EqualTo("Bar"));
     }
 
     [Test]
     public void UnmanagedX86AssembliesAttribute()
     {
         var xElement = XElement.Parse(@"
-<Costura UnmanagedX86Assemblies='Foo|Bar'/>");
+<Costura UnmanagedWinX86Assemblies='Foo|Bar'/>");
         var config = new Configuration(xElement);
-        Assert.That(config.UnmanagedX86Assemblies[0], Is.EqualTo("Foo"));
-        Assert.That(config.UnmanagedX86Assemblies[1], Is.EqualTo("Bar"));
+        Assert.That(config.UnmanagedWinX86Assemblies[0], Is.EqualTo("Foo"));
+        Assert.That(config.UnmanagedWinX86Assemblies[1], Is.EqualTo("Bar"));
     }
 
     [Test]
     public void UnmanagedX86AssembliesCombined()
     {
         var xElement = XElement.Parse(@"
-<Costura UnmanagedX86Assemblies='Foo'>
-    <UnmanagedX86Assemblies>
+<Costura UnmanagedWinX86Assemblies='Foo'>
+    <UnmanagedWinX86Assemblies>
 Bar
-    </UnmanagedX86Assemblies>
+    </UnmanagedWinX86Assemblies>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.That(config.UnmanagedX86Assemblies[0], Is.EqualTo("Foo"));
-        Assert.That(config.UnmanagedX86Assemblies[1], Is.EqualTo("Bar"));
+        Assert.That(config.UnmanagedWinX86Assemblies[0], Is.EqualTo("Foo"));
+        Assert.That(config.UnmanagedWinX86Assemblies[1], Is.EqualTo("Bar"));
     }
 
     [Test]
@@ -295,8 +295,8 @@ Bar
     </Unmanaged64Assemblies>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.That(config.UnmanagedX64Assemblies[0], Is.EqualTo("Foo"));
-        Assert.That(config.UnmanagedX64Assemblies[1], Is.EqualTo("Bar"));
+        Assert.That(config.UnmanagedWinX64Assemblies[0], Is.EqualTo("Foo"));
+        Assert.That(config.UnmanagedWinX64Assemblies[1], Is.EqualTo("Bar"));
     }
 
     [Test]
@@ -305,8 +305,8 @@ Bar
         var xElement = XElement.Parse(@"
 <Costura Unmanaged64Assemblies='Foo|Bar'/>");
         var config = new Configuration(xElement);
-        Assert.That(config.UnmanagedX64Assemblies[0], Is.EqualTo("Foo"));
-        Assert.That(config.UnmanagedX64Assemblies[1], Is.EqualTo("Bar"));
+        Assert.That(config.UnmanagedWinX64Assemblies[0], Is.EqualTo("Foo"));
+        Assert.That(config.UnmanagedWinX64Assemblies[1], Is.EqualTo("Bar"));
     }
 
     [Test]
@@ -319,8 +319,8 @@ Bar
     </Unmanaged64Assemblies>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.That(config.UnmanagedX64Assemblies[0], Is.EqualTo("Foo"));
-        Assert.That(config.UnmanagedX64Assemblies[1], Is.EqualTo("Bar"));
+        Assert.That(config.UnmanagedWinX64Assemblies[0], Is.EqualTo("Foo"));
+        Assert.That(config.UnmanagedWinX64Assemblies[1], Is.EqualTo("Bar"));
     }
 
     [Test]
@@ -328,38 +328,38 @@ Bar
     {
         var xElement = XElement.Parse(@"
 <Costura>
-    <UnmanagedX64Assemblies>
+    <UnmanagedWinX64Assemblies>
 Foo
 Bar
-    </UnmanagedX64Assemblies>
+    </UnmanagedWinX64Assemblies>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.That(config.UnmanagedX64Assemblies[0], Is.EqualTo("Foo"));
-        Assert.That(config.UnmanagedX64Assemblies[1], Is.EqualTo("Bar"));
+        Assert.That(config.UnmanagedWinX64Assemblies[0], Is.EqualTo("Foo"));
+        Assert.That(config.UnmanagedWinX64Assemblies[1], Is.EqualTo("Bar"));
     }
 
     [Test]
     public void UnmanagedX64AssembliesAttribute()
     {
         var xElement = XElement.Parse(@"
-<Costura UnmanagedX64Assemblies='Foo|Bar'/>");
+<Costura UnmanagedWinX64Assemblies='Foo|Bar'/>");
         var config = new Configuration(xElement);
-        Assert.That(config.UnmanagedX64Assemblies[0], Is.EqualTo("Foo"));
-        Assert.That(config.UnmanagedX64Assemblies[1], Is.EqualTo("Bar"));
+        Assert.That(config.UnmanagedWinX64Assemblies[0], Is.EqualTo("Foo"));
+        Assert.That(config.UnmanagedWinX64Assemblies[1], Is.EqualTo("Bar"));
     }
 
     [Test]
     public void UnmanagedX64AssembliesCombined()
     {
         var xElement = XElement.Parse(@"
-<Costura UnmanagedX64Assemblies='Foo'>
-    <UnmanagedX64Assemblies>
+<Costura UnmanagedWinX64Assemblies='Foo'>
+    <UnmanagedWinX64Assemblies>
 Bar
-    </UnmanagedX64Assemblies>
+    </UnmanagedWinX64Assemblies>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.That(config.UnmanagedX64Assemblies[0], Is.EqualTo("Foo"));
-        Assert.That(config.UnmanagedX64Assemblies[1], Is.EqualTo("Bar"));
+        Assert.That(config.UnmanagedWinX64Assemblies[0], Is.EqualTo("Foo"));
+        Assert.That(config.UnmanagedWinX64Assemblies[1], Is.EqualTo("Bar"));
     }
 
     [Test]
@@ -367,38 +367,38 @@ Bar
     {
         var xElement = XElement.Parse(@"
 <Costura>
-    <UnmanagedArm64Assemblies>
+    <UnmanagedWinArm64Assemblies>
 Foo
 Bar
-    </UnmanagedArm64Assemblies>
+    </UnmanagedWinArm64Assemblies>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.That(config.UnmanagedArm64Assemblies[0], Is.EqualTo("Foo"));
-        Assert.That(config.UnmanagedArm64Assemblies[1], Is.EqualTo("Bar"));
+        Assert.That(config.UnmanagedWinArm64Assemblies[0], Is.EqualTo("Foo"));
+        Assert.That(config.UnmanagedWinArm64Assemblies[1], Is.EqualTo("Bar"));
     }
 
     [Test]
     public void UnmanagedArm64AssembliesAttribute()
     {
         var xElement = XElement.Parse(@"
-<Costura UnmanagedArm64Assemblies='Foo|Bar'/>");
+<Costura UnmanagedWinArm64Assemblies='Foo|Bar'/>");
         var config = new Configuration(xElement);
-        Assert.That(config.UnmanagedArm64Assemblies[0], Is.EqualTo("Foo"));
-        Assert.That(config.UnmanagedArm64Assemblies[1], Is.EqualTo("Bar"));
+        Assert.That(config.UnmanagedWinArm64Assemblies[0], Is.EqualTo("Foo"));
+        Assert.That(config.UnmanagedWinArm64Assemblies[1], Is.EqualTo("Bar"));
     }
 
     [Test]
     public void UnmanagedArm64AssembliesCombined()
     {
         var xElement = XElement.Parse(@"
-<Costura UnmanagedArm64Assemblies='Foo'>
-    <UnmanagedArm64Assemblies>
+<Costura UnmanagedWinArm64Assemblies='Foo'>
+    <UnmanagedWinArm64Assemblies>
 Bar
-    </UnmanagedArm64Assemblies>
+    </UnmanagedWinArm64Assemblies>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.That(config.UnmanagedArm64Assemblies[0], Is.EqualTo("Foo"));
-        Assert.That(config.UnmanagedArm64Assemblies[1], Is.EqualTo("Bar"));
+        Assert.That(config.UnmanagedWinArm64Assemblies[0], Is.EqualTo("Foo"));
+        Assert.That(config.UnmanagedWinArm64Assemblies[1], Is.EqualTo("Bar"));
     }
 
     [Test]

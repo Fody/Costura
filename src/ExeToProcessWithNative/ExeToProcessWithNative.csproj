@@ -15,7 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\AssemblyToReferenceMixed\AssemblyToReferenceMixed.vcxproj" PrivateAssets="All" />
     <EmbeddedResource Include="$(OverridableOutputRootPath)\AssemblyToReferenceNative\AssemblyToReferenceNative.dll">
-      <Link>costuraX86\AssemblyToReferenceNative.dll</Link>
+      <Link>costura-win-x86\AssemblyToReferenceNative.dll</Link>
     </EmbeddedResource>
   </ItemGroup>
 

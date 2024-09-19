@@ -281,18 +281,18 @@ As an element with items delimited by a newline.
 
 ```xml
 <Costura>
-  <Unmanaged32Assemblies>
+  <UnmanagedWinX86Assemblies>
     Foo32
     Bar32
-  </Unmanaged32Assemblies>
-  <Unmanaged64Assemblies>
+  </UnmanagedWinX86Assemblies>
+  <UnmanagedWinX64Assemblies>
     Foo64
     Bar64
-  </Unmanaged64Assemblies>
-  <UnmanagedArm64Assemblies>
+  </UnmanagedWinX64Assemblies>
+  <UnmanagedWinArm64Assemblies>
     FooArm64
     BarArm64
-  </UnmanagedArm64Assemblies>
+  </UnmanagedWinArm64Assemblies>
 </Costura>
 ```
 
@@ -300,9 +300,9 @@ Or as a attribute with items delimited by a pipe `|`.
 
 ```xml
 <Costura
-    Unmanaged32Assemblies='Foo32|Bar32' 
-    Unmanaged64Assemblies='Foo64|Bar64' 
-    UnmanagedArm64Assemblies='FooArm64|BarArm64'/>
+    UnmanagedWinX86Assemblies='Foo32|Bar32' 
+    UnmanagedWinX64Assemblies='Foo64|Bar64' 
+    UnmanagedWinArm64Assemblies='FooArm64|BarArm64'/>
 ```
 
 

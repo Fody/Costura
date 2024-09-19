@@ -116,21 +116,21 @@ public partial class ModuleWeaver : IDisposable
         {
             var prefix = string.Empty;
 
-            if (config.UnmanagedX86Assemblies.Any(x => string.Equals(x, Path.GetFileNameWithoutExtension(reference.FullPath), StringComparison.OrdinalIgnoreCase)))
+            if (config.UnmanagedWinX86Assemblies.Any(x => string.Equals(x, Path.GetFileNameWithoutExtension(reference.FullPath), StringComparison.OrdinalIgnoreCase)))
             {
-                prefix = "costuraX86.";
+                prefix = "costura_win_x86.";
                 _hasUnmanaged = true;
             }
 
-            if (config.UnmanagedX64Assemblies.Any(x => string.Equals(x, Path.GetFileNameWithoutExtension(reference.FullPath), StringComparison.OrdinalIgnoreCase)))
+            if (config.UnmanagedWinX64Assemblies.Any(x => string.Equals(x, Path.GetFileNameWithoutExtension(reference.FullPath), StringComparison.OrdinalIgnoreCase)))
             {
-                prefix = "costuraX64.";
+                prefix = "costura_win_x64.";
                 _hasUnmanaged = true;
             }
 
-            if (config.UnmanagedArm64Assemblies.Any(x => string.Equals(x, Path.GetFileNameWithoutExtension(reference.FullPath), StringComparison.OrdinalIgnoreCase)))
+            if (config.UnmanagedWinArm64Assemblies.Any(x => string.Equals(x, Path.GetFileNameWithoutExtension(reference.FullPath), StringComparison.OrdinalIgnoreCase)))
             {
-                prefix = "costuraArm64.";
+                prefix = "costura_win_arm64.";
                 _hasUnmanaged = true;
             }
 
@@ -268,8 +268,8 @@ public partial class ModuleWeaver : IDisposable
                 var assemblyName = Path.GetFileNameWithoutExtension(reference.FileName);
 
                 if (includeList.Any(x => CompareAssemblyName(x, assemblyName)) &&
-                    config.UnmanagedX86Assemblies.All(x => !CompareAssemblyName(x, assemblyName)) &&
-                    config.UnmanagedX64Assemblies.All(x => !CompareAssemblyName(x, assemblyName)))
+                    config.UnmanagedWinX86Assemblies.All(x => !CompareAssemblyName(x, assemblyName)) &&
+                    config.UnmanagedWinX64Assemblies.All(x => !CompareAssemblyName(x, assemblyName)))
                 {
                     skippedAssemblies.Remove(includeList.First(x => CompareAssemblyName(x, assemblyName)));
                     yield return reference;
@@ -313,8 +313,8 @@ public partial class ModuleWeaver : IDisposable
                 var assemblyName = Path.GetFileNameWithoutExtension(reference.FileName);
 
                 if (excludeList.Any(x => CompareAssemblyName(x, assemblyName)) ||
-                    config.UnmanagedX86Assemblies.Any(x => CompareAssemblyName(x, assemblyName)) ||
-                    config.UnmanagedX64Assemblies.Any(x => CompareAssemblyName(x, assemblyName)))
+                    config.UnmanagedWinX86Assemblies.Any(x => CompareAssemblyName(x, assemblyName)) ||
+                    config.UnmanagedWinX64Assemblies.Any(x => CompareAssemblyName(x, assemblyName)))
                 {
                     continue;
                 }
@@ -331,8 +331,8 @@ public partial class ModuleWeaver : IDisposable
             {
                 var assemblyName = Path.GetFileNameWithoutExtension(reference.FileName);
 
-                if (config.UnmanagedX86Assemblies.All(x => !CompareAssemblyName(x, assemblyName)) &&
-                    config.UnmanagedX64Assemblies.All(x => !CompareAssemblyName(x, assemblyName)))
+                if (config.UnmanagedWinX86Assemblies.All(x => !CompareAssemblyName(x, assemblyName)) &&
+                    config.UnmanagedWinX64Assemblies.All(x => !CompareAssemblyName(x, assemblyName)))
                 {
                     yield return reference;
                 }
@@ -413,8 +413,8 @@ public partial class ModuleWeaver : IDisposable
             {
                 var assemblyName = Path.GetFileNameWithoutExtension(reference.FileName);
 
-                if (config.UnmanagedX86Assemblies.All(x => !CompareAssemblyName(x, assemblyName)) &&
-                    config.UnmanagedX64Assemblies.All(x => !CompareAssemblyName(x, assemblyName)))
+                if (config.UnmanagedWinX86Assemblies.All(x => !CompareAssemblyName(x, assemblyName)) &&
+                    config.UnmanagedWinX64Assemblies.All(x => !CompareAssemblyName(x, assemblyName)))
                 {
                     yield return reference;
                 }
