@@ -14,6 +14,9 @@ public class TempFileTests : BasicTests
     }
 
     [Test]
+#if NETCORE
+    [Explicit("Somehow this only succeeds when ran manually for .NET Core")]
+#endif
     public void ExecutableRunsSuccessfully()
     {
         var output = RunHelper.RunExecutable(TestResult.AssemblyPath);

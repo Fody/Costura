@@ -18,8 +18,9 @@ public partial class ModuleWeaver
     private FieldDefinition _assemblyNamesField;
     private FieldDefinition _symbolNamesField;
     private FieldDefinition _preloadListField;
-    private FieldDefinition _preload32ListField;
-    private FieldDefinition _preload64ListField;
+    private FieldDefinition _preloadWinX86ListField;
+    private FieldDefinition _preloadWinX64ListField;
+    private FieldDefinition _preloadWinArm64ListField;
     private FieldDefinition _checksumsField;
 
     private void ImportAssemblyLoader(bool createTemporaryAssemblies)
@@ -31,7 +32,26 @@ public partial class ModuleWeaver
             SymbolReaderProvider = new PdbReaderProvider()
         };
 
-        using (var resourceStream = GetType().Assembly.GetManifestResourceStream("Costura.Template.dll"))
+        // Default version always used by Costura
+        var targetFramework = "netstandard2.0";
+
+        var systemRuntimeReference = ModuleDefinition.AssemblyReferences.FirstOrDefault(x => x.Name == "System.Runtime");
+        if (systemRuntimeReference is not null)
+        {
+            if (systemRuntimeReference.Version.Major >= 6)
+            {
+                targetFramework = "net6.0";
+            }
+
+            if (systemRuntimeReference.Version.Major >= 8)
+            {
+                targetFramework = "net8.0";
+            }
+
+            // Add more supported platforms once added
+        }
+
+        using (var resourceStream = GetType().Assembly.GetManifestResourceStream($"Costura.Template.{targetFramework}.dll"))
         {
             var moduleDefinition = ModuleDefinition.ReadModule(resourceStream, readerParameters);
 
@@ -50,6 +70,7 @@ public partial class ModuleWeaver
                 _sourceType = moduleDefinition.Types.Single(_ => _.Name == "ILTemplate");
                 DumpSource("ILTemplate");
             }
+
             _commonType = moduleDefinition.Types.Single(_ => _.Name == "Common");
             DumpSource("Common");
 
@@ -64,12 +85,6 @@ public partial class ModuleWeaver
             _loaderCctor = CopyMethod(_targetType, _sourceType.Methods.Single(_ => _.IsConstructor && _.IsStatic));
             _attachMethod = CopyMethod(_targetType, _sourceType.Methods.Single(_ => _.Name == "Attach"));
         }
-
-        //var costuraTemplateReference = ModuleDefinition.AssemblyReferences.FirstOrDefault(x => string.Equals(x.Name, "Costura.Template"));
-        //if (costuraTemplateReference is not null)
-        //{
-        //    ModuleDefinition.AssemblyReferences.Remove(costuraTemplateReference);
-        //}
     }
 
     private void DumpSource(string file)
@@ -145,16 +160,21 @@ public partial class ModuleWeaver
                 _preloadListField = newField;
             }
 
-            if (field.Name == "preload32List")
+            if (field.Name == "preloadWinX86List")
             {
-                _preload32ListField = newField;
+                _preloadWinX86ListField = newField;
             }
             
-            if (field.Name == "preload64List")
+            if (field.Name == "preloadWinX64List")
             {
-                _preload64ListField = newField;
+                _preloadWinX64ListField = newField;
             }
-            
+
+            if (field.Name == "preloadWinArm64List")
+            {
+                _preloadWinArm64ListField = newField;
+            }
+
             if (field.Name == "checksums")
             {
                 _checksumsField = newField;
@@ -179,7 +199,10 @@ public partial class ModuleWeaver
 
         if (baseType.IsGenericInstance)
         {
-            typeReference = typeReference.MakeGenericInstanceType(baseType.GetGenericInstanceArguments().ToArray());
+            typeReference = typeReference.MakeGenericInstanceType(baseType
+                .GetGenericInstanceArguments()
+                .Select(x => ModuleDefinition.ImportReference(x))
+                .ToArray());
         }
 
         return typeReference;
@@ -365,7 +388,9 @@ public partial class ModuleWeaver
             if (methodReference.DeclaringType.IsGenericInstance)
             {
                 return ModuleDefinition.ImportReference(methodReference.Resolve())
-                    .MakeHostInstanceGeneric(methodReference.DeclaringType.GetGenericInstanceArguments().ToArray());
+                    .MakeHostInstanceGeneric(methodReference.DeclaringType
+                        .GetGenericInstanceArguments()
+                        .Select(x => ModuleDefinition.ImportReference(x)).ToArray());
             }
             return ModuleDefinition.ImportReference(methodReference.Resolve());
         }

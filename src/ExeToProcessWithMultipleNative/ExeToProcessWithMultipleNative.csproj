@@ -1,7 +1,7 @@
-<Project Sdk="MSBuild.Sdk.Extras">
+﻿<Project Sdk="MSBuild.Sdk.Extras">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFrameworks>net472;net8.0</TargetFrameworks>
     <DebugType>embedded</DebugType>
     <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
     <GenerateSupportedRuntime>false</GenerateSupportedRuntime>
@@ -10,10 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Confluent.Kafka" Version="1.9.0" />
+    <PackageReference Include="Confluent.Kafka" Version="2.5.3" />
   </ItemGroup>
 
-  <Target Name="EmbedLibrdkafkaRedistNativeLibraries" BeforeTargets="ResolvePackageAssets">
+  <Target Name="EmbedLibrdkafkaRedistNativeLibraries_Net472" BeforeTargets="ResolvePackageAssets" Condition=" '$(TargetFramework)' == 'net472' ">
     <ItemGroup>
       <LibrdkafkaNativeLibraries Include="@(Content)" Condition="$([MSBuild]::ValueOrDefault('%(Link)', '').StartsWith('librdkafka'))" />
       <LibrdkafkaNativeLibraries Update="@(LibrdkafkaNativeLibraries)" CopyToOutputDirectory="Never" />
@@ -21,8 +21,92 @@
     </ItemGroup>
     <ItemGroup>
       <EmbeddedResource Include="@(LibrdkafkaNativeLibraries)">
-        <Link Condition="$([MSBuild]::ValueOrDefault('%(Identity)', '').Contains('x86'))">costura32\%(Filename)%(Extension)</Link>
-        <Link Condition="$([MSBuild]::ValueOrDefault('%(Identity)', '').Contains('x64'))">costura64\%(Filename)%(Extension)</Link>
+        <Link Condition="$([MSBuild]::ValueOrDefault('%(Identity)', '').Contains('x86'))">costura-win-x86\%(Filename)%(Extension)</Link>
+        <Link Condition="$([MSBuild]::ValueOrDefault('%(Identity)', '').Contains('x64'))">costura-win-x64\%(Filename)%(Extension)</Link>
+        <Link Condition="$([MSBuild]::ValueOrDefault('%(Identity)', '').Contains('Arm64'))">costura-win-arm64\%(Filename)%(Extension)</Link>
+      </EmbeddedResource>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="EmbedLibrdkafkaRedistNativeLibraries_Net80" AfterTargets="ResolvePackageAssets" Condition=" $(TargetFramework.StartsWith('net8.0')) ">
+    <PropertyGroup>
+      <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+      <DependencyPackageName>librdkafka.redist</DependencyPackageName>
+      <DependencyPackageVersion>2.5.3</DependencyPackageVersion>
+      <DependencyPackageFolder>$(NuGetPackageRoot)\$(DependencyPackageName)\$(DependencyPackageVersion)</DependencyPackageFolder>
+    </PropertyGroup>
+
+    <!-- X86 -->
+    <ItemGroup>
+      <!--<EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x86\native\libcrypto-1_1.dll">
+        <Link>costura-win-x86\libcrypto-1_1.dll</Link>
+      </EmbeddedResource>-->
+      <EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x86\native\libcrypto-3.dll">
+        <Link>costura-win-x86\libcrypto-3.dll</Link>
+      </EmbeddedResource>
+      <EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x86\native\libcurl.dll">
+        <Link>costura-win-x86\libcurl.dll</Link>
+      </EmbeddedResource>
+      <EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x86\native\librdkafka.dll">
+        <Link>costura-win-x86\librdkafka.dll</Link>
+      </EmbeddedResource>
+      <EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x86\native\librdkafkacpp.dll">
+        <Link>costura-win-x86\librdkafkacpp.dll</Link>
+      </EmbeddedResource>
+      <!--<EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x86\native\libssl-1_1.dll">
+        <Link>costura-win-x86\libssl-1_1.dll</Link>
+      </EmbeddedResource>-->
+      <EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x86\native\libssl-3.dll">
+        <Link>costura-win-x86\libssl-3.dll</Link>
+      </EmbeddedResource>
+      <EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x86\native\msvcp140.dll">
+        <Link>costura-win-x86\msvcp140.dll</Link>
+      </EmbeddedResource>
+      <EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x86\native\vcruntime140.dll">
+        <Link>costura-win-x86\vcruntime140.dll</Link>
+      </EmbeddedResource>
+      <EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x86\native\zlib1.dll">
+        <Link>costura-win-x86\zlib1.dll</Link>
+      </EmbeddedResource>
+      <EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x86\native\zstd.dll">
+        <Link>costura-win-x86\zstd.dll</Link>
+      </EmbeddedResource>
+    </ItemGroup>
+
+    <!-- X64 -->
+    <ItemGroup>
+      <!--<EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x64\native\libcrypto-1_1-x64.dll">
+        <Link>costura-win-x64\libcrypto-1_1-x64.dll</Link>
+      </EmbeddedResource>-->
+      <EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x64\native\libcrypto-3-x64.dll">
+        <Link>costura-win-x64\libcrypto-3-x64.dll</Link>
+      </EmbeddedResource>
+      <EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x64\native\libcurl.dll">
+        <Link>costura-win-x64\libcurl.dll</Link>
+      </EmbeddedResource>
+      <EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x64\native\librdkafka.dll">
+        <Link>costura-win-x64\librdkafka.dll</Link>
+      </EmbeddedResource>
+      <EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x64\native\librdkafkacpp.dll">
+        <Link>costura-win-x64\librdkafkacpp.dll</Link>
+      </EmbeddedResource>
+      <!--<EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x64\native\libssl-1_1-x64.dll">
+        <Link>costura-win-x64\libssl-1_1-x64.dll</Link>
+      </EmbeddedResource>-->
+      <EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x64\native\libssl-3-x64.dll">
+        <Link>costura-win-x64\libssl-3-x64.dll</Link>
+      </EmbeddedResource>
+      <EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x64\native\msvcp140.dll">
+        <Link>costura-win-x64\msvcp140.dll</Link>
+      </EmbeddedResource>
+      <EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x64\native\vcruntime140.dll">
+        <Link>costura-win-x64\vcruntime140.dll</Link>
+      </EmbeddedResource>
+      <EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x64\native\zlib1.dll">
+        <Link>costura-win-x64\zlib1.dll</Link>
+      </EmbeddedResource>
+      <EmbeddedResource Include="$(DependencyPackageFolder)\runtimes\win-x64\native\zstd.dll">
+        <Link>costura-win-x64\zstd.dll</Link>
       </EmbeddedResource>
     </ItemGroup>
   </Target>

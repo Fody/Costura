@@ -6,8 +6,8 @@
 using System.Reflection;
 
 [assembly: AssemblyCompany("Fody")]
-[assembly: AssemblyVersion("5.8.0")]
-[assembly: AssemblyFileVersion("5.8.0")]
-[assembly: AssemblyInformationalVersion("5.8.0-alpha.274")]
+[assembly: AssemblyVersion("6.0.0")]
+[assembly: AssemblyFileVersion("6.0.0")]
+[assembly: AssemblyInformationalVersion("6.0.0-alpha.368")]
 [assembly: AssemblyCopyright("Copyright © Fody 2015 - 2024")]
 

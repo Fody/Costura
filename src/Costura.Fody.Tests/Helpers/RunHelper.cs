@@ -16,7 +16,11 @@ internal static class RunHelper
             RedirectStandardOutput = true,
             UseShellExecute = false,
         };
-        using var process = new Process { StartInfo = startInfo };
+
+        using var process = new Process
+        {
+            StartInfo = startInfo
+        };
         process.Start();
         process.WaitForExit();
         return process.StandardOutput.ReadToEnd();

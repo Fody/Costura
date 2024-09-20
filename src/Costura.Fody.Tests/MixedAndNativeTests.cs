@@ -8,7 +8,7 @@ public class MixedAndNativeTests : BaseCosturaTest
     public override TestResult TestResult => testResult;
 
     private static readonly TestResult testResult = WeavingHelper.CreateIsolatedAssemblyCopy("ExeToProcessWithNative.exe",
-        "<Costura Unmanaged32Assemblies='AssemblyToReferenceMixed' />",
+        "<Costura UnmanagedWinX86Assemblies='AssemblyToReferenceMixed' />",
         new[] { "AssemblyToReferenceMixed.dll" }, "MixedAndNative");
 
     [Test]

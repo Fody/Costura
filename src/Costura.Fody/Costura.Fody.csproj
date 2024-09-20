@@ -21,7 +21,17 @@
     <EmbeddedResource Include="$(OverridableOutputRootPath)\Costura.Template\netstandard2.0\Costura.Template.dll">
       <Link>bin\Template.dll</Link>
       <InProject>false</InProject>
-      <LogicalName>Costura.Template.dll</LogicalName>
+      <LogicalName>Costura.Template.netstandard2.0.dll</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(OverridableOutputRootPath)\Costura.Template\net6.0\Costura.Template.dll">
+      <Link>bin\Template.dll</Link>
+      <InProject>false</InProject>
+      <LogicalName>Costura.Template.net6.0.dll</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(OverridableOutputRootPath)\Costura.Template\net8.0\Costura.Template.dll">
+      <Link>bin\Template.dll</Link>
+      <InProject>false</InProject>
+      <LogicalName>Costura.Template.net8.0.dll</LogicalName>
     </EmbeddedResource>
 
     <EmbeddedResource Include="$(PkgMicrosoft_NETFramework_ReferenceAssemblies_net48)\build\.NETFramework\v4.8\Facades\netstandard.dll">
@@ -68,7 +78,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FodyHelpers" Version="6.8.1" />
+    <PackageReference Include="FodyHelpers" Version="6.8.2" />
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net48" Version="1.0.3" PrivateAssets="all" GeneratePathProperty="true" />
   </ItemGroup>
 

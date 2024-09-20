@@ -660,7 +660,7 @@ private static string CreateInlinedProjectXml(BuildContext buildContext, string 
 
 //-------------------------------------------------------------
 
-private static List<string> GetProjectRuntimesIdentifiers(BuildContext buildContext, Cake.Core.IO.FilePath solutionOrProjectFileName, List<string> runtimeIdentifiersToInvestigate)
+private static List<string> GetProjectRuntimesIdentifiers(BuildContext buildContext, Cake.Core.IO.FilePath solutionOrProjectFileName, IReadOnlyList<string> runtimeIdentifiersToInvestigate)
 {
     var projectFileContents = System.IO.File.ReadAllText(solutionOrProjectFileName.FullPath)?.ToLower();
 
@@ -670,7 +670,7 @@ private static List<string> GetProjectRuntimesIdentifiers(BuildContext buildCont
     {
         if (!string.IsNullOrWhiteSpace(runtimeIdentifier))
         {
-            if (!projectFileContents.Contains(runtimeIdentifier.ToLower()))
+            if (!projectFileContents.Contains(runtimeIdentifier, StringComparison.OrdinalIgnoreCase))
             {
                 buildContext.CakeContext.Information("Project '{0}' does not support runtime identifier '{1}', removing from supported runtime identifiers list", solutionOrProjectFileName, runtimeIdentifier);
                 continue;

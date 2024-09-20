@@ -8,7 +8,7 @@ public class MixedAndNativeTestsWithEmbeddedMixed : BaseCosturaTest
 #pragma warning disable IDE1006 // Naming Styles
     private static readonly TestResult testResult = WeavingHelper.CreateIsolatedAssemblyCopy("ExeToProcessWithNativeAndEmbeddedMixed.exe",
 #pragma warning restore IDE1006 // Naming Styles
-        "<Costura Unmanaged32Assemblies='AssemblyToReferenceMixed' />",
+        "<Costura UnmanagedWinX86Assemblies='AssemblyToReferenceMixed' />",
         new[] {"AssemblyToReferenceMixed.dll"}, "MixedAndNative");
 
     [Test]

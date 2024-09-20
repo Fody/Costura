@@ -54,11 +54,13 @@ private static void RestoreNuGetPackages(BuildContext buildContext, Cake.Core.IO
     
     var sources = SplitSeparatedList(buildContext.General.NuGet.PackageSources, ';');
 
-    var runtimeIdentifiers = new List<string>(new [] 
+    var runtimeIdentifiers = new [] 
     {
+        "win-x86",
         "win-x64",
+        "win-arm64",
         "browser-wasm"
-    });
+    };
 
     var supportedRuntimeIdentifiers = GetProjectRuntimesIdentifiers(buildContext, solutionOrProjectFileName, runtimeIdentifiers);
 
@@ -68,7 +70,7 @@ private static void RestoreNuGetPackages(BuildContext buildContext, Cake.Core.IO
 
 //-------------------------------------------------------------
 
-private static void RestoreNuGetPackagesUsingNuGet(BuildContext buildContext, Cake.Core.IO.FilePath solutionOrProjectFileName, List<string> sources, List<string> runtimeIdentifiers)
+private static void RestoreNuGetPackagesUsingNuGet(BuildContext buildContext, Cake.Core.IO.FilePath solutionOrProjectFileName, IReadOnlyList<string> sources, IReadOnlyList<string> runtimeIdentifiers)
 {
     if (!buildContext.General.NuGet.RestoreUsingNuGet)
     {
@@ -91,7 +93,7 @@ private static void RestoreNuGetPackagesUsingNuGet(BuildContext buildContext, Ca
 
         if (sources.Count > 0)
         {
-            nuGetRestoreSettings.Source = sources;
+            nuGetRestoreSettings.Source = sources.ToList();
         }
 
         buildContext.CakeContext.NuGetRestore(solutionOrProjectFileName, nuGetRestoreSettings);
@@ -104,7 +106,7 @@ private static void RestoreNuGetPackagesUsingNuGet(BuildContext buildContext, Ca
 
 //-------------------------------------------------------------
 
-private static void RestoreNuGetPackagesUsingDotnetRestore(BuildContext buildContext, Cake.Core.IO.FilePath solutionOrProjectFileName, List<string> sources, List<string> runtimeIdentifiers)
+private static void RestoreNuGetPackagesUsingDotnetRestore(BuildContext buildContext, Cake.Core.IO.FilePath solutionOrProjectFileName, IReadOnlyList<string> sources, IReadOnlyList<string> runtimeIdentifiers)
 {
     if (!buildContext.General.NuGet.RestoreUsingDotNetRestore)
     {
@@ -141,7 +143,7 @@ private static void RestoreNuGetPackagesUsingDotnetRestore(BuildContext buildCon
 
             if (sources.Count > 0)
             {
-                restoreSettings.Sources = sources;
+                restoreSettings.Sources = sources.ToList();
             }
 
             using (buildContext.CakeContext.UseDiagnosticVerbosity())
