@@ -29,7 +29,7 @@ internal static class ILTemplateWithUnmanagedHandler
 
     private static int isAttached;
 
-    public static void Attach()
+    public static void Attach(bool subscribe)
     {
         if (Interlocked.Exchange(ref isAttached, 1) == 1)
         {
@@ -63,11 +63,14 @@ internal static class ILTemplateWithUnmanagedHandler
         var unmanagedAssemblies = GetUnmanagedAssemblies();
         Common.PreloadUnmanagedLibraries(md5Hash, tempBasePath, unmanagedAssemblies, checksums);
 
+        if (subscribe)
+        {
 #if NETCORE
-        AssemblyLoadContext.Default.Resolving += ResolveAssembly;
+            AssemblyLoadContext.Default.Resolving += ResolveAssembly;
 #else
-        currentDomain.AssemblyResolve += ResolveAssembly;
+            currentDomain.AssemblyResolve += ResolveAssembly;
 #endif
+        }
     }
 
 #if NETCORE

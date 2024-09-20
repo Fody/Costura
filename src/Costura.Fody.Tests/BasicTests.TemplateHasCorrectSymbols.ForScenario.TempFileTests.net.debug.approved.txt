@@ -1202,7 +1202,7 @@ IL_00a0:  endfinally
 }  // end handler
 IL_00a1:  ret
 }
-.method public hidebysig static void  Attach() cil managed
+.method public hidebysig static void  Attach(bool subscribe) cil managed
 {
 .maxstack  4
 .locals init (class [mscorlib]System.AppDomain V_0,
@@ -1216,7 +1216,8 @@ bool V_7,
 bool V_8,
 class [mscorlib]System.Runtime.Versioning.TargetFrameworkAttribute V_9,
 string V_10,
-bool V_11)
+bool V_11,
+bool V_12)
 IL_0000:  nop
 IL_0001:  ldsflda    int32 Costura.AssemblyLoader::isAttached
 IL_0006:  ldc.i4.1
@@ -1228,7 +1229,7 @@ IL_000f:  stloc.s    V_7
 IL_0011:  ldloc.s    V_7
 IL_0013:  brfalse.s  IL_001b
 IL_0015:  nop
-IL_0016:  br         IL_0147
+IL_0016:  br         IL_0150
 IL_001b:  call       class [mscorlib]System.AppDomain [mscorlib]System.AppDomain::get_CurrentDomain()
 IL_0020:  stloc.0
 IL_0021:  ldloc.0
@@ -1342,20 +1343,26 @@ string,
 class [mscorlib]System.Collections.Generic.List`1<string>,
 class [mscorlib]System.Collections.Generic.Dictionary`2<string,string>)
 IL_0124:  nop
-IL_0125:  ldloc.0
-IL_0126:  ldsfld     class [mscorlib]System.ResolveEventHandler Costura.AssemblyLoader/'<>O'::'<0>__ResolveAssembly'
-IL_012b:  dup
-IL_012c:  brtrue.s   IL_0141
-IL_012e:  pop
-IL_012f:  ldnull
-IL_0130:  ldftn      class [mscorlib]System.Reflection.Assembly Costura.AssemblyLoader::ResolveAssembly(object,
+IL_0125:  ldarg.0
+IL_0126:  stloc.s    V_12
+IL_0128:  ldloc.s    V_12
+IL_012a:  brfalse.s  IL_0150
+IL_012c:  nop
+IL_012d:  ldloc.0
+IL_012e:  ldsfld     class [mscorlib]System.ResolveEventHandler Costura.AssemblyLoader/'<>O'::'<0>__ResolveAssembly'
+IL_0133:  dup
+IL_0134:  brtrue.s   IL_0149
+IL_0136:  pop
+IL_0137:  ldnull
+IL_0138:  ldftn      class [mscorlib]System.Reflection.Assembly Costura.AssemblyLoader::ResolveAssembly(object,
 class [mscorlib]System.ResolveEventArgs)
-IL_0136:  newobj     instance void [mscorlib]System.ResolveEventHandler::.ctor(object,
+IL_013e:  newobj     instance void [mscorlib]System.ResolveEventHandler::.ctor(object,
 native int)
-IL_013b:  dup
-IL_013c:  stsfld     class [mscorlib]System.ResolveEventHandler Costura.AssemblyLoader/'<>O'::'<0>__ResolveAssembly'
-IL_0141:  callvirt   instance void [mscorlib]System.AppDomain::add_AssemblyResolve(class [mscorlib]System.ResolveEventHandler)
-IL_0146:  nop
-IL_0147:  ret
+IL_0143:  dup
+IL_0144:  stsfld     class [mscorlib]System.ResolveEventHandler Costura.AssemblyLoader/'<>O'::'<0>__ResolveAssembly'
+IL_0149:  callvirt   instance void [mscorlib]System.AppDomain::add_AssemblyResolve(class [mscorlib]System.ResolveEventHandler)
+IL_014e:  nop
+IL_014f:  nop
+IL_0150:  ret
 }
 }
