@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Runtime.Versioning;
 using System.Threading;
-using System.Runtime.InteropServices;
-
 
 #if NETCORE
 using System.Runtime.Loader;
+using System.Runtime.InteropServices;
+#else
+using System.Runtime.Versioning;
 #endif
 
 internal static class ILTemplateWithUnmanagedHandler
