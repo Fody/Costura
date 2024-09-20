@@ -18,6 +18,8 @@ public class CultureResourceTests : BaseCosturaTest
                 "AssemblyToReference.dll",
                 "de\\AssemblyToReference.resources.dll",
                 "fr\\AssemblyToReference.resources.dll",
+                "zh-CN\\AssemblyToReference.resources.dll",
+                "zh-Hans\\AssemblyToReference.resources.dll",
                 "AssemblyToReferencePreEmbedded.dll",
                 "ExeToReference.exe"
             }, "Culture");
@@ -31,7 +33,7 @@ public class CultureResourceTests : BaseCosturaTest
         {
             Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("fr-FR");
             var instance1 = testResult.GetInstance("ClassToTest");
-            Assert.That("Salut", Is.EqualTo(instance1.InternationalFoo()));
+            Assert.That(instance1.InternationalFoo(), Is.EqualTo("Salut"));
         }
         finally
         {
@@ -45,9 +47,10 @@ public class CultureResourceTests : BaseCosturaTest
         var culture = Thread.CurrentThread.CurrentUICulture;
         try
         {
+            // Yes, this seems correct, when creating the zh-Hans culture, it uses zh-CN
             Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("zh-Hans");
             var instance1 = testResult.GetInstance("ClassToTest");
-            Assert.That("Salut", Is.EqualTo(instance1.InternationalFoo()));
+            Assert.That(instance1.InternationalFoo(), Is.EqualTo("zh-CN"));
         }
         finally
         {
