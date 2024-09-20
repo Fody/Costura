@@ -5,6 +5,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using Fody;
 using Mono.Cecil;
@@ -268,8 +269,7 @@ public partial class ModuleWeaver : IDisposable
                 var assemblyName = Path.GetFileNameWithoutExtension(reference.FileName);
 
                 if (includeList.Any(x => CompareAssemblyName(x, assemblyName)) &&
-                    config.UnmanagedWinX86Assemblies.All(x => !CompareAssemblyName(x, assemblyName)) &&
-                    config.UnmanagedWinX64Assemblies.All(x => !CompareAssemblyName(x, assemblyName)))
+                    !IsUnmanagedAssemblyReference(reference, config))
                 {
                     skippedAssemblies.Remove(includeList.First(x => CompareAssemblyName(x, assemblyName)));
                     yield return reference;
@@ -313,8 +313,7 @@ public partial class ModuleWeaver : IDisposable
                 var assemblyName = Path.GetFileNameWithoutExtension(reference.FileName);
 
                 if (excludeList.Any(x => CompareAssemblyName(x, assemblyName)) ||
-                    config.UnmanagedWinX86Assemblies.Any(x => CompareAssemblyName(x, assemblyName)) ||
-                    config.UnmanagedWinX64Assemblies.Any(x => CompareAssemblyName(x, assemblyName)))
+                    IsUnmanagedAssemblyReference(reference, config))
                 {
                     continue;
                 }
@@ -331,13 +330,34 @@ public partial class ModuleWeaver : IDisposable
             {
                 var assemblyName = Path.GetFileNameWithoutExtension(reference.FileName);
 
-                if (config.UnmanagedWinX86Assemblies.All(x => !CompareAssemblyName(x, assemblyName)) &&
-                    config.UnmanagedWinX64Assemblies.All(x => !CompareAssemblyName(x, assemblyName)))
+                if (!IsUnmanagedAssemblyReference(reference, config))
                 {
                     yield return reference;
                 }
             }
         }
+    }
+
+    private bool IsUnmanagedAssemblyReference(Reference reference, Configuration config)
+    {
+        var assemblyName = Path.GetFileNameWithoutExtension(reference.FileName);
+
+        var listsToCheck = new[]
+        {
+            config.UnmanagedWinX86Assemblies,
+            config.UnmanagedWinX64Assemblies,
+            config.UnmanagedWinArm64Assemblies
+        };
+
+        foreach (var listToCheck in listsToCheck)
+        {
+            if (listToCheck.Any(x => CompareAssemblyName(x, assemblyName)))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private IEnumerable<Reference> GetFilteredRuntimeReferences(IEnumerable<Reference> references, Configuration config)
@@ -413,8 +433,7 @@ public partial class ModuleWeaver : IDisposable
             {
                 var assemblyName = Path.GetFileNameWithoutExtension(reference.FileName);
 
-                if (config.UnmanagedWinX86Assemblies.All(x => !CompareAssemblyName(x, assemblyName)) &&
-                    config.UnmanagedWinX64Assemblies.All(x => !CompareAssemblyName(x, assemblyName)))
+                if (IsUnmanagedAssemblyReference(reference, config))
                 {
                     yield return reference;
                 }

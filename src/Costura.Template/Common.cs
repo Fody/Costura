@@ -101,45 +101,40 @@ internal static class Common
 
     public static Assembly ReadFromDiskCache(string tempBasePath, AssemblyName requestedAssemblyName)
     {
-        var name = requestedAssemblyName.Name.ToLowerInvariant();
-
-        if (requestedAssemblyName.CultureInfo is not null && !string.IsNullOrEmpty(requestedAssemblyName.CultureInfo.Name))
-        {
-            name = $"{requestedAssemblyName.CultureInfo.Name}.{name}";
-        }
+        var name = GetAssemblyResourceName(requestedAssemblyName);
 
         var platformName = GetPlatformName();
+
         var assemblyTempFilePath = Path.Combine(tempBasePath, string.Concat(name, ".dll"));
         if (File.Exists(assemblyTempFilePath))
         {
             return Assembly.LoadFile(assemblyTempFilePath);
         }
+
         assemblyTempFilePath = Path.ChangeExtension(assemblyTempFilePath, "exe");
         if (File.Exists(assemblyTempFilePath))
         {
             return Assembly.LoadFile(assemblyTempFilePath);
         }
+
         assemblyTempFilePath = Path.Combine(Path.Combine(tempBasePath, platformName), string.Concat(name, ".dll"));
         if (File.Exists(assemblyTempFilePath))
         {
             return Assembly.LoadFile(assemblyTempFilePath);
         }
+
         assemblyTempFilePath = Path.ChangeExtension(assemblyTempFilePath, "exe");
         if (File.Exists(assemblyTempFilePath))
         {
             return Assembly.LoadFile(assemblyTempFilePath);
         }
+
         return null;
     }
 
     public static Assembly ReadFromEmbeddedResources(Dictionary<string, string> assemblyNames, Dictionary<string, string> symbolNames, AssemblyName requestedAssemblyName)
     {
-        var name = requestedAssemblyName.Name.ToLowerInvariant();
-
-        if (requestedAssemblyName.CultureInfo is not null && !string.IsNullOrEmpty(requestedAssemblyName.CultureInfo.Name))
-        {
-            name = $"{requestedAssemblyName.CultureInfo.Name}.{name}";
-        }
+        var name = GetAssemblyResourceName(requestedAssemblyName);
 
         byte[] assemblyData;
         using (var assemblyStream = LoadStream(assemblyNames, name))
@@ -161,6 +156,18 @@ internal static class Common
         }
 
         return Assembly.Load(assemblyData);
+    }
+
+    private static string GetAssemblyResourceName(AssemblyName requestedAssemblyName)
+    {
+        var name = requestedAssemblyName.Name.ToLowerInvariant();
+
+        if (requestedAssemblyName.CultureInfo is not null && !string.IsNullOrEmpty(requestedAssemblyName.CultureInfo.Name))
+        {
+            name = $"{CultureToString(requestedAssemblyName.CultureInfo)}.{name}".ToLowerInvariant();
+        }
+
+        return name;
     }
 
     private static Stream LoadStream(Dictionary<string, string> resourceNames, string name)
