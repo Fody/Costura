@@ -517,16 +517,7 @@ private static bool IsDotNetCoreProject(BuildContext buildContext, string projec
             var lowerCase = line.ToLower();
             if (lowerCase.Contains("targetframework"))
             {
-                if (lowerCase.Contains("netcore"))
-                {
-                    isDotNetCore = true;
-                    break;
-                }
-
-                if (lowerCase.Contains("net5") ||
-                    lowerCase.Contains("net6") ||
-                    lowerCase.Contains("net7") ||
-                    lowerCase.Contains("net8"))
+                if (IsDotNetCoreTargetFramework(buildContext, lowerCase))
                 {
                     isDotNetCore = true;
                     break;
@@ -538,6 +529,30 @@ private static bool IsDotNetCoreProject(BuildContext buildContext, string projec
     }
 
     return _dotNetCoreCache[projectFileName];
+}
+
+//-------------------------------------------------------------
+
+private static bool IsDotNetCoreTargetFramework(BuildContext buildContext, string targetFramework)
+{
+    var lowerCase = targetFramework.ToLower();
+
+    if (lowerCase.Contains("netcore"))
+    {
+        return true;
+    }
+
+    if (lowerCase.Contains("net5") ||
+        lowerCase.Contains("net6") ||
+        lowerCase.Contains("net7") ||
+        lowerCase.Contains("net8") ||
+        lowerCase.Contains("net9") ||
+        lowerCase.Contains("net10"))
+    {
+        return true;
+    }
+
+    return false;
 }
 
 //-------------------------------------------------------------

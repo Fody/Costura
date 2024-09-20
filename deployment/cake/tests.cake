@@ -137,63 +137,70 @@ private static void RunUnitTests(BuildContext buildContext, string projectName)
 
     var ranTests = false;
     var failed = false;
-    var testTargetFramework = GetTestTargetFramework(buildContext, projectName);
+    var testTargetFrameworks = GetTestTargetFrameworks(buildContext, projectName);
 
     try
     {
-        if (IsDotNetCoreProject(buildContext, projectName))
+        foreach (var testTargetFramework in testTargetFrameworks)
         {
-            buildContext.CakeContext.Information($"Project '{projectName}' is a .NET core project, using 'dotnet test' to run the unit tests");
-
-            var projectFileName = GetProjectFileName(buildContext, projectName);
-
-            var dotNetTestSettings = new DotNetTestSettings
-            {
-                Configuration = buildContext.General.Solution.ConfigurationName,
-                // Loggers = new []
-                // {
-                //     "nunit;LogFilePath=test-result.xml"
-                // },
-                NoBuild = true,
-                NoLogo = true,
-                NoRestore = true,
-                OutputDirectory = System.IO.Path.Combine(GetProjectOutputDirectory(buildContext, projectName), testTargetFramework),
-                ResultsDirectory = testResultsDirectory
-            };
-
-            if (IsNUnitTestProject(buildContext, projectName))
-            {
-                dotNetTestSettings.ArgumentCustomization = args => args
-                    .Append($"-- NUnit.TestOutputXml={testResultsDirectory}");
-            }
+            LogSeparator(buildContext.CakeContext, "Running tests for target framework {0}", testTargetFramework);
             
-            if (IsXUnitTestProject(buildContext, projectName))
+            if (IsDotNetCoreTargetFramework(buildContext, testTargetFramework))
             {
-                var outputFileName = System.IO.Path.Combine(testResultsDirectory, $"{projectName}.xml");
+                buildContext.CakeContext.Information($"Project '{projectName}' is a .NET core project, using 'dotnet test' to run the unit tests");
 
-                dotNetTestSettings.ArgumentCustomization = args => args
-                    .Append($"-l:trx;LogFileName={outputFileName}");
-            }
+                var projectFileName = GetProjectFileName(buildContext, projectName);
 
-            var processBit = buildContext.Tests.ProcessBit.ToLower();
-            if (!string.IsNullOrWhiteSpace(processBit))
-            {
-                dotNetTestSettings.Runtime = $"win-{processBit}";
-            }
+                var dotNetTestSettings = new DotNetTestSettings
+                {
+                    Configuration = buildContext.General.Solution.ConfigurationName,
+                    // Loggers = new []
+                    // {
+                    //     "nunit;LogFilePath=test-result.xml"
+                    // },
+                    NoBuild = true,
+                    NoLogo = true,
+                    NoRestore = true,
+                    OutputDirectory = System.IO.Path.Combine(GetProjectOutputDirectory(buildContext, projectName), testTargetFramework),
+                    ResultsDirectory = testResultsDirectory
+                };
 
-            buildContext.CakeContext.DotNetTest(projectFileName, dotNetTestSettings);
+                if (IsNUnitTestProject(buildContext, projectName))
+                {
+                    dotNetTestSettings.ArgumentCustomization = args => args
+                        .Append($"-- NUnit.TestOutputXml={testResultsDirectory}");
+                }
+                
+                if (IsXUnitTestProject(buildContext, projectName))
+                {
+                    var outputFileName = System.IO.Path.Combine(testResultsDirectory, $"{projectName}.xml");
 
-            ranTests = true;
-        }
-        else
-        {
-            buildContext.CakeContext.Information($"Project '{projectName}' is a .NET project, using '{buildContext.Tests.Framework} runner' to run the unit tests");
+                    dotNetTestSettings.ArgumentCustomization = args => args
+                        .Append($"-l:trx;LogFileName={outputFileName}");
+                }
 
-            if (IsNUnitTestProject(buildContext, projectName))
-            {
-                RunTestsUsingNUnit(buildContext, projectName, testTargetFramework, testResultsDirectory);
+                var processBit = buildContext.Tests.ProcessBit.ToLower();
+                if (!string.IsNullOrWhiteSpace(processBit))
+                {
+                    dotNetTestSettings.Runtime = $"{buildContext.Tests.OperatingSystem}-{processBit}";
+                }
+
+                buildContext.CakeContext.Information($"Runtime: '{dotNetTestSettings.Runtime}'");
+
+                buildContext.CakeContext.DotNetTest(projectFileName, dotNetTestSettings);
 
                 ranTests = true;
+            }
+            else
+            {
+                buildContext.CakeContext.Information($"Project '{projectName}' is a .NET project, using '{buildContext.Tests.Framework} runner' to run the unit tests");
+
+                if (IsNUnitTestProject(buildContext, projectName))
+                {
+                    RunTestsUsingNUnit(buildContext, projectName, testTargetFramework, testResultsDirectory);
+
+                    ranTests = true;
+                }
             }
         }
     }
@@ -273,7 +280,7 @@ private static bool IsXUnitTestProject(BuildContext buildContext, string project
 
 //-------------------------------------------------------------
 
-private static string GetTestTargetFramework(BuildContext buildContext, string projectName)
+private static IReadOnlyList<string> GetTestTargetFrameworks(BuildContext buildContext, string projectName)
 {
     // Step 1: if defined, use defined value
     var testTargetFramework = buildContext.Tests.TargetFramework;
@@ -281,20 +288,22 @@ private static string GetTestTargetFramework(BuildContext buildContext, string p
     {
         buildContext.CakeContext.Information("Using test target framework '{0}', specified via the configuration", testTargetFramework);
 
-        return testTargetFramework;
+        return new [] 
+        {
+            testTargetFramework
+        };
     }
 
-    buildContext.CakeContext.Information("Test target framework not specified, auto detecting test target framework");
+    buildContext.CakeContext.Information("Test target framework not specified, auto detecting test target frameworks");
 
     var targetFrameworks = GetTargetFrameworks(buildContext, projectName);
-    testTargetFramework = targetFrameworks.FirstOrDefault();
 
-    buildContext.CakeContext.Information("Auto detected test target framework '{0}'", testTargetFramework);
+    buildContext.CakeContext.Information("Auto detected test target frameworks '{0}'", string.Join(", ", targetFrameworks));
 
-    if (string.IsNullOrWhiteSpace(testTargetFramework))
+    if (targetFrameworks.Length == 0)
     {
         throw new Exception(string.Format("Test target framework could not automatically be detected for project '{0]'", projectName));
     }
 
-    return testTargetFramework;
+    return targetFrameworks;
 }
