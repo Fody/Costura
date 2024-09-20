@@ -17,19 +17,22 @@ internal static class ILTemplate
 
     private static int isAttached;
 
-    public static void Attach()
+    public static void Attach(bool subscribe)
     {
         if (Interlocked.Exchange(ref isAttached, 1) == 1)
         {
             return;
         }
 
+        if (subscribe)
+        {
 #if NETCORE
-        AssemblyLoadContext.Default.Resolving += ResolveAssembly;
+            AssemblyLoadContext.Default.Resolving += ResolveAssembly;
 #else
-        var currentDomain = AppDomain.CurrentDomain;
-        currentDomain.AssemblyResolve += ResolveAssembly;
+            var currentDomain = AppDomain.CurrentDomain;
+            currentDomain.AssemblyResolve += ResolveAssembly;
 #endif
+        }
     }
 
 #if NETCORE

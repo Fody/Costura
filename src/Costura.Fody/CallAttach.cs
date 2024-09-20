@@ -7,11 +7,11 @@ public partial class ModuleWeaver
 {
     private void CallAttach(Configuration config)
     {
-        var initialized = FindInitializeCalls();
+        var initialized = FindInitializeCalls(config);
 
         if (config.LoadAtModuleInit)
         {
-            AddModuleInitializerCall();
+            AddModuleInitializerCall(config);
         }
         else if (!initialized)
         {
@@ -19,7 +19,7 @@ public partial class ModuleWeaver
         }
     }
 
-    private bool FindInitializeCalls()
+    private bool FindInitializeCalls(Configuration config)
     {
         var found = false;
 
@@ -40,12 +40,23 @@ public partial class ModuleWeaver
                 var instructions = method.Body.Instructions;
                 for (var i = 0; i < instructions.Count; i++)
                 {
-                    if (instructions[i].OpCode == OpCodes.Call &&
-                        instructions[i].Operand is MethodReference callMethod &&
-                        callMethod.FullName == "System.Void CosturaUtility::Initialize()")
+                    var instruction = instructions[i];
+                    if (instruction.OpCode != OpCodes.Call)
+                    {
+                        continue;
+                    }
+
+                    if (instruction.Operand is not MethodReference callMethod)
+                    {
+                        continue;
+                    }
+                    
+                    if (callMethod.FullName == "System.Void CosturaUtility::Initialize()")
                     {
                         found = true;
+
                         instructions[i] = Instruction.Create(OpCodes.Call, _attachMethod);
+                        instructions.Insert(i--, Instruction.Create(config.DisableEventSubscription ? OpCodes.Ldc_I4_0 : OpCodes.Ldc_I4_1));
                     }
                 }
             }
@@ -54,7 +65,7 @@ public partial class ModuleWeaver
         return found;
     }
 
-    private void AddModuleInitializerCall()
+    private void AddModuleInitializerCall(Configuration config)
     {
         const MethodAttributes attributes = MethodAttributes.Private
                                             | MethodAttributes.HideBySig
@@ -67,6 +78,7 @@ public partial class ModuleWeaver
         {
             throw new WeavingException("Found no module class!");
         }
+
         var cctor = moduleClass.Methods.FirstOrDefault(_ => _.Name == ".cctor");
         if (cctor is null)
         {
@@ -74,6 +86,8 @@ public partial class ModuleWeaver
             cctor.Body.Instructions.Add(Instruction.Create(OpCodes.Ret));
             moduleClass.Methods.Add(cctor);
         }
-        cctor.Body.Instructions.Insert(0, Instruction.Create(OpCodes.Call, _attachMethod));
+
+        cctor.Body.Instructions.Insert(0, Instruction.Create(config.DisableEventSubscription ? OpCodes.Ldc_I4_0 : OpCodes.Ldc_I4_1));
+        cctor.Body.Instructions.Insert(1, Instruction.Create(OpCodes.Call, _attachMethod));
     }
 }

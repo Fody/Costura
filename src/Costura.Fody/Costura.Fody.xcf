@@ -82,6 +82,11 @@
             <xs:documentation>As part of Costura, embedded assemblies are no longer included as part of the build. This cleanup can be turned off.</xs:documentation>
         </xs:annotation>
     </xs:attribute>
+    <xs:attribute name="DisableEventSubscription" type="xs:boolean">
+        <xs:annotation>
+            <xs:documentation>The attach method no longer subscribes to the `AppDomain.AssemblyResolve` (.NET 4.x) and `AssemblyLoadContext.Resolving` (.NET 6.0+) events.</xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
     <xs:attribute name="LoadAtModuleInit" type="xs:boolean">
         <xs:annotation>
             <xs:documentation>Costura by default will load as part of the module initialization. This flag disables that behavior. Make sure you call CosturaUtility.Initialize() somewhere in your code.</xs:documentation>

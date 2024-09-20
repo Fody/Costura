@@ -32,7 +32,7 @@ Therefore we **strongly recommend** to try out the alternatives mentioned above.
 * Library linking (e.g. embed dependencies in library projects)
 * Exe linking (e.g. embed dependencies in exe projects)
 * Windows platforms
-* Any advanced scenario that you are not willing to contribute (money, PR, etc) **after discussing with the core contributes first**
+* Any advanced scenario that you are not willing to contribute (money, PR, etc) **after discussing with the core contributors first**
 
 #### Non-supported use cases
 
@@ -178,6 +178,20 @@ As part of Costura, embedded assemblies are no longer included as part of the bu
 
 ```xml
 <Costura DisableCleanup='true' />
+```
+
+
+
+### DisableEventSubscription
+
+The attach method no longer subscribes to the `AppDomain.AssemblyResolve` (.NET 4.x) and `AssemblyLoadContext.Resolving` (.NET 6.0+) events.
+
+**Only use in advanced scenarios (e.g. plugins where only the host should resolve the assemblies).**
+
+*Defaults to `false`*
+
+```xml
+<Costura DisableEventSubscription='true' />
 ```
 
 

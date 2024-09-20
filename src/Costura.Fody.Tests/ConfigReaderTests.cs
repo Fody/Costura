@@ -96,6 +96,22 @@ public class ConfigReaderTests
     }
 
     [Test]
+    public void TrueDisableEventSubscription()
+    {
+        var xElement = XElement.Parse("<Costura DisableEventSubscription='true'/>");
+        var config = new Configuration(xElement);
+        Assert.That(config.DisableEventSubscription, Is.True);
+    }
+
+    [Test]
+    public void True1DisableEventSubscription()
+    {
+        var xElement = XElement.Parse("<Costura DisableEventSubscription='1'/>");
+        var config = new Configuration(xElement);
+        Assert.That(config.DisableEventSubscription, Is.True);
+    }
+
+    [Test]
     public void FalseLoadAtModuleInit()
     {
         var xElement = XElement.Parse("<Costura LoadAtModuleInit='false'/>");

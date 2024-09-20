@@ -16,6 +16,7 @@ public class Configuration
         UseRuntimeReferencePaths = null;
         DisableCompression = false;
         DisableCleanup = false;
+        DisableEventSubscription = false;
         LoadAtModuleInit = true;
         CreateTemporaryAssemblies = false;
         IgnoreSatelliteAssemblies = false;
@@ -50,6 +51,7 @@ public class Configuration
         UseRuntimeReferencePaths = ReadBool(config, "UseRuntimeReferencePaths");
         DisableCompression = ReadBool(config, "DisableCompression", DisableCompression);
         DisableCleanup = ReadBool(config, "DisableCleanup", DisableCleanup);
+        DisableEventSubscription = ReadBool(config, "DisableEventSubscription", DisableEventSubscription);
         LoadAtModuleInit = ReadBool(config, "LoadAtModuleInit", LoadAtModuleInit);
         CreateTemporaryAssemblies = ReadBool(config, "CreateTemporaryAssemblies", CreateTemporaryAssemblies);
         IgnoreSatelliteAssemblies = ReadBool(config, "IgnoreSatelliteAssemblies", IgnoreSatelliteAssemblies);
@@ -90,6 +92,8 @@ public class Configuration
     public bool? UseRuntimeReferencePaths { get; }
     public bool DisableCompression { get; }
     public bool DisableCleanup { get; }
+    public bool DisableEventSubscription { get; }
+    
     public bool LoadAtModuleInit { get; }
     public bool CreateTemporaryAssemblies { get; }
     public bool IgnoreSatelliteAssemblies { get; }

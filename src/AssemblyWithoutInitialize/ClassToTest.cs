@@ -8,7 +8,7 @@ public class ClassToTest
     {
         // Produces an instruction with the method as an operand.
         // ldftn System.Void CosturaUtility::Initialize()
-        Action initialize = CosturaUtility.Initialize;
+        var initialize = CosturaUtility.Initialize;
     }
 
     public string Simple() => ClassToReference.Simple();
