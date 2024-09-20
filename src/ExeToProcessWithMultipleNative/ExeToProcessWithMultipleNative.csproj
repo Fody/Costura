@@ -9,6 +9,10 @@
     <DisableFody>true</DisableFody>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net472' ">
+    <RuntimeIdentifiers>win7-x86</RuntimeIdentifiers>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Confluent.Kafka" Version="2.5.3" />
   </ItemGroup>
