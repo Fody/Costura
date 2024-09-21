@@ -36,7 +36,7 @@
 // It probably means the tool is not correctly installed.
 // `dotnet tool install --global dotnet-sonarscanner --ignore-failed-sources`
 //#tool "nuget:?package=MSBuild.SonarQube.Runner.Tool&version=4.8.0"
-#tool "nuget:?package=dotnet-sonarscanner&version=7.1.1"
+#tool "nuget:?package=dotnet-sonarscanner&version=8.0.3"
 
 //-------------------------------------------------------------
 // BACKWARDS COMPATIBILITY CODE - START
@@ -382,9 +382,9 @@ Task("Build")
             Verbose = false,
             Silent = true,
 
-            // Support waiting for the quality gate
             ArgumentCustomization = args => args
                 .Append("/d:sonar.qualitygate.wait=true")
+                .Append("/d:sonar.scanner.scanAll=false")
         };
 
         if (!string.IsNullOrWhiteSpace(buildContext.General.SonarQube.Organization))
