@@ -276,10 +276,10 @@ Task("CodeSign")
         return;
     }
 
-    var certificateSubjectName = buildContext.General.CodeSign.CertificateSubjectName;
-    if (string.IsNullOrWhiteSpace(certificateSubjectName))
+    if (!buildContext.General.CodeSign.IsAvailable &&
+        !buildContext.General.AzureCodeSign.IsAvailable)
     {
-        Information("Skipping code signing because the certificate subject name was not specified");
+        Information("Skipping code signing since no option is available");
         return;
     }
 
