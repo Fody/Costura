@@ -49,7 +49,13 @@ public static void SignFilesInDirectory(BuildContext buildContext, string direct
     var codeSignContext = buildContext.General.CodeSign;
     var azureCodeSignContext = buildContext.General.AzureCodeSign;
 
-    var certificateSubjectName = buildContext.General.CodeSign.CertificateSubjectName;
+    if (buildContext.General.IsLocalBuild ||
+        buildContext.General.IsCiBuild)
+    {
+        // Never code-sign local or ci builds
+        return;
+    }
+
     if (!codeSignContext.IsAvailable &&
         !azureCodeSignContext.IsAvailable)
     {
@@ -259,6 +265,13 @@ public static void SignNuGetPackage(BuildContext buildContext, string fileName)
         return;
     }
     
+    if (!codeSignContext.IsAvailable &&
+        !azureCodeSignContext.IsAvailable)
+    {
+        buildContext.CakeContext.Information("Skipping code signing because none of the options is available");
+        return;
+    }
+
     buildContext.CakeContext.Information($"Signing NuGet package '{fileName}'");
 
     if (azureCodeSignContext.IsAvailable)
