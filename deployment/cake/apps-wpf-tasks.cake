@@ -155,26 +155,11 @@ public class WpfProcessor : ProcessorBase
                 CakeContext.DeleteFiles(filesToDelete);
             }
 
-            // We know we *highly likely* need to sign, so try doing this upfront
-            if (!string.IsNullOrWhiteSpace(BuildContext.General.CodeSign.CertificateSubjectName))
+            if (BuildContext.General.CodeSign.IsAvailable ||
+                BuildContext.General.AzureCodeSign.IsAvailable)
             {
-                BuildContext.CakeContext.Information("Searching for packagable files to sign:");
-
-                var projectFilesToSign = new List<FilePath>();
-
-                var exeSignFilesSearchPattern = $"{BuildContext.General.OutputRootDirectory}/{wpfApp}/**/*.exe";
-                BuildContext.CakeContext.Information($"  - {exeSignFilesSearchPattern}");
-                projectFilesToSign.AddRange(BuildContext.CakeContext.GetFiles(exeSignFilesSearchPattern));
-
-                var dllSignFilesSearchPattern = $"{BuildContext.General.OutputRootDirectory}/{wpfApp}/**/*.dll";
-                BuildContext.CakeContext.Information($"  - {dllSignFilesSearchPattern}");
-                projectFilesToSign.AddRange(BuildContext.CakeContext.GetFiles(dllSignFilesSearchPattern));
-
-                var signToolCommand = string.Format("sign /a /t {0} /n {1} /fd {2}", BuildContext.General.CodeSign.TimeStampUri, 
-                    BuildContext.General.CodeSign.CertificateSubjectName, BuildContext.General.CodeSign.HashAlgorithm);
-
-                SignFiles(BuildContext, signToolCommand, projectFilesToSign);
-            }            
+                SignFilesInDirectory(BuildContext, outputDirectory, string.Empty);
+            }       
             else
             {
                 BuildContext.CakeContext.Warning("No signing certificate subject name provided, not signing any files");

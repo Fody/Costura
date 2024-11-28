@@ -51,17 +51,6 @@ public class MsixInstaller : IInstaller
             return;
         }
 
-        var signToolCommand = string.Empty;
-        if (!string.IsNullOrWhiteSpace(BuildContext.General.CodeSign.CertificateSubjectName))
-        {
-            signToolCommand = string.Format("sign /a /t {0} /n {1} /fd {2}", BuildContext.General.CodeSign.TimeStampUri, 
-                BuildContext.General.CodeSign.CertificateSubjectName, BuildContext.General.CodeSign.HashAlgorithm);
-        }
-        else
-        {
-            BuildContext.CakeContext.Warning("No sign tool is defined, MSIX will not be installable to (most or all) users");
-        }
-
         BuildContext.CakeContext.LogSeparator($"Packaging app '{projectName}' using MSIX");
 
         var deploymentShare = BuildContext.Wpf.GetDeploymentShareForProject(projectName);
@@ -119,15 +108,16 @@ public class MsixInstaller : IInstaller
 
         BuildContext.CakeContext.CopyFiles(appSourceDirectory, appTargetDirectory, true);
 
-        BuildContext.CakeContext.Information($"Signing files in '{appTargetDirectory}'");
-
-        var filesToSign = new List<string>();
-
-        filesToSign.AddRange(BuildContext.CakeContext.GetFiles($"{appTargetDirectory}/**/*.dll").Select(x => x.FullPath));
-        filesToSign.AddRange(BuildContext.CakeContext.GetFiles($"{appTargetDirectory}/**/*.exe").Select(x => x.FullPath));
+        if (BuildContext.General.CodeSign.IsAvailable ||
+            BuildContext.General.AzureCodeSign.IsAvailable)
+        {
+            SignFilesInDirectory(BuildContext, appTargetDirectory, string.Empty);
+        }
+        else
+        {
+            BuildContext.CakeContext.Warning("No sign tool is defined, MSIX will not be installable to (most or all) users");
+        }
         
-        SignFiles(BuildContext, signToolCommand, filesToSign);
-
         BuildContext.CakeContext.Information("Generating MSIX packages using MakeAppX...");
 
         var processSettings = new ProcessSettings
@@ -154,7 +144,7 @@ public class MsixInstaller : IInstaller
             }
         }
 
-        SignFile(BuildContext, signToolCommand, installerSourceFile);
+        SignFile(BuildContext, installerSourceFile);
 
         // Always copy the AppInstaller if available
         if (BuildContext.CakeContext.FileExists(msixUpdateScriptFileName))
