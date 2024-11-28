@@ -16,7 +16,7 @@ public class Integration
     {
         // just use some code from Newtonsoft.Json to ensure it's referenced.
         var json = Newtonsoft.Json.JsonConvert.SerializeObject(this);
-        Assert.AreEqual("{\"SomeProperty\":\"Test\"}", json);
+        Assert.That(json, Is.EqualTo("{\"SomeProperty\":\"Test\"}"));
 
         // just use some code to ensure assemblies are properly embedded.
         var now = Catel.FastDateTime.Now;
@@ -26,17 +26,17 @@ public class Integration
         var embeddedAssembly = typeof(Catel.FastDateTime).Assembly;
         var thisAssembly = GetType().Assembly;
 
-        Assert.IsEmpty(embeddedAssembly.Location);
+        Assert.That(embeddedAssembly.Location,Is.Empty);
         // does not work on build server: Assert.Equal(embeddedAssembly.CodeBase, thisAssembly.CodeBase, StringComparer.OrdinalIgnoreCase);
 
-        var targetDir = Path.GetDirectoryName(new Uri(thisAssembly.CodeBase).LocalPath);
+        var targetDir = Path.GetDirectoryName(new Uri(thisAssembly.Location).LocalPath);
 
         var localCopyFiles = Directory.EnumerateFiles(targetDir)
             .Select(Path.GetFileName)
             .ToArray();
 
-        Assert.IsTrue(localCopyFiles.Any(file => file.StartsWith("Newtonsoft", StringComparison.OrdinalIgnoreCase)));
-        Assert.IsFalse(localCopyFiles.Any(file => file.StartsWith("Catel.Core", StringComparison.OrdinalIgnoreCase)));
+        Assert.That(localCopyFiles.Any(file => file.StartsWith("Newtonsoft", StringComparison.OrdinalIgnoreCase)), Is.True);
+        Assert.That(localCopyFiles.Any(file => file.StartsWith("Catel.Core", StringComparison.OrdinalIgnoreCase)), Is.False);
     }
 
     public string SomeProperty { get; set; } = "Test";

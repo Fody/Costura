@@ -5,6 +5,11 @@
     <Import Project="$(MSBuildProjectDirectory)\..\Directory.Build.shared.tests.props" Condition="Exists('$(MSBuildProjectDirectory)\..\Directory.Build.shared.tests.props')" />
   -->
 
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
   <!-- START: This is a buildtime work around for https://github.com/dotnet/corefx/issues/22101 -->
   <Target Name="CopyCustomContent" AfterTargets="AfterBuild"
           Condition="Exists('App.config')">

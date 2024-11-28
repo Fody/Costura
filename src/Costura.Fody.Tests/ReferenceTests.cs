@@ -12,7 +12,7 @@
         {
             var reference = new Reference(input, useRuntimeReferencePaths: true);
 
-            Assert.AreEqual(expectedOutput, reference.RelativeFileName);
+            Assert.That(reference.RelativeFileName, Is.EqualTo(expectedOutput));
         }
 
         [TestCase(@"C:\Source\Catel.Core\output\Catel.Core.dll", "Catel.Core.dll")]
@@ -22,7 +22,7 @@
         {
             var reference = new Reference(input, useRuntimeReferencePaths: false);
 
-            Assert.AreEqual(expectedOutput, reference.RelativeFileName);
+            Assert.That(reference.RelativeFileName, Is.EqualTo(expectedOutput));
         }
 
         [TestCase(@"C:\Source\Catel.Core\output\Catel.Core.dll", "")]
@@ -32,7 +32,7 @@
         {
             var reference = new Reference(input, useRuntimeReferencePaths: true);
 
-            Assert.AreEqual(expectedOutput, reference.RelativePrefix);
+            Assert.That(reference.RelativePrefix, Is.EqualTo(expectedOutput));
         }
 
         [TestCase(@"C:\Source\Catel.Core\output\Catel.Core.dll", "")]
@@ -42,7 +42,7 @@
         {
             var reference = new Reference(input, useRuntimeReferencePaths: false);
 
-            Assert.AreEqual(expectedOutput, reference.RelativePrefix);
+            Assert.That(reference.RelativePrefix, Is.EqualTo(expectedOutput));
         }
 
         [TestCase(@"C:\Source\Catel.Core\output\Catel.Core.dll", false)]
@@ -52,7 +52,7 @@
         {
             var reference = new Reference(input, useRuntimeReferencePaths: true);
 
-            Assert.AreEqual(expectedOutput, reference.IsRuntimeReference);
+            Assert.That(reference.IsRuntimeReference, Is.EqualTo(expectedOutput));
         }
 
         [TestCase(@"C:\Source\Catel.Core\output\Catel.Core.dll", false)]
@@ -62,7 +62,7 @@
         {
             var reference = new Reference(input, useRuntimeReferencePaths: false);
 
-            Assert.AreEqual(expectedOutput, reference.IsRuntimeReference);
+            Assert.That(reference.IsRuntimeReference, Is.EqualTo(expectedOutput));
         }
 
         [TestCase(@"C:\Source\Catel.Core\output\Catel.Core.dll", false)]
@@ -72,7 +72,7 @@
         {
             var reference = new Reference(input, useRuntimeReferencePaths: true);
 
-            Assert.AreEqual(expectedOutput, reference.IsResourcesAssembly);
+            Assert.That(reference.IsResourcesAssembly, Is.EqualTo(expectedOutput));
         }
 
         [TestCase(@"C:\Source\Catel.Core\output\Catel.Core.dll", false)]
@@ -82,7 +82,7 @@
         {
             var reference = new Reference(input, useRuntimeReferencePaths: false);
 
-            Assert.AreEqual(expectedOutput, reference.IsResourcesAssembly);
+            Assert.That(reference.IsResourcesAssembly, Is.EqualTo(expectedOutput));
         }
     }
 }

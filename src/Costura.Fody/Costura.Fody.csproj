@@ -1,4 +1,4 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras">
+<Project Sdk="MSBuild.Sdk.Extras">
   <PropertyGroup>
     <TargetFrameworks>net472;netstandard2.0</TargetFrameworks>
     <AssemblyName>Costura.Fody</AssemblyName>
@@ -21,7 +21,17 @@
     <EmbeddedResource Include="$(OverridableOutputRootPath)\Costura.Template\netstandard2.0\Costura.Template.dll">
       <Link>bin\Template.dll</Link>
       <InProject>false</InProject>
-      <LogicalName>Costura.Template.dll</LogicalName>
+      <LogicalName>Costura.Template.netstandard2.0.dll</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(OverridableOutputRootPath)\Costura.Template\net6.0\Costura.Template.dll">
+      <Link>bin\Template.dll</Link>
+      <InProject>false</InProject>
+      <LogicalName>Costura.Template.net6.0.dll</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(OverridableOutputRootPath)\Costura.Template\net8.0\Costura.Template.dll">
+      <Link>bin\Template.dll</Link>
+      <InProject>false</InProject>
+      <LogicalName>Costura.Template.net8.0.dll</LogicalName>
     </EmbeddedResource>
 
     <EmbeddedResource Include="$(PkgMicrosoft_NETFramework_ReferenceAssemblies_net48)\build\.NETFramework\v4.8\Facades\netstandard.dll">
@@ -34,14 +44,17 @@
       <Link>src\Common.cs</Link>
       <InProject>false</InProject>
     </EmbeddedResource>
+    
     <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\Costura.Template\ILTemplate.cs">
       <Link>src\ILTemplate.cs</Link>
       <InProject>false</InProject>
     </EmbeddedResource>
+    
     <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\Costura.Template\ILTemplateWithTempAssembly.cs">
       <Link>src\ILTemplateWithTempAssembly.cs</Link>
       <InProject>false</InProject>
     </EmbeddedResource>
+    
     <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\Costura.Template\ILTemplateWithUnmanagedHandler.cs">
       <Link>src\ILTemplateWithUnmanagedHandler.cs</Link>
       <InProject>false</InProject>
@@ -65,14 +78,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FodyHelpers" Version="6.5.5" />
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net48" Version="1.0.2" PrivateAssets="all" GeneratePathProperty="true" />
-    <PackageReference Update="NETStandard.Library" Version="2.0.3" />
+    <PackageReference Include="FodyHelpers" Version="6.8.2" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net48" Version="1.0.3" PrivateAssets="all" GeneratePathProperty="true" />
   </ItemGroup>
 
   <ItemGroup>
     <!-- see https://docs.microsoft.com/en-us/archive/blogs/kirillosenkov/how-to-have-a-project-reference-without-referencing-the-actual-binary -->
-    <ProjectReference Include="..\Costura.Template\Costura.Template.csproj" PrivateAssets="true">
+    <ProjectReference Include="..\Costura.Template\Costura.Template.csproj" PrivateAssets="All">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>

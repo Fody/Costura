@@ -10,5 +10,5 @@ public static class ClassToReference
         throw new Exception("Hello");
     }
 
-    public static string InternationalFoo() => strings.Hello;
+    public static string InternationalFoo() => Strings.Hello;
 }

@@ -12,10 +12,10 @@ public static partial class CecilExtensions
         //var assemblyVersionAttributeName = typeof(AssemblyVersionAttribute).FullName;
         //var assemblyFileVersionAttributeName = typeof(AssemblyFileVersionAttribute).FullName;
 
-        //var attribute = assemblyDefinition.CustomAttributes.FirstOrDefault(x => x.AttributeType.FullName == assemblyVersionAttributeName);
+        //var attribute = assemblyDefinition.CustomAttributes.FirstOrDefault(_ => _.AttributeType.FullName == assemblyVersionAttributeName);
         //if (attribute is null)
         //{
-        //    attribute = assemblyDefinition.CustomAttributes.FirstOrDefault(x => x.AttributeType.FullName == assemblyFileVersionAttributeName);
+        //    attribute = assemblyDefinition.CustomAttributes.FirstOrDefault(_ => _.AttributeType.FullName == assemblyFileVersionAttributeName);
         //}
 
         //if (attribute is not null)
@@ -39,8 +39,10 @@ public static partial class CecilExtensions
 
     public static bool IsUsingDotNetCore(this ModuleDefinition moduleDefinition)
     {
-        var resolvedAssembly = moduleDefinition.AssemblyResolver.Resolve("System.Runtime.Loader");
-        return resolvedAssembly is not null;
+        using (var resolvedAssembly = moduleDefinition.AssemblyResolver.Resolve("System.Runtime.Loader"))
+        {
+            return resolvedAssembly is not null;
+        }
     }
 
     public static AssemblyDefinition Resolve(this IAssemblyResolver assemblyResolver, string name)

@@ -3,6 +3,7 @@ using System.Reflection;
 //-------------------------------------------------------------
 
 private static readonly Dictionary<string, bool> _dotNetCoreCache = new Dictionary<string, bool>();
+private static readonly Dictionary<string, bool> _blazorCache = new Dictionary<string, bool>();
 
 //-------------------------------------------------------------
 
@@ -263,13 +264,6 @@ private static List<string> SplitSeparatedList(string value, params char[] separ
 
 //-------------------------------------------------------------
 
-private static bool IsCppProject(string projectName)
-{
-    return projectName.EndsWith(".vcxproj");
-}
-
-//-------------------------------------------------------------
-
 private static string GetProjectDirectory(string projectName)
 {
     var projectDirectory = System.IO.Path.Combine(".", "src", projectName);
@@ -441,6 +435,73 @@ private static void DeleteDirectoryWithLogging(BuildContext buildContext, string
 
 //-------------------------------------------------------------
 
+private static bool IsCppProject(string projectName)
+{
+    return projectName.EndsWith(".vcxproj");
+}
+
+//--------------------------------------------------------------
+
+private static bool IsPackageContainerProject(BuildContext buildContext, string projectName)
+{
+    var isPackageContainer = false;
+
+    var projectFileName = CreateInlinedProjectXml(buildContext, projectName);
+
+    var projectFileContents = System.IO.File.ReadAllText(projectFileName);
+
+    var xmlDocument = XDocument.Parse(projectFileContents);
+    var projectElement = xmlDocument.Root;
+
+    foreach (var propertyGroupElement in projectElement.Elements("PropertyGroup"))
+    {
+        var packageContainerElement = propertyGroupElement.Element("PackageContainer");
+        if (packageContainerElement != null)
+        {
+            if (packageContainerElement.Value.ToLower() == "true")
+            {
+                isPackageContainer = true;
+            }
+            break;
+        }
+    }
+
+    return isPackageContainer;
+}
+
+//-------------------------------------------------------------
+
+private static bool IsBlazorProject(BuildContext buildContext, string projectName)
+{
+    var projectFileName = GetProjectFileName(buildContext, projectName);
+
+    if (!_blazorCache.TryGetValue(projectFileName, out var isBlazor))
+    {
+        isBlazor = false;
+
+        var lines = System.IO.File.ReadAllLines(projectFileName);
+        foreach (var line in lines)
+        {
+            // Match both *TargetFramework* and *TargetFrameworks* 
+            var lowerCase = line.ToLower();
+            if (lowerCase.Contains("<project"))
+            {
+                if (lowerCase.Contains("microsoft.net.sdk.razor"))
+                {
+                    isBlazor = true;
+                    break;
+                }
+            }
+        }
+
+        _blazorCache[projectFileName] = isBlazor;
+    }
+
+    return _blazorCache[projectFileName];
+}
+
+//-------------------------------------------------------------
+
 private static bool IsDotNetCoreProject(BuildContext buildContext, string projectName)
 {
     var projectFileName = GetProjectFileName(buildContext, projectName);
@@ -456,16 +517,7 @@ private static bool IsDotNetCoreProject(BuildContext buildContext, string projec
             var lowerCase = line.ToLower();
             if (lowerCase.Contains("targetframework"))
             {
-                if (lowerCase.Contains("netcore"))
-                {
-                    isDotNetCore = true;
-                    break;
-                }
-
-                if (lowerCase.Contains("net5") ||
-                    lowerCase.Contains("net6") ||
-                    lowerCase.Contains("net7") ||
-                    lowerCase.Contains("net8"))
+                if (IsDotNetCoreTargetFramework(buildContext, lowerCase))
                 {
                     isDotNetCore = true;
                     break;
@@ -481,8 +533,55 @@ private static bool IsDotNetCoreProject(BuildContext buildContext, string projec
 
 //-------------------------------------------------------------
 
-private static bool ShouldProcessProject(BuildContext buildContext, string projectName, bool checkDeployment = true)
+private static bool IsDotNetCoreTargetFramework(BuildContext buildContext, string targetFramework)
 {
+    var lowerCase = targetFramework.ToLower();
+
+    if (lowerCase.Contains("netcore"))
+    {
+        return true;
+    }
+
+    if (lowerCase.Contains("net5") ||
+        lowerCase.Contains("net6") ||
+        lowerCase.Contains("net7") ||
+        lowerCase.Contains("net8") ||
+        lowerCase.Contains("net9") ||
+        lowerCase.Contains("net10"))
+    {
+        return true;
+    }
+
+    return false;
+}
+
+//-------------------------------------------------------------
+
+private static bool ShouldProcessProject(BuildContext buildContext, string projectName, 
+    bool checkDeployment = true)
+{
+    // If part of all projects, always include
+    if (buildContext.AllProjects.Contains(projectName))
+    {
+        return true;
+    }
+
+    // Is this a dependency?
+    if (buildContext.Dependencies.Items.Contains(projectName))
+    {
+        if (buildContext.Dependencies.ShouldBuildDependency(projectName))
+        {
+            return true;
+        }
+    }
+
+    // Is this a test project?
+    if (buildContext.Tests.Items.Contains(projectName))
+    {
+        // Assume false, the test processor will check for this
+        return false;
+    }
+
     // Includes > Excludes
     var includes = buildContext.General.Includes;
     if (includes.Count > 0)
@@ -510,15 +609,16 @@ private static bool ShouldProcessProject(BuildContext buildContext, string proje
         return process;
     }
 
+    // Is this a known project?
+    if (!buildContext.RegisteredProjects.Any(x => string.Equals(projectName, x, StringComparison.OrdinalIgnoreCase)))
+    {
+        buildContext.CakeContext.Warning("Project '{0}' should not be processed, does not exist as registered project", projectName);
+        return false;
+    }
+
     if (buildContext.General.IsCiBuild)
     {
         // In CI builds, we always want to include all projects
-        return true;
-    }
-
-    if (ShouldBuildProject(buildContext, projectName))
-    {
-        // Always build
         return true;
     }
 
@@ -526,9 +626,12 @@ private static bool ShouldProcessProject(BuildContext buildContext, string proje
     // it can only work if they are not part of unit tests (but that should never happen)
     // if (buildContext.Tests.Items.Count == 0)
     // {
-        if (checkDeployment && !ShouldDeployProject(buildContext, projectName))
+        if (checkDeployment && 
+            !ShouldBuildProject(buildContext, projectName) &&
+            !ShouldPackageProject(buildContext, projectName) && 
+            !ShouldDeployProject(buildContext, projectName))
         {
-            buildContext.CakeContext.Warning("Project '{0}' should not be processed because this is not a CI build, does not contain tests and the project should not be deployed, removing from projects to process", projectName);
+            buildContext.CakeContext.Warning("Project '{0}' should not be processed because this is not a CI build, does not contain tests and the project should not be built, packaged or deployed, removing from projects to process", projectName);
             return false;
         }
     //}
@@ -536,9 +639,43 @@ private static bool ShouldProcessProject(BuildContext buildContext, string proje
     return true;
 }
 
+private static string CreateInlinedProjectXml(BuildContext buildContext, string projectName)
+{
+    buildContext.CakeContext.Information($"Running 'msbuild /pp' for project '{projectName}'");
+
+    var projectInlinedFileName = System.IO.Path.Combine(GetProjectOutputDirectory(buildContext, projectName),
+        "..", $"{projectName}.inlined.xml");
+
+    // Note: disabled caching until we correctly clean up everything
+    //if (!buildContext.CakeContext.FileExists(projectInlinedFileName))
+    {
+        // Run "msbuild /pp" to create a single project file
+        
+        var msBuildSettings = new MSBuildSettings 
+        {
+            Verbosity = Verbosity.Quiet,
+            ToolVersion = MSBuildToolVersion.Default,
+            Configuration = buildContext.General.Solution.ConfigurationName,
+            MSBuildPlatform = MSBuildPlatform.x86, // Always require x86, see platform for actual target platform
+            PlatformTarget = PlatformTarget.MSIL
+        };
+
+        ConfigureMsBuild(buildContext, msBuildSettings, projectName, "pp");
+
+        msBuildSettings.Target = string.Empty;
+        msBuildSettings.ArgumentCustomization = args => args.Append($"/pp:{projectInlinedFileName}");
+
+        var projectFileName = GetProjectFileName(buildContext, projectName);
+
+        RunMsBuild(buildContext, projectName, projectFileName, msBuildSettings, "pp");
+    }
+
+    return projectInlinedFileName;
+}
+
 //-------------------------------------------------------------
 
-private static List<string> GetProjectRuntimesIdentifiers(BuildContext buildContext, Cake.Core.IO.FilePath solutionOrProjectFileName, List<string> runtimeIdentifiersToInvestigate)
+private static List<string> GetProjectRuntimesIdentifiers(BuildContext buildContext, Cake.Core.IO.FilePath solutionOrProjectFileName, IReadOnlyList<string> runtimeIdentifiersToInvestigate)
 {
     var projectFileContents = System.IO.File.ReadAllText(solutionOrProjectFileName.FullPath)?.ToLower();
 
@@ -548,7 +685,7 @@ private static List<string> GetProjectRuntimesIdentifiers(BuildContext buildCont
     {
         if (!string.IsNullOrWhiteSpace(runtimeIdentifier))
         {
-            if (!projectFileContents.Contains(runtimeIdentifier.ToLower()))
+            if (!projectFileContents.Contains(runtimeIdentifier, StringComparison.OrdinalIgnoreCase))
             {
                 buildContext.CakeContext.Information("Project '{0}' does not support runtime identifier '{1}', removing from supported runtime identifiers list", solutionOrProjectFileName, runtimeIdentifier);
                 continue;
@@ -577,13 +714,53 @@ private static bool ShouldBuildProject(BuildContext buildContext, string project
     var slug = GetProjectSlug(projectName);
     var keyToCheck = string.Format("Build{0}", slug);
 
-    // Note: we return false by default. This method is only used to explicitly
-    // force a build even when a project is not deployable
-    var shouldBuild = buildContext.BuildServer.GetVariableAsBool(keyToCheck, false);
+    // No need to build if we don't package
+    var shouldBuild = ShouldPackageProject(buildContext, projectName);
+
+    // By default, everything should be built. This feature is to explicitly not include
+    // a project in the build when a solution contains multiple projects / components that
+    // need to be built / packaged / deployed separately
+    //
+    // The default value is "ShouldPackageProject" since we assume it does not need
+    // to be built if it's not supposed to be packaged
+    shouldBuild = buildContext.BuildServer.GetVariableAsBool(keyToCheck, shouldBuild);
 
     buildContext.CakeContext.Information($"Value for '{keyToCheck}': {shouldBuild}");
 
     return shouldBuild;
+}
+
+//-------------------------------------------------------------
+
+private static bool ShouldPackageProject(BuildContext buildContext, string projectName)
+{
+    // Allow the build server to configure this via "Package[ProjectName]"
+    var slug = GetProjectSlug(projectName);
+    var keyToCheck = string.Format("Package{0}", slug);
+
+    // No need to package if we don't deploy
+    var shouldPackage = ShouldDeployProject(buildContext, projectName);
+
+    // The default value is "ShouldDeployProject" since we assume it does not need
+    // to be packaged if it's not supposed to be deployed
+    shouldPackage = buildContext.BuildServer.GetVariableAsBool(keyToCheck, shouldPackage);
+
+    // If this is *only* a dependency, it should never be deployed
+    if (IsOnlyDependencyProject(buildContext, projectName))
+    {
+        shouldPackage = false;
+    }
+
+    if (shouldPackage && !ShouldProcessProject(buildContext, projectName, false))
+    {
+        buildContext.CakeContext.Information($"Project '{projectName}' should not be processed, excluding it anyway");
+        
+        shouldPackage = false;
+    }
+
+    buildContext.CakeContext.Information($"Value for '{keyToCheck}': {shouldPackage}");
+
+    return shouldPackage;
 }
 
 //-------------------------------------------------------------
@@ -594,7 +771,15 @@ private static bool ShouldDeployProject(BuildContext buildContext, string projec
     var slug = GetProjectSlug(projectName);
     var keyToCheck = string.Format("Deploy{0}", slug);
 
+    // By default, deploy
     var shouldDeploy = buildContext.BuildServer.GetVariableAsBool(keyToCheck, true);
+
+    // If this is *only* a dependency, it should never be deployed
+    if (IsOnlyDependencyProject(buildContext, projectName))
+    {
+        shouldDeploy = false;
+    }
+
     if (shouldDeploy && !ShouldProcessProject(buildContext, projectName, false))
     {
         buildContext.CakeContext.Information($"Project '{projectName}' should not be processed, excluding it anyway");
@@ -605,4 +790,84 @@ private static bool ShouldDeployProject(BuildContext buildContext, string projec
     buildContext.CakeContext.Information($"Value for '{keyToCheck}': {shouldDeploy}");
 
     return shouldDeploy;
+}
+
+//-------------------------------------------------------------
+
+private static bool IsOnlyDependencyProject(BuildContext buildContext, string projectName)
+{
+    buildContext.CakeContext.Information($"Checking if project '{projectName}' is a dependency only");
+
+    // If not in the dependencies list, we can stop checking
+    if (!buildContext.Dependencies.Items.Contains(projectName))
+    {
+        buildContext.CakeContext.Information($"Project is not in list of dependencies, assuming not dependency only");
+        return false;
+    }
+
+    if (buildContext.Components.Items.Contains(projectName))
+    {
+        buildContext.CakeContext.Information($"Project is list of components, assuming not dependency only");
+        return false;
+    }
+
+    if (buildContext.DockerImages.Items.Contains(projectName))
+    {
+        buildContext.CakeContext.Information($"Project is list of docker images, assuming not dependency only");
+        return false;
+    }
+
+    if (buildContext.GitHubPages.Items.Contains(projectName))
+    {
+        buildContext.CakeContext.Information($"Project is list of GitHub pages, assuming not dependency only");
+        return false;
+    }
+
+    if (buildContext.Templates.Items.Contains(projectName))
+    {
+        buildContext.CakeContext.Information($"Project is list of templates, assuming not dependency only");
+        return false;
+    }
+
+    if (buildContext.Tools.Items.Contains(projectName))
+    {
+        buildContext.CakeContext.Information($"Project is list of tools, assuming not dependency only");
+        return false;
+    }            
+
+    if (buildContext.Uwp.Items.Contains(projectName))
+    {
+        buildContext.CakeContext.Information($"Project is list of UWP apps, assuming not dependency only");
+        return false;
+    }   
+
+    if (buildContext.VsExtensions.Items.Contains(projectName))
+    {
+        buildContext.CakeContext.Information($"Project is list of VS extensions, assuming not dependency only");
+        return false;
+    }   
+
+    if (buildContext.Web.Items.Contains(projectName))
+    {
+        buildContext.CakeContext.Information($"Project is list of web apps, assuming not dependency only");
+        return false;
+    }  
+
+    if (buildContext.Wpf.Items.Contains(projectName))
+    {
+        buildContext.CakeContext.Information($"Project is list of WPF apps, assuming not dependency only");
+        return false;
+    }  
+
+    buildContext.CakeContext.Information($"Project '{projectName}' is a dependency only");
+
+    // It's in the dependencies list and not in any other list
+    return true;
+}
+
+//-------------------------------------------------------------
+
+public static void Add(this Dictionary<string, List<string>> dictionary, string project, params string[] projects)
+{
+    dictionary.Add(project, new List<string>(projects));
 }

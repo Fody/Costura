@@ -9,7 +9,7 @@ public partial class ModuleWeaver
     private void BuildUpNameDictionary(bool createTemporaryAssemblies, List<string> preloadOrder)
     {
         var orderedResources = preloadOrder
-            .Join(ModuleDefinition.Resources, p => p.ToLowerInvariant(),
+            .Join(ModuleDefinition.Resources, _ => _.ToLowerInvariant(),
             r =>
             {
                 var parts = r.Name.Split('.');
@@ -50,13 +50,29 @@ public partial class ModuleWeaver
                     }
                 }
             }
-            else if (string.Equals(parts[0], "costura32", StringComparison.OrdinalIgnoreCase))
+            else if (string.Equals(parts[0], "costura32", StringComparison.OrdinalIgnoreCase) ||
+                     string.Equals(parts[0], "costura_win_x86", StringComparison.OrdinalIgnoreCase))
             {
-                AddToList(_preload32ListField, resource);
+                if (string.Equals(parts[0], "costura32", StringComparison.OrdinalIgnoreCase))
+                {
+                    WriteWarning("It's recommended to use costuraX86 instead of costura32 for native assemblies");
+                }
+
+                AddToList(_preloadWinX86ListField, resource);
             }
-            else if (string.Equals(parts[0], "costura64", StringComparison.OrdinalIgnoreCase))
+            else if (string.Equals(parts[0], "costura64", StringComparison.OrdinalIgnoreCase) ||
+                     string.Equals(parts[0], "costura_win_x64", StringComparison.OrdinalIgnoreCase))
             {
-                AddToList(_preload64ListField, resource);
+                if (string.Equals(parts[0], "costura64", StringComparison.OrdinalIgnoreCase))
+                {
+                    WriteWarning("It's recommended to use costuraX64 instead of costura64 for native assemblies");
+                }
+
+                AddToList(_preloadWinX64ListField, resource);
+            }
+            else if (string.Equals(parts[0], "costura_win_arm64", StringComparison.OrdinalIgnoreCase))
+            {
+                AddToList(_preloadWinArm64ListField, resource);
             }
         }
     }

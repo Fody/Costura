@@ -13,11 +13,12 @@
         public void TheGetCacheFileMethod(string resourceName, string expectedOutput)
         {
             // Just dummy values
-            var moduleWeaver = new ModuleWeaver();
+            using (var moduleWeaver = new ModuleWeaver())
+            {
+                var actualOutput = moduleWeaver.GetCacheFile(CacheRoot, resourceName, true, DummyShaChecksum);
 
-            var actualOutput = moduleWeaver.GetCacheFile(CacheRoot, resourceName, true, DummyShaChecksum);
-
-            Assert.AreEqual(expectedOutput, actualOutput);
+                Assert.That(actualOutput, Is.EqualTo(expectedOutput));
+            }
         }
     }
 }

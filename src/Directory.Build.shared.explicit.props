@@ -8,18 +8,51 @@
   <!-- Explicit additional project properties that require stuff set before -->
   <PropertyGroup>
     <!-- 
-      Use MsBuildProjectName, this allows us to use the same assembly name for different
-      versions, e.g.:
+      Note that this can either be used to:
+
+      1. Resolve project references (but with properties of the *resolving* project)
+      2. Determine the output directory of the current project
+
+      In rare cases, need to be able to use the MSBuildProjectName. This allows us 
+      to use the same assembly name for different versions, e.g.:
       
       Orc.EntityFramework5 => Orc.EntityFramework.dll
       Orc.EntityFramework6 => Orc.EntityFramework.dll
       
       If we would use AssemblyName, they would be compiled into the same directory
+
+      To enable this feature, use:
+
+      <OutputTargetAssemblyDirectory>Orc.EntityFramework5</OutputTargetAssemblyDirectory>
     -->
     <OverridableOutputRootPath>$(ProjectDir)..\..\output\$(Configuration)</OverridableOutputRootPath>
+
+    <!-- 
+        Use correct overridable output path. Since it could already be set by
+        projects referencing this project, we always need to set the output root path.
+
+        If the specific property is set, we then update it once again to its final version.
+     -->
+    <__OverridableOutputPathDefault>$(OverridableOutputRootPath)\$(MSBuildProjectName)\</__OverridableOutputPathDefault>
     <OverridableOutputPath>$(OverridableOutputRootPath)\$(MSBuildProjectName)\</OverridableOutputPath>
-    <OutputPath>$(OverridableOutputPath)</OutputPath>
+    <OverridableOutputPath Condition=" '$(OutputTargetAssemblyDirectory)' != '' ">$(OverridableOutputRootPath)\$(OutputTargetAssemblyDirectory)\</OverridableOutputPath>
+
+    <!-- 
+        Overridable output path can be set for a project, but directly referenced projects need a way 
+        to use this correctly. Therefore this property checks whether it's explicitly set and already
+        contains the correct paths. If not, it will automatically be appended.
+		
+		Also make sure to not use this when in in Docker and Debug
+    -->
+
+    <OutputPath Condition=" ('$(DockerDefaultTargetOS)' == '' OR '$(Configuration)'!='Debug') AND ('$(OverridableOutputPath)' != '$(__OverridableOutputPathDefault)') ">$(OverridableOutputPath)\..\$(MSBuildProjectName)\</OutputPath>
+    <OutputPath Condition=" ('$(DockerDefaultTargetOS)' == '' OR '$(Configuration)'!='Debug') AND ('$(OverridableOutputPath)' == '$(__OverridableOutputPathDefault)') ">$(OverridableOutputPath)</OutputPath>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+  </PropertyGroup>
+  
+  <!-- Disable Fody warnings as errors because of ObsoleteEx, etc breaking the code to an unrepairable state -->
+  <PropertyGroup>
+    <FodyTreatWarningsAsErrors>false</FodyTreatWarningsAsErrors>
   </PropertyGroup>
   
   <!-- 
@@ -99,10 +132,12 @@
         <WithCulture>false</WithCulture>
     </EmbeddedResource>
     <Resource Include="Resources\Fonts\**\*.ttf" />
+    <Resource Include="Resources\Icons\**\*.ico" />
     <Resource Include="Resources\Images\**\*.png" />
     <Resource Include="Resources\Images\**\*.gif" />
     <Resource Include="Resources\Images\**\*.jpg" />
     <Resource Include="Resources\Images\**\*.jpeg" />
+    <Resource Include="Resources\Lottie\**\*.json" />
     <Resource Include="Resources\Videos\**\*.mp4" />
     <Resource Include="Resources\Videos\**\*.wav" />
     <EmbeddedResource Include="Resources\ThirdPartyNotices\**\*" />
@@ -160,6 +195,66 @@
   </PropertyGroup>
   
   <ItemGroup Condition=" $(TargetFramework.StartsWith('net5.0')) ">
+    <None Remove="Platforms\net\**\*.cs;Platforms\net\**\*.xaml;Platforms\net\**\*.xaml.cs" />
+    <Compile Include="Platforms\net\**\*.cs" DependentUpon="%(Filename)" />
+    <Page Include="Platforms\net\**\*.xaml" SubType="Designer" Generator="MSBuild:Compile" />
+    <Compile Update="Platforms\net\**\*.xaml.cs" SubType="Code" DependentUpon="%(Filename)" />
+  </ItemGroup>
+  
+  <!-- .NET 6.0 -->
+  <PropertyGroup Condition=" $(TargetFramework.StartsWith('net6.0')) ">
+    <DefineConstants>$(DefineConstants);NETCORE;NETCORE6;NETCORE6_0;NET6;NET6_0</DefineConstants>
+  </PropertyGroup>
+  
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('net6.0')) ">
+    <None Remove="Platforms\net\**\*.cs;Platforms\net\**\*.xaml;Platforms\net\**\*.xaml.cs" />
+    <Compile Include="Platforms\net\**\*.cs" DependentUpon="%(Filename)" />
+    <Page Include="Platforms\net\**\*.xaml" SubType="Designer" Generator="MSBuild:Compile" />
+    <Compile Update="Platforms\net\**\*.xaml.cs" SubType="Code" DependentUpon="%(Filename)" />
+  </ItemGroup>
+  
+  <!-- .NET 7.0 -->
+  <PropertyGroup Condition=" $(TargetFramework.StartsWith('net7.0')) ">
+    <DefineConstants>$(DefineConstants);NETCORE;NETCORE7;NETCORE7_0;NET7;NET7_0</DefineConstants>
+  </PropertyGroup>
+  
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('net7.0')) ">
+    <None Remove="Platforms\net\**\*.cs;Platforms\net\**\*.xaml;Platforms\net\**\*.xaml.cs" />
+    <Compile Include="Platforms\net\**\*.cs" DependentUpon="%(Filename)" />
+    <Page Include="Platforms\net\**\*.xaml" SubType="Designer" Generator="MSBuild:Compile" />
+    <Compile Update="Platforms\net\**\*.xaml.cs" SubType="Code" DependentUpon="%(Filename)" />
+  </ItemGroup>
+  
+  <!-- .NET 8.0 -->
+  <PropertyGroup Condition=" $(TargetFramework.StartsWith('net8.0')) ">
+    <DefineConstants>$(DefineConstants);NETCORE;NETCORE8;NETCORE8_0;NET8;NET8_0</DefineConstants>
+  </PropertyGroup>
+  
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('net8.0')) ">
+    <None Remove="Platforms\net\**\*.cs;Platforms\net\**\*.xaml;Platforms\net\**\*.xaml.cs" />
+    <Compile Include="Platforms\net\**\*.cs" DependentUpon="%(Filename)" />
+    <Page Include="Platforms\net\**\*.xaml" SubType="Designer" Generator="MSBuild:Compile" />
+    <Compile Update="Platforms\net\**\*.xaml.cs" SubType="Code" DependentUpon="%(Filename)" />
+  </ItemGroup>
+  
+  <!-- .NET 9.0 -->
+  <PropertyGroup Condition=" $(TargetFramework.StartsWith('net9.0')) ">
+    <DefineConstants>$(DefineConstants);NETCORE;NETCORE9;NETCORE9_0;NET9;NET9_0</DefineConstants>
+  </PropertyGroup>
+  
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('net9.0')) ">
+    <None Remove="Platforms\net\**\*.cs;Platforms\net\**\*.xaml;Platforms\net\**\*.xaml.cs" />
+    <Compile Include="Platforms\net\**\*.cs" DependentUpon="%(Filename)" />
+    <Page Include="Platforms\net\**\*.xaml" SubType="Designer" Generator="MSBuild:Compile" />
+    <Compile Update="Platforms\net\**\*.xaml.cs" SubType="Code" DependentUpon="%(Filename)" />
+  </ItemGroup>
+  
+  <!-- .NET 10.0 -->
+  <PropertyGroup Condition=" $(TargetFramework.StartsWith('net10.0')) ">
+    <DefineConstants>$(DefineConstants);NETCORE;NETCORE10;NETCORE10_0;NET10;NET10_0</DefineConstants>
+  </PropertyGroup>
+  
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('net10.0')) ">
     <None Remove="Platforms\net\**\*.cs;Platforms\net\**\*.xaml;Platforms\net\**\*.xaml.cs" />
     <Compile Include="Platforms\net\**\*.cs" DependentUpon="%(Filename)" />
     <Page Include="Platforms\net\**\*.xaml" SubType="Designer" Generator="MSBuild:Compile" />

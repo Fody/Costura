@@ -16,6 +16,7 @@ public class Configuration
         UseRuntimeReferencePaths = null;
         DisableCompression = false;
         DisableCleanup = false;
+        DisableEventSubscription = false;
         LoadAtModuleInit = true;
         CreateTemporaryAssemblies = false;
         IgnoreSatelliteAssemblies = false;
@@ -23,8 +24,9 @@ public class Configuration
         ExcludeAssemblies = new List<string>();
         IncludeRuntimeAssemblies = new List<string>();
         ExcludeRuntimeAssemblies = new List<string>();
-        Unmanaged32Assemblies = new List<string>();
-        Unmanaged64Assemblies = new List<string>();
+        UnmanagedWinX86Assemblies = new List<string>();
+        UnmanagedWinX64Assemblies = new List<string>();
+        UnmanagedWinArm64Assemblies = new List<string>();
         PreloadOrder = new List<string>();
 
         if (config is null)
@@ -49,6 +51,7 @@ public class Configuration
         UseRuntimeReferencePaths = ReadBool(config, "UseRuntimeReferencePaths");
         DisableCompression = ReadBool(config, "DisableCompression", DisableCompression);
         DisableCleanup = ReadBool(config, "DisableCleanup", DisableCleanup);
+        DisableEventSubscription = ReadBool(config, "DisableEventSubscription", DisableEventSubscription);
         LoadAtModuleInit = ReadBool(config, "LoadAtModuleInit", LoadAtModuleInit);
         CreateTemporaryAssemblies = ReadBool(config, "CreateTemporaryAssemblies", CreateTemporaryAssemblies);
         IgnoreSatelliteAssemblies = ReadBool(config, "IgnoreSatelliteAssemblies", IgnoreSatelliteAssemblies);
@@ -57,8 +60,23 @@ public class Configuration
         IncludeAssemblies = ReadList(config, "IncludeAssemblies");
         ExcludeRuntimeAssemblies = ReadList(config, "ExcludeRuntimeAssemblies");
         IncludeRuntimeAssemblies = ReadList(config, "IncludeRuntimeAssemblies");
-        Unmanaged32Assemblies = ReadList(config, "Unmanaged32Assemblies");
-        Unmanaged64Assemblies = ReadList(config, "Unmanaged64Assemblies");
+
+        UnmanagedWinX86Assemblies = ReadList(config, "UnmanagedWinX86Assemblies");
+        if (!UnmanagedWinX86Assemblies.Any())
+        {
+            // Backwards compatibility
+            UnmanagedWinX86Assemblies = ReadList(config, "Unmanaged32Assemblies");
+        }
+
+        UnmanagedWinX64Assemblies = ReadList(config, "UnmanagedWinX64Assemblies");
+        if (!UnmanagedWinX64Assemblies.Any())
+        {
+            // Backwards compatibility
+            UnmanagedWinX64Assemblies = ReadList(config, "Unmanaged64Assemblies");
+        }
+
+        UnmanagedWinArm64Assemblies = ReadList(config, "UnmanagedWinArm64Assemblies");
+
         PreloadOrder = ReadList(config, "PreloadOrder");
 
         if (IncludeAssemblies.Any() && ExcludeAssemblies.Any())
@@ -74,6 +92,8 @@ public class Configuration
     public bool? UseRuntimeReferencePaths { get; }
     public bool DisableCompression { get; }
     public bool DisableCleanup { get; }
+    public bool DisableEventSubscription { get; }
+    
     public bool LoadAtModuleInit { get; }
     public bool CreateTemporaryAssemblies { get; }
     public bool IgnoreSatelliteAssemblies { get; }
@@ -81,8 +101,9 @@ public class Configuration
     public List<string> ExcludeAssemblies { get; }
     public List<string> IncludeRuntimeAssemblies { get; }
     public List<string> ExcludeRuntimeAssemblies { get; }
-    public List<string> Unmanaged32Assemblies { get; }
-    public List<string> Unmanaged64Assemblies { get; }
+    public List<string> UnmanagedWinX86Assemblies { get; }
+    public List<string> UnmanagedWinX64Assemblies { get; }
+    public List<string> UnmanagedWinArm64Assemblies { get; }
     public List<string> PreloadOrder { get; }
 
     public static bool ReadBool(XElement config, string nodeName, bool @default)

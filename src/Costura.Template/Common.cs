@@ -19,11 +19,18 @@ internal static class Common
     [Conditional("DEBUG")]
     public static void Log(string format, params object[] args)
     {
+        //#if DEBUG
+        //        Console.WriteLine("=== COSTURA === " + string.Format(format, args));
+        //#else
+        //        // Should this be trace?
+        //        Debug.WriteLine("=== COSTURA === " + string.Format(format, args));
+        //#endif
+
         // Should this be trace?
         Debug.WriteLine("=== COSTURA === " + string.Format(format, args));
     }
 
-    static void CopyTo(Stream source, Stream destination)
+    private static void CopyTo(Stream source, Stream destination)
     {
         var array = new byte[81920];
         int count;
@@ -33,7 +40,7 @@ internal static class Common
         }
     }
 
-    static void CreateDirectory(string tempBasePath)
+    private static void CreateDirectory(string tempBasePath)
     {
         if (!Directory.Exists(tempBasePath))
         {
@@ -41,7 +48,7 @@ internal static class Common
         }
     }
 
-    static byte[] ReadStream(Stream stream)
+    private static byte[] ReadStream(Stream stream)
     {
         var data = new byte[stream.Length];
         stream.Read(data, 0, data.Length);
@@ -52,7 +59,7 @@ internal static class Common
     {
         using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete))
         using (var bs = new BufferedStream(fs))
-        using (var sha1 = new SHA1CryptoServiceProvider())
+        using (var sha1 = SHA1.Create())
         {
             var hash = sha1.ComputeHash(bs);
             var formatted = new StringBuilder(2 * hash.Length);
@@ -82,11 +89,11 @@ internal static class Common
         return null;
     }
 
-    static string CultureToString(CultureInfo culture)
+    private static string CultureToString(CultureInfo culture)
     {
         if (culture is null)
         {
-            return "";
+            return string.Empty;
         }
 
         return culture.Name;
@@ -94,45 +101,40 @@ internal static class Common
 
     public static Assembly ReadFromDiskCache(string tempBasePath, AssemblyName requestedAssemblyName)
     {
-        var name = requestedAssemblyName.Name.ToLowerInvariant();
+        var name = GetAssemblyResourceName(requestedAssemblyName);
 
-        if (requestedAssemblyName.CultureInfo is not null && !string.IsNullOrEmpty(requestedAssemblyName.CultureInfo.Name))
-        {
-            name = $"{requestedAssemblyName.CultureInfo.Name}.{name}";
-        }
+        var platformName = GetPlatformName();
 
-        var bittyness = IntPtr.Size == 8 ? "64" : "32";
         var assemblyTempFilePath = Path.Combine(tempBasePath, string.Concat(name, ".dll"));
         if (File.Exists(assemblyTempFilePath))
         {
             return Assembly.LoadFile(assemblyTempFilePath);
         }
+
         assemblyTempFilePath = Path.ChangeExtension(assemblyTempFilePath, "exe");
         if (File.Exists(assemblyTempFilePath))
         {
             return Assembly.LoadFile(assemblyTempFilePath);
         }
-        assemblyTempFilePath = Path.Combine(Path.Combine(tempBasePath, bittyness), string.Concat(name, ".dll"));
+
+        assemblyTempFilePath = Path.Combine(Path.Combine(tempBasePath, platformName), string.Concat(name, ".dll"));
         if (File.Exists(assemblyTempFilePath))
         {
             return Assembly.LoadFile(assemblyTempFilePath);
         }
+
         assemblyTempFilePath = Path.ChangeExtension(assemblyTempFilePath, "exe");
         if (File.Exists(assemblyTempFilePath))
         {
             return Assembly.LoadFile(assemblyTempFilePath);
         }
+
         return null;
     }
 
     public static Assembly ReadFromEmbeddedResources(Dictionary<string, string> assemblyNames, Dictionary<string, string> symbolNames, AssemblyName requestedAssemblyName)
     {
-        var name = requestedAssemblyName.Name.ToLowerInvariant();
-
-        if (requestedAssemblyName.CultureInfo is not null && !string.IsNullOrEmpty(requestedAssemblyName.CultureInfo.Name))
-        {
-            name = $"{requestedAssemblyName.CultureInfo.Name}.{name}";
-        }
+        var name = GetAssemblyResourceName(requestedAssemblyName);
 
         byte[] assemblyData;
         using (var assemblyStream = LoadStream(assemblyNames, name))
@@ -156,7 +158,19 @@ internal static class Common
         return Assembly.Load(assemblyData);
     }
 
-    static Stream LoadStream(Dictionary<string, string> resourceNames, string name)
+    private static string GetAssemblyResourceName(AssemblyName requestedAssemblyName)
+    {
+        var name = requestedAssemblyName.Name.ToLowerInvariant();
+
+        if (requestedAssemblyName.CultureInfo is not null && !string.IsNullOrEmpty(requestedAssemblyName.CultureInfo.Name))
+        {
+            name = $"{CultureToString(requestedAssemblyName.CultureInfo)}.{name}".ToLowerInvariant();
+        }
+
+        return name;
+    }
+
+    private static Stream LoadStream(Dictionary<string, string> resourceNames, string name)
     {
         if (resourceNames.TryGetValue(name, out var value))
         {
@@ -166,7 +180,7 @@ internal static class Common
         return null;
     }
 
-    static Stream LoadStream(string fullName)
+    private static Stream LoadStream(string fullName)
     {
         var executingAssembly = Assembly.GetExecutingAssembly();
 
@@ -208,8 +222,13 @@ internal static class Common
                     hasHandle = true;
                 }
 
-                var bittyness = IntPtr.Size == 8 ? "64" : "32";
-                CreateDirectory(Path.Combine(tempBasePath, bittyness));
+                var platformName = GetPlatformName();
+
+                var path = Path.Combine(tempBasePath, platformName);
+
+                Log("Preloading unmanaged libraries to '{0}'", path);
+
+                CreateDirectory(path);
                 InternalPreloadUnmanagedLibraries(tempBasePath, libs, checksums);
             }
             finally
@@ -222,7 +241,7 @@ internal static class Common
         }
     }
 
-    static void InternalPreloadUnmanagedLibraries(string tempBasePath, IList<string> libs, Dictionary<string, string> checksums)
+    private static void InternalPreloadUnmanagedLibraries(string tempBasePath, IList<string> libs, Dictionary<string, string> checksums)
     {
         string name;
 
@@ -231,6 +250,8 @@ internal static class Common
             name = ResourceNameToPath(lib);
 
             var assemblyTempFilePath = Path.Combine(tempBasePath, name);
+
+            Log("Preloading unmanaged library '{0}' to '{1}'", name, assemblyTempFilePath);
 
             if (File.Exists(assemblyTempFilePath))
             {
@@ -281,20 +302,25 @@ internal static class Common
     }
 
     [DllImport("kernel32.dll")]
-    static extern uint SetErrorMode(uint uMode);
-    static string ResourceNameToPath(string lib)
-    {
-        var bittyness = IntPtr.Size == 8 ? "64" : "32";
+    private static extern uint SetErrorMode(uint uMode);
 
+    private static string ResourceNameToPath(string lib)
+    {
+        var platformName = GetPlatformName();
         var name = lib;
 
-        if (lib.StartsWith(string.Concat("costura", bittyness, ".")))
+        // _ instead of - since '-' is not supported in resource names
+        var platformPrefix = string.Concat("costura-", platformName, ".")
+            .Replace("-", "_");
+        var costuraPrefix = "costura.";
+
+        if (lib.StartsWith(platformPrefix))
         {
-            name = Path.Combine(bittyness, lib.Substring(10));
+            name = Path.Combine(platformName, lib.Substring(platformPrefix.Length));
         }
-        else if (lib.StartsWith("costura."))
+        else if (lib.StartsWith(costuraPrefix))
         {
-            name = lib.Substring(8);
+            name = lib.Substring(costuraPrefix.Length);
         }
 
         if (name.EndsWith(".compressed"))
@@ -303,5 +329,48 @@ internal static class Common
         }
 
         return name;
+    }
+
+    private static string GetPlatformName()
+    {
+#if NETCORE
+        var os = "win";
+
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            throw new NotSupportedException("Platform is not (yet) supported");
+        }
+
+        //if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        //{
+        //    os = "osx";
+        //}
+        //else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        //{
+        //    os = "linux";
+        //}
+
+        var processorArchitecture = RuntimeInformation.ProcessArchitecture;
+
+        switch (processorArchitecture)
+        {
+            case Architecture.Arm64:
+                return string.Format("{0}-{1}", os, "arm64");
+
+            case Architecture.X86:
+                return string.Format("{0}-{1}", os, "x86");
+
+            case Architecture.X64:
+                return string.Format("{0}-{1}", os, "x64");
+
+            default:
+                // Note: somehow copying string interpolation doesn't work correctly, hence using string.Format instead
+                //throw new NotSupportedException($"Architecture '{processorArchitecture}' not supported");
+                throw new NotSupportedException(string.Format("Architecture '{0}' not supported", processorArchitecture));
+        }
+#else
+        var bittyness = IntPtr.Size == 8 ? "64" : "86";
+        return $"win-x{bittyness}";
+#endif
     }
 }

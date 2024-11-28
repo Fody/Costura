@@ -5,6 +5,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using Fody;
 using Mono.Cecil;
@@ -116,15 +117,21 @@ public partial class ModuleWeaver : IDisposable
         {
             var prefix = string.Empty;
 
-            if (config.Unmanaged32Assemblies.Any(x => string.Equals(x, Path.GetFileNameWithoutExtension(reference.FullPath), StringComparison.OrdinalIgnoreCase)))
+            if (config.UnmanagedWinX86Assemblies.Any(x => string.Equals(x, Path.GetFileNameWithoutExtension(reference.FullPath), StringComparison.OrdinalIgnoreCase)))
             {
-                prefix = "costura32.";
+                prefix = "costura_win_x86.";
                 _hasUnmanaged = true;
             }
 
-            if (config.Unmanaged64Assemblies.Any(x => string.Equals(x, Path.GetFileNameWithoutExtension(reference.FullPath), StringComparison.OrdinalIgnoreCase)))
+            if (config.UnmanagedWinX64Assemblies.Any(x => string.Equals(x, Path.GetFileNameWithoutExtension(reference.FullPath), StringComparison.OrdinalIgnoreCase)))
             {
-                prefix = "costura64.";
+                prefix = "costura_win_x64.";
+                _hasUnmanaged = true;
+            }
+
+            if (config.UnmanagedWinArm64Assemblies.Any(x => string.Equals(x, Path.GetFileNameWithoutExtension(reference.FullPath), StringComparison.OrdinalIgnoreCase)))
+            {
+                prefix = "costura_win_arm64.";
                 _hasUnmanaged = true;
             }
 
@@ -168,7 +175,9 @@ public partial class ModuleWeaver : IDisposable
         var metadata = stringBuilder.ToString();
 
         var memoryStream = new MemoryStream();
+#pragma warning disable IDISP001 // Dispose created
         var textWriter = new StreamWriter(memoryStream);
+#pragma warning restore IDISP001 // Dispose created
         textWriter.Write(metadata);
         textWriter.Flush();
 
@@ -230,7 +239,7 @@ public partial class ModuleWeaver : IDisposable
                 continue;
             }
 
-            if (references.Any(x => x.FullPath == fileName))
+            if (references.Any(_ => _.FullPath == fileName))
             {
                 continue;
             }
@@ -260,8 +269,7 @@ public partial class ModuleWeaver : IDisposable
                 var assemblyName = Path.GetFileNameWithoutExtension(reference.FileName);
 
                 if (includeList.Any(x => CompareAssemblyName(x, assemblyName)) &&
-                    config.Unmanaged32Assemblies.All(x => !CompareAssemblyName(x, assemblyName)) &&
-                    config.Unmanaged64Assemblies.All(x => !CompareAssemblyName(x, assemblyName)))
+                    !IsUnmanagedAssemblyReference(reference, config))
                 {
                     skippedAssemblies.Remove(includeList.First(x => CompareAssemblyName(x, assemblyName)));
                     yield return reference;
@@ -269,7 +277,7 @@ public partial class ModuleWeaver : IDisposable
                     // Make sure to embed resources, even if not explicitly included
                     if (!config.IgnoreSatelliteAssemblies)
                     {
-                        var resourcesAssemblyName = assemblyName += ".resources";
+                        var resourcesAssemblyName = assemblyName + ".resources";
                         var resourcesAssemblyReferences = (from x in references
                                                            where x.IsResourcesAssembly && CompareAssemblyName(x.FileNameWithoutExtension, resourcesAssemblyName)
                                                            select x).ToList();
@@ -295,7 +303,7 @@ public partial class ModuleWeaver : IDisposable
         }
 
         // From this point, we want to exclude "CopyLocal=false"
-        references = references.Where(x => x.IsCopyLocal);
+        references = references.Where(_ => _.IsCopyLocal);
 
         var excludeList = config.ExcludeAssemblies;
         if (excludeList.Any())
@@ -305,8 +313,7 @@ public partial class ModuleWeaver : IDisposable
                 var assemblyName = Path.GetFileNameWithoutExtension(reference.FileName);
 
                 if (excludeList.Any(x => CompareAssemblyName(x, assemblyName)) ||
-                    config.Unmanaged32Assemblies.Any(x => CompareAssemblyName(x, assemblyName)) ||
-                    config.Unmanaged64Assemblies.Any(x => CompareAssemblyName(x, assemblyName)))
+                    IsUnmanagedAssemblyReference(reference, config))
                 {
                     continue;
                 }
@@ -323,8 +330,7 @@ public partial class ModuleWeaver : IDisposable
             {
                 var assemblyName = Path.GetFileNameWithoutExtension(reference.FileName);
 
-                if (config.Unmanaged32Assemblies.All(x => !CompareAssemblyName(x, assemblyName)) &&
-                    config.Unmanaged64Assemblies.All(x => !CompareAssemblyName(x, assemblyName)))
+                if (!IsUnmanagedAssemblyReference(reference, config))
                 {
                     yield return reference;
                 }
@@ -332,9 +338,31 @@ public partial class ModuleWeaver : IDisposable
         }
     }
 
+    private bool IsUnmanagedAssemblyReference(Reference reference, Configuration config)
+    {
+        var assemblyName = Path.GetFileNameWithoutExtension(reference.FileName);
+
+        var listsToCheck = new[]
+        {
+            config.UnmanagedWinX86Assemblies,
+            config.UnmanagedWinX64Assemblies,
+            config.UnmanagedWinArm64Assemblies
+        };
+
+        foreach (var listToCheck in listsToCheck)
+        {
+            if (listToCheck.Any(x => CompareAssemblyName(x, assemblyName)))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private IEnumerable<Reference> GetFilteredRuntimeReferences(IEnumerable<Reference> references, Configuration config)
     {
-        references = references.Where(x => x.IsRuntimeReference);
+        references = references.Where(_ => _.IsRuntimeReference);
 
         var includeList = config.IncludeRuntimeAssemblies;
         if (includeList.Any())
@@ -379,7 +407,7 @@ public partial class ModuleWeaver : IDisposable
         }
 
         // From this point, we want to exclude "CopyLocal=false"
-        references = references.Where(x => x.IsCopyLocal);
+        references = references.Where(_ => _.IsCopyLocal);
 
         var excludeList = config.ExcludeRuntimeAssemblies;
         if (excludeList.Any())
@@ -405,8 +433,7 @@ public partial class ModuleWeaver : IDisposable
             {
                 var assemblyName = Path.GetFileNameWithoutExtension(reference.FileName);
 
-                if (config.Unmanaged32Assemblies.All(x => !CompareAssemblyName(x, assemblyName)) &&
-                    config.Unmanaged64Assemblies.All(x => !CompareAssemblyName(x, assemblyName)))
+                if (IsUnmanagedAssemblyReference(reference, config))
                 {
                     yield return reference;
                 }

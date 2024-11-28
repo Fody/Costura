@@ -132,12 +132,18 @@ build.cakeoverrides
 TestResults
 .vs/
 .sonarqube/
-.github/
 BundleArtifacts/
+
+# docker / tye
+.tye
 
 # editors
 .idea
 .vscode
+
+# Binaries
+*.dll
+*.exe
 
 # fody
 FodyWeavers.xsd
@@ -148,3 +154,7 @@ FodyWeavers.xsd
 # ANTLR
 data/dsl/*.class
 data/dsl/*.java
+
+# Nodejs / NPM
+node_modules
+package-lock.json

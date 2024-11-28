@@ -10,21 +10,21 @@ public abstract class BasicTests : BaseCosturaTest
     public void Simple()
     {
         var instance = TestResult.GetInstance("ClassToTest");
-        Assert.AreEqual("Hello", instance.Simple());
+        Assert.That("Hello", Is.EqualTo(instance.Simple()));
     }
 
     [Test]
     public void SimplePreEmbed()
     {
         var instance2 = TestResult.GetInstance("ClassToTest");
-        Assert.AreEqual("Hello", instance2.SimplePreEmbed());
+        Assert.That("Hello", Is.EqualTo(instance2.SimplePreEmbed()));
     }
 
     [Test]
     public void Exe()
     {
         var instance2 = TestResult.GetInstance("ClassToTest");
-        Assert.AreEqual("Hello", instance2.Exe());
+        Assert.That("Hello", Is.EqualTo(instance2.Exe()));
     }
 
     [Test]
@@ -38,7 +38,7 @@ public abstract class BasicTests : BaseCosturaTest
         catch (Exception exception)
         {
             Debug.WriteLine(exception.StackTrace);
-            Assert.IsTrue(exception.StackTrace.Contains("ClassToReference.cs:line"));
+            Assert.That(exception.StackTrace.Contains("ClassToReference.cs:line"), Is.True);
         }
     }
 
@@ -53,9 +53,9 @@ public abstract class BasicTests : BaseCosturaTest
             typeName = typeName + "35";
         }
         var typeLoadedWithPartialAssemblyName = Type.GetType(typeName);
-        Assert.NotNull(typeLoadedWithPartialAssemblyName);
+        Assert.That(typeLoadedWithPartialAssemblyName, Is.Not.Null);
 
-        Assert.AreEqual(assemblyLoadedByCompileTimeReference, typeLoadedWithPartialAssemblyName.Assembly);
+        Assert.That(assemblyLoadedByCompileTimeReference, Is.EqualTo(typeLoadedWithPartialAssemblyName.Assembly));
     }
 
     [Test]

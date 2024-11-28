@@ -24,7 +24,7 @@ public class SourceControlIntegration : IntegrationBase
 
     public async Task MarkBuildAsPendingAsync(string context, string description = null)
     {
-        BuildContext.CakeContext.LogSeparator("Marking build as pending");
+        BuildContext.CakeContext.LogSeparator($"Marking build as pending: '{description ?? string.Empty}'");
 
         context = context ?? "default";
         description = description ?? "Build pending";
@@ -44,7 +44,7 @@ public class SourceControlIntegration : IntegrationBase
     
     public async Task MarkBuildAsFailedAsync(string context, string description = null)
     {
-        BuildContext.CakeContext.LogSeparator("Marking build as failed");
+        BuildContext.CakeContext.LogSeparator($"Marking build as failed: '{description ?? string.Empty}'");
 
         context = context ?? "default";
         description = description ?? "Build failed";
@@ -64,7 +64,7 @@ public class SourceControlIntegration : IntegrationBase
     
     public async Task MarkBuildAsSucceededAsync(string context, string description = null)
     {
-        BuildContext.CakeContext.LogSeparator("Marking build as succeeded");
+        BuildContext.CakeContext.LogSeparator($"Marking build as succeeded: '{description ?? string.Empty}'");
 
         context = context ?? "default";
         description = description ?? "Build succeeded";

@@ -8,7 +8,7 @@
 /// // Temporary sets logging verbosity to Diagnostic.
 /// using(context.UseVerbosity(Verbosity.Diagnostic))
 /// {
-///     context.DotNetCoreBuild(project, settings);
+///     context.DotNetBuild(project, settings);
 /// }
 /// </code>
 /// </example>
@@ -24,7 +24,7 @@ public static VerbosityChanger UseVerbosity(this ICakeContext context, Verbosity
 /// // Temporary sets logging verbosity to Diagnostic.
 /// using(context.UseDiagnosticVerbosity())
 /// {
-///     context.DotNetCoreBuild(project, settings);
+///     context.DotNetBuild(project, settings);
 /// }
 /// </code>
 /// </example>

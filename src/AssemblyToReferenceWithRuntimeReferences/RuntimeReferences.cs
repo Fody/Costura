@@ -5,17 +5,18 @@ public static class RuntimeReferences
 {
     public static string UseAssemblyWithRuntimeAssemblies()
     {
-        var connection = new SqlConnection("Server=myServerAddress;Database=myDataBase;User Id=myUsername;Password=myPassword;");
-
-        try
+        using (var connection = new SqlConnection("Server=myServerAddress;Database=myDataBase;User Id=myUsername;Password=myPassword;"))
         {
-            connection.Open();
-        }
-        catch (Exception)
-        {
-            // ignore
-        }
+            try
+            {
+                connection.Open();
+            }
+            catch (Exception)
+            {
+                // ignore
+            }
 
-        return "Hello";
+            return "Hello";
+        }
     }
 }

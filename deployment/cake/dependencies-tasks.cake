@@ -19,20 +19,50 @@ public class DependenciesProcessor : ProcessorBase
 
     public override async Task PrepareAsync()
     {
+        BuildContext.CakeContext.Information($"Checking '{BuildContext.Dependencies.Items.Count}' dependencies");
+        
         if (!HasItems())
         {
             return;
         }
 
+        // We need to go through this twice because a dependency can be a dependency of a dependency
+        var dependenciesToBuild = new List<string>();
+
         // Check whether projects should be processed, `.ToList()` 
         // is required to prevent issues with foreach
+        for (int i = 0; i < 3; i++)
+        {
+            foreach (var dependency in BuildContext.Dependencies.Items.ToList())
+            {
+                if (dependenciesToBuild.Contains(dependency))
+                {
+                    // Already done
+                    continue;
+                }
+
+                BuildContext.CakeContext.Information($"Checking dependency '{dependency}' using run {i + 1}");
+
+                if (BuildContext.Dependencies.ShouldBuildDependency(dependency, dependenciesToBuild))
+                {
+                    BuildContext.CakeContext.Information($"Dependency '{dependency}' should be included");
+
+                    dependenciesToBuild.Add(dependency);
+                }
+            }
+        }
+
+        // TODO: How to determine the sort order? E.g. dependencies of dependencies?
+
         foreach (var dependency in BuildContext.Dependencies.Items.ToList())
         {
-            // Note: dependencies should always be built
-            // if (!ShouldProcessProject(BuildContext, dependency))
-            // {
-            //     BuildContext.Dependencies.Items.Remove(dependency);
-            // }
+            if (!dependenciesToBuild.Contains(dependency))
+            {
+                BuildContext.CakeContext.Information($"Skipping dependency '{dependency}' because no dependent projects are included");
+
+                BuildContext.Dependencies.Dependencies.Remove(dependency);
+                BuildContext.Dependencies.Items.Remove(dependency);
+            }
         }
     }
 
@@ -64,7 +94,7 @@ public class DependenciesProcessor : ProcessorBase
         }
         
         foreach (var dependency in BuildContext.Dependencies.Items)
-        {
+        {  
             BuildContext.CakeContext.LogSeparator("Building dependency '{0}'", dependency);
 
             var projectFileName = GetProjectFileName(BuildContext, dependency);
@@ -79,7 +109,7 @@ public class DependenciesProcessor : ProcessorBase
                 PlatformTarget = PlatformTarget.MSIL
             };
 
-            ConfigureMsBuild(BuildContext, msBuildSettings, dependency);
+            ConfigureMsBuild(BuildContext, msBuildSettings, dependency, "build");
             
             // Note: we need to set OverridableOutputPath because we need to be able to respect
             // AppendTargetFrameworkToOutputPath which isn't possible for global properties (which
@@ -92,14 +122,8 @@ public class DependenciesProcessor : ProcessorBase
                 msBuildSettings.PlatformTarget = PlatformTarget.Win32;
             }
 
-            var outputDirectory = GetProjectOutputDirectory(BuildContext, dependency);
-            CakeContext.Information("Output directory: '{0}'", outputDirectory);
-            msBuildSettings.WithProperty("OverridableOutputRootPath", BuildContext.General.OutputRootDirectory);
-            msBuildSettings.WithProperty("OverridableOutputPath", outputDirectory);
-            msBuildSettings.WithProperty("PackageOutputPath", BuildContext.General.OutputRootDirectory);
-
             // SourceLink specific stuff
-            if (IsSourceLinkSupported(BuildContext, projectFileName))
+            if (IsSourceLinkSupported(BuildContext, dependency, projectFileName))
             {
                 var repositoryUrl = BuildContext.General.Repository.Url;
                 var repositoryCommitId = BuildContext.General.Repository.CommitId;
@@ -116,10 +140,21 @@ public class DependenciesProcessor : ProcessorBase
                 msBuildSettings.WithProperty("RepositoryUrl", repositoryUrl);
                 msBuildSettings.WithProperty("RevisionId", repositoryCommitId);
 
-                InjectSourceLinkInProjectFile(BuildContext, projectFileName);
+                InjectSourceLinkInProjectFile(BuildContext, dependency, projectFileName);
             }
 
-            RunMsBuild(BuildContext, dependency, projectFileName, msBuildSettings);
+            RunMsBuild(BuildContext, dependency, projectFileName, msBuildSettings, "build");
+
+            // Specific code signing, requires the following MSBuild properties:
+            // * CodeSignEnabled
+            // * CodeSignCommand
+            //
+            // This feature is built to allow projects that have post-build copy
+            // steps (e.g. for assets) to be signed correctly before being embedded
+            if (ShouldSignImmediately(BuildContext, dependency))
+            {
+                SignProjectFiles(BuildContext, dependency);
+            }
         }
     }
 

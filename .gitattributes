@@ -2,6 +2,8 @@
 # Set default behavior to automatically normalize line endings.
 ###############################################################################
 * text=auto
+.editorconfig -text
+*.sln.DotSettings -text
 
 ###############################################################################
 # Set default behavior for command prompt diff.

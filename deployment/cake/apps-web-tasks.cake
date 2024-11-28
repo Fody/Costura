@@ -79,23 +79,12 @@ public class WebProcessor : ProcessorBase
                 PlatformTarget = PlatformTarget.MSIL
             };
 
-            ConfigureMsBuild(BuildContext, msBuildSettings, webApp);
+            ConfigureMsBuild(BuildContext, msBuildSettings, webApp, "build");
 
             // Always disable SourceLink
             msBuildSettings.WithProperty("EnableSourceLink", "false");
 
-            // Note: we need to set OverridableOutputPath because we need to be able to respect
-            // AppendTargetFrameworkToOutputPath which isn't possible for global properties (which
-            // are properties passed in using the command line)
-            var outputDirectory = System.IO.Path.Combine(BuildContext.General.OutputRootDirectory, webApp);
-            CakeContext.Information("Output directory: '{0}'", outputDirectory);
-            msBuildSettings.WithProperty("OverridableOutputRootPath", BuildContext.General.OutputRootDirectory);
-            msBuildSettings.WithProperty("OverridableOutputPath", outputDirectory);
-            msBuildSettings.WithProperty("PackageOutputPath", BuildContext.General.OutputRootDirectory);
-
-            // TODO: Enable GitLink / SourceLink, see RepositoryUrl, RepositoryBranchName, RepositoryCommitId variables
-
-            RunMsBuild(BuildContext, webApp, projectFileName, msBuildSettings);
+            RunMsBuild(BuildContext, webApp, projectFileName, msBuildSettings, "build");
         }
     }
 
@@ -110,9 +99,9 @@ public class WebProcessor : ProcessorBase
         
         foreach (var webApp in BuildContext.Web.Items)
         {
-            if (!ShouldDeployProject(BuildContext, webApp))
+            if (!ShouldPackageProject(BuildContext, webApp))
             {
-                CakeContext.Information("Web app '{0}' should not be deployed", webApp);
+                CakeContext.Information("Web app '{0}' should not be packaged", webApp);
                 continue;
             }
 
@@ -125,34 +114,29 @@ public class WebProcessor : ProcessorBase
 
             CakeContext.Information("1) Using 'dotnet publish' to package '{0}'", webApp);
 
-            var msBuildSettings = new DotNetCoreMSBuildSettings();
+            var msBuildSettings = new DotNetMSBuildSettings();
 
-            // Note: we need to set OverridableOutputPath because we need to be able to respect
-            // AppendTargetFrameworkToOutputPath which isn't possible for global properties (which
-            // are properties passed in using the command line)
-            msBuildSettings.WithProperty("OverridableOutputRootPath", BuildContext.General.OutputRootDirectory);
-            msBuildSettings.WithProperty("OverridableOutputPath", outputDirectory);
             msBuildSettings.WithProperty("PackageOutputPath", outputDirectory);
             msBuildSettings.WithProperty("ConfigurationName", BuildContext.General.Solution.ConfigurationName);
             msBuildSettings.WithProperty("PackageVersion", BuildContext.General.Version.NuGet);
 
-            var publishSettings = new DotNetCorePublishSettings
+            var publishSettings = new DotNetPublishSettings
             {
                 MSBuildSettings = msBuildSettings,
                 OutputDirectory = outputDirectory,
                 Configuration = BuildContext.General.Solution.ConfigurationName
             };
 
-            CakeContext.DotNetCorePublish(projectFileName, publishSettings);
+            CakeContext.DotNetPublish(projectFileName, publishSettings);
             
             CakeContext.Information("2) Using 'octo pack' to package '{0}'", webApp);
 
-            var toolSettings = new DotNetCoreToolSettings
+            var toolSettings = new DotNetToolSettings
             {
             };
 
             var octoPackCommand = string.Format("--id {0} --version {1} --basePath {0}", webApp, BuildContext.General.Version.NuGet);
-            CakeContext.DotNetCoreTool(outputDirectory, "octo pack", octoPackCommand, toolSettings);
+            CakeContext.DotNetTool(outputDirectory, "octo pack", octoPackCommand, toolSettings);
             
             BuildContext.CakeContext.LogSeparator();
         }

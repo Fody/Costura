@@ -7,7 +7,7 @@ using Mono.Cecil;
 /// of the given <see cref="ModuleWeaver"/> with special handling for the <c>netstandard</c> assembly reference to
 /// support .NET Framework 4.7 and lower.
 /// </summary>
-public class NetStandardAssemblyResolver : IAssemblyResolver
+public sealed class NetStandardAssemblyResolver : IAssemblyResolver
 {
     private readonly ModuleWeaver _weaver;
     private readonly HashSet<AssemblyNameReference> _resolvedReferences;
@@ -22,12 +22,15 @@ public class NetStandardAssemblyResolver : IAssemblyResolver
         {
             const string dllName = "Costura.NETFramework.netstandard.dll";
             var assembly = GetType().Assembly;
-            var stream = assembly.GetManifestResourceStream(dllName);
-            if (stream is null)
+            using (var stream = assembly.GetManifestResourceStream(dllName))
             {
-                throw new InvalidOperationException($"Failed to get the manifest resource stream named '{dllName}' on {assembly}");
+                if (stream is null)
+                {
+                    throw new InvalidOperationException($"Failed to get the manifest resource stream named '{dllName}' on {assembly}");
+                }
+
+                return AssemblyDefinition.ReadAssembly(stream, new ReaderParameters { AssemblyResolver = this });
             }
-            return AssemblyDefinition.ReadAssembly(stream, new ReaderParameters { AssemblyResolver = this });
         });
     }
 
@@ -53,11 +56,13 @@ public class NetStandardAssemblyResolver : IAssemblyResolver
         {
             return ResolvedReference(name, assemblyDefinition);
         }
+
         if (name.Name == "netstandard" && !_weaver.ModuleDefinition.IsUsingDotNetCore())
         {
             var netStandardAssemblyDefinition = _netStandardAssemblyDefinition.Value;
             return ResolvedReference(name, netStandardAssemblyDefinition);
         }
+
         throw new AssemblyResolutionException(name);
     }
 
@@ -66,9 +71,10 @@ public class NetStandardAssemblyResolver : IAssemblyResolver
         var added = _resolvedReferences.Add(name);
         if (added)
         {
-            var toFileName = string.IsNullOrEmpty(assemblyDefinition.MainModule.FileName) ? "" : $" to {assemblyDefinition.MainModule.FileName}";
+            var toFileName = string.IsNullOrEmpty(assemblyDefinition.MainModule.FileName) ? string.Empty : $" to {assemblyDefinition.MainModule.FileName}";
             _weaver.WriteDebug($"\t\tResolved {name}{toFileName}");
         }
+
         return assemblyDefinition ?? throw new AssemblyResolutionException(name);
     }
 }

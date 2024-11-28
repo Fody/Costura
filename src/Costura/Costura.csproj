@@ -1,6 +1,6 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras">
+<Project Sdk="MSBuild.Sdk.Extras">
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <AssemblyName>Costura</AssemblyName>
     <RootNamespace>Costura</RootNamespace>
     <DefaultLanguage>en-US</DefaultLanguage>
@@ -10,7 +10,8 @@
     <PackageId>Costura.Fody</PackageId>
     <PackageTags>ILMerge, ILWeaving, Embed, Resource, Fody, Cecil</PackageTags>
     <DisableFody>true</DisableFody>
-    <AssemblyOriginatorKeyFile>$(SolutionDir)key.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\key.snk</AssemblyOriginatorKeyFile>
     <NoWarn>$(NoWarn);NU5100</NoWarn>
     <NoError>$(NoError);NU5100</NoError>
   </PropertyGroup>
@@ -21,7 +22,7 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="Fody" Version="6.5.5" PrivateAssets="none" />
+    <PackageReference Include="Fody" Version="6.8.2" PrivateAssets="none" />
   </ItemGroup>
 
   <ItemGroup>

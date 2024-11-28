@@ -11,6 +11,7 @@ public class TestsContext : BuildContextWithItemsBase
 
     public string Framework { get; set; }
     public string TargetFramework { get; set; }
+    public string OperatingSystem { get; set; }
     public string ProcessBit { get; set; }
 
     protected override void ValidateContext()
@@ -47,7 +48,8 @@ private TestsContext InitializeTestsContext(BuildContext buildContext, IBuildCon
 
         Framework = buildContext.BuildServer.GetVariable("TestFramework", "nunit", showValue: true),
         TargetFramework = buildContext.BuildServer.GetVariable("TestTargetFramework", "", showValue: true),
-        ProcessBit = buildContext.BuildServer.GetVariable("TestProcessBit", "X86", showValue: true)
+        OperatingSystem = buildContext.BuildServer.GetVariable("TestOperatingSystem", "win", showValue: true),
+        ProcessBit = buildContext.BuildServer.GetVariable("TestProcessBit", "X64", showValue: true)
     };
 
     return data;

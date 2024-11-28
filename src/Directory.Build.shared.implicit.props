@@ -41,9 +41,24 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <DebugType>full</DebugType>
+  <!-- Enforce debug for non-web assembly projects -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug' And '$(RuntimeIdentifier)' != 'browser-wasm'">
+    <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  
+  <!-- Browser-wasm requires portable debug type -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug' And '$(RuntimeIdentifier)' == 'browser-wasm'">
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <!-- NuGet auditing, see https://learn.microsoft.com/en-us/nuget/concepts/auditing-packages -->
+  <PropertyGroup>
+    <!-- 'all' means even indirect packages, 'direct' means only direct dependencies -->
+    <NuGetAuditMode>direct</NuGetAuditMode>
+    <!-- Low means even low vulnerabilities will be reported -->
+    <NuGetAuditLevel>low</NuGetAuditLevel>
   </PropertyGroup>
 
   <ItemGroup>

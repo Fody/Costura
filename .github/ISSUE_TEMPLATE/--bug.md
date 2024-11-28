@@ -12,10 +12,7 @@ assignees: ''
 ## Please check all of the platforms you are having the issue on (if platform is not listed, it is not supported)
 
  - [ ] WPF
- - [ ] UWP
- - [ ] iOS
- - [ ] Android
- - [ ] .NET Standard
+ - [ ] Blazor WASM
  - [ ] .NET Core
 
 ## Component

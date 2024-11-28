@@ -9,14 +9,14 @@ public class ConfigReaderTests
     public void CanReadFalseNode()
     {
         var xElement = XElement.Parse("<Node attr='false'/>");
-        Assert.False(Configuration.ReadBool(xElement, "attr", true));
+        Assert.That(Configuration.ReadBool(xElement, "attr", true), Is.False);
     }
 
     [Test]
     public void CanReadTrueNode()
     {
         var xElement = XElement.Parse("<Node attr='true'/>");
-        Assert.True(Configuration.ReadBool(xElement, "attr", false));
+        Assert.That(Configuration.ReadBool(xElement, "attr", false), Is.True);
     }
 
     // These next 2 tests are because of https://github.com/Fody/Costura/issues/204
@@ -26,8 +26,8 @@ public class ConfigReaderTests
     {
         var xElement = XElement.Parse("<Node attr=' Item'/>");
         var list = Configuration.ReadList(xElement, "attr");
-        Assert.AreEqual(1, list.Count);
-        Assert.AreEqual("Item", list[0]);
+        Assert.That(list.Count, Is.EqualTo(1));
+        Assert.That(list[0], Is.EqualTo("Item"));
     }
 
     [Test]
@@ -35,8 +35,8 @@ public class ConfigReaderTests
     {
         var xElement = XElement.Parse("<Node><attr>Item </attr></Node>");
         var list = Configuration.ReadList(xElement, "attr");
-        Assert.AreEqual(1, list.Count);
-        Assert.AreEqual("Item", list[0]);
+        Assert.That(list.Count, Is.EqualTo(1));
+        Assert.That(list[0], Is.EqualTo("Item"));
     }
 
     [Test]
@@ -44,7 +44,7 @@ public class ConfigReaderTests
     {
         var xElement = XElement.Parse("<Node attr='foo'/>");
         var exception = Assert.Throws<WeavingException>(() => Configuration.ReadBool(xElement, "attr", false));
-        Assert.AreEqual("Could not parse 'attr' from 'foo'.", exception.Message);
+        Assert.That(exception.Message, Is.EqualTo("Could not parse 'attr' from 'foo'."));
     }
 
     [Test]
@@ -52,7 +52,7 @@ public class ConfigReaderTests
     {
         var xElement = XElement.Parse("<Costura IncludeDebugSymbols='false'/>");
         var config = new Configuration(xElement);
-        Assert.False(config.IncludeDebugSymbols);
+        Assert.That(config.IncludeDebugSymbols, Is.False);
     }
 
     [Test]
@@ -60,7 +60,7 @@ public class ConfigReaderTests
     {
         var xElement = XElement.Parse("<Costura IncludeDebugSymbols='0'/>");
         var config = new Configuration(xElement);
-        Assert.False(config.IncludeDebugSymbols);
+        Assert.That(config.IncludeDebugSymbols, Is.False);
     }
 
     [Test]
@@ -68,7 +68,7 @@ public class ConfigReaderTests
     {
         var xElement = XElement.Parse("<Costura DisableCompression='true'/>");
         var config = new Configuration(xElement);
-        Assert.True(config.DisableCompression);
+        Assert.That(config.DisableCompression, Is.True);
     }
 
     [Test]
@@ -76,7 +76,7 @@ public class ConfigReaderTests
     {
         var xElement = XElement.Parse("<Costura DisableCompression='1'/>");
         var config = new Configuration(xElement);
-        Assert.True(config.DisableCompression);
+        Assert.That(config.DisableCompression, Is.True);
     }
 
     [Test]
@@ -84,7 +84,7 @@ public class ConfigReaderTests
     {
         var xElement = XElement.Parse("<Costura DisableCleanup='true'/>");
         var config = new Configuration(xElement);
-        Assert.True(config.DisableCleanup);
+        Assert.That(config.DisableCleanup, Is.True);
     }
 
     [Test]
@@ -92,7 +92,23 @@ public class ConfigReaderTests
     {
         var xElement = XElement.Parse("<Costura DisableCleanup='1'/>");
         var config = new Configuration(xElement);
-        Assert.True(config.DisableCleanup);
+        Assert.That(config.DisableCleanup, Is.True);
+    }
+
+    [Test]
+    public void TrueDisableEventSubscription()
+    {
+        var xElement = XElement.Parse("<Costura DisableEventSubscription='true'/>");
+        var config = new Configuration(xElement);
+        Assert.That(config.DisableEventSubscription, Is.True);
+    }
+
+    [Test]
+    public void True1DisableEventSubscription()
+    {
+        var xElement = XElement.Parse("<Costura DisableEventSubscription='1'/>");
+        var config = new Configuration(xElement);
+        Assert.That(config.DisableEventSubscription, Is.True);
     }
 
     [Test]
@@ -100,7 +116,7 @@ public class ConfigReaderTests
     {
         var xElement = XElement.Parse("<Costura LoadAtModuleInit='false'/>");
         var config = new Configuration(xElement);
-        Assert.False(config.LoadAtModuleInit);
+        Assert.That(config.LoadAtModuleInit, Is.False);
     }
 
     [Test]
@@ -108,7 +124,7 @@ public class ConfigReaderTests
     {
         var xElement = XElement.Parse("<Costura CreateTemporaryAssemblies='true'/>");
         var config = new Configuration(xElement);
-        Assert.True(config.CreateTemporaryAssemblies);
+        Assert.That(config.CreateTemporaryAssemblies, Is.True);
     }
 
     [Test]
@@ -116,7 +132,7 @@ public class ConfigReaderTests
     {
         var xElement = XElement.Parse("<Costura CreateTemporaryAssemblies='1'/>");
         var config = new Configuration(xElement);
-        Assert.True(config.CreateTemporaryAssemblies);
+        Assert.That(config.CreateTemporaryAssemblies, Is.True);
     }
 
     [Test]
@@ -130,8 +146,8 @@ Bar
     </ExcludeAssemblies>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.AreEqual("Foo", config.ExcludeAssemblies[0]);
-        Assert.AreEqual("Bar", config.ExcludeAssemblies[1]);
+        Assert.That(config.ExcludeAssemblies[0], Is.EqualTo("Foo"));
+        Assert.That(config.ExcludeAssemblies[1], Is.EqualTo("Bar"));
     }
 
     [Test]
@@ -140,8 +156,8 @@ Bar
         var xElement = XElement.Parse(@"
 <Costura ExcludeAssemblies='Foo|Bar'/>");
         var config = new Configuration(xElement);
-        Assert.AreEqual("Foo", config.ExcludeAssemblies[0]);
-        Assert.AreEqual("Bar", config.ExcludeAssemblies[1]);
+        Assert.That(config.ExcludeAssemblies[0], Is.EqualTo("Foo"));
+        Assert.That(config.ExcludeAssemblies[1], Is.EqualTo("Bar"));
     }
 
     [Test]
@@ -154,8 +170,8 @@ Bar
     </ExcludeAssemblies>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.AreEqual("Foo", config.ExcludeAssemblies[0]);
-        Assert.AreEqual("Bar", config.ExcludeAssemblies[1]);
+        Assert.That(config.ExcludeAssemblies[0], Is.EqualTo("Foo"));
+        Assert.That(config.ExcludeAssemblies[1], Is.EqualTo("Bar"));
     }
 
     [Test]
@@ -169,8 +185,8 @@ Bar
     </IncludeAssemblies>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.AreEqual("Foo", config.IncludeAssemblies[0]);
-        Assert.AreEqual("Bar", config.IncludeAssemblies[1]);
+        Assert.That(config.IncludeAssemblies[0], Is.EqualTo("Foo"));
+        Assert.That(config.IncludeAssemblies[1], Is.EqualTo("Bar"));
     }
 
     [Test]
@@ -179,8 +195,8 @@ Bar
         var xElement = XElement.Parse(@"
 <Costura IncludeAssemblies='Foo|Bar'/>");
         var config = new Configuration(xElement);
-        Assert.AreEqual("Foo", config.IncludeAssemblies[0]);
-        Assert.AreEqual("Bar", config.IncludeAssemblies[1]);
+        Assert.That(config.IncludeAssemblies[0], Is.EqualTo("Foo"));
+        Assert.That(config.IncludeAssemblies[1], Is.EqualTo("Bar"));
     }
 
     [Test]
@@ -189,7 +205,7 @@ Bar
         var xElement = XElement.Parse(@"
 <Costura IncludeAssemblies='Bar' ExcludeAssemblies='Foo'/>");
         var exception = Assert.Throws<WeavingException>(() => new Configuration(xElement));
-        Assert.AreEqual("Either configure IncludeAssemblies OR ExcludeAssemblies, not both.",exception.Message);
+        Assert.That(exception.Message, Is.EqualTo("Either configure IncludeAssemblies OR ExcludeAssemblies, not both."));
     }
 
     [Test]
@@ -202,8 +218,8 @@ Bar
     </IncludeAssemblies>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.AreEqual("Foo", config.IncludeAssemblies[0]);
-        Assert.AreEqual("Bar", config.IncludeAssemblies[1]);
+        Assert.That(config.IncludeAssemblies[0], Is.EqualTo("Foo"));
+        Assert.That(config.IncludeAssemblies[1], Is.EqualTo("Bar"));
     }
 
     [Test]
@@ -217,8 +233,8 @@ Bar
     </Unmanaged32Assemblies>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.AreEqual("Foo", config.Unmanaged32Assemblies[0]);
-        Assert.AreEqual("Bar", config.Unmanaged32Assemblies[1]);
+        Assert.That(config.UnmanagedWinX86Assemblies[0], Is.EqualTo("Foo"));
+        Assert.That(config.UnmanagedWinX86Assemblies[1], Is.EqualTo("Bar"));
     }
 
     [Test]
@@ -227,22 +243,61 @@ Bar
         var xElement = XElement.Parse(@"
 <Costura Unmanaged32Assemblies='Foo|Bar'/>");
         var config = new Configuration(xElement);
-        Assert.AreEqual("Foo", config.Unmanaged32Assemblies[0]);
-        Assert.AreEqual("Bar", config.Unmanaged32Assemblies[1]);
+        Assert.That(config.UnmanagedWinX86Assemblies[0], Is.EqualTo("Foo"));
+        Assert.That(config.UnmanagedWinX86Assemblies[1], Is.EqualTo("Bar"));
     }
 
     [Test]
     public void Unmanaged32AssembliesCombined()
     {
         var xElement = XElement.Parse(@"
-<Costura  Unmanaged32Assemblies='Foo'>
+<Costura Unmanaged32Assemblies='Foo'>
     <Unmanaged32Assemblies>
 Bar
     </Unmanaged32Assemblies>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.AreEqual("Foo", config.Unmanaged32Assemblies[0]);
-        Assert.AreEqual("Bar", config.Unmanaged32Assemblies[1]);
+        Assert.That(config.UnmanagedWinX86Assemblies[0], Is.EqualTo("Foo"));
+        Assert.That(config.UnmanagedWinX86Assemblies[1], Is.EqualTo("Bar"));
+    }
+
+    [Test]
+    public void UnmanagedX86AssembliesNode()
+    {
+        var xElement = XElement.Parse(@"
+<Costura>
+    <UnmanagedWinX86Assemblies>
+Foo
+Bar
+    </UnmanagedWinX86Assemblies>
+</Costura>");
+        var config = new Configuration(xElement);
+        Assert.That(config.UnmanagedWinX86Assemblies[0], Is.EqualTo("Foo"));
+        Assert.That(config.UnmanagedWinX86Assemblies[1], Is.EqualTo("Bar"));
+    }
+
+    [Test]
+    public void UnmanagedX86AssembliesAttribute()
+    {
+        var xElement = XElement.Parse(@"
+<Costura UnmanagedWinX86Assemblies='Foo|Bar'/>");
+        var config = new Configuration(xElement);
+        Assert.That(config.UnmanagedWinX86Assemblies[0], Is.EqualTo("Foo"));
+        Assert.That(config.UnmanagedWinX86Assemblies[1], Is.EqualTo("Bar"));
+    }
+
+    [Test]
+    public void UnmanagedX86AssembliesCombined()
+    {
+        var xElement = XElement.Parse(@"
+<Costura UnmanagedWinX86Assemblies='Foo'>
+    <UnmanagedWinX86Assemblies>
+Bar
+    </UnmanagedWinX86Assemblies>
+</Costura>");
+        var config = new Configuration(xElement);
+        Assert.That(config.UnmanagedWinX86Assemblies[0], Is.EqualTo("Foo"));
+        Assert.That(config.UnmanagedWinX86Assemblies[1], Is.EqualTo("Bar"));
     }
 
     [Test]
@@ -256,8 +311,8 @@ Bar
     </Unmanaged64Assemblies>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.AreEqual("Foo", config.Unmanaged64Assemblies[0]);
-        Assert.AreEqual("Bar", config.Unmanaged64Assemblies[1]);
+        Assert.That(config.UnmanagedWinX64Assemblies[0], Is.EqualTo("Foo"));
+        Assert.That(config.UnmanagedWinX64Assemblies[1], Is.EqualTo("Bar"));
     }
 
     [Test]
@@ -266,22 +321,100 @@ Bar
         var xElement = XElement.Parse(@"
 <Costura Unmanaged64Assemblies='Foo|Bar'/>");
         var config = new Configuration(xElement);
-        Assert.AreEqual("Foo", config.Unmanaged64Assemblies[0]);
-        Assert.AreEqual("Bar", config.Unmanaged64Assemblies[1]);
+        Assert.That(config.UnmanagedWinX64Assemblies[0], Is.EqualTo("Foo"));
+        Assert.That(config.UnmanagedWinX64Assemblies[1], Is.EqualTo("Bar"));
     }
 
     [Test]
     public void Unmanaged64AssembliesCombined()
     {
         var xElement = XElement.Parse(@"
-<Costura  Unmanaged64Assemblies='Foo'>
+<Costura Unmanaged64Assemblies='Foo'>
     <Unmanaged64Assemblies>
 Bar
     </Unmanaged64Assemblies>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.AreEqual("Foo", config.Unmanaged64Assemblies[0]);
-        Assert.AreEqual("Bar", config.Unmanaged64Assemblies[1]);
+        Assert.That(config.UnmanagedWinX64Assemblies[0], Is.EqualTo("Foo"));
+        Assert.That(config.UnmanagedWinX64Assemblies[1], Is.EqualTo("Bar"));
+    }
+
+    [Test]
+    public void UnmanagedX64AssembliesNode()
+    {
+        var xElement = XElement.Parse(@"
+<Costura>
+    <UnmanagedWinX64Assemblies>
+Foo
+Bar
+    </UnmanagedWinX64Assemblies>
+</Costura>");
+        var config = new Configuration(xElement);
+        Assert.That(config.UnmanagedWinX64Assemblies[0], Is.EqualTo("Foo"));
+        Assert.That(config.UnmanagedWinX64Assemblies[1], Is.EqualTo("Bar"));
+    }
+
+    [Test]
+    public void UnmanagedX64AssembliesAttribute()
+    {
+        var xElement = XElement.Parse(@"
+<Costura UnmanagedWinX64Assemblies='Foo|Bar'/>");
+        var config = new Configuration(xElement);
+        Assert.That(config.UnmanagedWinX64Assemblies[0], Is.EqualTo("Foo"));
+        Assert.That(config.UnmanagedWinX64Assemblies[1], Is.EqualTo("Bar"));
+    }
+
+    [Test]
+    public void UnmanagedX64AssembliesCombined()
+    {
+        var xElement = XElement.Parse(@"
+<Costura UnmanagedWinX64Assemblies='Foo'>
+    <UnmanagedWinX64Assemblies>
+Bar
+    </UnmanagedWinX64Assemblies>
+</Costura>");
+        var config = new Configuration(xElement);
+        Assert.That(config.UnmanagedWinX64Assemblies[0], Is.EqualTo("Foo"));
+        Assert.That(config.UnmanagedWinX64Assemblies[1], Is.EqualTo("Bar"));
+    }
+
+    [Test]
+    public void UnmanagedArm64AssembliesNode()
+    {
+        var xElement = XElement.Parse(@"
+<Costura>
+    <UnmanagedWinArm64Assemblies>
+Foo
+Bar
+    </UnmanagedWinArm64Assemblies>
+</Costura>");
+        var config = new Configuration(xElement);
+        Assert.That(config.UnmanagedWinArm64Assemblies[0], Is.EqualTo("Foo"));
+        Assert.That(config.UnmanagedWinArm64Assemblies[1], Is.EqualTo("Bar"));
+    }
+
+    [Test]
+    public void UnmanagedArm64AssembliesAttribute()
+    {
+        var xElement = XElement.Parse(@"
+<Costura UnmanagedWinArm64Assemblies='Foo|Bar'/>");
+        var config = new Configuration(xElement);
+        Assert.That(config.UnmanagedWinArm64Assemblies[0], Is.EqualTo("Foo"));
+        Assert.That(config.UnmanagedWinArm64Assemblies[1], Is.EqualTo("Bar"));
+    }
+
+    [Test]
+    public void UnmanagedArm64AssembliesCombined()
+    {
+        var xElement = XElement.Parse(@"
+<Costura UnmanagedWinArm64Assemblies='Foo'>
+    <UnmanagedWinArm64Assemblies>
+Bar
+    </UnmanagedWinArm64Assemblies>
+</Costura>");
+        var config = new Configuration(xElement);
+        Assert.That(config.UnmanagedWinArm64Assemblies[0], Is.EqualTo("Foo"));
+        Assert.That(config.UnmanagedWinArm64Assemblies[1], Is.EqualTo("Bar"));
     }
 
     [Test]
@@ -295,8 +428,8 @@ Bar
     </PreloadOrder>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.AreEqual("Foo", config.PreloadOrder[0]);
-        Assert.AreEqual("Bar", config.PreloadOrder[1]);
+        Assert.That(config.PreloadOrder[0], Is.EqualTo("Foo"));
+        Assert.That(config.PreloadOrder[1], Is.EqualTo("Bar"));
     }
 
     [Test]
@@ -305,8 +438,8 @@ Bar
         var xElement = XElement.Parse(@"
 <Costura PreloadOrder='Foo|Bar'/>");
         var config = new Configuration(xElement);
-        Assert.AreEqual("Foo", config.PreloadOrder[0]);
-        Assert.AreEqual("Bar", config.PreloadOrder[1]);
+        Assert.That(config.PreloadOrder[0], Is.EqualTo("Foo"));
+        Assert.That(config.PreloadOrder[1], Is.EqualTo("Bar"));
     }
 
     [Test]
@@ -319,8 +452,8 @@ Bar
     </PreloadOrder>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.AreEqual("Foo", config.PreloadOrder[0]);
-        Assert.AreEqual("Bar", config.PreloadOrder[1]);
+        Assert.That(config.PreloadOrder[0], Is.EqualTo("Foo"));
+        Assert.That(config.PreloadOrder[1], Is.EqualTo("Bar"));
     }
 
     [Test]
@@ -330,6 +463,6 @@ Bar
 <Costura IgnoreSatelliteAssemblies='True'>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.True(config.IgnoreSatelliteAssemblies);
+        Assert.That(config.IgnoreSatelliteAssemblies, Is.True);
     }
 }

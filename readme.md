@@ -1,14 +1,16 @@
-### <img src="https://raw.githubusercontent.com/Fody/Costura/master/package_icon.png" height="28px"> Costura is an add-in for [Fody](https://github.com/Fody/Home/)
+### <img src="./design/logo/package_icon.png" height="28px"> Costura is an add-in for [Fody](https://github.com/Fody/Home/)
 
 Embeds dependencies as resources.
 
 [![Chat on Gitter](https://img.shields.io/gitter/room/fody/fody.svg)](https://gitter.im/Fody/Fody)
 [![NuGet Status](https://img.shields.io/nuget/v/Costura.Fody.svg)](https://www.nuget.org/packages/Costura.Fody/)
 
+**See [Milestones](../../milestones?state=closed) for release notes.**
+
 
 ### This is an add-in for [Fody](https://github.com/Fody/Home/)
 
-**It is expected that all developers using Fody either [become a Patron on OpenCollective](https://opencollective.com/fody/contribute/patron-3059), or have a [Tidelift Subscription](https://tidelift.com/subscription/pkg/nuget-fody?utm_source=nuget-fody&utm_medium=referral&utm_campaign=enterprise). [See Licensing/Patron FAQ](https://github.com/Fody/Home/blob/master/pages/licensing-patron-faq.md) for more information.**
+**It is expected that all developers using Fody [become a Patron on OpenCollective](https://opencollective.com/fody/contribute/patron-3059). [See Licensing/Patron FAQ](https://github.com/Fody/Home/blob/master/pages/licensing-patron-faq.md) for more information.**
 
 
 ### !!! READ THIS !!! Package is in maintenance mode !!! READ THIS !!!
@@ -30,7 +32,7 @@ Therefore we **strongly recommend** to try out the alternatives mentioned above.
 * Library linking (e.g. embed dependencies in library projects)
 * Exe linking (e.g. embed dependencies in exe projects)
 * Windows platforms
-* Any advanced scenario that you are not willing to contribute (money, PR, etc) **after discussing with the core contributes first**
+* Any advanced scenario that you are not willing to contribute (money, PR, etc) **after discussing with the core contributors first**
 
 #### Non-supported use cases
 
@@ -179,6 +181,20 @@ As part of Costura, embedded assemblies are no longer included as part of the bu
 ```
 
 
+
+### DisableEventSubscription
+
+The attach method no longer subscribes to the `AppDomain.AssemblyResolve` (.NET 4.x) and `AssemblyLoadContext.Resolving` (.NET 6.0+) events.
+
+**Only use in advanced scenarios (e.g. plugins where only the host should resolve the assemblies).**
+
+*Defaults to `false`*
+
+```xml
+<Costura DisableEventSubscription='true' />
+```
+
+
 ### LoadAtModuleInit
 
 Costura by default will load as part of the module initialization. This flag disables that behaviour. Make sure you call `CosturaUtility.Initialize()` somewhere in your code.
@@ -263,7 +279,7 @@ Or as an attribute with items delimited by a pipe `|`.
 ```
 
 
-### Unmanaged32Assemblies & Unmanaged64Assemblies
+### Unmanaged32Assemblies & Unmanaged64Assemblies & UnmanagedArm64Assemblies
 
 Mixed-mode assemblies cannot be loaded the same way as managed assemblies.
 
@@ -279,14 +295,18 @@ As an element with items delimited by a newline.
 
 ```xml
 <Costura>
-  <Unmanaged32Assemblies>
+  <UnmanagedWinX86Assemblies>
     Foo32
     Bar32
-  </Unmanaged32Assemblies>
-  <Unmanaged64Assemblies>
+  </UnmanagedWinX86Assemblies>
+  <UnmanagedWinX64Assemblies>
     Foo64
     Bar64
-  </Unmanaged64Assemblies>
+  </UnmanagedWinX64Assemblies>
+  <UnmanagedWinArm64Assemblies>
+    FooArm64
+    BarArm64
+  </UnmanagedWinArm64Assemblies>
 </Costura>
 ```
 
@@ -294,14 +314,15 @@ Or as a attribute with items delimited by a pipe `|`.
 
 ```xml
 <Costura
-    Unmanaged32Assemblies='Foo32|Bar32' 
-    Unmanaged64Assemblies='Foo64|Bar64' />
+    UnmanagedWinX86Assemblies='Foo32|Bar32' 
+    UnmanagedWinX64Assemblies='Foo64|Bar64' 
+    UnmanagedWinArm64Assemblies='FooArm64|BarArm64'/>
 ```
 
 
 ### Native Libraries and PreloadOrder
 
-Native libraries can be loaded by Costura automatically. To include a native library include it in your project as an Embedded Resource in a folder called `costura32` or `costura64` depending on the bittyness of the library.
+Native libraries can be loaded by Costura automatically. To include a native library include it in your project as an Embedded Resource in a folder called `costuraX86`, `costuraX64` or `costuraArm64` depending on the runtime platform of the library.
 
 Optionally you can also specify the order that preloaded libraries are loaded. When using temporary assemblies from disk mixed mode assemblies are also preloaded.
 

@@ -79,21 +79,12 @@ public class WpfProcessor : ProcessorBase
                 PlatformTarget = PlatformTarget.MSIL
             };
 
-            ConfigureMsBuild(BuildContext, msBuildSettings, wpfApp);
+            ConfigureMsBuild(BuildContext, msBuildSettings, wpfApp, "build");
 
             // Always disable SourceLink
             msBuildSettings.WithProperty("EnableSourceLink", "false");
 
-            // Note: we need to set OverridableOutputPath because we need to be able to respect
-            // AppendTargetFrameworkToOutputPath which isn't possible for global properties (which
-            // are properties passed in using the command line)
-            var outputDirectory = GetProjectOutputDirectory(BuildContext, wpfApp);
-            CakeContext.Information("Output directory: '{0}'", outputDirectory);
-            msBuildSettings.WithProperty("OverridableOutputRootPath", BuildContext.General.OutputRootDirectory);
-            msBuildSettings.WithProperty("OverridableOutputPath", outputDirectory);
-            msBuildSettings.WithProperty("PackageOutputPath", BuildContext.General.OutputRootDirectory);
-
-            RunMsBuild(BuildContext, wpfApp, projectFileName, msBuildSettings);
+            RunMsBuild(BuildContext, wpfApp, projectFileName, msBuildSettings, "build");
         }
     }
 
@@ -137,9 +128,9 @@ public class WpfProcessor : ProcessorBase
 
         foreach (var wpfApp in BuildContext.Wpf.Items)
         {
-            if (!ShouldDeployProject(BuildContext, wpfApp))
+            if (!ShouldPackageProject(BuildContext, wpfApp))
             {
-                CakeContext.Information($"WPF app '{wpfApp}' should not be deployed");
+                CakeContext.Information($"WPF app '{wpfApp}' should not be packaged");
                 continue;
             }
 
@@ -164,26 +155,11 @@ public class WpfProcessor : ProcessorBase
                 CakeContext.DeleteFiles(filesToDelete);
             }
 
-            // We know we *highly likely* need to sign, so try doing this upfront
-            if (!string.IsNullOrWhiteSpace(BuildContext.General.CodeSign.CertificateSubjectName))
+            if (BuildContext.General.CodeSign.IsAvailable ||
+                BuildContext.General.AzureCodeSign.IsAvailable)
             {
-                BuildContext.CakeContext.Information("Searching for packagable files to sign:");
-
-                var projectFilesToSign = new List<FilePath>();
-
-                var exeSignFilesSearchPattern = $"{BuildContext.General.OutputRootDirectory}/{wpfApp}/**/*.exe";
-                BuildContext.CakeContext.Information($"  - {exeSignFilesSearchPattern}");
-                projectFilesToSign.AddRange(BuildContext.CakeContext.GetFiles(exeSignFilesSearchPattern));
-
-                var dllSignFilesSearchPattern = $"{BuildContext.General.OutputRootDirectory}/{wpfApp}/**/*.dll";
-                BuildContext.CakeContext.Information($"  - {dllSignFilesSearchPattern}");
-                projectFilesToSign.AddRange(BuildContext.CakeContext.GetFiles(dllSignFilesSearchPattern));
-
-                var signToolCommand = string.Format("sign /a /t {0} /n {1}", BuildContext.General.CodeSign.TimeStampUri, 
-                    BuildContext.General.CodeSign.CertificateSubjectName);
-
-                SignFiles(BuildContext, signToolCommand, projectFilesToSign);
-            }            
+                SignFilesInDirectory(BuildContext, outputDirectory, string.Empty);
+            }       
             else
             {
                 BuildContext.CakeContext.Warning("No signing certificate subject name provided, not signing any files");

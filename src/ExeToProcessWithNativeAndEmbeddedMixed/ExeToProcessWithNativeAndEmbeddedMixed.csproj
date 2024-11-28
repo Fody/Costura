@@ -1,27 +1,31 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
   <PropertyGroup>
-    <TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net472;net8.0</TargetFrameworks>
     <DisableFody>true</DisableFody>
     <OutputType>Exe</OutputType>
     <PlatformTarget>x86</PlatformTarget>
     <NoWarn>$(NoWarn);NU1201</NoWarn>
     <NoError>$(NoError);NU1201</NoError>
   </PropertyGroup>
-  
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net472' ">
+    <RuntimeIdentifiers>win7-x86</RuntimeIdentifiers>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Include="..\ExeToProcess\Program.cs" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <ProjectReference Include="..\AssemblyToReferenceMixed\AssemblyToReferenceMixed.vcxproj"/>
   </ItemGroup>
-  
+
   <ItemGroup>
-    <EmbeddedResource Include="$(OverridableOutputRootPath)\AssemblyToReferenceNative\AssemblyToReferenceNative.dll"  PrivateAssets="All">
-      <Link>costura32\AssemblyToReferenceNative.dll</Link>
+    <EmbeddedResource Include="$(OverridableOutputRootPath)\AssemblyToReferenceNative\AssemblyToReferenceNative.dll" PrivateAssets="All">
+      <Link>costura-win-x86\AssemblyToReferenceNative.dll</Link>
     </EmbeddedResource>
-    <EmbeddedResource Include="$(OverridableOutputRootPath)\AssemblyToReferenceMixed\AssemblyToReferenceMixed.dll"  PrivateAssets="All">
-      <Link>costura32\AssemblyToReferenceMixed.dll</Link>
+    <EmbeddedResource Include="$(OverridableOutputRootPath)\AssemblyToReferenceMixed\AssemblyToReferenceMixed.dll" PrivateAssets="All">
+      <Link>costura-win-x86\AssemblyToReferenceMixed.dll</Link>
     </EmbeddedResource>
   </ItemGroup>
 

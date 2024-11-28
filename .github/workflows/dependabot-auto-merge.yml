@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Dependabot metadata
         id: dependabot-metadata
-        uses: dependabot/fetch-metadata@v1.1.1
+        uses: dependabot/fetch-metadata@5e5f99653a5b510e8555840e80cbf1514ad4af38 #2.1.0
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       - name: Approve Dependabot PR
@@ -28,7 +28,8 @@ jobs:
              startsWith(steps.dependabot-metadata.outputs.dependency-names, 'nunit') ||
              startsWith(steps.dependabot-metadata.outputs.dependency-names, 'nunit3testadapter') ||
              startsWith(steps.dependabot-metadata.outputs.dependency-names, 'orc.') || 
-             startsWith(steps.dependabot-metadata.outputs.dependency-names, 'orchestra.')) &&
+             startsWith(steps.dependabot-metadata.outputs.dependency-names, 'orchestra.') ||
+             startsWith(steps.dependabot-metadata.outputs.dependency-names, 'verify.')) &&
             (steps.dependabot-metadata.outputs.update-type == 'version-update:semver-minor' ||
              steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch')
         run: gh pr merge --auto --merge "$PR_URL"

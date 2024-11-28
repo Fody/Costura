@@ -1,7 +1,19 @@
 version: 2
+registries:
+  nuget-feed-default:
+    type: nuget-feed
+    url: https://api.nuget.org/v3/index.json
+
 updates:
-- package-ecosystem: nuget
+- package-ecosystem: github-actions
   directory: "/"
+  schedule:
+    interval: weekly
+
+- package-ecosystem: nuget
+  directories: 
+    - "/"
+    - "/src"
   schedule:
     interval: daily
   open-pull-requests-limit: 10
@@ -9,3 +21,5 @@ updates:
   - dependency-name: "*Analyzers"
     versions:
     - ">= 0"
+  registries:
+  - nuget-feed-default

@@ -46,7 +46,9 @@ internal static class Extensions
         // There's a bug in Mono.Cecil so when you access a resources data
         // the stream is not reset after use.
         var data = resource.GetResourceData();
+#pragma warning disable IDISP004 // Don't ignore created IDisposable
         resource.GetResourceStream().Position = 0;
+#pragma warning restore IDISP004 // Don't ignore created IDisposable
         return data;
     }
 }

@@ -1,8 +1,12 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
   <PropertyGroup>
-    <TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net472;net8.0</TargetFrameworks>
     <DisableFody>true</DisableFody>
     <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net472' ">
+    <RuntimeIdentifiers>win7-x86</RuntimeIdentifiers>
   </PropertyGroup>
   
   <ItemGroup>
