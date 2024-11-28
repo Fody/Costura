@@ -314,27 +314,7 @@ public class ComponentsProcessor : ProcessorBase
             BuildContext.CakeContext.LogSeparator();
         }
 
-        var codeSign = (!BuildContext.General.IsCiBuild && 
-                        !BuildContext.General.IsLocalBuild && 
-                        !string.IsNullOrWhiteSpace(BuildContext.General.CodeSign.CertificateSubjectName));
-        if (codeSign)
-        {
-            // For details, see https://docs.microsoft.com/en-us/nuget/create-packages/sign-a-package
-            // nuget sign MyPackage.nupkg -CertificateSubjectName <MyCertSubjectName> -Timestamper <TimestampServiceURL>
-            var filesToSign = CakeContext.GetFiles($"{BuildContext.General.OutputRootDirectory}/*.nupkg");
-            
-            foreach (var fileToSign in filesToSign)
-            {
-                CakeContext.Information($"Signing NuGet package '{fileToSign}' using certificate subject '{BuildContext.General.CodeSign.CertificateSubjectName}'");
-
-                var exitCode = CakeContext.StartProcess(BuildContext.General.NuGet.Executable, new ProcessSettings
-                {
-                    Arguments = $"sign \"{fileToSign}\" -CertificateSubjectName \"{BuildContext.General.CodeSign.CertificateSubjectName}\" -Timestamper \"{BuildContext.General.CodeSign.TimeStampUri}\""
-                });
-
-                CakeContext.Information("Signing NuGet package exited with '{0}'", exitCode);
-            }
-        }        
+        await SignNuGetPackageAsync();
     }
 
     public override async Task DeployAsync()
@@ -377,5 +357,23 @@ public class ComponentsProcessor : ProcessorBase
     public override async Task FinalizeAsync()
     {
 
+    }
+
+    private async Task SignNuGetPackageAsync()
+    {
+        if (BuildContext.General.IsCiBuild || 
+            BuildContext.General.IsLocalBuild)
+        {
+            return;
+        }
+
+        // For details, see https://docs.microsoft.com/en-us/nuget/create-packages/sign-a-package
+        // nuget sign MyPackage.nupkg -CertificateSubjectName <MyCertSubjectName> -Timestamper <TimestampServiceURL>
+        var filesToSign = CakeContext.GetFiles($"{BuildContext.General.OutputRootDirectory}/*.nupkg");
+        
+        foreach (var fileToSign in filesToSign)
+        {
+            SignNuGetPackage(BuildContext, fileToSign.FullPath);
+        }
     }
 }

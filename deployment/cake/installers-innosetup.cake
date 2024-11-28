@@ -73,33 +73,64 @@ public class InnoSetupInstaller : IInstaller
         fileContents = fileContents.Replace("[VERSION_DISPLAY]", BuildContext.General.Version.FullSemVer);
         fileContents = fileContents.Replace("[WIZARDIMAGEFILE]", string.Format("logo_large{0}", setupSuffix));
 
-        var signTool = string.Empty;
-        if (!string.IsNullOrWhiteSpace(BuildContext.General.CodeSign.CertificateSubjectName))
+        var signToolIndex = GetRandomSignToolIndex();
+
+        try
         {
-            signTool = string.Format("SignTool={0}", BuildContext.General.CodeSign.CertificateSubjectName);
+            var codeSignContext = BuildContext.General.CodeSign;
+            var azureCodeSignContext = BuildContext.General.AzureCodeSign;
+            
+            var signTool = string.Empty;
+
+            var signToolFileName = GetSignToolFileName(BuildContext);
+            if (!string.IsNullOrWhiteSpace(signToolFileName))
+            {
+                var signToolName = DateTime.Now.ToString("yyyyMMddHHmmss");
+                var signToolCommandLine = GetSignToolCommandLine(BuildContext);
+
+                BuildContext.CakeContext.Information("Adding random sign tool config for Inno Setup");
+
+                using (var registryKey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(GetRegistryKey(), true))
+                {
+                    var registryValueName = GetSignToolIndexName(signToolIndex);
+
+                    // Important: must end with "$f"
+                    var signToolRegistryValue = $"{signToolName}=\"{signToolFileName}\" {signToolCommandLine} \"$f\"";
+
+                    registryKey.SetValue(registryValueName, signToolRegistryValue);
+                }
+
+                signTool = string.Format("SignTool={0}", signToolName);
+            }
+
+            fileContents = fileContents.Replace("[SIGNTOOL]", signTool);
+            System.IO.File.WriteAllText(innoSetupScriptFileName, fileContents);
+
+            BuildContext.CakeContext.Information("Generating Inno Setup packages, this can take a while, especially when signing is enabled...");
+
+            BuildContext.CakeContext.InnoSetup(innoSetupScriptFileName, new InnoSetupSettings
+            {
+                OutputDirectory = innoSetupReleasesRoot
+            });
+
+            if (BuildContext.Wpf.UpdateDeploymentsShare)
+            {
+                BuildContext.CakeContext.Information("Copying Inno Setup files to deployments share at '{0}'", installersOnDeploymentsShare);
+
+                // Copy the following files:
+                // - Setup.exe => [projectName]-[version].exe
+                // - Setup.exe => [projectName]-[channel].exe
+
+                var installerSourceFile = System.IO.Path.Combine(innoSetupReleasesRoot, $"{projectName}_{BuildContext.General.Version.FullSemVer}.exe");
+                BuildContext.CakeContext.CopyFile(installerSourceFile, System.IO.Path.Combine(installersOnDeploymentsShare, $"{projectName}_{BuildContext.General.Version.FullSemVer}.exe"));
+                BuildContext.CakeContext.CopyFile(installerSourceFile, System.IO.Path.Combine(installersOnDeploymentsShare, $"{projectName}{setupSuffix}.exe"));
+            }
         }
-
-        fileContents = fileContents.Replace("[SIGNTOOL]", signTool);
-        System.IO.File.WriteAllText(innoSetupScriptFileName, fileContents);
-
-        BuildContext.CakeContext.Information("Generating Inno Setup packages, this can take a while, especially when signing is enabled...");
-
-        BuildContext.CakeContext.InnoSetup(innoSetupScriptFileName, new InnoSetupSettings
+        finally
         {
-            OutputDirectory = innoSetupReleasesRoot
-        });
+            BuildContext.CakeContext.Information("Removing random sign tool config for Inno Setup");
 
-        if (BuildContext.Wpf.UpdateDeploymentsShare)
-        {
-            BuildContext.CakeContext.Information("Copying Inno Setup files to deployments share at '{0}'", installersOnDeploymentsShare);
-
-            // Copy the following files:
-            // - Setup.exe => [projectName]-[version].exe
-            // - Setup.exe => [projectName]-[channel].exe
-
-            var installerSourceFile = System.IO.Path.Combine(innoSetupReleasesRoot, $"{projectName}_{BuildContext.General.Version.FullSemVer}.exe");
-            BuildContext.CakeContext.CopyFile(installerSourceFile, System.IO.Path.Combine(installersOnDeploymentsShare, $"{projectName}_{BuildContext.General.Version.FullSemVer}.exe"));
-            BuildContext.CakeContext.CopyFile(installerSourceFile, System.IO.Path.Combine(installersOnDeploymentsShare, $"{projectName}{setupSuffix}.exe"));
+            RemoveSignToolFromRegistry(signToolIndex);
         }
     }
     
@@ -221,5 +252,54 @@ public class InnoSetupInstaller : IInstaller
         BuildContext.CakeContext.CreateDirectory(installersOnDeploymentsShare);
 
         return installersOnDeploymentsShare;
+    }
+
+    //-------------------------------------------------------------
+      
+    private string GetRegistryKey()
+    {
+        return "Software\\Jordan Russell\\Inno Setup\\SignTools";
+    }
+
+    //-------------------------------------------------------------
+      
+    private int GetRandomSignToolIndex()
+    {
+        using (var registryKey = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(GetRegistryKey()))
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                var valueName = GetSignToolIndexName(i);
+
+                if (registryKey.GetValue(valueName) is null)
+                {
+                    // Immediately lock it
+                    registryKey.SetValue(valueName, "reserved");
+
+                    return i;
+                }
+            }
+        }
+        
+        throw new Exception("Could not find any empty slots for the sign tool, please clean up the sign tool registry for Inno Setup");
+    }
+
+    //-------------------------------------------------------------
+
+    private string GetSignToolIndexName(int index)
+    {
+        return $"SignTool{index}";
+    }
+
+    //-------------------------------------------------------------
+
+    private void RemoveSignToolFromRegistry(int index)
+    {
+        using (var registryKey = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(GetRegistryKey()))
+        {                
+            var valueName = GetSignToolIndexName(index);
+
+            registryKey.DeleteValue(valueName, false);
+        }
     }
 }
