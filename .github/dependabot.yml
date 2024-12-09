@@ -11,8 +11,7 @@ updates:
     interval: weekly
 
 - package-ecosystem: nuget
-  directories: 
-    - "/"
+  directories:
     - "/src"
   schedule:
     interval: daily
