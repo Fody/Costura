@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <ItemGroup>
+  <ItemGroup Label="RepositoryTemplate.XamlTools.Packages">
     <PackageReference Include="XAMLTools.MSBuild" Version="1.0.0-alpha0085" PrivateAssets="all" />
   </ItemGroup>
 
@@ -22,7 +22,7 @@
   </ItemGroup>
   -->
 
-  <ItemGroup>
+  <ItemGroup Label="RepositoryTemplate.XamlTools.Items">
     <Page Remove="Themes\Generic.XamlTools.Disabled.xaml" />
     <None Include="Themes\Generic.XamlTools.Disabled.xaml" />
 
@@ -30,7 +30,7 @@
     <None Include="Themes\Generic.XamlTools.Enabled.xaml" />
   </ItemGroup>
 
-  <PropertyGroup>
+  <PropertyGroup Label="RepositoryTemplate.XamlTools.Configuration">
     <XamlToolsDisable>false</XamlToolsDisable>
   </PropertyGroup>
 

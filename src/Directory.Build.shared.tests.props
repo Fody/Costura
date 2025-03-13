@@ -5,7 +5,7 @@
     <Import Project="$(MSBuildProjectDirectory)\..\Directory.Build.shared.tests.props" Condition="Exists('$(MSBuildProjectDirectory)\..\Directory.Build.shared.tests.props')" />
   -->
 
-  <PropertyGroup>
+  <PropertyGroup Label="RepositoryTemplate.Tests.Configuration">
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
@@ -18,7 +18,7 @@
   </Target>
   <!-- END: This is a buildtime work around for https://github.com/dotnet/corefx/issues/22101 -->
 
-  <ItemGroup>
+  <ItemGroup Label="RepositoryTemplate.Tests.Items">
     <Compile Remove="*.approved.cs;*.received.cs" />
   </ItemGroup>
 

@@ -5,13 +5,13 @@
     <Import Project="$(MSBuildProjectDirectory)\..\Directory.Build.shared.tools.props" Condition="Exists('$(MSBuildProjectDirectory)\..\Directory.Build.shared.tools.props')" />
   -->
 
-  <PropertyGroup>
+  <PropertyGroup Label="RepositoryTemplate.Tools.Configuration">
     <PackageSummary>$(Description)</PackageSummary>
     <ProjectSourceUrl>$(PackageProjectUrl)</ProjectSourceUrl>
     <ExtrasIncludeDefaultProjectBuildOutputInPackTarget>IncludeDefaultProjectBuildOutputInPack</ExtrasIncludeDefaultProjectBuildOutputInPackTarget>
   </PropertyGroup>
 
-  <ItemGroup>
+  <ItemGroup Label="RepositoryTemplate.Tests.Items">
     <ToolLegalFiles Include="$(OutputPath)\**\legal\*.txt" />
     <ToolDllFiles Include="$(OutputPath)\$(TargetFrameworks)\**\*.dll" />
     <ToolExeFiles Include="$(OutputPath)\$(TargetFrameworks)\**\*.exe" />

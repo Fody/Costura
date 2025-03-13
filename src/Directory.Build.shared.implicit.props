@@ -3,7 +3,7 @@
     This file applies to projects automatically, but should not contain any project-specific information so it can easily be replaced
   -->
   
-  <PropertyGroup>
+  <PropertyGroup Label="RepositoryTemplate.Implicit.Configuration">
     <NoWarn>$(NoWarn);CA1416;CS1591;CS1998;NU1603;NU1605;NU1608;NU1701;AD0001;HAA0301;HAA0302;HAA0303;HAA0401;HAA0603</NoWarn>
     <NoError>$(NoError);CS1591;CS1998;NU1603;NU1605;NU1608;NU1701;AD0001;HAA0301;HAA0302;HAA0303;HAA0401;HAA0603</NoError>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -30,38 +30,41 @@
   </Target>
   
   <!-- CSharp language -->
-  <PropertyGroup>
+  <PropertyGroup Label="RepositoryTemplate.Implicit.Configuration.Language">
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <!-- Enforce portable pdb format -->
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+  <PropertyGroup Label="RepositoryTemplate.Implicit.Configuration.Debugging.Release"
+                 Condition="'$(Configuration)'=='Release'">
     <DebugType>portable</DebugType>
     <!-- Debug symbols are required for ApiApprover -->
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
   <!-- Enforce debug for non-web assembly projects -->
-  <PropertyGroup Condition="'$(Configuration)' == 'Debug' And '$(RuntimeIdentifier)' != 'browser-wasm'">
+  <PropertyGroup Label="RepositoryTemplate.Implicit.Configuration.Debugging.Debug"
+                 Condition="'$(Configuration)' == 'Debug' And '$(RuntimeIdentifier)' != 'browser-wasm'">
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   
   <!-- Browser-wasm requires portable debug type -->
-  <PropertyGroup Condition="'$(Configuration)' == 'Debug' And '$(RuntimeIdentifier)' == 'browser-wasm'">
+  <PropertyGroup Label="RepositoryTemplate.Implicit.Configuration.Debugging.Debug.Wasm" 
+                 Condition="'$(Configuration)' == 'Debug' And '$(RuntimeIdentifier)' == 'browser-wasm'">
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
   <!-- NuGet auditing, see https://learn.microsoft.com/en-us/nuget/concepts/auditing-packages -->
-  <PropertyGroup>
+  <PropertyGroup Label="RepositoryTemplate.Implicit.Configuration.NuGet">
     <!-- 'all' means even indirect packages, 'direct' means only direct dependencies -->
     <NuGetAuditMode>direct</NuGetAuditMode>
     <!-- Low means even low vulnerabilities will be reported -->
     <NuGetAuditLevel>low</NuGetAuditLevel>
   </PropertyGroup>
 
-  <ItemGroup>
+  <ItemGroup Label="RepositoryTemplate.Implicit.Items">
     <Compile Include="..\*.cs">
       <SonarQubeExclude>true</SonarQubeExclude>
     </Compile>
