@@ -8,6 +8,7 @@
   <PropertyGroup Label="RepositoryTemplate.Tests.Configuration">
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
+    <SonarQubeExclude>true</SonarQubeExclude>
   </PropertyGroup>
 
   <!-- START: This is a buildtime work around for https://github.com/dotnet/corefx/issues/22101 -->
