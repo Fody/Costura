@@ -232,25 +232,31 @@ IL_0013:  ret
 .method private hidebysig static uint8[]
 ReadStream(class [System.Private.CoreLib]System.IO.Stream 'stream') cil managed
 {
-.maxstack  4
-.locals init (uint8[] V_0)
-IL_0000:  ldarg.0
-IL_0001:  callvirt   instance int64 [System.Private.CoreLib]System.IO.Stream::get_Length()
-IL_0006:  conv.ovf.i
-IL_0007:  newarr     [System.Private.CoreLib]System.Byte
-IL_000c:  stloc.0
-IL_000d:  ldarg.0
-IL_000e:  ldloc.0
-IL_000f:  ldc.i4.0
-IL_0010:  ldloc.0
-IL_0011:  ldlen
-IL_0012:  conv.i4
-IL_0013:  callvirt   instance int32 [System.Private.CoreLib]System.IO.Stream::Read(uint8[],
-int32,
-int32)
-IL_0018:  pop
+.maxstack  2
+.locals init (class [System.Private.CoreLib]System.IO.MemoryStream V_0,
+uint8[] V_1)
+IL_0000:  newobj     instance void [System.Private.CoreLib]System.IO.MemoryStream::.ctor()
+IL_0005:  stloc.0
+.try
+{
+IL_0006:  ldarg.0
+IL_0007:  ldloc.0
+IL_0008:  callvirt   instance void [System.Private.CoreLib]System.IO.Stream::CopyTo(class [System.Private.CoreLib]System.IO.Stream)
+IL_000d:  ldloc.0
+IL_000e:  callvirt   instance uint8[] [System.Private.CoreLib]System.IO.MemoryStream::ToArray()
+IL_0013:  stloc.1
+IL_0014:  leave.s    IL_0020
+}  // end .try
+finally
+{
+IL_0016:  ldloc.0
+IL_0017:  brfalse.s  IL_001f
 IL_0019:  ldloc.0
-IL_001a:  ret
+IL_001a:  callvirt   instance void [System.Private.CoreLib]System.IDisposable::Dispose()
+IL_001f:  endfinally
+}  // end handler
+IL_0020:  ldloc.1
+IL_0021:  ret
 }
 .method private hidebysig static class [System.Private.CoreLib]System.Reflection.Assembly
 ReadFromEmbeddedResources(class [System.Private.CoreLib]System.Collections.Generic.Dictionary`2<string,string> assemblyNames,
