@@ -2,6 +2,7 @@
 #l "installers-innosetup.cake"
 #l "installers-msix.cake"
 #l "installers-squirrel.cake"
+#l "installers-velopack.cake"
 
 using System.Diagnostics;
 
@@ -116,6 +117,7 @@ public class InstallerIntegration : IntegrationBase
         _installers.Add(new InnoSetupInstaller(buildContext));
         _installers.Add(new MsixInstaller(buildContext));
         _installers.Add(new SquirrelInstaller(buildContext));
+        _installers.Add(new VelopackInstaller(buildContext));
     }
 
     public string GetDeploymentChannelSuffix(string prefix = "_", string suffix = "")
