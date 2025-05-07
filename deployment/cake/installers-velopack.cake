@@ -1,21 +1,24 @@
-#addin "nuget:?package=Cake.Squirrel&version=0.15.2"
-
-#tool "nuget:?package=Squirrel.Windows&version=2.0.1"
+#tool "dotnet:?package=vpk&version=0.0.1053"
 
 //-------------------------------------------------------------
 
-public class SquirrelInstaller : IInstaller
+public class VelopackInstaller : IInstaller
 {
-    public SquirrelInstaller(BuildContext buildContext)
+    public VelopackInstaller(BuildContext buildContext)
     {
         BuildContext = buildContext;
 
-        IsEnabled = BuildContext.BuildServer.GetVariableAsBool("SquirrelEnabled", true, showValue: true);
+        IsEnabled = BuildContext.BuildServer.GetVariableAsBool("VelopackEnabled", false, showValue: true);
 
         if (IsEnabled)
         {
-            // In the future, check if Squirrel is installed. Log error if not
             IsAvailable = IsEnabled;
+
+            // Protection
+            if (BuildContext.BuildServer.GetVariableAsBool("SquirrelEnabled", true, showValue: true))
+            {
+                throw new Exception("Both Velopack and Squirrel are enabled, make sure to disable Squirrel when migrating to Velopack");
+            }
         }
     }
 
@@ -31,7 +34,7 @@ public class SquirrelInstaller : IInstaller
     {
         if (!IsAvailable)
         {
-            BuildContext.CakeContext.Information("Squirrel is not enabled or available, skipping integration");
+            BuildContext.CakeContext.Information("Velopack is not enabled or available, skipping integration");
             return;
         }
 
@@ -44,115 +47,37 @@ public class SquirrelInstaller : IInstaller
         // Updates will only be applied to non-major updates. This allows manual migration to
         // new major versions, which is very useful when there are dependencies that need to
         // be updated before a new major version can be switched to.
-        var squirrelOutputRoot = System.IO.Path.Combine(BuildContext.General.OutputRootDirectory, "squirrel", projectName);
+        var velopackOutputRoot = System.IO.Path.Combine(BuildContext.General.OutputRootDirectory, "velopack", projectName);
 
         if (BuildContext.Wpf.GroupUpdatesByMajorVersion)
         {
-            squirrelOutputRoot = System.IO.Path.Combine(squirrelOutputRoot, BuildContext.General.Version.Major);
+            velopackOutputRoot = System.IO.Path.Combine(velopackOutputRoot, BuildContext.General.Version.Major);
         }
 
-        squirrelOutputRoot = System.IO.Path.Combine(squirrelOutputRoot, channel);
+        velopackOutputRoot = System.IO.Path.Combine(velopackOutputRoot, channel);
 
-        var squirrelReleasesRoot = System.IO.Path.Combine(squirrelOutputRoot, "releases");
-        var squirrelOutputIntermediate = System.IO.Path.Combine(squirrelOutputRoot, "intermediate");
+        var velopackReleasesRoot = System.IO.Path.Combine(velopackOutputRoot, "releases");
 
-        var nuSpecTemplateFileName = System.IO.Path.Combine(".", "deployment", "squirrel", "template", $"{projectName}.nuspec");
-        var nuSpecFileName = System.IO.Path.Combine(squirrelOutputIntermediate, $"{projectName}.nuspec");
-        var nuGetFileName = System.IO.Path.Combine(squirrelOutputIntermediate, $"{projectName}.{BuildContext.General.Version.NuGet}.nupkg");
+        BuildContext.CakeContext.LogSeparator($"Packaging WPF app '{projectName}' using Velopack");
 
-        if (!BuildContext.CakeContext.FileExists(nuSpecTemplateFileName))
-        {
-            BuildContext.CakeContext.Information($"Skip packaging of WPF app '{projectName}' using Squirrel since no Squirrel template is present");
-            return;
-        }
-
-        BuildContext.CakeContext.LogSeparator($"Packaging WPF app '{projectName}' using Squirrel");
-
-        BuildContext.CakeContext.CreateDirectory(squirrelReleasesRoot);
-        BuildContext.CakeContext.CreateDirectory(squirrelOutputIntermediate);
-
-        // Set up Squirrel nuspec
-        BuildContext.CakeContext.CopyFile(nuSpecTemplateFileName, nuSpecFileName);
+        BuildContext.CakeContext.CreateDirectory(velopackReleasesRoot);
 
         var setupSuffix = BuildContext.Installer.GetDeploymentChannelSuffix();
         
-        // Squirrel does not seem to support . in the names
+        // Velopack does not seem to support . in the names (keeping same behavior as Squirrel)
         var projectSlug = GetProjectSlug(projectName, "_");
 
-        BuildContext.CakeContext.TransformConfig(nuSpecFileName,
-            new TransformationCollection 
-            {
-                { "package/metadata/id", $"{projectSlug}{setupSuffix}" },
-                { "package/metadata/version", BuildContext.General.Version.NuGet },
-                { "package/metadata/authors", BuildContext.General.Copyright.Company },
-                { "package/metadata/owners", BuildContext.General.Copyright.Company },
-                { "package/metadata/copyright", string.Format("Copyright © {0} {1} - {2}", BuildContext.General.Copyright.Company, BuildContext.General.Copyright.StartYear, DateTime.Now.Year) },
-            });
-
-        var fileContents = System.IO.File.ReadAllText(nuSpecFileName);
-        fileContents = fileContents.Replace("[CHANNEL_SUFFIX]", setupSuffix);
-        fileContents = fileContents.Replace("[CHANNEL]", BuildContext.Installer.GetDeploymentChannelSuffix(" (", ")"));
-        System.IO.File.WriteAllText(nuSpecFileName, fileContents);
-
-        // Copy all files to the lib so Squirrel knows what to do
+        // Copy all files to the lib so Velopack knows what to do
         var appSourceDirectory = System.IO.Path.Combine(BuildContext.General.OutputRootDirectory, projectName);
-        var appTargetDirectory = System.IO.Path.Combine(squirrelOutputIntermediate, "lib");
 
-        BuildContext.CakeContext.Information($"Copying files from '{appSourceDirectory}' => '{appTargetDirectory}'");
+        // Note: there should be only a single target framework, but pick the highest
+        var subDirectories = System.IO.Directory.GetDirectories(appSourceDirectory);
+        appSourceDirectory = subDirectories.Last();
 
-        BuildContext.CakeContext.CopyDirectory(appSourceDirectory, appTargetDirectory);
-
-        var squirrelSourceFile = BuildContext.CakeContext.GetFiles("./tools/squirrel.windows.*/tools/Squirrel.exe").Single();
-
-        // We need to be 1 level deeper, let's just walk each directory in case we can support multi-platform releases
-        // in the future
-        foreach (var subDirectory in BuildContext.CakeContext.GetSubDirectories(appTargetDirectory))
-        {
-            var squirrelTargetFile = System.IO.Path.Combine(appTargetDirectory, subDirectory.Segments[subDirectory.Segments.Length - 1], "Squirrel.exe");
-
-            BuildContext.CakeContext.Information($"Copying Squirrel.exe to support self-updates from '{squirrelSourceFile}' => '{squirrelTargetFile}'");
-
-            BuildContext.CakeContext.CopyFile(squirrelSourceFile, squirrelTargetFile);
-        }
-
-        // Make sure all files are signed before we package them for Squirrel (saves potential errors occurring later in squirrel releasify)
-        var signToolCommand = string.Empty;
-
-        if (!string.IsNullOrWhiteSpace(BuildContext.General.CodeSign.CertificateSubjectName))
-        {
-            // Note: Squirrel uses it's own sign tool, so make sure to follow their specs
-            signToolCommand = string.Format("/a /t {0} /n {1}", BuildContext.General.CodeSign.TimeStampUri, 
-                BuildContext.General.CodeSign.CertificateSubjectName);
-        }
-
-        var nuGetSettings  = new NuGetPackSettings
-        {
-            NoPackageAnalysis = true,
-            OutputDirectory = squirrelOutputIntermediate,
-            Verbosity = NuGetVerbosity.Detailed,
-        };
-
-        // Fix for target framework issues (platform == windows 7)
-        nuGetSettings.Properties.Add("TargetPlatformVersion", "7.0");
-
-        // Create NuGet package
-        BuildContext.CakeContext.NuGetPack(nuSpecFileName, nuGetSettings);
-
-        // Rename so we have the right nuget package file names (without the channel)
-        if (!string.IsNullOrWhiteSpace(setupSuffix))
-        {
-            var sourcePackageFileName = System.IO.Path.Combine(squirrelOutputIntermediate, $"{projectSlug}{setupSuffix}.{BuildContext.General.Version.NuGet}.nupkg");
-            var targetPackageFileName = System.IO.Path.Combine(squirrelOutputIntermediate, $"{projectName}.{BuildContext.General.Version.NuGet}.nupkg");
-
-            BuildContext.CakeContext.Information($"Moving file from '{sourcePackageFileName}' => '{targetPackageFileName}'");
-
-            BuildContext.CakeContext.MoveFile(sourcePackageFileName, targetPackageFileName);
-        }
-
-        // Copy deployments share to the intermediate root so we can locally create the Squirrel releases
+        // Copy deployments share to the intermediate root so we can locally create the releases
         
         var releasesSourceDirectory = GetDeploymentsShareRootDirectory(projectName, channel);
-        var releasesTargetDirectory = squirrelReleasesRoot;
+        var releasesTargetDirectory = velopackReleasesRoot;
 
         BuildContext.CakeContext.CreateDirectory(releasesSourceDirectory);
         BuildContext.CakeContext.CreateDirectory(releasesTargetDirectory);
@@ -161,45 +86,96 @@ public class SquirrelInstaller : IInstaller
 
         BuildContext.CakeContext.CopyDirectory(releasesSourceDirectory, releasesTargetDirectory);
 
-        // Squirrelify!
-        var squirrelSettings = new SquirrelSettings();
-        squirrelSettings.Silent = false;
-        squirrelSettings.NoMsi = false;
-        squirrelSettings.ReleaseDirectory = squirrelReleasesRoot;
-        squirrelSettings.LoadingGif = System.IO.Path.Combine(".", "deployment", "squirrel", "loading.gif");
+        BuildContext.CakeContext.Information("Generating Velopack packages, this can take a while, especially when signing is enabled...");
+
+        // Pack using velopack (example command line: vpk pack -u YourAppId -v 1.0.0 -p publish -e yourMainBinary.exe)
+
+        var appId = $"{projectSlug}{setupSuffix}";
+
+        var argumentBuilder = new ProcessArgumentBuilder()
+            .Append("pack")
+            .Append("--verbose")
+            .AppendSwitch("--packId", appId)
+            .AppendSwitch("--packVersion", BuildContext.General.Version.NuGet)
+            .AppendSwitch("--packDir", appSourceDirectory)
+            .AppendSwitch("--packAuthors", BuildContext.General.Copyright.Company)
+            .AppendSwitch("--delta", "BestSpeed")
+            .AppendSwitch("--outputDir", velopackReleasesRoot);
+
+        // TODO: Consider adding splash image
 
         // Note: this is not really generic, but this is where we store our icons file, we can
         // always change this in the future
         var iconFileName = System.IO.Path.Combine(".", "design", "logo", $"logo{setupSuffix}.ico");
-        squirrelSettings.Icon = iconFileName;
-        squirrelSettings.SetupIcon = iconFileName;
+        argumentBuilder = argumentBuilder
+            .AppendSwitch("--icon", iconFileName);
 
-        if (!string.IsNullOrWhiteSpace(signToolCommand))
+        // --signTemplate {{file}} will be substituted
+        // Note that we need to replace / by \ on Windows
+        var signToolExe = GetSignToolFileName(BuildContext).Replace("/", "\\");
+        var signToolCommandLine = GetSignToolCommandLine(BuildContext);
+        if (!string.IsNullOrWhiteSpace(signToolExe) &&
+            !string.IsNullOrWhiteSpace(signToolCommandLine))
         {
-            squirrelSettings.SigningParameters = signToolCommand;
+            // In order to work around a double quote issue (C:\Program Files (x86)\Windows Kits\10\bin\10.0.26100.0\x64\signtool.exe),
+            // if 'signtool.exe' is used, use signParams instead
+            if (signToolExe.EndsWith("\\signtool.exe"))
+            {
+                if (signToolCommandLine.StartsWith("sign "))
+                {
+                    signToolCommandLine = signToolCommandLine.Substring("sign ".Length);
+                }
+
+                argumentBuilder = argumentBuilder
+                    .AppendSwitch("--signParams", $"\"{signToolCommandLine}\"");
+            }
+            else
+            {
+                argumentBuilder = argumentBuilder
+                    .AppendSwitch("--signTemplate", $"\"{signToolExe} {signToolCommandLine} {{{{file}}}}\"");
+            }       
+       }
+
+    	var vpkToolExe = BuildContext.CakeContext.Tools.Resolve("vpk.exe");
+
+        var vpkToolExitCode = BuildContext.CakeContext.StartProcess(vpkToolExe,
+            new ProcessSettings
+            {    
+                Arguments = argumentBuilder
+            }
+        );
+
+        if (vpkToolExitCode != 0)
+        {
+            throw new Exception("Failed to pack application");
         }
 
-        BuildContext.CakeContext.Information("Generating Squirrel packages, this can take a while, especially when signing is enabled...");
-
-        BuildContext.CakeContext.Squirrel(nuGetFileName, squirrelSettings, true, false);
+        // Copy setup
+        BuildContext.CakeContext.CopyFile(System.IO.Path.Combine(velopackReleasesRoot, $"{appId}-win-Setup.exe"), System.IO.Path.Combine(velopackReleasesRoot, "Setup.exe"));
 
         if (BuildContext.Wpf.UpdateDeploymentsShare)
         {
-            BuildContext.CakeContext.Information($"Copying updated Squirrel files back to deployments share at '{releasesSourceDirectory}'");
+            BuildContext.CakeContext.Information($"Copying updated Velopack files back to deployments share at '{releasesSourceDirectory}'");
 
             // Copy the following files:
             // - [version]-delta.nupkg
             // - [version]-full.nupkg
             // - Setup.exe => Setup.exe & WpfApp.exe
-            // - Setup.msi
+            // - releases.win.json
             // - RELEASES
 
-            var squirrelFiles = BuildContext.CakeContext.GetFiles($"{squirrelReleasesRoot}/{projectSlug}{setupSuffix}-{BuildContext.General.Version.NuGet}*.nupkg");
-            BuildContext.CakeContext.CopyFiles(squirrelFiles, releasesSourceDirectory);
-            BuildContext.CakeContext.CopyFile(System.IO.Path.Combine(squirrelReleasesRoot, "Setup.exe"), System.IO.Path.Combine(releasesSourceDirectory, "Setup.exe"));
-            BuildContext.CakeContext.CopyFile(System.IO.Path.Combine(squirrelReleasesRoot, "Setup.exe"), System.IO.Path.Combine(releasesSourceDirectory, $"{projectName}.exe"));
-            BuildContext.CakeContext.CopyFile(System.IO.Path.Combine(squirrelReleasesRoot, "Setup.msi"), System.IO.Path.Combine(releasesSourceDirectory, "Setup.msi"));
-            BuildContext.CakeContext.CopyFile(System.IO.Path.Combine(squirrelReleasesRoot, "RELEASES"), System.IO.Path.Combine(releasesSourceDirectory, "RELEASES"));
+            // Note to consider in future: this stores (and uploads) the same file 4 times. Maybe we need to stop processing so many files
+            // to save time on uploads (and eventually money on storage)
+            var velopackFiles = BuildContext.CakeContext.GetFiles($"{velopackReleasesRoot}/{appId}-{BuildContext.General.Version.NuGet}*.nupkg");
+            BuildContext.CakeContext.CopyFiles(velopackFiles, releasesSourceDirectory);
+            BuildContext.CakeContext.CopyFile(System.IO.Path.Combine(velopackReleasesRoot, $"{appId}-win-Portable.exe"), System.IO.Path.Combine(releasesSourceDirectory, $"{appId}-win-Portable.exe"));
+            BuildContext.CakeContext.CopyFile(System.IO.Path.Combine(velopackReleasesRoot, $"{appId}-win-Setup.exe"), System.IO.Path.Combine(releasesSourceDirectory, $"{appId}-win-Setup.exe"));
+            BuildContext.CakeContext.CopyFile(System.IO.Path.Combine(velopackReleasesRoot, "Setup.exe"), System.IO.Path.Combine(releasesSourceDirectory, "Setup.exe"));
+            BuildContext.CakeContext.CopyFile(System.IO.Path.Combine(velopackReleasesRoot, "Setup.exe"), System.IO.Path.Combine(releasesSourceDirectory, $"{projectName}.exe"));
+            BuildContext.CakeContext.CopyFile(System.IO.Path.Combine(velopackReleasesRoot, "releases.win.json"), System.IO.Path.Combine(releasesSourceDirectory, "releases.win.json"));
+            
+            // Note: RELEASES is there for backwards compatibility
+            BuildContext.CakeContext.CopyFile(System.IO.Path.Combine(velopackReleasesRoot, "RELEASES"), System.IO.Path.Combine(releasesSourceDirectory, "RELEASES"));
         }
     }
 
@@ -209,7 +185,7 @@ public class SquirrelInstaller : IInstaller
     {
         var deploymentTarget = new DeploymentTarget
         {
-            Name = "Squirrel"
+            Name = "Velopack"
         };
 
         var channels = new [] 
