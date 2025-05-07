@@ -10,19 +10,19 @@
     <PackageTags></PackageTags>
     <SonarQubeExclude>true</SonarQubeExclude>
     <DisableFody>true</DisableFody>
-    <NoWarn>$(NoWarn);NU1201</NoWarn>
+    <NoWarn>$(NoWarn);NU1201;CL0002</NoWarn>
     <NoError>$(NoError);NU1201</NoError>
     <LangVersion>11.0</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ApprovalTests" Version="6.0.0" />
     <PackageReference Include="FodyHelpers" Version="6.9.1" />
     <PackageReference Include="Fody" Version="6.9.1" PrivateAssets="none" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="NUnit" Version="4.3.2" PrivateAssets="all" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" PrivateAssets="all" />
+    <PackageReference Include="Verify.NUnit" Version="30.0.0" />
   </ItemGroup>
 
   <ItemGroup>
