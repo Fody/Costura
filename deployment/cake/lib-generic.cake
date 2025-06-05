@@ -326,7 +326,7 @@ private static string[] GetTargetFrameworks(BuildContext buildContext, string pr
     foreach (var propertyGroupElement in projectElement.Elements("PropertyGroup"))
     {
         // Step 1: check TargetFramework
-        var targetFrameworkElement = projectElement.Element("TargetFramework");
+        var targetFrameworkElement = propertyGroupElement.Element("TargetFramework");
         if (targetFrameworkElement != null)
         {
             targetFrameworks.Add(targetFrameworkElement.Value);
@@ -349,6 +349,50 @@ private static string[] GetTargetFrameworks(BuildContext buildContext, string pr
     }
 
     return targetFrameworks.ToArray();
+}
+
+//-------------------------------------------------------------
+
+private static string[] GetPlatformTargets(BuildContext buildContext, string projectName)
+{
+    var platformTargets = new List<string>();
+
+    var projectFileName = GetProjectFileName(buildContext, projectName);
+    var projectFileContents = System.IO.File.ReadAllText(projectFileName);
+
+    var xmlDocument = XDocument.Parse(projectFileContents);
+    var projectElement = xmlDocument.Root;
+
+    buildContext.CakeContext.Information("Searching for platform targets for project '{0}'", projectName);
+
+    foreach (var propertyGroupElement in projectElement.Elements("PropertyGroup"))
+    {
+        // Step 1: check TargetFramework
+        var platformTargetElement = propertyGroupElement.Element("PlatformTarget");
+        if (platformTargetElement is not null)
+        {
+            platformTargets.Add(platformTargetElement.Value);
+            break;
+        }
+
+        // Step 2: check TargetFrameworks
+        var platformTargetsElement = propertyGroupElement.Element("PlatformTargets");
+        if (platformTargetsElement is not null)
+        {
+            var value = platformTargetsElement.Value;
+            platformTargets.AddRange(value.Split(new[] { ';' }));
+            break;
+        }
+    }
+
+    if (platformTargets.Count == 0)
+    {
+        buildContext.CakeContext.Information("No platform targets could be detected for project '{0}', using default value 'AnyCPU'", projectName);
+
+        platformTargets.Add("AnyCPU"); // Default value if nothing is specified
+    }
+
+    return platformTargets.ToArray();
 }
 
 //-------------------------------------------------------------
@@ -384,7 +428,7 @@ private static void CleanProject(BuildContext buildContext, string projectName)
 
     buildContext.CakeContext.Information($"Investigating paths to clean up in '{projectDirectory}'");
 
-    var directoriesToDelete = new List<string>();
+    var directoriesToDelete = new HashSet<string>();
 
     var binDirectory = System.IO.Path.Combine(projectDirectory, "bin");
     directoriesToDelete.Add(binDirectory);
@@ -407,6 +451,12 @@ private static void CleanProject(BuildContext buildContext, string projectName)
 
         var x86Directory = System.IO.Path.Combine(projectDirectory, "x86");
         directoriesToDelete.Add(x86Directory);
+
+        var arm32Directory = System.IO.Path.Combine(projectDirectory, "ARM32");
+        directoriesToDelete.Add(arm32Directory);
+
+        var arm64Directory = System.IO.Path.Combine(projectDirectory, "ARM64");
+        directoriesToDelete.Add(arm64Directory);
     }
 
     foreach (var directoryToDelete in directoriesToDelete)
@@ -636,6 +686,8 @@ private static bool ShouldProcessProject(BuildContext buildContext, string proje
 
     return true;
 }
+
+//-------------------------------------------------------------
 
 private static string CreateInlinedProjectXml(BuildContext buildContext, string projectName)
 {
