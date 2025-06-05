@@ -192,17 +192,26 @@ Task("Clean")
         return;
     }
 
-    var platforms = new Dictionary<string, PlatformTarget>();
-    platforms["AnyCPU"] = PlatformTarget.MSIL;
-    platforms["x86"] = PlatformTarget.x86;
-    platforms["x64"] = PlatformTarget.x64;
-    platforms["arm"] = PlatformTarget.ARM;
+    // Note: this is all coming from the solution file, but the cake build solution parser
+    // unfortunately does not support the 'platform' attribute, so we have to assume all for now
+    //var solutionParser = buildContext.CakeContext.ParseSolution(buildContext.General.Solution.FileName);
 
-    foreach (var platform in platforms)
+    var platformTargets = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+    // These are well-known platform targets
+    platformTargets["AnyCPU"] = "Any CPU";
+    platformTargets["x86"] = "x86";
+    platformTargets["x86"] = "x64";
+    //platformTargets["Win32"] = "Win32";
+    //platformTargets["ARM"] = "ARM";
+    platformTargets["ARM32"] = "ARM32";
+    platformTargets["ARM64"] = "ARM64";
+
+    foreach (var platformTarget in platformTargets)
     {
         try
         {
-            Information("Cleaning output for platform '{0}'", platform.Value);
+            Information("Cleaning output for platform '{0}'", platformTarget.Value);
 
             var msBuildSettings = new MSBuildSettings
             {
@@ -210,10 +219,12 @@ Task("Clean")
                 ToolVersion = MSBuildToolVersion.Default,
                 Configuration = buildContext.General.Solution.ConfigurationName,
                 MSBuildPlatform = MSBuildPlatform.x86, // Always require x86, see platform for actual target platform
-                PlatformTarget = platform.Value
+                //PlatformTarget = platform.Value // use string variant
             };
 
-            ConfigureMsBuild(buildContext, msBuildSettings, platform.Key, "clean");
+            msBuildSettings = msBuildSettings.SetPlatformTarget(platformTarget.Value);
+
+            ConfigureMsBuild(buildContext, msBuildSettings, platformTarget.Value, "clean");
 
             msBuildSettings.Targets.Add("Clean");
 
@@ -221,7 +232,7 @@ Task("Clean")
         }
         catch (System.Exception ex)
         {
-            Warning("Failed to clean output for platform '{0}': {1}", platform.Value, ex.Message);
+            Warning("Failed to clean output for platform '{0}': {1}", platformTarget.Key, ex.Message);
         }
     }
 
