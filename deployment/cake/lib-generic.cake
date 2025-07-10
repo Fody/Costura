@@ -188,6 +188,8 @@ public enum TargetType
 {
     Unknown,
 
+    AspireProject,
+
     Component,
 
     DockerImage,
