@@ -13,6 +13,7 @@
 #l "generic-tasks.cake"
 #l "apps-uwp-tasks.cake"
 #l "apps-wpf-tasks.cake"
+#l "aspire-tasks.cake"
 #l "codesigning-tasks.cake"
 #l "components-tasks.cake"
 #l "dependencies-tasks.cake"
@@ -95,6 +96,7 @@ public class BuildContext : BuildContextBase
     public GeneralContext General { get; set; }
     public TestsContext Tests { get; set; }
 
+    public AspireContext Aspire { get; set; }
     public CodeSigningContext CodeSigning { get; set; }
     public ComponentsContext Components { get; set; }
     public DependenciesContext Dependencies { get; set; }
@@ -142,6 +144,7 @@ Setup<BuildContext>(setupContext =>
     buildContext.General = InitializeGeneralContext(buildContext, buildContext);
     buildContext.Tests = InitializeTestsContext(buildContext, buildContext);
 
+    buildContext.Aspire = InitializeAspireContext(buildContext, buildContext);
     buildContext.CodeSigning = InitializeCodeSigningContext(buildContext, buildContext);
     buildContext.Components = InitializeComponentsContext(buildContext, buildContext);
     buildContext.Dependencies = InitializeDependenciesContext(buildContext, buildContext);
@@ -168,6 +171,7 @@ Setup<BuildContext>(setupContext =>
     // Note: always put templates and dependencies processor first (it's a dependency after all)
     buildContext.Processors.Add(new TemplatesProcessor(buildContext));
     buildContext.Processors.Add(new DependenciesProcessor(buildContext));
+    buildContext.Processors.Add(new AspireProcessor(buildContext));
     buildContext.Processors.Add(new ComponentsProcessor(buildContext));
     buildContext.Processors.Add(new DockerImagesProcessor(buildContext));
     buildContext.Processors.Add(new GitHubPagesProcessor(buildContext));
@@ -235,6 +239,7 @@ Task("Prepare")
     .Does<BuildContext>(async buildContext =>
 {
     // Add all projects to registered projects
+    buildContext.RegisteredProjects.AddRange(buildContext.Aspire.Items);
     buildContext.RegisteredProjects.AddRange(buildContext.Components.Items);
     buildContext.RegisteredProjects.AddRange(buildContext.Dependencies.Items);
     buildContext.RegisteredProjects.AddRange(buildContext.DockerImages.Items);
@@ -259,6 +264,7 @@ Task("Prepare")
     }
 
     // Now add all projects, but dependencies first & tests last, which will be added at the end
+    buildContext.AllProjects.AddRange(buildContext.Aspire.Items);
     buildContext.AllProjects.AddRange(buildContext.Components.Items);
     buildContext.AllProjects.AddRange(buildContext.DockerImages.Items);
     buildContext.AllProjects.AddRange(buildContext.GitHubPages.Items);
