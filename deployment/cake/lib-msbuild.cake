@@ -1,5 +1,5 @@
-#addin "nuget:?package=Cake.Issues&version=5.7.0"
-#addin "nuget:?package=Cake.Issues.MsBuild&version=5.7.0"
+#addin "nuget:?package=Cake.Issues&version=5.8.0"
+#addin "nuget:?package=Cake.Issues.MsBuild&version=5.8.0"
 #addin "nuget:?package=System.Configuration.ConfigurationManager&version=9.0.8"
 
 #tool "nuget:?package=MSBuild.Extension.Pack&version=1.9.1"
@@ -490,4 +490,5 @@ private static void InjectAssemblySearchPathsInProjectFile(BuildContext buildCon
         buildContext.CakeContext.Error($"Failed to process assembly search paths for project '{projectFileName}': {ex.Message}");
     }
 }
+
 
