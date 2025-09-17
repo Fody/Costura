@@ -27,7 +27,7 @@
 #addin "nuget:?package=Cake.FileHelpers&version=7.0.0"
 #addin "nuget:?package=Cake.Sonar&version=5.0.0"
 #addin "nuget:?package=MagicChunks&version=2.0.0.119"
-#addin "nuget:?package=Newtonsoft.Json&version=13.0.3"
+#addin "nuget:?package=Newtonsoft.Json&version=13.0.4"
 
 // Note: the SonarQube tool must be installed as a global .NET tool. If you are getting issues like this:
 //
