@@ -56,20 +56,12 @@ private static void ConfigureMsBuild(BuildContext buildContext, MSBuildSettings 
 
     msBuildSettings.WithProperty("PackageOutputPath", buildContext.General.OutputRootDirectory);
 
-    // Only optimize in release mode
-    if (!buildContext.General.IsLocalBuild)
-    {
-        buildContext.CakeContext.Information("This is NOT a local build, disabling building of project references");
+    buildContext.CakeContext.Information("This is NOT a local build, disabling building of project references");
 
-        // Don't build project references (should already be built)
-        msBuildSettings.WithProperty("BuildProjectReferences", "false");
+    // Don't build project references (should already be built)
+    msBuildSettings.WithProperty("BuildProjectReferences", "false");
 
-        //InjectAssemblySearchPathsInProjectFile(buildContext, projectName, GetProjectFileName(buildContext, projectName));
-    }
-    else
-    {
-        buildContext.CakeContext.Information("This is a local build, not disabling building of project references");
-    }
+    //InjectAssemblySearchPathsInProjectFile(buildContext, projectName, GetProjectFileName(buildContext, projectName));
 
     // Continuous integration build
     msBuildSettings.ContinuousIntegrationBuild = true;
@@ -86,6 +78,12 @@ private static void ConfigureMsBuild(BuildContext buildContext, MSBuildSettings 
     // msBuildSettings.WithProperty("SolutionName", buildContext.General.Solution.Name);
     // msBuildSettings.WithProperty("SolutionExt", ".sln");
     // msBuildSettings.WithProperty("DefineExplicitDefaults", "true");
+
+    // Path maps
+    if (!buildContext.General.IsLocalBuild)
+    {
+        msBuildSettings.WithProperty("PathMap", $"{buildContext.General.RootDirectory}=./");
+    }
 
     // Disable copyright info
     msBuildSettings.NoLogo = true;
@@ -143,21 +141,11 @@ private static void ConfigureMsBuildForDotNet(BuildContext buildContext, DotNetM
 
     msBuildSettings.WithProperty("PackageOutputPath", buildContext.General.OutputRootDirectory);
 
-    // Only optimize in release mode
-    if (!buildContext.General.IsLocalBuild)
-    {
-        buildContext.CakeContext.Information($"This is NOT a local build, disabling building of project references");
+    // Don't build project references (should already be built)
+    msBuildSettings.WithProperty("BuildProjectReferences", "false");
 
-        // Don't build project references (should already be built)
-        msBuildSettings.WithProperty("BuildProjectReferences", "false");
-
-        //InjectAssemblySearchPathsInProjectFile(buildContext, projectName, GetProjectFileName(buildContext, projectName));
-    }
-    else
-    {
-        buildContext.CakeContext.Information($"This is a local build, not disabling building of project references");
-    }
-
+    //InjectAssemblySearchPathsInProjectFile(buildContext, projectName, GetProjectFileName(buildContext, projectName));
+        
     // Continuous integration build
     msBuildSettings.ContinuousIntegrationBuild = true;
     //msBuildSettings.WithProperty("ContinuousIntegrationBuild", "true");
@@ -173,6 +161,12 @@ private static void ConfigureMsBuildForDotNet(BuildContext buildContext, DotNetM
     // msBuildSettings.WithProperty("SolutionName", buildContext.General.Solution.Name);
     // msBuildSettings.WithProperty("SolutionExt", ".sln");
     // msBuildSettings.WithProperty("DefineExplicitDefaults", "true");
+
+    // Path maps
+    if (!buildContext.General.IsLocalBuild)
+    {
+        msBuildSettings.WithProperty("PathMap", $"{buildContext.General.RootDirectory}=./");
+    }
 
     // Disable copyright info
     msBuildSettings.NoLogo = true;
