@@ -82,7 +82,8 @@ private static void ConfigureMsBuild(BuildContext buildContext, MSBuildSettings 
     // Path maps
     if (!buildContext.General.IsLocalBuild)
     {
-        msBuildSettings.WithProperty("PathMap", $"{buildContext.General.RootDirectory}=./");
+        // Note: disabled since it breaks Verify tests and requires further investigation
+        //msBuildSettings.WithProperty("PathMap", $"{buildContext.General.RootDirectory}=.{System.IO.Path.DirectorySeparatorChar}");
     }
 
     // Disable copyright info
@@ -165,7 +166,8 @@ private static void ConfigureMsBuildForDotNet(BuildContext buildContext, DotNetM
     // Path maps
     if (!buildContext.General.IsLocalBuild)
     {
-        msBuildSettings.WithProperty("PathMap", $"{buildContext.General.RootDirectory}=./");
+        // Note: disabled since it breaks Verify tests and requires further investigation
+        //msBuildSettings.WithProperty("PathMap", $"{buildContext.General.RootDirectory}=.{System.IO.Path.DirectorySeparatorChar}");
     }
 
     // Disable copyright info
