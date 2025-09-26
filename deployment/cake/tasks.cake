@@ -36,7 +36,7 @@
 // It probably means the tool is not correctly installed.
 // `dotnet tool install --global dotnet-sonarscanner --ignore-failed-sources`
 //#tool "nuget:?package=MSBuild.SonarQube.Runner.Tool&version=4.8.0"
-#tool "nuget:?package=dotnet-sonarscanner&version=10.4.0"
+#tool "nuget:?package=dotnet-sonarscanner&version=10.4.1"
 
 //-------------------------------------------------------------
 // BACKWARDS COMPATIBILITY CODE - START
