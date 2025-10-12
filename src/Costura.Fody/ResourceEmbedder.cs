@@ -608,7 +608,6 @@ disableCleanup: {disableCleanup}");
                         using (var compressedStream = new DeflateStream(memoryStream, CompressionMode.Compress, true))
                         {
                             fileStream.CopyTo(compressedStream);
-                            compressedStream.Flush();
                         }
                     }
                     else
