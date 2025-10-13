@@ -543,7 +543,8 @@ disableCleanup: {disableCleanup}");
     {
         var cacheFile = Path.Combine(cacheRoot, $"{sha1Checksum}.{resourceName}");
 
-        if (isCompressed)
+        if (isCompressed &&
+            !cacheFile.EndsWith(".compressed"))
         {
             cacheFile += ".compressed";
         }
