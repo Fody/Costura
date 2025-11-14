@@ -1,6 +1,7 @@
 #l "buildserver.cake"
 
 #tool "nuget:?package=GitVersion.CommandLine&version=5.12.0"
+#tool "nuget:?package=NuGet.CommandLine&version=7.0.0"
 
 //-------------------------------------------------------------
 
@@ -252,6 +253,8 @@ public class NuGetContext : BuildContextBase
     
     protected override void LogStateInfoForContext()
     {
+        CakeContext.Information($"NuGet executable path '{Executable}'");
+        CakeContext.Information($"NuGet executable version '{FileVersionInfo.GetVersionInfo(Executable).FileVersion}'");
         CakeContext.Information($"Restore using NuGet: '{RestoreUsingNuGet}'");
         CakeContext.Information($"Restore using dotnet restore: '{RestoreUsingDotNetRestore}'");
     }
@@ -511,7 +514,8 @@ private GeneralContext InitializeGeneralContext(BuildContext buildContext, IBuil
     data.NuGet = new NuGetContext(data)
     {
         PackageSources = buildContext.BuildServer.GetVariable("NuGetPackageSources", showValue: true),
-        Executable = "./tools/nuget.exe",
+        // Executable = "./tools/nuget.exe",
+        Executable = buildContext.CakeContext.Tools.Resolve("nuget.exe").FullPath,
         LocalPackagesDirectory = "c:\\source\\_packages",
         RestoreUsingNuGet = buildContext.BuildServer.GetVariableAsBool("NuGet_RestoreUsingNuGet", false, showValue: true),
         RestoreUsingDotNetRestore = buildContext.BuildServer.GetVariableAsBool("NuGet_RestoreUsingDotNetRestore", true, showValue: true),
