@@ -127,7 +127,10 @@ Task("RestorePackages")
 
     //var csharpProjects = GetFiles("./**/*.csproj");
     // var cProjects = GetFiles("./**/*.vcxproj");
-    var solutions = GetFiles("./**/*.sln");
+    var solutions = new List<FilePath>();
+    solutions.AddRange(GetFiles("./**/*.sln"));
+    solutions.AddRange(GetFiles("./**/*.slnx"));
+    
     var csharpProjects = new List<FilePath>();
 
     foreach (var project in buildContext.AllProjects)
