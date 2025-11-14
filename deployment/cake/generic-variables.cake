@@ -299,7 +299,7 @@ public class SolutionContext : BuildContextBase
     
     protected override void LogStateInfoForContext()
     {
-    
+        CakeContext.Information($"Solution filename: '{FileName}'");
     }
 }
 
@@ -520,11 +520,19 @@ private GeneralContext InitializeGeneralContext(BuildContext buildContext, IBuil
 
     var solutionName = buildContext.BuildServer.GetVariable("SolutionName", showValue: true);
 
+    var solutionExtension = "slnx";
+
+    var solutionFiles = GetFiles(string.Format("./src/{0}.{1}", solutionName, solutionExtension));
+    if (solutionFiles.Count == 0)
+    {
+        solutionExtension = "sln";
+    }
+    
     data.Solution = new SolutionContext(data)
     {
         Name = solutionName,
         AssemblyInfoFileName = "./src/SolutionAssemblyInfo.cs",
-        FileName = string.Format("./src/{0}", string.Format("{0}.sln", solutionName)),
+        FileName = string.Format("./src/{0}", string.Format("{0}.{1}", solutionName, solutionExtension)),
         PublishType = buildContext.BuildServer.GetVariable("PublishType", "Unknown", showValue: true),
         ConfigurationName = buildContext.BuildServer.GetVariable("ConfigurationName", "Release", showValue: true),
         BuildSolution = buildContext.BuildServer.GetVariableAsBool("BuildSolution", false, showValue: true)

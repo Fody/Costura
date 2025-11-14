@@ -76,7 +76,7 @@ private static void ConfigureMsBuild(BuildContext buildContext, MSBuildSettings 
     // msBuildSettings.WithProperty("SolutionPath", System.IO.Path.GetFullPath(buildContext.General.Solution.FileName));
     // msBuildSettings.WithProperty("SolutionDir", System.IO.Path.GetFullPath(buildContext.General.Solution.Directory));
     // msBuildSettings.WithProperty("SolutionName", buildContext.General.Solution.Name);
-    // msBuildSettings.WithProperty("SolutionExt", ".sln");
+    // msBuildSettings.WithProperty("SolutionExt", ".slnx");
     // msBuildSettings.WithProperty("DefineExplicitDefaults", "true");
 
     // Path maps
@@ -160,7 +160,7 @@ private static void ConfigureMsBuildForDotNet(BuildContext buildContext, DotNetM
     // msBuildSettings.WithProperty("SolutionPath", System.IO.Path.GetFullPath(buildContext.General.Solution.FileName));
     // msBuildSettings.WithProperty("SolutionDir", System.IO.Path.GetFullPath(buildContext.General.Solution.Directory));
     // msBuildSettings.WithProperty("SolutionName", buildContext.General.Solution.Name);
-    // msBuildSettings.WithProperty("SolutionExt", ".sln");
+    // msBuildSettings.WithProperty("SolutionExt", ".slnx");
     // msBuildSettings.WithProperty("DefineExplicitDefaults", "true");
 
     // Path maps
@@ -349,12 +349,17 @@ private static string GetVisualStudioDirectory(BuildContext buildContext, bool? 
 
     var prereleasePaths = new List<KeyValuePair<string, string>>(new [] 
     { 
+        new KeyValuePair<string, string>("Visual Studio 2026 Preview", $@"{programFilesx64}\Microsoft Visual Studio\18\Insiders\"),
+        new KeyValuePair<string, string>("Visual Studio 2026 Preview", $@"{programFilesx64}\Microsoft Visual Studio\18\Preview\"),
         new KeyValuePair<string, string>("Visual Studio 2022 Preview", $@"{programFilesx64}\Microsoft Visual Studio\2022\Preview\"),
         new KeyValuePair<string, string>("Visual Studio 2019 Preview", $@"{programFilesx86}\Microsoft Visual Studio\2019\Preview\"),
     });
 
     var normalPaths = new List<KeyValuePair<string, string>> (new []
     {
+        new KeyValuePair<string, string>("Visual Studio 2026 Enterprise", $@"{programFilesx64}\Microsoft Visual Studio\18\Enterprise\"),
+        new KeyValuePair<string, string>("Visual Studio 2026 Professional", $@"{programFilesx64}\Microsoft Visual Studio\18\Professional\"),
+        new KeyValuePair<string, string>("Visual Studio 2026 Community", $@"{programFilesx64}\Microsoft Visual Studio\18\Community\"),
         new KeyValuePair<string, string>("Visual Studio 2022 Enterprise", $@"{programFilesx64}\Microsoft Visual Studio\2022\Enterprise\"),
         new KeyValuePair<string, string>("Visual Studio 2022 Professional", $@"{programFilesx64}\Microsoft Visual Studio\2022\Professional\"),
         new KeyValuePair<string, string>("Visual Studio 2022 Community", $@"{programFilesx64}\Microsoft Visual Studio\2022\Community\"),
