@@ -1,4 +1,4 @@
-#tool "dotnet:?package=AzureSignTool&version=7.0.0"
+#tool "dotnet:?package=AzureSignTool&version=7.0.1"
 #tool "dotnet:?package=NuGetKeyVaultSignTool&version=3.2.3"
 
 private static string _signToolFileName;
