@@ -3,6 +3,8 @@
 #tool "nuget:?package=GitVersion.CommandLine&version=5.12.0"
 #tool "nuget:?package=NuGet.CommandLine&version=7.0.1"
 
+#addin "nuget:?package=LibGit2Sharp&version=0.31.0"
+
 //-------------------------------------------------------------
 
 public class GeneralContext : BuildContextWithItemsBase
@@ -88,7 +90,9 @@ public class VersionContext : BuildContextBase
                 var repositoryName = generalContext.Solution.Name;
                 var dynamicRepositoryPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), repositoryName);
 
-                if (ClearCache)
+                // Note: for now (until we fix the dynamic cloning in the code below), clear cache must be true
+                var clearCache = ClearCache || true;
+                if (clearCache)
                 {
                     CakeContext.Warning("Cleaning the cloned temp directory, disable by setting 'GitVersion_ClearCache' to 'false'");
     
@@ -115,15 +119,79 @@ public class VersionContext : BuildContextBase
 
                 CakeContext.Information($"Fetching dynamic repository from url '{generalContext.Repository.Url}' => '{dynamicRepositoryPath}'");
 
-                // Dynamic repository
-                gitVersionSettings.UserName = generalContext.Repository.Username;
-                gitVersionSettings.Password = generalContext.Repository.Password;
-                gitVersionSettings.Url = generalContext.Repository.Url;
-                gitVersionSettings.Branch = generalContext.Repository.BranchName;
-                gitVersionSettings.Commit = generalContext.Repository.CommitId;
-                gitVersionSettings.NoFetch = false;
-                gitVersionSettings.WorkingDirectory = generalContext.RootDirectory;
-                gitVersionSettings.DynamicRepositoryPath = dynamicRepositoryPath;
+                // Note: starting with GitVersion 6.x, we need to handle dynamic repos ourselves,
+                // and we will be using LibGit2Sharp directly to support cloning a specific commit id
+
+                // var gitCloneSettings = new GitCloneSettings
+                // {
+                //     //BranchName = generalContext.Repository.BranchName,
+                //     BranchName = generalContext.Repository.CommitId,
+                //     Checkout = true,
+                //     IsBare = false,
+                //     RecurseSubmodules = false,
+                // };
+
+                var cloneOptions = new LibGit2Sharp.CloneOptions
+                {
+                    IsBare = false,
+                    Checkout = true,
+                    BranchName = generalContext.Repository.BranchName,
+                    RecurseSubmodules = false
+                };
+
+                if (!string.IsNullOrWhiteSpace(generalContext.Repository.Username) &&
+                    !string.IsNullOrWhiteSpace(generalContext.Repository.Password))
+                {
+                    CakeContext.Information("Cloning with authentication");
+
+                    cloneOptions.FetchOptions.CredentialsProvider =
+                        (url, user, cred) => new LibGit2Sharp.UsernamePasswordCredentials 
+                        { 
+                            Username = generalContext.Repository.Username, 
+                            Password = generalContext.Repository.Password 
+                        };
+                }
+                else
+                {
+                    CakeContext.Information("Cloning without authentication");
+                }
+    
+                LibGit2Sharp.Repository.Clone(generalContext.Repository.Url, dynamicRepositoryPath, cloneOptions);
+
+                if (!CakeContext.GitIsValidRepository(dynamicRepositoryPath))
+                {
+                    throw new Exception($"Cloned repository at '{dynamicRepositoryPath}' is not a valid repository");
+                }
+
+                CakeContext.Information("Switching to correct commit ID");
+
+                // According to docs, to not get into a detached head state, we need to:
+                //
+                // git checkout -B 'branch' 'commit id'
+                // 
+                // This seems impossible via Cake.Git (and LibGit2Sharp directly), so we will
+                // just invoke git.exe directly here
+                //
+                //CakeContext.GitCheckout(dynamicRepositoryPath, generalContext.Repository.CommitId);
+
+                var gitExe = CakeContext.Tools.Resolve("git.exe").FullPath;
+
+                using (var process = CakeContext.StartAndReturnProcess(gitExe, 
+                    new ProcessSettings
+                    { 
+                        WorkingDirectory = dynamicRepositoryPath,
+                        Arguments = $"checkout -B {generalContext.Repository.BranchName} {generalContext.Repository.CommitId}", 
+                    }))
+                {
+                    process.WaitForExit();
+
+                    // This should output 0 as valid arguments supplied
+                    CakeContext.Information("Exit code: {0}", process.GetExitCode());
+                }
+
+                CakeContext.Information("Preparing GitVersion settings");
+
+                gitVersionSettings.RepositoryPath = dynamicRepositoryPath;
                 gitVersionSettings.Verbosity = GitVersionVerbosity.Verbose;
             }
 
