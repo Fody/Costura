@@ -95,6 +95,8 @@ public class VersionContext : BuildContextBase
 
                 CakeContext.Information("Mutex acquired");
 
+                CakeContext.Information("[{0}] Preparing GitVersion", GetTime());
+
                 var gitDirectory = ".git";
                 if (!CakeContext.DirectoryExists(gitDirectory))
                 {
@@ -234,10 +236,12 @@ public class VersionContext : BuildContextBase
 
                     gitVersionSettings.WorkingDirectory = dynamicRepositoryPath;
                 }
-
-                CakeContext.Information("Running GitVersion");
+                
+                CakeContext.Information("[{0}] Running GitVersion", GetTime());
 
                 _gitVersionContext = CakeContext.GitVersion(gitVersionSettings);
+
+                CakeContext.Information("[{0}] Finished GitVersion", GetTime());
             }
         }
 

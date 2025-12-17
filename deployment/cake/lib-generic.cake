@@ -207,6 +207,13 @@ public enum TargetType
 
 //-------------------------------------------------------------
 
+private static string GetTime()
+{
+    return DateTime.Now.ToString("HH:mm:ss.fff");
+}
+
+//-------------------------------------------------------------
+
 private static void LogSeparator(this ICakeContext cakeContext, string messageFormat, params object[] args)
 {
     cakeContext.Information("");
