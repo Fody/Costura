@@ -129,13 +129,13 @@ public class AspireProcessor : ProcessorBase
             {
                 BuildContext.CakeContext.Information("Logging in to Azure");
 
-                RunAzd($"auth login --tenant-id {aspireContext.AzureTenantId} --client-id {aspireContext.AzureClientId} --client-secret {aspireContext.AzureClientSecret}");
+                RunAzd($"auth login --tenant-id {aspireContext.AzureTenantId} --client-id {aspireContext.AzureClientId} --client-secret {aspireContext.AzureClientSecret} --no-prompt");
 
                 // Note: got weird errors when running provision and deploy manually, so using up instead
 
                 BuildContext.CakeContext.Information("Deploying to Azure");
 
-                RunAzd($"up -e {environmentName}");
+                RunAzd($"up -e {environmentName} --no-prompt");
 
                 //BuildContext.CakeContext.Information("Provisioning infrastructure for Aspire project '{0}'", aspireProject);
 
