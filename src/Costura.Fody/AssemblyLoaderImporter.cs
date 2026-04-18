@@ -38,14 +38,15 @@ public partial class ModuleWeaver
         var systemRuntimeReference = ModuleDefinition.AssemblyReferences.FirstOrDefault(x => x.Name == "System.Runtime");
         if (systemRuntimeReference is not null)
         {
-            if (systemRuntimeReference.Version.Major >= 6)
-            {
-                targetFramework = "net6.0";
-            }
-
+            // Note: these must match the runtime versions supported by the embedded templates
             if (systemRuntimeReference.Version.Major >= 8)
             {
                 targetFramework = "net8.0";
+            }
+
+            if (systemRuntimeReference.Version.Major >= 10)
+            {
+                targetFramework = "net10.0";
             }
 
             // Add more supported platforms once added

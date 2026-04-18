@@ -8,7 +8,12 @@ public static class WeavingHelper
 {
     public static TestResult CreateIsolatedAssemblyCopy(string assemblyPath, string config, string[] references, string assemblyName)
     {
-        var currentDirectory = AssemblyDirectoryHelper.GetCurrentDirectory();
+        if (!Path.IsPathRooted(assemblyPath))
+        {
+            assemblyPath = Path.Combine(AssemblyDirectoryHelper.GetCurrentDirectory(), assemblyPath);
+        }
+
+        var currentDirectory = Path.GetDirectoryName(assemblyPath);
 
         using (var weaver = new ModuleWeaver
         {
@@ -17,11 +22,6 @@ public static class WeavingHelper
             ReferenceCopyLocalPaths = references.Select(r => Path.Combine(currentDirectory, r)).ToList(),
         })
         {
-            if (!Path.IsPathRooted(assemblyPath))
-            {
-                assemblyPath = Path.Combine(currentDirectory, assemblyPath);
-            }
-
 #if NETCORE
             var shouldCopyExe = false;
             var originalExe = string.Empty;

@@ -38,10 +38,10 @@
   <Folder Name="/src/Tests/TestAssemblies/">
     <Project Path="AssemblyToProcess/AssemblyToProcess.csproj" />
     <Project Path="AssemblyToReference/AssemblyToReference.csproj" />
-    <Project Path="AssemblyToReferenceMixed/AssemblyToReferenceMixed.vcxproj">
+    <Project Path="AssemblyToReferenceMixed/AssemblyToReferenceMixed.vcxproj" Id="8d70bac7-c4ef-456d-9e73-777a172bca43">
       <Platform Solution="*|Any CPU" Project="Win32" />
     </Project>
-    <Project Path="AssemblyToReferenceNative/AssemblyToReferenceNative.vcxproj">
+    <Project Path="AssemblyToReferenceNative/AssemblyToReferenceNative.vcxproj" Id="85eaf811-151b-4edc-8625-445f33c62994">
       <Platform Solution="*|Any CPU" Project="Win32" />
     </Project>
     <Project Path="AssemblyToReferencePreEmbedded/AssemblyToReferencePreEmbedded.csproj" />
