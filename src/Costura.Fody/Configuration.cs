@@ -11,6 +11,8 @@ public class Configuration
     {
         // Defaults
         OptOutAssemblies = true;
+        OptOutRuntimeAssemblies = true;
+        OptOutRuntimes = true;
         IncludeDebugSymbols = true;
         IncludeRuntimeReferences = true;
         UseRuntimeReferencePaths = null;
@@ -46,6 +48,12 @@ public class Configuration
             OptOutRuntimeAssemblies = false;
         }
 
+        if (config.Attribute("IncludeRuntimes") is not null ||
+            config.Element("IncludeRuntimes") is not null)
+        {
+            OptOutRuntimes = false;
+        }
+
         IncludeDebugSymbols = ReadBool(config, "IncludeDebugSymbols", IncludeDebugSymbols);
         IncludeRuntimeReferences = ReadBool(config, "IncludeRuntimeReferences", IncludeRuntimeReferences);
         UseRuntimeReferencePaths = ReadBool(config, "UseRuntimeReferencePaths");
@@ -60,6 +68,8 @@ public class Configuration
         IncludeAssemblies = ReadList(config, "IncludeAssemblies");
         ExcludeRuntimeAssemblies = ReadList(config, "ExcludeRuntimeAssemblies");
         IncludeRuntimeAssemblies = ReadList(config, "IncludeRuntimeAssemblies");
+        ExcludeRuntimes = ReadList(config, "ExcludeRuntimes");
+        IncludeRuntimes = ReadList(config, "IncludeRuntimes");
 
         UnmanagedWinX86Assemblies = ReadList(config, "UnmanagedWinX86Assemblies");
         if (!UnmanagedWinX86Assemblies.Any())
@@ -87,6 +97,7 @@ public class Configuration
 
     public bool OptOutAssemblies { get; }
     public bool OptOutRuntimeAssemblies { get; }
+    public bool OptOutRuntimes { get; }
     public bool IncludeDebugSymbols { get; }
     public bool IncludeRuntimeReferences { get; }
     public bool? UseRuntimeReferencePaths { get; }
@@ -101,6 +112,8 @@ public class Configuration
     public List<string> ExcludeAssemblies { get; }
     public List<string> IncludeRuntimeAssemblies { get; }
     public List<string> ExcludeRuntimeAssemblies { get; }
+    public List<string> IncludeRuntimes { get; }
+    public List<string> ExcludeRuntimes { get; }
     public List<string> UnmanagedWinX86Assemblies { get; }
     public List<string> UnmanagedWinX64Assemblies { get; }
     public List<string> UnmanagedWinArm64Assemblies { get; }

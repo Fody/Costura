@@ -17,7 +17,6 @@ public class ClassToTest
 
     public string RuntimeReferences() => global::RuntimeReferences.UseAssemblyWithRuntimeAssemblies();
 
-
     public void ThrowException()
     {
         ClassToReference.ThrowException();

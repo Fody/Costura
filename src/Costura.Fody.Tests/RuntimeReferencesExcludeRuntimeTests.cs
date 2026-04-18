@@ -6,20 +6,22 @@
     using global::Fody;
     using NUnit.Framework;
 
-    public class RuntimeReferencesTests : BaseCosturaTest
+    public class RuntimeReferencesExcludeRuntimeTests : BaseCosturaTest
     {
         private static readonly TestResult testResult;
 
-        static RuntimeReferencesTests()
+        static RuntimeReferencesExcludeRuntimeTests()
         {
             var weavers = @"<Costura>
         <IncludeAssemblies>
             Microsoft.Data.*
         </IncludeAssemblies>
         <IncludeRuntimeAssemblies>
-            Microsoft.Data.SqlClient
             Microsoft.Data.SqlClient.SNI
         </IncludeRuntimeAssemblies>
+        <ExcludeRuntimes>
+            unix
+        </ExcludeRuntimes>
 </Costura>";
 
             // We need to original assembly directory
@@ -42,7 +44,7 @@
                     Path.Combine("runtimes", "win-x64", "native", "Microsoft.Data.SqlClient.SNI.dll"),
                     Path.Combine("runtimes", "win-x86", "native", "Microsoft.Data.SqlClient.SNI.dll"),
                 },
-                "RuntimeReferences");
+                "RuntimeReferencesExludeRuntimes");
         }
 
         public override TestResult TestResult => testResult;
