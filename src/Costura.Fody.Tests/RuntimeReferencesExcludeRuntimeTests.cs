@@ -8,9 +8,9 @@
 
     public class RuntimeReferencesExcludeRuntimeTests : BaseCosturaTest
     {
-        private static readonly TestResult testResult;
+        private static TestResult testResult;
 
-        static RuntimeReferencesExcludeRuntimeTests()
+        static TestResult InitializeTest()
         {
             var weavers = @"<Costura>
         <IncludeAssemblies>
@@ -31,7 +31,7 @@
 
             assemblyPath = Path.GetFullPath(assemblyPath);
 
-            testResult = WeavingHelper.CreateIsolatedAssemblyCopy(assemblyPath,
+            var testResult = WeavingHelper.CreateIsolatedAssemblyCopy(assemblyPath,
                 weavers,
                 new[]
                 {
@@ -45,6 +45,8 @@
                     Path.Combine("runtimes", "win-x86", "native", "Microsoft.Data.SqlClient.SNI.dll"),
                 },
                 "RuntimeReferencesExludeRuntimes");
+
+            return testResult;
         }
 
         public override TestResult TestResult => testResult;
@@ -52,7 +54,9 @@
         [Explicit, Test]
         public void UseRuntimeReferences()
         {
-            //DeleteRuntimeReferencesFolder();
+            testResult = InitializeTest();
+
+            DeleteRuntimeReferencesFolder();
 
             var runtimeReferencesType = TestResult.Assembly.GetType("RuntimeReferences");
             var staticMethod = runtimeReferencesType.GetMethod("UseAssemblyWithRuntimeAssemblies", BindingFlags.Static | BindingFlags.Public);
