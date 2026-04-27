@@ -2,7 +2,6 @@
 
 Embeds dependencies as resources.
 
-[![Chat on Gitter](https://img.shields.io/gitter/room/fody/fody.svg)](https://gitter.im/Fody/Fody)
 [![NuGet Status](https://img.shields.io/nuget/v/Costura.Fody.svg)](https://www.nuget.org/packages/Costura.Fody/)
 
 **See [Milestones](../../milestones?state=closed) for release notes.**
@@ -93,8 +92,8 @@ static <Module>()
 ```
 
  * Injects the following class into the target assembly. This means if an assembly load fails it will be loaded from the embedded resources.
-    * [ILTemplate.cs](https://github.com/Fody/Costura/blob/master/Costura.Template/ILTemplate.cs)
-    * [ILTemplateWithTempAssembly.cs](https://github.com/Fody/Costura/blob/master/Costura.Template/ILTemplateWithTempAssembly.cs)
+    * [ILTemplate.cs](https://github.com/Fody/Costura/blob/master/src/Costura.Template/ILTemplate.cs)
+    * [ILTemplateWithTempAssembly.cs](https://github.com/Fody/Costura/blob/master/src/Costura.Template/ILTemplateWithTempAssembly.cs)
 
 
 ## Configuration Options
@@ -225,7 +224,7 @@ A list of assembly names to exclude from the default action of "embed all Copy L
 
 Do not include `.exe` or `.dll` in the names.
 
-Can not be defined with `IncludeAssemblies`.
+Can not be defined with `IncludeAssemblies` / `IncludeRuntimeAssemblies`.
 
 Can use wildcards for partial assembly name matching. For example `System.*` will exclude all assemblies that start with `System.`. Wildcards may only be used at the end of an entry so for example, `System.*.Private.*` would not work.
 
@@ -255,7 +254,7 @@ A list of assembly names to include from the default action of "embed all Copy L
 
 Do not include `.exe` or `.dll` in the names.
 
-Can not be defined with `ExcludeAssemblies` / `IncludeRuntimeAssemblies`.
+Can not be defined with `ExcludeAssemblies` / `ExcludeRuntimeAssemblies`.
 
 Can use wildcards at the end of the name for partial matching.
 
@@ -277,6 +276,34 @@ Or as an attribute with items delimited by a pipe `|`.
 ```xml
 <Costura IncludeAssemblies='Foo|Bar' />
 ```
+
+
+### Including / Excluding runtimes
+
+By default, Costura embeds all the available runtimes. When an app or assembly should only support a specific set of runtimes (e.g. windows), this can be configured.
+
+```xml
+<Costura>
+  <IncludeRuntimes>
+    Foo
+    Bar
+  </IncludeRuntimes>
+</Costura>
+```
+
+Or as an attribute with items delimited by a pipe `|`.
+
+```xml
+<Costura IncludeRuntimes='win-x64|win-arm64' />
+```
+
+A few example values for runtimes are:
+
+* win
+* win-x86
+* win-x64
+* win-arm64
+* unix
 
 
 ### Unmanaged32Assemblies & Unmanaged64Assemblies & UnmanagedArm64Assemblies

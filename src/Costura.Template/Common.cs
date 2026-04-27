@@ -50,9 +50,11 @@ internal static class Common
 
     private static byte[] ReadStream(Stream stream)
     {
-        var data = new byte[stream.Length];
-        stream.Read(data, 0, data.Length);
-        return data;
+        using (var memoryStream = new MemoryStream())
+        {
+            stream.CopyTo(memoryStream);
+            return memoryStream.ToArray();
+        }
     }
 
     public static string CalculateChecksum(string filename)

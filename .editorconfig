@@ -197,7 +197,7 @@ dotnet_naming_style.pascal_case_and_prefix_with_I_style.capitalization          
 
 
 #=======================================================================================
-# CSharp code style settings:
+# CSharp code style settings
 #=======================================================================================
 
 [*.cs]
@@ -243,6 +243,7 @@ dotnet_style_prefer_is_null_check_over_reference_equality_method = true:suggesti
 dotnet_style_prefer_conditional_expression_over_return = false
 dotnet_style_prefer_conditional_expression_over_assignment = false
 dotnet_style_prefer_auto_properties = false
+dotnet_style_require_accessibility_modifiers = for_non_interface_members
 
 #---------------------------------------------------------------------------------------
 # Newline settings

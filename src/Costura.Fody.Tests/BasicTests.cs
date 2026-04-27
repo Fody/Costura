@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using ApprovalTests;
-using ApprovalTests.Namers;
+using System.Threading.Tasks;
 using NUnit.Framework;
 
 public abstract class BasicTests : BaseCosturaTest
@@ -59,14 +58,8 @@ public abstract class BasicTests : BaseCosturaTest
     }
 
     [Test]
-    public void TemplateHasCorrectSymbols()
+    public async Task TemplateHasCorrectSymbols()
     {
-        var dataPoints = GetScenarioName();
-
-        using (ApprovalResults.ForScenario(dataPoints))
-        {
-            var text = Ildasm.Decompile(TestResult.AssemblyPath, "Costura.AssemblyLoader");
-            Approvals.Verify(text);
-        }
+        await VerifyHelper.AssertIlCodeAsync(TestResult.AssemblyPath);
     }
 }

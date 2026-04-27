@@ -1,9 +1,6 @@
 {
-    "msbuild-sdks": {
-        "MSBuild.Sdk.Extras": "3.0.44"
-    },
     "sdk": {
-        "version": "8.0.0",
+        "version": "10.0.0",
         "rollForward": "latestMinor",
         "allowPrerelease": false
     }

@@ -1,7 +1,6 @@
 ﻿using System.Globalization;
 using System.Threading;
-using ApprovalTests;
-using ApprovalTests.Namers;
+using System.Threading.Tasks;
 using Fody;
 using NUnit.Framework;
 
@@ -59,15 +58,9 @@ public class CultureResourceTests : BaseCosturaTest
     }
 
     [Test]
-    public void TemplateHasCorrectSymbols()
+    public async Task TemplateHasCorrectSymbols()
     {
-        var dataPoints = GetScenarioName();
-
-        using (ApprovalResults.ForScenario(dataPoints))
-        {
-            var text = Ildasm.Decompile(TestResult.AssemblyPath, "Costura.AssemblyLoader");
-            Approvals.Verify(text);
-        }
+        await VerifyHelper.AssertIlCodeAsync(TestResult.AssemblyPath);
     }
 
     public override TestResult TestResult => testResult;

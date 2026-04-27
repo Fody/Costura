@@ -1,5 +1,4 @@
-﻿using ApprovalTests;
-using ApprovalTests.Namers;
+﻿using System.Threading.Tasks;
 using Fody;
 using NUnit.Framework;
 
@@ -33,15 +32,9 @@ public class MixedAndNativeTests : BaseCosturaTest
     }
 
     [Test]
-    public void TemplateHasCorrectSymbols()
+    public async Task TemplateHasCorrectSymbols()
     {
-        var dataPoints = GetScenarioName();
-
-        using (ApprovalResults.ForScenario(dataPoints))
-        {
-            var text = Ildasm.Decompile(testResult.AssemblyPath, "Costura.AssemblyLoader");
-            Approvals.Verify(text);
-        }
+        await VerifyHelper.AssertIlCodeAsync(TestResult.AssemblyPath);
     }
 
     [Test]

@@ -289,16 +289,17 @@ public class ComponentsProcessor : ProcessorBase
                 noBuild = false;
             }
 
-            if (isPackageContainerProject)
-            {
-                // In debug / local builds, automatic building of reference projects
-                // is enabled for convenience. If that is the case, noBuild must be
-                // set to false, but *only* in debug mode
-                if (BuildContext.General.IsLocalBuild)
-                {
-                    noBuild = false;
-                }
-            }
+            // Disabled on 2025-09-23 since it was causing issues on local builds during packaging
+            // if (isPackageContainerProject)
+            // {
+            //     // In debug / local builds, automatic building of reference projects
+            //     // is enabled for convenience. If that is the case, noBuild must be
+            //     // set to false, but *only* in debug mode
+            //     if (BuildContext.General.IsLocalBuild)
+            //     {
+            //         noBuild = false;
+            //     }
+            // }
 
             // As described in the this issue: https://github.com/NuGet/Home/issues/4360
             // we should not use IsTool, but set BuildOutputTargetFolder instead

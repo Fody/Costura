@@ -375,6 +375,11 @@ public partial class ModuleWeaver : IDisposable
 
                 if (includeList.Any(x => CompareAssemblyName(x, assemblyName)))
                 {
+                    if (!ShouldIncludeRuntimeReferenceRuntime(reference, config))
+                    {
+                        continue;
+                    }
+
                     skippedAssemblies.Remove(includeList.First(x => CompareAssemblyName(x, assemblyName)));
                     yield return reference;
 
@@ -421,6 +426,11 @@ public partial class ModuleWeaver : IDisposable
                     continue;
                 }
 
+                if (!ShouldIncludeRuntimeReferenceRuntime(reference, config))
+                {
+                    continue;
+                }
+
                 yield return reference;
             }
 
@@ -439,6 +449,31 @@ public partial class ModuleWeaver : IDisposable
                 }
             }
         }
+    }
+
+    private bool ShouldIncludeRuntimeReferenceRuntime(Reference reference, Configuration config)
+    {
+        var assemblyPath = reference.FullPath;
+        var includeList = config.IncludeRuntimes;
+        if (includeList.Any())
+        {
+            var include = includeList.Any(x => assemblyPath.Contains(Path.Combine("runtimes", x)));
+            return include;
+        }
+
+        var excludeList = config.ExcludeRuntimes;
+        if (excludeList.Any())
+        {
+            var include = !excludeList.Any(x => assemblyPath.Contains(Path.Combine("runtimes", x)));
+            return include;
+        }
+
+        if (!config.OptOutRuntimes)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     private EmbeddedReferenceInfo Embed(string prefix, string relativePath, string fullPath, bool compress, bool addChecksum, bool disableCleanup)
@@ -543,7 +578,8 @@ disableCleanup: {disableCleanup}");
     {
         var cacheFile = Path.Combine(cacheRoot, $"{sha1Checksum}.{resourceName}");
 
-        if (isCompressed)
+        if (isCompressed &&
+            !cacheFile.EndsWith(".compressed"))
         {
             cacheFile += ".compressed";
         }

@@ -12,8 +12,8 @@
 #l "notifications.cake"
 #l "generic-tasks.cake"
 #l "apps-uwp-tasks.cake"
-#l "apps-web-tasks.cake"
 #l "apps-wpf-tasks.cake"
+#l "aspire-tasks.cake"
 #l "codesigning-tasks.cake"
 #l "components-tasks.cake"
 #l "dependencies-tasks.cake"
@@ -25,9 +25,9 @@
 #l "templates-tasks.cake"
 
 #addin "nuget:?package=Cake.FileHelpers&version=7.0.0"
-#addin "nuget:?package=Cake.Sonar&version=1.1.33"
+#addin "nuget:?package=Cake.Sonar&version=5.0.0"
 #addin "nuget:?package=MagicChunks&version=2.0.0.119"
-#addin "nuget:?package=Newtonsoft.Json&version=13.0.3"
+#addin "nuget:?package=Newtonsoft.Json&version=13.0.4"
 
 // Note: the SonarQube tool must be installed as a global .NET tool. If you are getting issues like this:
 //
@@ -36,7 +36,7 @@
 // It probably means the tool is not correctly installed.
 // `dotnet tool install --global dotnet-sonarscanner --ignore-failed-sources`
 //#tool "nuget:?package=MSBuild.SonarQube.Runner.Tool&version=4.8.0"
-#tool "nuget:?package=dotnet-sonarscanner&version=9.0.2"
+#tool "nuget:?package=dotnet-sonarscanner&version=11.2.1"
 
 //-------------------------------------------------------------
 // BACKWARDS COMPATIBILITY CODE - START
@@ -91,12 +91,12 @@ public class BuildContext : BuildContextBase
     public InstallerIntegration Installer { get; set; }
     public NotificationsIntegration Notifications { get; set; }
     public SourceControlIntegration SourceControl { get; set; }
-    public OctopusDeployIntegration OctopusDeploy { get; set; }
 
     // Contexts
     public GeneralContext General { get; set; }
     public TestsContext Tests { get; set; }
 
+    public AspireContext Aspire { get; set; }
     public CodeSigningContext CodeSigning { get; set; }
     public ComponentsContext Components { get; set; }
     public DependenciesContext Dependencies { get; set; }
@@ -106,7 +106,6 @@ public class BuildContext : BuildContextBase
     public ToolsContext Tools { get; set; }
     public UwpContext Uwp { get; set; }
     public VsExtensionsContext VsExtensions { get; set; }
-    public WebContext Web { get; set; }
     public WpfContext Wpf { get; set; }
 
     public List<string> AllProjects { get; private set; }
@@ -145,6 +144,7 @@ Setup<BuildContext>(setupContext =>
     buildContext.General = InitializeGeneralContext(buildContext, buildContext);
     buildContext.Tests = InitializeTestsContext(buildContext, buildContext);
 
+    buildContext.Aspire = InitializeAspireContext(buildContext, buildContext);
     buildContext.CodeSigning = InitializeCodeSigningContext(buildContext, buildContext);
     buildContext.Components = InitializeComponentsContext(buildContext, buildContext);
     buildContext.Dependencies = InitializeDependenciesContext(buildContext, buildContext);
@@ -154,14 +154,12 @@ Setup<BuildContext>(setupContext =>
     buildContext.Tools = InitializeToolsContext(buildContext, buildContext);
     buildContext.Uwp = InitializeUwpContext(buildContext, buildContext);
     buildContext.VsExtensions = InitializeVsExtensionsContext(buildContext, buildContext);
-    buildContext.Web = InitializeWebContext(buildContext, buildContext);
     buildContext.Wpf = InitializeWpfContext(buildContext, buildContext);
 
     // Other integrations last
     buildContext.IssueTracker = new IssueTrackerIntegration(buildContext);
     buildContext.Installer = new InstallerIntegration(buildContext);
     buildContext.Notifications = new NotificationsIntegration(buildContext);
-    buildContext.OctopusDeploy = new OctopusDeployIntegration(buildContext);
     buildContext.SourceControl = new SourceControlIntegration(buildContext);
 
     setupContext.LogSeparator("Validating build context");
@@ -173,13 +171,13 @@ Setup<BuildContext>(setupContext =>
     // Note: always put templates and dependencies processor first (it's a dependency after all)
     buildContext.Processors.Add(new TemplatesProcessor(buildContext));
     buildContext.Processors.Add(new DependenciesProcessor(buildContext));
+    buildContext.Processors.Add(new AspireProcessor(buildContext));
     buildContext.Processors.Add(new ComponentsProcessor(buildContext));
     buildContext.Processors.Add(new DockerImagesProcessor(buildContext));
     buildContext.Processors.Add(new GitHubPagesProcessor(buildContext));
     buildContext.Processors.Add(new ToolsProcessor(buildContext));
     buildContext.Processors.Add(new UwpProcessor(buildContext));
     buildContext.Processors.Add(new VsExtensionsProcessor(buildContext));
-    buildContext.Processors.Add(new WebProcessor(buildContext));
     buildContext.Processors.Add(new WpfProcessor(buildContext));
     // !!! Note: we add test projects *after* preparing all the other processors, see Prepare task !!!
 
@@ -241,6 +239,7 @@ Task("Prepare")
     .Does<BuildContext>(async buildContext =>
 {
     // Add all projects to registered projects
+    buildContext.RegisteredProjects.AddRange(buildContext.Aspire.Items);
     buildContext.RegisteredProjects.AddRange(buildContext.Components.Items);
     buildContext.RegisteredProjects.AddRange(buildContext.Dependencies.Items);
     buildContext.RegisteredProjects.AddRange(buildContext.DockerImages.Items);
@@ -249,7 +248,6 @@ Task("Prepare")
     buildContext.RegisteredProjects.AddRange(buildContext.Tools.Items);
     buildContext.RegisteredProjects.AddRange(buildContext.Uwp.Items);
     buildContext.RegisteredProjects.AddRange(buildContext.VsExtensions.Items);
-    buildContext.RegisteredProjects.AddRange(buildContext.Web.Items);
     buildContext.RegisteredProjects.AddRange(buildContext.Wpf.Items);
 
     await buildContext.BuildServer.BeforePrepareAsync();
@@ -266,13 +264,13 @@ Task("Prepare")
     }
 
     // Now add all projects, but dependencies first & tests last, which will be added at the end
+    buildContext.AllProjects.AddRange(buildContext.Aspire.Items);
     buildContext.AllProjects.AddRange(buildContext.Components.Items);
     buildContext.AllProjects.AddRange(buildContext.DockerImages.Items);
     buildContext.AllProjects.AddRange(buildContext.GitHubPages.Items);
     buildContext.AllProjects.AddRange(buildContext.Tools.Items);
     buildContext.AllProjects.AddRange(buildContext.Uwp.Items);
     buildContext.AllProjects.AddRange(buildContext.VsExtensions.Items);
-    buildContext.AllProjects.AddRange(buildContext.Web.Items);
     buildContext.AllProjects.AddRange(buildContext.Wpf.Items);
 
     buildContext.CakeContext.LogSeparator("Final check which test projects should be included (1/2)");
@@ -795,7 +793,6 @@ Task("TestNotifications")
     await buildContext.Notifications.NotifyAsync("MyProject", "This is a generic test");
     await buildContext.Notifications.NotifyAsync("MyProject", "This is a component test", TargetType.Component);
     await buildContext.Notifications.NotifyAsync("MyProject", "This is a docker image test", TargetType.DockerImage);
-    await buildContext.Notifications.NotifyAsync("MyProject", "This is a web app test", TargetType.WebApp);
     await buildContext.Notifications.NotifyAsync("MyProject", "This is a wpf app test", TargetType.WpfApp);
     await buildContext.Notifications.NotifyErrorAsync("MyProject", "This is an error");
 });

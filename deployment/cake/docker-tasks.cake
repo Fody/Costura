@@ -1,5 +1,4 @@
 #l "docker-variables.cake"
-#l "lib-octopusdeploy.cake"
 
 #addin "nuget:?package=Cake.Docker&version=1.3.0"
 
@@ -311,9 +310,6 @@ public class DockerImagesProcessor : ProcessorBase
             var dockerRegistryUserName = GetDockerRegistryUserName(dockerImage);
             var dockerRegistryPassword = GetDockerRegistryPassword(dockerImage);
             var dockerImageName = GetDockerImageName(dockerImage);
-            var octopusRepositoryUrl = BuildContext.OctopusDeploy.GetRepositoryUrl(dockerImage);
-            var octopusRepositoryApiKey = BuildContext.OctopusDeploy.GetRepositoryApiKey(dockerImage);
-            var octopusDeploymentTarget = BuildContext.OctopusDeploy.GetDeploymentTarget(dockerImage);
 
             if (string.IsNullOrWhiteSpace(dockerRegistryUrl))
             {
@@ -347,44 +343,7 @@ public class DockerImagesProcessor : ProcessorBase
 
                     CakeContext.DockerPush(dockerImagePushSettings, dockerImageTag);
 
-                    if (string.IsNullOrWhiteSpace(octopusRepositoryUrl))
-                    {
-                        CakeContext.Warning("Octopus Deploy url is not specified, skipping deployment to Octopus Deploy");
-                        continue;
-                    }
-
-                    var imageVersion = BuildContext.General.Version.NuGet;
-
-                    CakeContext.Information("Creating release '{0}' in Octopus Deploy", imageVersion);
-
-                    CakeContext.OctoCreateRelease(dockerImage, new CreateReleaseSettings 
-                    {
-                        Server = octopusRepositoryUrl,
-                        ApiKey = octopusRepositoryApiKey,
-                        ReleaseNumber = imageVersion,
-                        DefaultPackageVersion = imageVersion,
-                        IgnoreExisting = true,
-                        Packages = new Dictionary<string, string>
-                        {
-                            { dockerImageName, imageVersion }
-                        }
-                    });
-
-                    CakeContext.Information("Deploying release '{0}' via Octopus Deploy", imageVersion);
-
-                    CakeContext.OctoDeployRelease(octopusRepositoryUrl, octopusRepositoryApiKey, dockerImage, octopusDeploymentTarget, 
-                        imageVersion, new OctopusDeployReleaseDeploymentSettings
-                    {
-                        ShowProgress = true,
-                        WaitForDeployment = true,
-                        DeploymentTimeout = TimeSpan.FromMinutes(5),
-                        CancelOnTimeout = true,
-                        GuidedFailure = true,
-                        Force = true,
-                        NoRawLog = true,
-                    });
-
-                    await BuildContext.Notifications.NotifyAsync(dockerImage, string.Format("Deployed to Octopus Deploy"), TargetType.DockerImage);
+                    await BuildContext.Notifications.NotifyAsync(dockerImage, string.Format("Deployed to Docker"), TargetType.DockerImage);
                 }
             }
             finally

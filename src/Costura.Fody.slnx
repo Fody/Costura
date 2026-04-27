@@ -1,0 +1,56 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/misc/">
+    <File Path="../.editorconfig" />
+    <File Path=".vsconfig" />
+    <File Path="Costura.Fody.sln.DotSettings" />
+    <File Path="Directory.build.analyzers.props" />
+    <File Path="Directory.build.project.props" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.build.shared.explicit.props" />
+    <File Path="Directory.build.shared.implicit.props" />
+    <File Path="Directory.build.shared.mat.props" />
+    <File Path="Directory.build.targets" />
+    <File Path="global.json" />
+    <File Path="MethodTimeLogger.cs" />
+    <File Path="nuget.config" />
+    <File Path="Settings.StyleCop" />
+    <File Path="SolutionAssemblyInfo.cs" />
+  </Folder>
+  <Folder Name="/src/" />
+  <Folder Name="/src/Core/">
+    <Project Path="Costura.Fody/Costura.Fody.csproj">
+      <BuildDependency Project="Costura.Template/Costura.Template.csproj" />
+    </Project>
+    <Project Path="Costura.Template/Costura.Template.csproj" />
+    <Project Path="Costura/Costura.csproj" />
+  </Folder>
+  <Folder Name="/src/Tests/">
+    <Project Path="Costura.Fody.IntegrationTests/Costura.Fody.IntegrationTests.csproj">
+      <BuildDependency Project="Costura.Fody/Costura.Fody.csproj" />
+    </Project>
+    <Project Path="Costura.Fody.Tests/Costura.Fody.Tests.csproj" />
+  </Folder>
+  <Folder Name="/src/Tests/TestAssemblies/">
+    <Project Path="AssemblyToProcess/AssemblyToProcess.csproj" />
+    <Project Path="AssemblyToReference/AssemblyToReference.csproj" />
+    <Project Path="AssemblyToReferenceMixed/AssemblyToReferenceMixed.vcxproj" Id="8d70bac7-c4ef-456d-9e73-777a172bca43">
+      <Platform Solution="*|Any CPU" Project="Win32" />
+    </Project>
+    <Project Path="AssemblyToReferenceNative/AssemblyToReferenceNative.vcxproj" Id="85eaf811-151b-4edc-8625-445f33c62994">
+      <Platform Solution="*|Any CPU" Project="Win32" />
+    </Project>
+    <Project Path="AssemblyToReferencePreEmbedded/AssemblyToReferencePreEmbedded.csproj" />
+    <Project Path="AssemblyToReferenceWithRuntimeReferences/AssemblyToReferenceWithRuntimeReferences.csproj" />
+    <Project Path="AssemblyWithoutInitialize/AssemblyWithoutInitialize.csproj" />
+    <Project Path="ExeToProcess/ExeToProcess.csproj" />
+    <Project Path="ExeToProcessWithMultipleNative/ExeToProcessWithMultipleNative.csproj" />
+    <Project Path="ExeToProcessWithNative/ExeToProcessWithNative.csproj" />
+    <Project Path="ExeToProcessWithNativeAndEmbeddedMixed/ExeToProcessWithNativeAndEmbeddedMixed.csproj" />
+    <Project Path="ExeToReference/ExeToReference.csproj" />
+  </Folder>
+</Solution>

@@ -132,7 +132,7 @@ public class SquirrelInstaller : IInstaller
             Verbosity = NuGetVerbosity.Detailed,
         };
 
-        // Fix for target framework issues
+        // Fix for target framework issues (platform == windows 7)
         nuGetSettings.Properties.Add("TargetPlatformVersion", "7.0");
 
         // Create NuGet package
@@ -188,7 +188,7 @@ public class SquirrelInstaller : IInstaller
             BuildContext.CakeContext.Information($"Copying updated Squirrel files back to deployments share at '{releasesSourceDirectory}'");
 
             // Copy the following files:
-            // - [version]-full.nupkg
+            // - [version]-delta.nupkg
             // - [version]-full.nupkg
             // - Setup.exe => Setup.exe & WpfApp.exe
             // - Setup.msi

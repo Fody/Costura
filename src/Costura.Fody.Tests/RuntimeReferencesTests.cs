@@ -2,19 +2,49 @@
 {
     using System;
     using System.IO;
+    using System.Reflection;
     using global::Fody;
     using NUnit.Framework;
 
     public class RuntimeReferencesTests : BaseCosturaTest
     {
-        private static readonly TestResult testResult;
+        private static TestResult testResult;
 
-        static RuntimeReferencesTests()
+        static TestResult InitializeTest()
         {
-            testResult = WeavingHelper.CreateIsolatedAssemblyCopy("AssemblyToProcess.dll",
-                "<Costura IncludeAssemblies='AssemblyToReferenceWithRuntimeReferences' />",
-                new[] { "AssemblyToReferenceWithRuntimeReferences.dll" },
+            var weavers = @"<Costura>
+        <IncludeAssemblies>
+            Microsoft.Data.*
+        </IncludeAssemblies>
+        <IncludeRuntimeAssemblies>
+            Microsoft.Data.SqlClient
+            Microsoft.Data.SqlClient.SNI
+        </IncludeRuntimeAssemblies>
+</Costura>";
+
+            // We need to original assembly directory
+            var currentDirectory = AssemblyDirectoryHelper.GetCurrentDirectory();
+            var assemblyPath = Path.Combine(currentDirectory, "..", "..",
+                "AssemblyToReferenceWithRuntimeReferences", "net8.0", "AssemblyToReferenceWithRuntimeReferences.dll");
+
+            assemblyPath = Path.GetFullPath(assemblyPath);
+
+            var testResult = WeavingHelper.CreateIsolatedAssemblyCopy(assemblyPath,
+                weavers,
+                new[]
+                {
+                    "Microsoft.Data.SqlClient.dll",
+                    "Microsoft.Data.SqlClient.Extensions.Abstractions.dll",
+                    "Microsoft.Data.SqlClient.Internal.Logging.dll",
+
+                    Path.Combine("runtimes", "unix", "lib", "net8.0", "Microsoft.Data.SqlClient.dll"),
+                    Path.Combine("runtimes", "win-arm64", "native", "Microsoft.Data.SqlClient.SNI.dll"),
+                    Path.Combine("runtimes", "win-x64", "native", "Microsoft.Data.SqlClient.SNI.dll"),
+                    Path.Combine("runtimes", "win-x86", "native", "Microsoft.Data.SqlClient.SNI.dll"),
+                },
                 "RuntimeReferences");
+
+            return testResult;
         }
 
         public override TestResult TestResult => testResult;
@@ -22,10 +52,13 @@
         [Explicit, Test]
         public void UseRuntimeReferences()
         {
+            testResult = InitializeTest();
+
             DeleteRuntimeReferencesFolder();
 
-            var instance = TestResult.GetInstance("ClassToTest");
-            Assert.That("Hello", Is.EqualTo(instance.RuntimeReferences()));
+            var runtimeReferencesType = TestResult.Assembly.GetType("RuntimeReferences");
+            var staticMethod = runtimeReferencesType.GetMethod("UseAssemblyWithRuntimeAssemblies", BindingFlags.Static | BindingFlags.Public);
+            Assert.That(staticMethod.Invoke(null, null), Is.EqualTo("Hello"));
         }
 
         private void DeleteRuntimeReferencesFolder()

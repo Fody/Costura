@@ -1,6 +1,6 @@
-#addin "nuget:?package=Cake.Issues&version=4.12.0"
-#addin "nuget:?package=Cake.Issues.MsBuild&version=4.12.0"
-#addin "nuget:?package=System.Configuration.ConfigurationManager&version=9.0.0"
+#addin "nuget:?package=Cake.Issues&version=5.9.1"
+#addin "nuget:?package=Cake.Issues.MsBuild&version=5.9.1"
+#addin "nuget:?package=System.Configuration.ConfigurationManager&version=10.0.6"
 
 #tool "nuget:?package=MSBuild.Extension.Pack&version=1.9.1"
 
@@ -56,20 +56,12 @@ private static void ConfigureMsBuild(BuildContext buildContext, MSBuildSettings 
 
     msBuildSettings.WithProperty("PackageOutputPath", buildContext.General.OutputRootDirectory);
 
-    // Only optimize in release mode
-    if (!buildContext.General.IsLocalBuild)
-    {
-        buildContext.CakeContext.Information("This is NOT a local build, disabling building of project references");
+    buildContext.CakeContext.Information("This is NOT a local build, disabling building of project references");
 
-        // Don't build project references (should already be built)
-        msBuildSettings.WithProperty("BuildProjectReferences", "false");
+    // Don't build project references (should already be built)
+    msBuildSettings.WithProperty("BuildProjectReferences", "false");
 
-        //InjectAssemblySearchPathsInProjectFile(buildContext, projectName, GetProjectFileName(buildContext, projectName));
-    }
-    else
-    {
-        buildContext.CakeContext.Information("This is a local build, not disabling building of project references");
-    }
+    //InjectAssemblySearchPathsInProjectFile(buildContext, projectName, GetProjectFileName(buildContext, projectName));
 
     // Continuous integration build
     msBuildSettings.ContinuousIntegrationBuild = true;
@@ -84,8 +76,15 @@ private static void ConfigureMsBuild(BuildContext buildContext, MSBuildSettings 
     // msBuildSettings.WithProperty("SolutionPath", System.IO.Path.GetFullPath(buildContext.General.Solution.FileName));
     // msBuildSettings.WithProperty("SolutionDir", System.IO.Path.GetFullPath(buildContext.General.Solution.Directory));
     // msBuildSettings.WithProperty("SolutionName", buildContext.General.Solution.Name);
-    // msBuildSettings.WithProperty("SolutionExt", ".sln");
+    // msBuildSettings.WithProperty("SolutionExt", ".slnx");
     // msBuildSettings.WithProperty("DefineExplicitDefaults", "true");
+
+    // Path maps
+    if (!buildContext.General.IsLocalBuild)
+    {
+        // Note: disabled since it breaks Verify tests and requires further investigation
+        //msBuildSettings.WithProperty("PathMap", $"{buildContext.General.RootDirectory}=.{System.IO.Path.DirectorySeparatorChar}");
+    }
 
     // Disable copyright info
     msBuildSettings.NoLogo = true;
@@ -143,21 +142,11 @@ private static void ConfigureMsBuildForDotNet(BuildContext buildContext, DotNetM
 
     msBuildSettings.WithProperty("PackageOutputPath", buildContext.General.OutputRootDirectory);
 
-    // Only optimize in release mode
-    if (!buildContext.General.IsLocalBuild)
-    {
-        buildContext.CakeContext.Information($"This is NOT a local build, disabling building of project references");
+    // Don't build project references (should already be built)
+    msBuildSettings.WithProperty("BuildProjectReferences", "false");
 
-        // Don't build project references (should already be built)
-        msBuildSettings.WithProperty("BuildProjectReferences", "false");
-
-        //InjectAssemblySearchPathsInProjectFile(buildContext, projectName, GetProjectFileName(buildContext, projectName));
-    }
-    else
-    {
-        buildContext.CakeContext.Information($"This is a local build, not disabling building of project references");
-    }
-
+    //InjectAssemblySearchPathsInProjectFile(buildContext, projectName, GetProjectFileName(buildContext, projectName));
+        
     // Continuous integration build
     msBuildSettings.ContinuousIntegrationBuild = true;
     //msBuildSettings.WithProperty("ContinuousIntegrationBuild", "true");
@@ -171,8 +160,15 @@ private static void ConfigureMsBuildForDotNet(BuildContext buildContext, DotNetM
     // msBuildSettings.WithProperty("SolutionPath", System.IO.Path.GetFullPath(buildContext.General.Solution.FileName));
     // msBuildSettings.WithProperty("SolutionDir", System.IO.Path.GetFullPath(buildContext.General.Solution.Directory));
     // msBuildSettings.WithProperty("SolutionName", buildContext.General.Solution.Name);
-    // msBuildSettings.WithProperty("SolutionExt", ".sln");
+    // msBuildSettings.WithProperty("SolutionExt", ".slnx");
     // msBuildSettings.WithProperty("DefineExplicitDefaults", "true");
+
+    // Path maps
+    if (!buildContext.General.IsLocalBuild)
+    {
+        // Note: disabled since it breaks Verify tests and requires further investigation
+        //msBuildSettings.WithProperty("PathMap", $"{buildContext.General.RootDirectory}=.{System.IO.Path.DirectorySeparatorChar}");
+    }
 
     // Disable copyright info
     msBuildSettings.NoLogo = true;
@@ -353,12 +349,17 @@ private static string GetVisualStudioDirectory(BuildContext buildContext, bool? 
 
     var prereleasePaths = new List<KeyValuePair<string, string>>(new [] 
     { 
+        new KeyValuePair<string, string>("Visual Studio 2026 Insiders", $@"{programFilesx64}\Microsoft Visual Studio\18\Insiders\"),
+        new KeyValuePair<string, string>("Visual Studio 2026 Preview", $@"{programFilesx64}\Microsoft Visual Studio\18\Preview\"),
         new KeyValuePair<string, string>("Visual Studio 2022 Preview", $@"{programFilesx64}\Microsoft Visual Studio\2022\Preview\"),
         new KeyValuePair<string, string>("Visual Studio 2019 Preview", $@"{programFilesx86}\Microsoft Visual Studio\2019\Preview\"),
     });
 
     var normalPaths = new List<KeyValuePair<string, string>> (new []
     {
+        new KeyValuePair<string, string>("Visual Studio 2026 Enterprise", $@"{programFilesx64}\Microsoft Visual Studio\18\Enterprise\"),
+        new KeyValuePair<string, string>("Visual Studio 2026 Professional", $@"{programFilesx64}\Microsoft Visual Studio\18\Professional\"),
+        new KeyValuePair<string, string>("Visual Studio 2026 Community", $@"{programFilesx64}\Microsoft Visual Studio\18\Community\"),
         new KeyValuePair<string, string>("Visual Studio 2022 Enterprise", $@"{programFilesx64}\Microsoft Visual Studio\2022\Enterprise\"),
         new KeyValuePair<string, string>("Visual Studio 2022 Professional", $@"{programFilesx64}\Microsoft Visual Studio\2022\Professional\"),
         new KeyValuePair<string, string>("Visual Studio 2022 Community", $@"{programFilesx64}\Microsoft Visual Studio\2022\Community\"),
@@ -490,3 +491,7 @@ private static void InjectAssemblySearchPathsInProjectFile(BuildContext buildCon
         buildContext.CakeContext.Error($"Failed to process assembly search paths for project '{projectFileName}': {ex.Message}");
     }
 }
+
+
+
+
