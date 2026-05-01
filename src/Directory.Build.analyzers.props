@@ -4,7 +4,7 @@
   -->
 
   <ItemGroup Label="RepositoryTemplate.Analyzers.Packages">
-    <PackageReference Include="Catel.Analyzers" Version="1.6.1">
+    <PackageReference Include="Catel.Analyzers" Version="7.0.0-alpha0308">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
