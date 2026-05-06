@@ -144,6 +144,7 @@ public class MyClass
 - Use language keywords (`int`, `string`, `bool`) instead of framework type names (`Int32`, `String`, `Boolean`).
 - Prefer modern C# patterns: pattern matching over `is` + cast, null-conditional operators, null-coalescing, `throw` expressions.
 - Never add `default` parameter values to public API methods — add a new overload instead.
+- Namespaces are considered "feature containers". Don't add specific folder names to namespaces such as '.Models', '.Exceptions', '.EventArgs', '.Interfaces', '.Services'
 
 #### ABI / API stability
 | Allowed ✅ | Never ❌ |
