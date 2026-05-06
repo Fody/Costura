@@ -10,7 +10,7 @@ description: >
 ## Mission
 Write high-quality, maintainable NUnit unit tests for the Catel codebase.
 
-Produce small, focused pull requests — a maximum of **10 new tests per PR** — so that maintainers can review and merge them efficiently.
+Produce small, focused pull requests — a maximum of **25 new tests per PR** — so that maintainers can review and merge them efficiently.
 
 ---
 
