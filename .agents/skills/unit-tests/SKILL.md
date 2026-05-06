@@ -121,28 +121,57 @@ Use the prefix `The_` followed by the member name and a kind suffix:
 #### Arrange / Act / Assert
 - Separate the three phases with a blank line; do **not** add inline comments (`// Arrange`, etc.) unless the test body is long enough to warrant orientation.
 
+#### Verify.NUnit
+
+For complex verifications (such as rendered json, etc), use VerifyTests (see https://github.com/VerifyTests/Verify). 
+
+An example:
+
+```csharp
+public async Task Created_Serializer_Produces_Valid_Json()
+{
+	var factory = new JsonSerializerFactory();
+	var serializer = factory.CreateSerializer();
+	var data = new 
+	{ 
+		Id = 1, 
+		Name = "Factory" 
+	};
+
+	using var stream = new MemoryStream();
+	serializer.Serialize(stream, data);
+
+	var json = Encoding.UTF8.GetString(stream.ToArray());
+
+	await Verifier.Verify(json);
+}
+```
+
 #### Example
 ```csharp
-[TestFixture]
-public class The_GetValue_Method
+public class ConfigurationServiceFacts
 {
-    [TestCase(ConfigurationContainer.Local)]
-    [TestCase(ConfigurationContainer.Roaming)]
-    public async Task Throws_ArgumentException_For_Null_Key(ConfigurationContainer container)
-    {
-        var service = await GetConfigurationServiceAsync();
+	[TestFixture]
+	public class The_GetValue_Method
+	{
+		[TestCase(ConfigurationContainer.Local)]
+		[TestCase(ConfigurationContainer.Roaming)]
+		public async Task Throws_ArgumentException_For_Null_Key(ConfigurationContainer container)
+		{
+			var service = await GetConfigurationServiceAsync();
 
-        Assert.Throws<ArgumentException>(() => service.GetValue<string>(container, null));
-    }
+			Assert.Throws<ArgumentException>(() => service.GetValue<string>(container, null));
+		}
 
-    [TestCase(ConfigurationContainer.Local)]
-    [TestCase(ConfigurationContainer.Roaming)]
-    public async Task Returns_Default_Value_For_Non_Existing_Key(ConfigurationContainer container)
-    {
-        var service = await GetConfigurationServiceAsync();
+		[TestCase(ConfigurationContainer.Local)]
+		[TestCase(ConfigurationContainer.Roaming)]
+		public async Task Returns_Default_Value_For_Non_Existing_Key(ConfigurationContainer container)
+		{
+			var service = await GetConfigurationServiceAsync();
 
-        Assert.That(service.GetValue(container, "missing", "default"), Is.EqualTo("default"));
-    }
+			Assert.That(service.GetValue(container, "missing", "default"), Is.EqualTo("default"));
+		}
+	}
 }
 ```
 
