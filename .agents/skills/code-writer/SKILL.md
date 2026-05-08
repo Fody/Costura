@@ -59,6 +59,8 @@ Produce small, focused pull requests so that maintainers can review and merge th
 - Never use default parameters in **public** APIs — use overloads instead. Default parameters are acceptable in private or internal methods. Note: public properties with field initializers are generally safe, but avoid default values that encode business logic visible to callers.
 - Identify interfaces that need to be updated and ensure all implementations are updated too.
 - Never edit `*.generated.cs` or `*.generated.xaml` files — these are auto-generated.
+- Never edit `nuget.config`
+- Never edit `*.props` and `*.targets`, these are managed by repository templates instead
 
 ### 3. Implement the code
 
