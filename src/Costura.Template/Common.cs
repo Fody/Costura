@@ -83,19 +83,19 @@ internal static class Common
             if (string.Equals(currentName.Name, name.Name, StringComparison.InvariantCultureIgnoreCase) &&
                 string.Equals(CultureToString(currentName.CultureInfo), CultureToString(name.CultureInfo), StringComparison.InvariantCultureIgnoreCase))
             {
-                Log("Assembly '{0}' already loaded, returning existing assembly", assembly.FullName);
 #if NETCORE
-                var assemblyContext = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(assembly);
-                var isIndividualAssemblyLoadContext = "System.Runtime.Loader.IndividualAssemblyLoadContext" == assemblyContext.GetType().FullName;
-                var isDefaultContext = assemblyContext == System.Runtime.Loader.AssemblyLoadContext.Default;
-                if (!isDefaultContext && !isIndividualAssemblyLoadContext)
+                var assemblyLoadContext = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(assembly);
+                var isIndividualAssemblyLoadContext = "System.Runtime.Loader.IndividualAssemblyLoadContext" == assemblyLoadContext.GetType().FullName;
+                var isDefaultAssemblyLoadContext = assemblyContext == System.Runtime.Loader.AssemblyLoadContext.Default;
+                if (!isDefaultAssemblyLoadContext && !isIndividualAssemblyLoadContext)
                 {
                     Log("Assembly Context is not valid '{0}'", assemblyContext);
                     continue;
                 }
-
-                Log("Assembly Context is valid '{0}'", assemblyContext);
 #endif
+
+                Log("Assembly '{0}' already loaded, returning existing assembly", assembly.FullName);
+                
                 return assembly;
             }
         }
