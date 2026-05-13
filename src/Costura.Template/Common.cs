@@ -89,7 +89,7 @@ internal static class Common
                 var isDefaultAssemblyLoadContext = assemblyLoadContext == System.Runtime.Loader.AssemblyLoadContext.Default;
                 if (!isDefaultAssemblyLoadContext && !isIndividualAssemblyLoadContext)
                 {
-                    Log("Assembly Context is not valid '{0}'", assemblyContext);
+                    Log("Assembly Context is not valid '{0}'", assemblyLoadContext);
                     continue;
                 }
 #endif
