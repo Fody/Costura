@@ -36,7 +36,10 @@ class [System.Private.CoreLib]System.Reflection.Assembly[] V_1,
 class [System.Private.CoreLib]System.Reflection.Assembly[] V_2,
 int32 V_3,
 class [System.Private.CoreLib]System.Reflection.Assembly V_4,
-class [System.Private.CoreLib]System.Reflection.AssemblyName V_5)
+class [System.Private.CoreLib]System.Reflection.AssemblyName V_5,
+class [System.Private.CoreLib]System.Runtime.Loader.AssemblyLoadContext V_6,
+bool V_7,
+bool V_8)
 IL_0000:  call       class [System.Private.CoreLib]System.AppDomain [System.Private.CoreLib]System.AppDomain::get_CurrentDomain()
 IL_0005:  stloc.0
 IL_0006:  ldloc.0
@@ -46,7 +49,7 @@ IL_000d:  ldloc.1
 IL_000e:  stloc.2
 IL_000f:  ldc.i4.0
 IL_0010:  stloc.3
-IL_0011:  br.s       IL_005c
+IL_0011:  br.s       IL_0090
 IL_0013:  ldloc.2
 IL_0014:  ldloc.3
 IL_0015:  ldelem.ref
@@ -62,7 +65,7 @@ IL_002e:  ldc.i4.3
 IL_002f:  call       bool [System.Private.CoreLib]System.String::Equals(string,
 string,
 valuetype [System.Private.CoreLib]System.StringComparison)
-IL_0034:  brfalse.s  IL_0058
+IL_0034:  brfalse.s  IL_008c
 IL_0036:  ldloc.s    V_5
 IL_0038:  callvirt   instance class [System.Private.CoreLib]System.Globalization.CultureInfo [System.Private.CoreLib]System.Reflection.AssemblyName::get_CultureInfo()
 IL_003d:  call       string Costura.AssemblyLoader::CultureToString(class [System.Private.CoreLib]System.Globalization.CultureInfo)
@@ -73,20 +76,38 @@ IL_004d:  ldc.i4.3
 IL_004e:  call       bool [System.Private.CoreLib]System.String::Equals(string,
 string,
 valuetype [System.Private.CoreLib]System.StringComparison)
-IL_0053:  brfalse.s  IL_0058
+IL_0053:  brfalse.s  IL_008c
 IL_0055:  ldloc.s    V_4
-IL_0057:  ret
-IL_0058:  ldloc.3
-IL_0059:  ldc.i4.1
-IL_005a:  add
-IL_005b:  stloc.3
-IL_005c:  ldloc.3
-IL_005d:  ldloc.2
-IL_005e:  ldlen
-IL_005f:  conv.i4
-IL_0060:  blt.s      IL_0013
-IL_0062:  ldnull
-IL_0063:  ret
+IL_0057:  call       class [System.Private.CoreLib]System.Runtime.Loader.AssemblyLoadContext [System.Private.CoreLib]System.Runtime.Loader.AssemblyLoadContext::GetLoadContext(class [System.Private.CoreLib]System.Reflection.Assembly)
+IL_005c:  stloc.s    V_6
+IL_005e:  ldloc.s    V_6
+IL_0060:  call       class [System.Private.CoreLib]System.Runtime.Loader.AssemblyLoadContext [System.Private.CoreLib]System.Runtime.Loader.AssemblyLoadContext::get_Default()
+IL_0065:  ceq
+IL_0067:  stloc.s    V_7
+IL_0069:  ldloc.s    V_7
+IL_006b:  brtrue.s   IL_0089
+IL_006d:  ldstr      "System.Runtime.Loader.IndividualAssemblyLoadContext"
+IL_0072:  ldloc.s    V_6
+IL_0074:  callvirt   instance class [System.Private.CoreLib]System.Type [System.Private.CoreLib]System.Object::GetType()
+IL_0079:  callvirt   instance string [System.Private.CoreLib]System.Type::get_FullName()
+IL_007e:  call       bool [System.Private.CoreLib]System.String::op_Equality(string,
+string)
+IL_0083:  stloc.s    V_8
+IL_0085:  ldloc.s    V_8
+IL_0087:  brfalse.s  IL_008c
+IL_0089:  ldloc.s    V_4
+IL_008b:  ret
+IL_008c:  ldloc.3
+IL_008d:  ldc.i4.1
+IL_008e:  add
+IL_008f:  stloc.3
+IL_0090:  ldloc.3
+IL_0091:  ldloc.2
+IL_0092:  ldlen
+IL_0093:  conv.i4
+IL_0094:  blt        IL_0013
+IL_0099:  ldnull
+IL_009a:  ret
 }
 .method private hidebysig static string
 GetAssemblyResourceName(class [System.Private.CoreLib]System.Reflection.AssemblyName requestedAssemblyName) cil managed
