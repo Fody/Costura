@@ -85,12 +85,15 @@ internal static class Common
             {
 #if NETCORE
                 var assemblyLoadContext = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(assembly);
-                var isIndividualAssemblyLoadContext = "System.Runtime.Loader.IndividualAssemblyLoadContext" == assemblyLoadContext.GetType().FullName;
                 var isDefaultAssemblyLoadContext = assemblyLoadContext == System.Runtime.Loader.AssemblyLoadContext.Default;
-                if (!isDefaultAssemblyLoadContext && !isIndividualAssemblyLoadContext)
+                if (!isDefaultAssemblyLoadContext)
                 {
-                    Log("Assembly Context is not valid '{0}'", assemblyLoadContext);
-                    continue;
+                    var isIndividualAssemblyLoadContext = "System.Runtime.Loader.IndividualAssemblyLoadContext" == assemblyLoadContext.GetType().FullName;
+                    if (!isIndividualAssemblyLoadContext)
+                    {
+                        Log("Assembly Context is not valid '{0}'", assemblyLoadContext);
+                        continue;
+                    }
                 }
 #endif
 
