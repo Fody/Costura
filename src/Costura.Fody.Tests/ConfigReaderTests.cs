@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System;
+using System.Xml.Linq;
 using Fody;
 using NUnit.Framework;
 
@@ -43,7 +44,7 @@ public class ConfigReaderTests
     public void DoesNotReadInvalidBoolNode()
     {
         var xElement = XElement.Parse("<Node attr='foo'/>");
-        var exception = Assert.Throws<WeavingException>(() => Configuration.ReadBool(xElement, "attr", false));
+        var exception = Assert.Throws<WeavingException>(new Action(() => Configuration.ReadBool(xElement, "attr", false)));
         Assert.That(exception.Message, Is.EqualTo("Could not parse 'attr' from 'foo'."));
     }
 
@@ -204,7 +205,7 @@ Bar
     {
         var xElement = XElement.Parse(@"
 <Costura IncludeAssemblies='Bar' ExcludeAssemblies='Foo'/>");
-        var exception = Assert.Throws<WeavingException>(() => new Configuration(xElement));
+        var exception = Assert.Throws<WeavingException>(new Action(() => new Configuration(xElement)));
         Assert.That(exception.Message, Is.EqualTo("Either configure IncludeAssemblies OR ExcludeAssemblies, not both."));
     }
 

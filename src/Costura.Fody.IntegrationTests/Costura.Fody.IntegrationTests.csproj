@@ -14,9 +14,9 @@
   <ItemGroup>
     <PackageReference Include="Catel.Core" Version="5.12.22" PrivateAssets="All" />
     <PackageReference Include="Fody" Version="6.9.3" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.4.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.5.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" PrivateAssets="All" />
-    <PackageReference Include="NUnit" Version="4.5.1" PrivateAssets="all" />
+    <PackageReference Include="NUnit" Version="4.6.0" PrivateAssets="all" />
     <PackageReference Include="NUnit3TestAdapter" Version="6.2.0" />
   </ItemGroup>
   

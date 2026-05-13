@@ -4,7 +4,7 @@
   -->
 
   <ItemGroup Label="RepositoryTemplate.Analyzers.Packages">
-    <PackageReference Include="Catel.Analyzers" Version="1.6.1">
+    <PackageReference Include="Catel.Analyzers" Version="7.0.0-alpha0322">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -16,7 +16,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="NUnit.Analyzers" Version="4.12.0">
+    <PackageReference Include="NUnit.Analyzers" Version="4.13.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

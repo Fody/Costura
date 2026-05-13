@@ -83,8 +83,22 @@ internal static class Common
             if (string.Equals(currentName.Name, name.Name, StringComparison.InvariantCultureIgnoreCase) &&
                 string.Equals(CultureToString(currentName.CultureInfo), CultureToString(name.CultureInfo), StringComparison.InvariantCultureIgnoreCase))
             {
-                Log("Assembly '{0}' already loaded, returning existing assembly", assembly.FullName);
+#if NETCORE
+                var assemblyLoadContext = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(assembly);
+                var isDefaultAssemblyLoadContext = assemblyLoadContext == System.Runtime.Loader.AssemblyLoadContext.Default;
+                if (!isDefaultAssemblyLoadContext)
+                {
+                    var isIndividualAssemblyLoadContext = "System.Runtime.Loader.IndividualAssemblyLoadContext" == assemblyLoadContext.GetType().FullName;
+                    if (!isIndividualAssemblyLoadContext)
+                    {
+                        Log("Assembly Context is not valid '{0}'", assemblyLoadContext);
+                        continue;
+                    }
+                }
+#endif
 
+                Log("Assembly '{0}' already loaded, returning existing assembly", assembly.FullName);
+                
                 return assembly;
             }
         }
