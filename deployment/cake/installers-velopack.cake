@@ -1,4 +1,4 @@
-#tool "dotnet:?package=vpk&version=0.0.1298"
+#tool "dotnet:?package=vpk&version=1.0.1"
 
 //-------------------------------------------------------------
 
