@@ -165,3 +165,6 @@ infra/
 
 # Docfx output
 doc/site
+
+# AI / agents
+.claude
