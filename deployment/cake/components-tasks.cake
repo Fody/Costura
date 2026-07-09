@@ -72,7 +72,10 @@ public class ComponentsProcessor : ProcessorBase
                         Recursive = true
                     });
 
-                    await System.Threading.Tasks.Task.Delay(1000);
+                    if (retryCount <= 2)
+                    {
+                        await System.Threading.Tasks.Task.Delay(1000);
+                    }
 
                     retryCount--;
                 }            
