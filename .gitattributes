@@ -63,6 +63,7 @@
 #*.RTF   diff=astextplain
 
 *.verified.cs text eol=lf working-tree-encoding=UTF-8
+*.verified.csv text eol=lf working-tree-encoding=UTF-8
 *.verified.txt text eol=lf working-tree-encoding=UTF-8
 *.verified.xml text eol=lf working-tree-encoding=UTF-8
 *.verified.json text eol=lf working-tree-encoding=UTF-8
