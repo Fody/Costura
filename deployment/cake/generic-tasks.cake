@@ -113,7 +113,7 @@ Task("UpdateNuGet")
 
 //-------------------------------------------------------------
 
-Task("RestorePackages")
+Task("RestorePackagesForBuild")
     .IsDependentOn("Prepare")
     .IsDependentOn("UpdateNuGet")
     .ContinueOnError()
@@ -174,6 +174,94 @@ Task("RestorePackages")
             // For C++ projects, we must clean the project again after a package restore
             CleanProject(buildContext, project);
         }
+    }
+});
+
+//-------------------------------------------------------------
+
+Task("RestorePackagesForPackage")
+    .IsDependentOn("Prepare")
+    .IsDependentOn("UpdateNuGet")
+    .ContinueOnError()
+    .Does<BuildContext>(buildContext =>
+{
+    if (buildContext.General.IsLocalBuild && buildContext.General.MaximizePerformance)
+    {
+        Information("Local build with maximized performance detected, skipping package restore");
+        return;
+    }
+
+    var csharpProjects = new List<FilePath>();
+
+    foreach (var project in buildContext.AllProjects)
+    {
+        if (!ShouldPackageProject(buildContext, project) ||
+            IsTestProject(buildContext, project))
+        {
+            continue;
+        }
+
+        var projectFileName = GetProjectFileName(buildContext, project);
+        if (projectFileName.EndsWith(".csproj"))
+        {
+            Information("Adding '{0}' as C# specific project to restore", project);
+
+            csharpProjects.Add(projectFileName);
+        }
+    }
+
+    var allFiles = new List<FilePath>();
+    allFiles.AddRange(csharpProjects);
+
+	Information($"Found '{allFiles.Count}' projects to restore");
+
+    foreach (var file in allFiles)
+    {
+        RestoreNuGetPackages(buildContext, file);
+    }
+});
+
+//-------------------------------------------------------------
+
+Task("RestorePackagesForDeploy")
+    .IsDependentOn("Prepare")
+    .IsDependentOn("UpdateNuGet")
+    .ContinueOnError()
+    .Does<BuildContext>(buildContext =>
+{
+    if (buildContext.General.IsLocalBuild && buildContext.General.MaximizePerformance)
+    {
+        Information("Local build with maximized performance detected, skipping package restore");
+        return;
+    }
+
+    var csharpProjects = new List<FilePath>();
+
+    foreach (var project in buildContext.AllProjects)
+    {
+        if (!ShouldDeployProject(buildContext, project) ||
+            IsTestProject(buildContext, project))
+        {
+            continue;
+        }
+
+        var projectFileName = GetProjectFileName(buildContext, project);
+        if (projectFileName.EndsWith(".csproj"))
+        {
+            Information("Adding '{0}' as C# specific project to restore", project);
+
+            csharpProjects.Add(projectFileName);
+        }
+    }
+
+    var allFiles = new List<FilePath>();
+    allFiles.AddRange(csharpProjects);
+
+	Information($"Found '{allFiles.Count}' projects to restore");
+
+    foreach (var file in allFiles)
+    {
+        RestoreNuGetPackages(buildContext, file);
     }
 });
 
