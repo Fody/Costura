@@ -347,7 +347,7 @@ Task("UpdateInfo")
 
 Task("Build")
     .IsDependentOn("Clean")
-    .IsDependentOn("RestorePackages")
+    .IsDependentOn("RestorePackagesForBuild")
     .IsDependentOn("UpdateInfo")
     //.IsDependentOn("VerifyDependencies")
     .IsDependentOn("CleanupCode")
@@ -624,7 +624,7 @@ Task("Package")
     .IsDependentOn("UpdateInfo")
     // Note: no dependency on 'build' since we might have already built the solution
     // Make sure we have the temporary "project.assets.json" in case we need to package with Visual Studio
-    .IsDependentOn("RestorePackages")
+    .IsDependentOn("RestorePackagesForPackage")
     // Make sure to update if we are running on a new agent so we can sign nuget packages
     .IsDependentOn("UpdateNuGet")
     .IsDependentOn("CodeSign")
@@ -689,7 +689,7 @@ Task("PackageLocal")
 Task("Deploy")
     // Note: no dependency on 'package' since we might have already packaged the solution
     // Make sure we have the temporary "project.assets.json" in case we need to package with Visual Studio
-    .IsDependentOn("RestorePackages")
+    .IsDependentOn("RestorePackagesForDeploy")
     .Does<BuildContext>(async buildContext =>
 {
     await buildContext.BuildServer.BeforeDeployAsync(); 

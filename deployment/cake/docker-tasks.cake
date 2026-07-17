@@ -37,8 +37,29 @@ public class DockerImagesProcessor : ProcessorBase
 
     private string GetDockerImageName(string projectName)
     {
-        var name = projectName.Replace(".", "-");
-        return name.ToLower();
+        var imageName = string.Empty;
+
+        var appName = BuildContext.DockerImages.DockerAppName;
+        if (!string.IsNullOrWhiteSpace(appName))
+        {
+            imageName = appName.ToLower() + "/";
+
+            if (projectName.StartsWith(appName, StringComparison.OrdinalIgnoreCase))
+            {
+                projectName = projectName.Substring(appName.Length);
+            }
+        }
+
+        projectName = projectName.Trim('.', '-');
+
+        imageName += projectName.Replace(".", "-");
+
+        if (imageName.EndsWith("service", StringComparison.OrdinalIgnoreCase))
+        {
+            imageName = imageName.Substring(0, imageName.Length - "service".Length);
+        }
+
+        return imageName.ToLower();
     }
 
     private string GetDockerImageTag(string projectName, string version)

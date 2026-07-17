@@ -13,6 +13,7 @@ public class DockerImagesContext : BuildContextWithItemsBase
     public string DockerRegistryUrl { get; set; }
     public string DockerRegistryUserName { get; set; }
     public string DockerRegistryPassword { get; set; }
+    public string DockerAppName { get; set; } = string.Empty;
 
     protected override void ValidateContext()
     {
@@ -34,7 +35,8 @@ private DockerImagesContext InitializeDockerImagesContext(BuildContext buildCont
         DockerEngineUrl = buildContext.BuildServer.GetVariable("DockerEngineUrl", showValue: true),
         DockerRegistryUrl = buildContext.BuildServer.GetVariable("DockerRegistryUrl", showValue: true),
         DockerRegistryUserName = buildContext.BuildServer.GetVariable("DockerRegistryUserName", showValue: false),
-        DockerRegistryPassword = buildContext.BuildServer.GetVariable("DockerRegistryPassword", showValue: false)
+        DockerRegistryPassword = buildContext.BuildServer.GetVariable("DockerRegistryPassword", showValue: false),
+        DockerAppName = buildContext.BuildServer.GetVariable("DockerAppName", showValue: true)
     };
 
     return data;
