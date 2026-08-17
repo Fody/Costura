@@ -13,9 +13,9 @@ public class GeneralContext : BuildContextWithItemsBase
         : base(parentBuildContext)
     {
         SkipComponentsThatAreNotDeployable = true;
-        EnableMsBuildBinaryLog = true;
-        EnableMsBuildFileLog = true;
-        EnableMsBuildXmlLog = true;
+        EnableMsBuildBinaryLog = false;
+        EnableMsBuildFileLog = false;
+        EnableMsBuildXmlLog = false;
     }
 
     public string Target { get; set; }
@@ -667,9 +667,9 @@ private GeneralContext InitializeGeneralContext(BuildContext buildContext, IBuil
     data.VerifyDependencies = !buildContext.BuildServer.GetVariableAsBool("DependencyCheckDisabled", false, showValue: true);
     data.SkipComponentsThatAreNotDeployable = buildContext.BuildServer.GetVariableAsBool("SkipComponentsThatAreNotDeployable", true, showValue: true);
 
-    data.EnableMsBuildBinaryLog = buildContext.BuildServer.GetVariableAsBool("EnableMsBuildBinaryLog", true, showValue: true);
-    data.EnableMsBuildFileLog = buildContext.BuildServer.GetVariableAsBool("EnableMsBuildFileLog", true, showValue: true);
-    data.EnableMsBuildXmlLog = buildContext.BuildServer.GetVariableAsBool("EnableMsBuildXmlLog", true, showValue: true);
+    data.EnableMsBuildBinaryLog = buildContext.BuildServer.GetVariableAsBool("EnableMsBuildBinaryLog", false, showValue: true);
+    data.EnableMsBuildFileLog = buildContext.BuildServer.GetVariableAsBool("EnableMsBuildFileLog", false, showValue: true);
+    data.EnableMsBuildXmlLog = buildContext.BuildServer.GetVariableAsBool("EnableMsBuildXmlLog", false, showValue: true);
 
     // If local, we want full pdb, so do a debug instead
     if (data.IsLocalBuild)
