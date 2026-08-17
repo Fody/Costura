@@ -302,9 +302,9 @@ public class DockerImagesProcessor : ProcessorBase
 
             ConfigureDockerSettings(dockerSettings);
 
-            CakeContext.Information("Docker files source directory: '{0}'", outputRootDirectory);
+            CakeContext.Information("Docker files source directory: '{0}'", outputDirectory);
 
-            CakeContext.DockerBuild(dockerSettings, outputRootDirectory);
+            CakeContext.DockerBuild(dockerSettings, outputDirectory);
 
             BuildContext.CakeContext.LogSeparator();
         }        
