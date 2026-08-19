@@ -46,37 +46,37 @@ public class AspireContext : BuildContextWithItemsBase
 
         if (string.IsNullOrWhiteSpace(AzurePrincipalId))
         {
-            throw new InvalidOperationException("Azure principal ID is not set. Please set the 'AzurePrincipalId' variable.");
+            throw new InvalidOperationException("Azure principal ID is not set. Please set the 'AspireAzurePrincipalId' variable.");
         }
 
         if (string.IsNullOrWhiteSpace(AzureLocation))
         {
-            throw new InvalidOperationException("Azure location is not set. Please set the 'AzureLocation' variable.");
+            throw new InvalidOperationException("Azure location is not set. Please set the 'AspireAzureLocation' variable.");
         }
 
         if (string.IsNullOrWhiteSpace(AzureResourceGroup))
         {
-            throw new InvalidOperationException("Azure resource group is not set. Please set the 'AzureResourceGroup' variable.");
+            throw new InvalidOperationException("Azure resource group is not set. Please set the 'AspireAzureResourceGroup' variable.");
         }
 
         if (string.IsNullOrWhiteSpace(AzureSubscriptionId))
         {
-            throw new InvalidOperationException("Azure subscription ID is not set. Please set the 'AzureSubscriptionId' variable.");
+            throw new InvalidOperationException("Azure subscription ID is not set. Please set the 'AspireAzureSubscriptionId' variable.");
         }
 
         if (string.IsNullOrWhiteSpace(AzureTenantId))
         {
-            throw new InvalidOperationException("Azure tenant ID is not set. Please set the 'AzureTenantId' variable.");
+            throw new InvalidOperationException("Azure tenant ID is not set. Please set the 'AspireAzureTenantId' variable.");
         }
 
         if (string.IsNullOrWhiteSpace(AzureClientId))
         {
-            throw new InvalidOperationException("Azure client ID is not set. Please set the 'AzureClientId' variable.");
+            throw new InvalidOperationException("Azure client ID is not set. Please set the 'AspireAzureClientId' variable.");
         }
 
         if (string.IsNullOrWhiteSpace(AzureClientSecret))
         {
-            throw new InvalidOperationException("Azure client secret is not set. Please set the 'AzureClientSecret' variable.");
+            throw new InvalidOperationException("Azure client secret is not set. Please set the 'AspireAzureClientSecret' variable.");
         }
     }
     
