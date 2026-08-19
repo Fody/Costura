@@ -761,7 +761,8 @@ Task("BuildAndDeploy")
     .IsDependentOn("Build")
     .IsDependentOn("Test")
     .IsDependentOn("Package")
-    .IsDependentOn("Deploy");
+    .IsDependentOn("Deploy")
+    .IsDependentOn("Finalize");
 
 //-------------------------------------------------------------
 
