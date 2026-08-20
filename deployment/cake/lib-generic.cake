@@ -258,7 +258,29 @@ private static List<string> SplitSeparatedList(string value, params char[] separ
             
     if (!string.IsNullOrWhiteSpace(value))
     {
-        var splitted = value.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+        var splitted = SplitSeparatedListKeepEmptyEntries(value, separators);
+
+        foreach (var split in splitted)
+        {
+            if (!string.IsNullOrWhiteSpace(split))
+            {
+                list.Add(split.Trim());
+            }
+        }
+    }
+
+    return list;
+}
+
+//-------------------------------------------------------------
+
+private static List<string> SplitSeparatedListKeepEmptyEntries(string value, params char[] separators)
+{
+    var list = new List<string>();
+            
+    if (!string.IsNullOrWhiteSpace(value))
+    {
+        var splitted = value.Split(separators, StringSplitOptions.None);
 
         foreach (var split in splitted)
         {

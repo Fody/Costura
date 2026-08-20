@@ -409,6 +409,9 @@ public class BuildServerIntegration : IIntegration
         {
             value = GetVariableForCache(variableName, defaultValue);
 
+            // Trim double quotes so it can be passed to command line tools without issues
+            value = value.Trim('"');
+
             if (showValue)
             {
                 PrintVariableValue(variableName, value);

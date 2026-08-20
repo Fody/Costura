@@ -287,7 +287,7 @@ Task("Prepare")
     
     foreach (var test in buildContext.Tests.Items)
     {
-        buildContext.CakeContext.Information($"  - {test}");
+        buildContext.CakeContext.Information($"- {test}");
     }
 
     buildContext.AllProjects.AddRange(buildContext.Tests.Items);
@@ -303,7 +303,7 @@ Task("Prepare")
     
     foreach (var dependency in buildContext.Dependencies.Items)
     {
-        buildContext.CakeContext.Information($"  - {dependency}");
+        buildContext.CakeContext.Information($"- {dependency}");
     }
 
     // Add to the front, these are dependencies after all
@@ -323,6 +323,8 @@ Task("Prepare")
     }
     
     await buildContext.BuildServer.AfterPrepareAsync();
+
+    InitializeNuGetPackageSources(buildContext);
 });
 
 //-------------------------------------------------------------
@@ -626,7 +628,6 @@ Task("Package")
     // Make sure we have the temporary "project.assets.json" in case we need to package with Visual Studio
     .IsDependentOn("RestorePackagesForPackage")
     // Make sure to update if we are running on a new agent so we can sign nuget packages
-    .IsDependentOn("UpdateNuGet")
     .IsDependentOn("CodeSign")
     .Does<BuildContext>(async buildContext =>
 {

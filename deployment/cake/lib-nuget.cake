@@ -48,6 +48,79 @@ public static List<NuGetServer> GetNuGetServers(string urls, string apiKeys)
 
 //-------------------------------------------------------------
 
+private static void InitializeNuGetPackageSources(BuildContext buildContext)
+{
+    buildContext.CakeContext.LogSeparator("Configuring NuGet package sources");
+    
+    var sources = SplitSeparatedListKeepEmptyEntries(buildContext.General.NuGet.PackageSources, ';');
+
+    var sourcesNames = SplitSeparatedListKeepEmptyEntries(buildContext.General.NuGet.PackageSourcesNames, ';');
+    if (sourcesNames.Count > 0)
+    {
+        if (sourcesNames.Count != sources.Count)
+        {
+            throw new Exception("Number of package source names does not match number of package sources. Even if a token is not required, add an empty one");
+        }
+    }
+
+    var sourcesUsernames = SplitSeparatedListKeepEmptyEntries(buildContext.General.NuGet.PackageSourcesUsernames, ';');
+    if (sourcesUsernames.Count > 0)
+    {
+        if (sourcesUsernames.Count != sources.Count)
+        {
+            throw new Exception("Number of package source usernames does not match number of package sources. Even if a token is not required, add an empty one");
+        }
+    }
+
+    var sourcesTokens = SplitSeparatedListKeepEmptyEntries(buildContext.General.NuGet.PackageSourcesTokens, ';');
+    if (sourcesTokens.Count > 0)
+    {
+        if (sourcesTokens.Count != sources.Count)
+        {
+            throw new Exception("Number of package source tokens does not match number of package sources. Even if a token is not required, add an empty one");
+        }
+    }
+
+    for (var i = 0; i < sources.Count; i++)
+    {
+        var source = sources[i];
+        var name = sourcesNames.Count > 0 ? sourcesNames[i] : source;
+        var username = sourcesUsernames.Count > 0 ? sourcesUsernames[i] : null;
+        var token = sourcesTokens.Count > 0 ? sourcesTokens[i] : null;
+
+        var settings = new NuGetSourcesSettings {
+            UserName = username,
+            Password = token,
+            StorePasswordInClearText = true
+        };
+
+        var tokenForLogging = "not-available";
+        if (!string.IsNullOrWhiteSpace(token))
+        {
+            tokenForLogging = $"**** (length: {token.Length})";
+
+            if (token.Length > 10)
+            {
+                tokenForLogging = token.Substring(0, 5) + $"... (length: {token.Length})";
+            }
+        }
+
+        buildContext.CakeContext.Information("Registering NuGet feed '{0}'", source);
+        buildContext.CakeContext.Information("* Name: {0}", name);
+        buildContext.CakeContext.Information("* Username: {0}", username);
+        buildContext.CakeContext.Information("* Token: {0}", tokenForLogging);
+
+        if (!buildContext.CakeContext.NuGetHasSource(source))
+        {
+            buildContext.CakeContext.NuGetAddSource(name, source, settings);
+        }
+
+        buildContext.CakeContext.Information(string.Empty);
+    }
+}
+
+//-------------------------------------------------------------
+
 private static void RestoreNuGetPackages(BuildContext buildContext, Cake.Core.IO.FilePath solutionOrProjectFileName)
 {
     buildContext.CakeContext.LogSeparator("Restoring packages for '{0}'", solutionOrProjectFileName);

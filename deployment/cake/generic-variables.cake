@@ -354,6 +354,9 @@ public class NuGetContext : BuildContextBase
     }
 
     public string PackageSources { get; set; }
+    public string PackageSourcesNames { get; set; }
+    public string PackageSourcesTokens { get; set; }
+    public string PackageSourcesUsernames { get; set; }
     public string Executable { get; set; }
     public string LocalPackagesDirectory { get; set; }
 
@@ -629,6 +632,9 @@ private GeneralContext InitializeGeneralContext(BuildContext buildContext, IBuil
     data.NuGet = new NuGetContext(data)
     {
         PackageSources = buildContext.BuildServer.GetVariable("NuGetPackageSources", showValue: true),
+        PackageSourcesNames = buildContext.BuildServer.GetVariable("NuGetPackageSourcesNames", showValue: true),
+        PackageSourcesUsernames = buildContext.BuildServer.GetVariable("NuGetPackageSourcesUsernames", showValue: false),
+        PackageSourcesTokens = buildContext.BuildServer.GetVariable("NuGetPackageSourcesTokens", showValue: false),
         // Executable = "./tools/nuget.exe",
         Executable = buildContext.CakeContext.Tools.Resolve("nuget.exe").FullPath,
         LocalPackagesDirectory = "c:\\source\\_packages",
