@@ -84,38 +84,8 @@ private void UpdateSolutionAssemblyInfo(BuildContext buildContext)
 
 //-------------------------------------------------------------
 
-Task("UpdateNuGet")
-    .ContinueOnError()
-    .Does<BuildContext>(buildContext => 
-{
-    // DISABLED UNTIL NUGET GETS FIXED: https://github.com/NuGet/Home/issues/10853
-
-    // Information("Making sure NuGet is using the latest version");
-
-    // if (buildContext.General.IsLocalBuild && buildContext.General.MaximizePerformance)
-    // {
-    //     Information("Local build with maximized performance detected, skipping NuGet update check");
-    //     return;
-    // }
-
-    // var nuGetExecutable = buildContext.General.NuGet.Executable;
-
-    // var exitCode = StartProcess(nuGetExecutable, new ProcessSettings
-    // {
-    //     Arguments = "update -self"
-    // });
-
-    // var newNuGetVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(nuGetExecutable);
-    // var newNuGetVersion = newNuGetVersionInfo.FileVersion;
-
-    // Information("Updating NuGet.exe exited with '{0}', version is '{1}'", exitCode, newNuGetVersion);
-});
-
-//-------------------------------------------------------------
-
 Task("RestorePackagesForBuild")
     .IsDependentOn("Prepare")
-    .IsDependentOn("UpdateNuGet")
     .ContinueOnError()
     .Does<BuildContext>(buildContext =>
 {
@@ -181,7 +151,6 @@ Task("RestorePackagesForBuild")
 
 Task("RestorePackagesForPackage")
     .IsDependentOn("Prepare")
-    .IsDependentOn("UpdateNuGet")
     .ContinueOnError()
     .Does<BuildContext>(buildContext =>
 {
@@ -225,7 +194,6 @@ Task("RestorePackagesForPackage")
 
 Task("RestorePackagesForDeploy")
     .IsDependentOn("Prepare")
-    .IsDependentOn("UpdateNuGet")
     .ContinueOnError()
     .Does<BuildContext>(buildContext =>
 {
