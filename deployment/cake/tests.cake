@@ -229,15 +229,25 @@ private static void RunUnitTests(BuildContext buildContext, string projectName)
 
 private static bool IsTestProject(BuildContext buildContext, string projectName)
 {
-    if (IsNUnitTestProject(buildContext, projectName))
+    var projectFileName = GetProjectFileName(buildContext, projectName);
+    var projectFileContents = System.IO.File.ReadAllText(projectFileName);
+
+    // Check for Microsoft.NET.Test.Sdk, which is required for .NET Core test projects. We cannot
+    // check for NUnit / XUnit references since they might contain a reference to the test framework
+    if (projectFileContents.ToLower().Contains("microsoft.net.test.sdk"))
     {
         return true;
     }
 
-    if (IsXUnitTestProject(buildContext, projectName))
-    {
-        return true;
-    }
+    // if (IsNUnitTestProject(buildContext, projectName))
+    // {
+    //     return true;
+    // }
+
+    // if (IsXUnitTestProject(buildContext, projectName))
+    // {
+    //     return true;
+    // }
 
     return false;
 }
