@@ -11,7 +11,6 @@
 #l "sourcecontrol.cake"
 #l "notifications.cake"
 #l "generic-tasks.cake"
-#l "apps-uwp-tasks.cake"
 #l "apps-wpf-tasks.cake"
 #l "aspire-tasks.cake"
 #l "codesigning-tasks.cake"
@@ -104,7 +103,6 @@ public class BuildContext : BuildContextBase
     public GitHubPagesContext GitHubPages { get; set; }
     public TemplatesContext Templates { get; set; }
     public ToolsContext Tools { get; set; }
-    public UwpContext Uwp { get; set; }
     public VsExtensionsContext VsExtensions { get; set; }
     public WpfContext Wpf { get; set; }
 
@@ -152,7 +150,6 @@ Setup<BuildContext>(setupContext =>
     buildContext.GitHubPages = InitializeGitHubPagesContext(buildContext, buildContext);
     buildContext.Templates = InitializeTemplatesContext(buildContext, buildContext);
     buildContext.Tools = InitializeToolsContext(buildContext, buildContext);
-    buildContext.Uwp = InitializeUwpContext(buildContext, buildContext);
     buildContext.VsExtensions = InitializeVsExtensionsContext(buildContext, buildContext);
     buildContext.Wpf = InitializeWpfContext(buildContext, buildContext);
 
@@ -176,7 +173,6 @@ Setup<BuildContext>(setupContext =>
     buildContext.Processors.Add(new DockerImagesProcessor(buildContext));
     buildContext.Processors.Add(new GitHubPagesProcessor(buildContext));
     buildContext.Processors.Add(new ToolsProcessor(buildContext));
-    buildContext.Processors.Add(new UwpProcessor(buildContext));
     buildContext.Processors.Add(new VsExtensionsProcessor(buildContext));
     buildContext.Processors.Add(new WpfProcessor(buildContext));
     // !!! Note: we add test projects *after* preparing all the other processors, see Prepare task !!!
@@ -246,7 +242,6 @@ Task("Prepare")
     buildContext.RegisteredProjects.AddRange(buildContext.GitHubPages.Items);
     buildContext.RegisteredProjects.AddRange(buildContext.Tests.Items);
     buildContext.RegisteredProjects.AddRange(buildContext.Tools.Items);
-    buildContext.RegisteredProjects.AddRange(buildContext.Uwp.Items);
     buildContext.RegisteredProjects.AddRange(buildContext.VsExtensions.Items);
     buildContext.RegisteredProjects.AddRange(buildContext.Wpf.Items);
 
@@ -269,7 +264,6 @@ Task("Prepare")
     buildContext.AllProjects.AddRange(buildContext.DockerImages.Items);
     buildContext.AllProjects.AddRange(buildContext.GitHubPages.Items);
     buildContext.AllProjects.AddRange(buildContext.Tools.Items);
-    buildContext.AllProjects.AddRange(buildContext.Uwp.Items);
     buildContext.AllProjects.AddRange(buildContext.VsExtensions.Items);
     buildContext.AllProjects.AddRange(buildContext.Wpf.Items);
 

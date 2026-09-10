@@ -198,8 +198,6 @@ public enum TargetType
 
     Tool,
 
-    UwpApp,
-
     VsExtension,
 
     WpfApp
@@ -915,12 +913,6 @@ private static bool IsOnlyDependencyProject(BuildContext buildContext, string pr
         buildContext.CakeContext.Information($"Project is list of tools, assuming not dependency only");
         return false;
     }            
-
-    if (buildContext.Uwp.Items.Contains(projectName))
-    {
-        buildContext.CakeContext.Information($"Project is list of UWP apps, assuming not dependency only");
-        return false;
-    }   
 
     if (buildContext.VsExtensions.Items.Contains(projectName))
     {

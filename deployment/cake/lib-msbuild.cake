@@ -113,6 +113,64 @@ private static void ConfigureMsBuild(BuildContext buildContext, MSBuildSettings 
             FileName = System.IO.Path.Combine(buildContext.General.OutputRootDirectory, string.Format(@"MsBuild_{0}_{1}_log.binlog", projectName, action))
         };
     }
+
+}
+
+//-------------------------------------------------------------
+
+private static void ConfigureDotNetMsBuildTool(BuildContext buildContext, string projectFileName, MSBuildSettings msBuildSettings)
+{
+    if (!projectFileName.EndsWith(".csproj", StringComparison.OrdinalIgnoreCase))
+    {
+        return;
+    }
+
+    buildContext.CakeContext.Information("Using 'dotnet msbuild' for project '{0}'", projectFileName);
+
+    msBuildSettings.ToolPath = GetDotNetToolPath(buildContext);
+
+    var previousArgumentCustomization = msBuildSettings.ArgumentCustomization;
+    msBuildSettings.ArgumentCustomization = args =>
+    {
+        if (previousArgumentCustomization is not null)
+        {
+            args = previousArgumentCustomization(args);
+        }
+
+        return args.Prepend("msbuild");
+    };
+}
+
+//-------------------------------------------------------------
+
+private static string GetDotNetToolPath(BuildContext buildContext)
+{
+    var dotNetHostPath = Environment.GetEnvironmentVariable("DOTNET_HOST_PATH");
+    if (!string.IsNullOrWhiteSpace(dotNetHostPath) &&
+        System.IO.File.Exists(dotNetHostPath))
+    {
+        return dotNetHostPath;
+    }
+
+    var dotNetExecutableName = buildContext.CakeContext.IsRunningOnWindows() ? "dotnet.exe" : "dotnet";
+    var pathVariable = Environment.GetEnvironmentVariable("PATH") ?? string.Empty;
+    var pathSeparator = buildContext.CakeContext.IsRunningOnWindows() ? ';' : ':';
+
+    foreach (var path in pathVariable.Split(pathSeparator))
+    {
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            continue;
+        }
+
+        var dotNetPath = System.IO.Path.Combine(path, dotNetExecutableName);
+        if (System.IO.File.Exists(dotNetPath))
+        {
+            return dotNetPath;
+        }
+    }
+
+    return "dotnet";
 }
 
 //-------------------------------------------------------------
@@ -234,6 +292,8 @@ private static void RunMsBuild(BuildContext buildContext, string projectName, st
             "XmlFileLogger", $"logfile=\"{logPath}\";verbosity=Detailed;encoding=UTF-8");
     }
 
+    ConfigureDotNetMsBuildTool(buildContext, projectFileName, msBuildSettings);
+
     var failBuild = false;
 
     try
@@ -243,8 +303,10 @@ private static void RunMsBuild(BuildContext buildContext, string projectName, st
             buildContext.CakeContext.MSBuild(projectFileName, msBuildSettings);
         //}
     }
-    catch (System.Exception)
+    catch (System.Exception ex)
     {
+        buildContext.CakeContext.Error(ex.ToString());
+
         // Accept for now, we will throw later
         failBuild = true;
     }
@@ -416,6 +478,13 @@ private static string GetVisualStudioDirectory(BuildContext buildContext, bool? 
 
 private static string GetVisualStudioPath(BuildContext buildContext, bool? allowVsPrerelease = null)
 {
+    if (!buildContext.CakeContext.IsRunningOnWindows())
+    {
+        buildContext.CakeContext.Information("Visual Studio MSBuild is not available on this platform, using the default MSBuild tool resolution");
+
+        return null;
+    }
+
     var potentialPaths = new []
     {
         @"MSBuild\Current\Bin\msbuild.exe",
@@ -425,6 +494,12 @@ private static string GetVisualStudioPath(BuildContext buildContext, bool? allow
     };
 
     var directory = GetVisualStudioDirectory(buildContext, allowVsPrerelease);
+    if (string.IsNullOrWhiteSpace(directory))
+    {
+        buildContext.CakeContext.Information("Could not find Visual Studio MSBuild, using the default MSBuild tool resolution");
+
+        return null;
+    }
 
     foreach (var potentialPath in potentialPaths)
     {
@@ -435,7 +510,9 @@ private static string GetVisualStudioPath(BuildContext buildContext, bool? allow
         }
     }
 
-    throw new Exception("Could not find the path to Visual Studio (msbuild.exe)");
+    buildContext.CakeContext.Information("Could not find Visual Studio MSBuild, using the default MSBuild tool resolution");
+
+    return null;
 }
 
 //-------------------------------------------------------------
