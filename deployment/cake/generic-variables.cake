@@ -1,7 +1,8 @@
 #l "buildserver.cake"
 
-#tool "nuget:?package=GitVersion.CommandLine&version=5.12.0"
-#tool "nuget:?package=NuGet.CommandLine&version=7.3.1"
+#tool "dotnet:?package=GitVersion.Tool&version=6.8.2"
+
+#tool "nuget:?package=NuGet.CommandLine&version=7.3.0"
 
 #addin "nuget:?package=LibGit2Sharp&version=0.31.0"
 
@@ -160,39 +161,46 @@ public class VersionContext : BuildContextBase
                         }
                     }
 
+                    // Note: for now always (re)clone a repo
                     if (existingRepository)
+                    {                            
+                        CakeContext.Information("Dynamic repository already exists, recloning");
+
+                        CakeContext.DeleteDirectory(dynamicRepositoryPath, new DeleteDirectorySettings
+                        {
+                            Force = true,
+                            Recursive = true
+                        });
+
+                        //throw new NotSupportedException("Pulling updates for an existing dynamic repository is not supported.");
+                    }
+
+                    var gitCloneSettings = new GitCloneSettings
                     {
-                        // TODO: How to pull?                    
+                        BranchName = generalContext.Repository.BranchName,
+                        Checkout = true,
+                        IsBare = false,
+                        RecurseSubmodules = false,
+                    };
+
+                    if (!string.IsNullOrWhiteSpace(generalContext.Repository.Username) &&
+                        !string.IsNullOrWhiteSpace(generalContext.Repository.Password))
+                    {
+                        CakeContext.Information("Cloning with authentication");
+
+                        CakeContext.GitClone(generalContext.Repository.Url, 
+                            dynamicRepositoryPath, 
+                            generalContext.Repository.Username, 
+                            generalContext.Repository.Password,
+                            gitCloneSettings);
                     }
                     else
                     {
-                        var gitCloneSettings = new GitCloneSettings
-                        {
-                            BranchName = generalContext.Repository.BranchName,
-                            Checkout = true,
-                            IsBare = false,
-                            RecurseSubmodules = false,
-                        };
+                        CakeContext.Information("Cloning without authentication");
 
-                        if (!string.IsNullOrWhiteSpace(generalContext.Repository.Username) &&
-                            !string.IsNullOrWhiteSpace(generalContext.Repository.Password))
-                        {
-                            CakeContext.Information("Cloning with authentication");
-
-                            CakeContext.GitClone(generalContext.Repository.Url, 
-                                dynamicRepositoryPath, 
-                                generalContext.Repository.Username, 
-                                generalContext.Repository.Password,
-                                gitCloneSettings);
-                        }
-                        else
-                        {
-                            CakeContext.Information("Cloning without authentication");
-
-                            CakeContext.GitClone(generalContext.Repository.Url, 
-                                dynamicRepositoryPath,
-                                gitCloneSettings);
-                        }
+                        CakeContext.GitClone(generalContext.Repository.Url, 
+                            dynamicRepositoryPath,
+                            gitCloneSettings);
                     }
 
                     //LibGit2Sharp.Repository.Clone(generalContext.Repository.Url, dynamicRepositoryPath, cloneOptions);
@@ -209,14 +217,14 @@ public class VersionContext : BuildContextBase
                     // git checkout -B 'branch' 'commit id'
                     // 
                     // This seems impossible via Cake.Git (and LibGit2Sharp directly), so we will
-                    // just invoke git.exe directly here
+                    // just invoke git directly here
                     //
                     //CakeContext.GitCheckout(dynamicRepositoryPath, generalContext.Repository.CommitId);
 
                     var gitCommit = CakeContext.GitLogTip(dynamicRepositoryPath);
                     if (!string.Equals(gitCommit.Sha, generalContext.Repository.CommitId, StringComparison.OrdinalIgnoreCase))
                     {
-                        var gitExe = CakeContext.Tools.Resolve("git.exe").FullPath;
+                        var gitExe = CakeContext.Tools.Resolve("git").FullPath;
 
                         using (var process = CakeContext.StartAndReturnProcess(gitExe, 
                             new ProcessSettings

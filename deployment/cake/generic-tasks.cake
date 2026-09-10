@@ -355,7 +355,7 @@ Task("CodeSign")
 
     var filesToSign = new List<FilePath>();
 
-    // Note: only code-sign components & wpf apps, skip test projects & uwp apps
+    // Note: only code-sign components & wpf apps, skip test projects
     var projectsToCodeSign = new List<string>();
     projectsToCodeSign.AddRange(buildContext.Components.Items);
     projectsToCodeSign.AddRange(buildContext.Wpf.Items);

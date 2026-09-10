@@ -13,6 +13,7 @@ updates:
 - package-ecosystem: nuget
   directories:
     - "/src"
+    - "/deployment/cake"
   schedule:
     interval: daily
   open-pull-requests-limit: 10
