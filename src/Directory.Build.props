@@ -8,6 +8,8 @@
           Condition="$(RepositoryTemplateIgnoreBuildImplicitProps) != 'true' And Exists('$(MSBuildProjectDirectory)\..\Directory.Build.shared.implicit.props')" />
   <Import Project="$(MSBuildProjectDirectory)\..\Directory.Build.project.props"
           Condition="$(RepositoryTemplateIgnoreBuildProjectProps) != 'true' And Exists('$(MSBuildProjectDirectory)\..\Directory.Build.project.props')" />
+  <Import Project="$(MSBuildProjectDirectory)\..\Directory.Build.organization.props"
+          Condition="$(RepositoryTemplateIgnoreBuildOrganizationProps) != 'true' And Exists('$(MSBuildProjectDirectory)\..\Directory.Build.organization.props')" />		  
   <Import Project="$(MSBuildProjectDirectory)\..\Directory.Build.analyzers.props"
           Condition="$(RepositoryTemplateIgnoreBuildAnalyzersProps) != 'true' And Exists('$(MSBuildProjectDirectory)\..\Directory.Build.analyzers.props')" />
 
@@ -17,6 +19,8 @@
           Condition="$(RepositoryTemplateIgnoreBuildImplicitProps) != 'true' And Exists('$(MSBuildProjectDirectory)\..\..\Directory.Build.shared.implicit.props')" />
   <Import Project="$(MSBuildProjectDirectory)\..\..\Directory.Build.project.props"
           Condition="$(RepositoryTemplateIgnoreBuildProjectProps) != 'true' And Exists('$(MSBuildProjectDirectory)\..\..\Directory.Build.project.props')" />
+  <Import Project="$(MSBuildProjectDirectory)\..\..\Directory.Build.organization.props"
+          Condition="$(RepositoryTemplateIgnoreBuildOrganizationProps) != 'true' And Exists('$(MSBuildProjectDirectory)\..\..\Directory.Build.organization.props')" />		
   <Import Project="$(MSBuildProjectDirectory)\..\..\Directory.Build.analyzers.props"
           Condition="$(RepositoryTemplateIgnoreBuildAnalyzersProps) != 'true' And Exists('$(MSBuildProjectDirectory)\..\..\Directory.Build.analyzers.props')" />
 </Project>
