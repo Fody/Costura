@@ -202,6 +202,7 @@ public class VelopackInstaller : IInstaller
         BuildContext.CakeContext.CopyFile(System.IO.Path.Combine(velopackReleasesRoot, $"{appId}-win-Setup.exe"), System.IO.Path.Combine(velopackReleasesRoot, "Setup.exe"));
 
         var deploymentDirectory = BuildContext.Wpf.GetDeploymentDirectoryForProject(BuildContext, projectName);
+        deploymentDirectory = System.IO.Path.Combine(deploymentDirectory, $"{channel}");
         System.IO.Directory.CreateDirectory(deploymentDirectory);
 
         BuildContext.CakeContext.Information($"Copying updated Velopack files back final deployments directory at '{deploymentDirectory}'");
