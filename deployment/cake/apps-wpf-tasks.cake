@@ -95,12 +95,6 @@ public class WpfProcessor : ProcessorBase
             return;
         }
         
-        if (string.IsNullOrWhiteSpace(BuildContext.Wpf.DeploymentsShare))
-        {
-            CakeContext.Warning("DeploymentsShare variable is not set, cannot package WPF apps");
-            return;
-        }
-
         var channels = new List<string>();
 
         if (BuildContext.General.IsOfficialBuild)
@@ -134,12 +128,6 @@ public class WpfProcessor : ProcessorBase
                 continue;
             }
 
-            var deploymentShare = BuildContext.Wpf.GetDeploymentShareForProject(wpfApp);
-
-            CakeContext.Information($"Using deployment share '{deploymentShare}' for WPF app '{wpfApp}'");
-
-            System.IO.Directory.CreateDirectory(deploymentShare);
-
             CakeContext.Information($"Deleting unnecessary files for WPF app '{wpfApp}'");
             
             var outputDirectory = GetProjectOutputDirectory(BuildContext, wpfApp);
@@ -168,9 +156,6 @@ public class WpfProcessor : ProcessorBase
             foreach (var channel in channels)
             {
                 CakeContext.Information("Packaging app '{0}' for channel '{1}'", wpfApp, channel);
-
-                var deploymentShareForChannel = System.IO.Path.Combine(deploymentShare, channel);
-                System.IO.Directory.CreateDirectory(deploymentShareForChannel);
 
                 await BuildContext.Installer.PackageAsync(wpfApp, channel);
             }
@@ -217,13 +202,13 @@ public class WpfProcessor : ProcessorBase
                 throw new Exception("Not deploying a specific channel is not yet supported, please implement");
             }
 
-            //%DeploymentsShare%\%ProjectName% /%ProjectName% -c %AzureDeploymentsStorageConnectionString%
-            var deploymentShare = BuildContext.Wpf.GetDeploymentShareForProject(wpfApp);
+            //%DeploymentsDirectory%\%ProjectName% /%ProjectName% -c %AzureDeploymentsStorageConnectionString%
+            var deploymentDirectory = BuildContext.Wpf.GetDeploymentDirectoryForProject(BuildContext, wpfApp);
             var projectSlug = GetProjectSlug(wpfApp, "-");
 
             var exitCode = CakeContext.StartProcess(azureStorageSyncExe, new ProcessSettings
             {
-                Arguments = $"{deploymentShare} /{projectSlug} -c {azureConnectionString}"
+                Arguments = $"{deploymentDirectory} /{projectSlug} -c {azureConnectionString}"
             });
 
             if (exitCode != 0)
@@ -231,7 +216,7 @@ public class WpfProcessor : ProcessorBase
                 throw new Exception($"Received unexpected exit code '{exitCode}' for WPF app '{wpfApp}'");
             }
 
-            await BuildContext.Notifications.NotifyAsync(wpfApp, string.Format("Deployed to target"), TargetType.WpfApp);
+            await BuildContext.Notifications.NotifyAsync(wpfApp, "Deployed to target", TargetType.WpfApp);
         }
     }
 

@@ -40,10 +40,9 @@ public class InnoSetupInstaller : IInstaller
 
         BuildContext.CakeContext.LogSeparator($"Packaging app '{projectName}' using Inno Setup");
 
-        var deploymentShare = BuildContext.Wpf.GetDeploymentShareForProject(projectName);
-
-        var installersOnDeploymentsShare = System.IO.Path.Combine(deploymentShare, "installer");
-        BuildContext.CakeContext.CreateDirectory(installersOnDeploymentsShare);
+        var deploymentDirectory = BuildContext.Wpf.GetDeploymentDirectoryForProject(BuildContext, projectName);
+        var installersOnDeploymentsDirectory = System.IO.Path.Combine(deploymentDirectory, "installer");
+        BuildContext.CakeContext.CreateDirectory(installersOnDeploymentsDirectory);
 
         var setupSuffix = BuildContext.Installer.GetDeploymentChannelSuffix();
 
@@ -113,18 +112,15 @@ public class InnoSetupInstaller : IInstaller
                 OutputDirectory = innoSetupReleasesRoot
             });
 
-            if (BuildContext.Wpf.UpdateDeploymentsShare)
-            {
-                BuildContext.CakeContext.Information("Copying Inno Setup files to deployments share at '{0}'", installersOnDeploymentsShare);
+            BuildContext.CakeContext.Information("Copying Inno Setup files to deployments directory at '{0}'", installersOnDeploymentsDirectory);
 
-                // Copy the following files:
-                // - Setup.exe => [projectName]-[version].exe
-                // - Setup.exe => [projectName]-[channel].exe
+            // Copy the following files:
+            // - Setup.exe => [projectName]-[version].exe
+            // - Setup.exe => [projectName]-[channel].exe
 
-                var installerSourceFile = System.IO.Path.Combine(innoSetupReleasesRoot, $"{projectName}_{BuildContext.General.Version.FullSemVer}.exe");
-                BuildContext.CakeContext.CopyFile(installerSourceFile, System.IO.Path.Combine(installersOnDeploymentsShare, $"{projectName}_{BuildContext.General.Version.FullSemVer}.exe"));
-                BuildContext.CakeContext.CopyFile(installerSourceFile, System.IO.Path.Combine(installersOnDeploymentsShare, $"{projectName}{setupSuffix}.exe"));
-            }
+            var installerSourceFile = System.IO.Path.Combine(innoSetupReleasesRoot, $"{projectName}_{BuildContext.General.Version.FullSemVer}.exe");
+            BuildContext.CakeContext.CopyFile(installerSourceFile, System.IO.Path.Combine(installersOnDeploymentsDirectory, $"{projectName}_{BuildContext.General.Version.FullSemVer}.exe"));
+            BuildContext.CakeContext.CopyFile(installerSourceFile, System.IO.Path.Combine(installersOnDeploymentsDirectory, $"{projectName}{setupSuffix}.exe"));
         }
         finally
         {
@@ -132,126 +128,6 @@ public class InnoSetupInstaller : IInstaller
 
             RemoveSignToolFromRegistry(signToolIndex);
         }
-    }
-    
-    //-------------------------------------------------------------
-
-    public async Task<DeploymentTarget> GenerateDeploymentTargetAsync(string projectName)
-    {
-        var deploymentTarget = new DeploymentTarget
-        {
-            Name = "Inno Setup"
-        };
-
-        var channels = new [] 
-        {
-            "alpha",
-            "beta",
-            "stable"
-        };
-
-        var deploymentGroupNames = new List<string>();
-        var projectDeploymentShare = BuildContext.Wpf.GetDeploymentShareForProject(projectName);
-
-        // Just a single group
-        deploymentGroupNames.Add("all");
-
-        foreach (var deploymentGroupName in deploymentGroupNames)
-        {
-            BuildContext.CakeContext.Information($"Searching for releases for deployment group '{deploymentGroupName}'");
-
-            var deploymentGroup = new DeploymentGroup
-            {
-                Name = deploymentGroupName
-            };
-
-            foreach (var channel in channels)
-            {
-                BuildContext.CakeContext.Information($"Searching for releases for deployment channel '{deploymentGroupName}/{channel}'");
-
-                var deploymentChannel = new DeploymentChannel
-                {
-                    Name = channel
-                };
-
-                var targetDirectory = GetDeploymentsShareRootDirectory(projectName, channel);
-
-                BuildContext.CakeContext.Information($"Searching for release files in '{targetDirectory}'");
-
-                var filter = $"{projectName}_*{channel}*.exe";
-                if (channel == "stable")
-                {
-                    filter = $"{projectName}_*.exe";
-                }
-
-                var installationFiles = System.IO.Directory.GetFiles(targetDirectory, filter);
-
-                foreach (var installationFile in installationFiles)
-                {
-                    var releaseFileInfo = new System.IO.FileInfo(installationFile);
-                    var relativeFileName = new DirectoryPath(projectDeploymentShare).GetRelativePath(new FilePath(releaseFileInfo.FullName)).FullPath.Replace("\\", "/");
-
-                    var releaseVersion = releaseFileInfo.Name
-                        .Replace($"{projectName}", string.Empty)
-                        .Replace($".exe", string.Empty)
-                        .Trim('_');
-
-                    // Either empty or matching a release channel should be ignored
-                    if (string.IsNullOrWhiteSpace(releaseVersion) ||
-                        channels.Any(x => x == releaseVersion))
-                    {
-                        BuildContext.CakeContext.Information($"Ignoring '{installationFile}'");
-                        continue;
-                    }
-
-                    // Special case for stable releases
-                    if (channel == "stable")
-                    {
-                        if (releaseVersion.Contains("-alpha") ||
-                            releaseVersion.Contains("-beta"))
-                        {
-                            BuildContext.CakeContext.Information($"Ignoring '{installationFile}'");
-                            continue;
-                        }
-                    }
-
-                    BuildContext.CakeContext.Information($"Applying release based on '{installationFile}'");
-
-                    var release = new DeploymentRelease
-                    {
-                        Name = releaseVersion,
-                        Timestamp = releaseFileInfo.CreationTimeUtc
-                    };
-
-                    // Full release
-                    release.Full = new DeploymentReleasePart
-                    {
-                        RelativeFileName = relativeFileName,
-                        Size = (ulong)releaseFileInfo.Length
-                    };
-
-                    deploymentChannel.Releases.Add(release);
-                }
-
-                deploymentGroup.Channels.Add(deploymentChannel);
-            }
-
-            deploymentTarget.Groups.Add(deploymentGroup);
-        }
-
-        return deploymentTarget;
-    }
-
-    //-------------------------------------------------------------
-        
-    private string GetDeploymentsShareRootDirectory(string projectName, string channel)
-    {
-        var deploymentShare = BuildContext.Wpf.GetDeploymentShareForProject(projectName);
-
-        var installersOnDeploymentsShare = System.IO.Path.Combine(deploymentShare, "installer");
-        BuildContext.CakeContext.CreateDirectory(installersOnDeploymentsShare);
-
-        return installersOnDeploymentsShare;
     }
 
     //-------------------------------------------------------------
