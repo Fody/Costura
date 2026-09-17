@@ -9,22 +9,19 @@ public class VelopackInstaller : IInstaller
         BuildContext = buildContext;
 
         IsEnabled = BuildContext.BuildServer.GetVariableAsBool("VelopackEnabled", false, showValue: true);
+        UpdateUrl = BuildContext.BuildServer.GetVariable("VelopackUpdateUrl", showValue: true);
 
         if (IsEnabled)
         {
             IsAvailable = IsEnabled;
-
-            // Protection
-            if (BuildContext.BuildServer.GetVariableAsBool("SquirrelEnabled", true, showValue: true))
-            {
-                throw new Exception("Both Velopack and Squirrel are enabled, make sure to disable Squirrel when migrating to Velopack");
-            }
         }
     }
 
     public BuildContext BuildContext { get; private set; }
 
     public bool IsEnabled { get; private set; }
+
+    public string UpdateUrl { get; private set; }
 
     public bool IsAvailable { get; private set; }
 
@@ -38,6 +35,8 @@ public class VelopackInstaller : IInstaller
             return;
         }
 
+    	var vpkToolExe = BuildContext.CakeContext.Tools.Resolve("vpk.exe");
+
         // There are 2 flavors:
         //
         // 1: Non-grouped:              /[app]/[channel] (e.g. /MyApp/alpha)
@@ -47,14 +46,24 @@ public class VelopackInstaller : IInstaller
         // Updates will only be applied to non-major updates. This allows manual migration to
         // new major versions, which is very useful when there are dependencies that need to
         // be updated before a new major version can be switched to.
+        var currentReleaseUrl = UpdateUrl;
+
         var velopackOutputRoot = System.IO.Path.Combine(BuildContext.General.OutputRootDirectory, "velopack", projectName);
+        if (!currentReleaseUrl.EndsWith("/"))
+        {
+            currentReleaseUrl += "/";
+        }
+
+        currentReleaseUrl += $"{projectName}";
 
         if (BuildContext.Wpf.GroupUpdatesByMajorVersion)
         {
             velopackOutputRoot = System.IO.Path.Combine(velopackOutputRoot, BuildContext.General.Version.Major);
+            currentReleaseUrl += $"/{BuildContext.General.Version.Major}";
         }
 
         velopackOutputRoot = System.IO.Path.Combine(velopackOutputRoot, channel);
+        currentReleaseUrl += $"/{channel}";
 
         var velopackReleasesRoot = System.IO.Path.Combine(velopackOutputRoot, "releases");
 
@@ -74,18 +83,36 @@ public class VelopackInstaller : IInstaller
         var subDirectories = System.IO.Directory.GetDirectories(appSourceDirectory);
         appSourceDirectory = subDirectories.Last();
 
-        // Copy deployments share to the intermediate root so we can locally create the releases
-        
-        var releasesSourceDirectory = GetDeploymentsShareRootDirectory(projectName, channel);
         var releasesTargetDirectory = velopackReleasesRoot;
 
-        BuildContext.CakeContext.CreateDirectory(releasesSourceDirectory);
         BuildContext.CakeContext.CreateDirectory(releasesTargetDirectory);
 
-        BuildContext.CakeContext.Information($"Copying releases from '{releasesSourceDirectory}' => '{releasesTargetDirectory}'");
+        // Download latest release via vpk download to generate delta updates
+        if (string.IsNullOrWhiteSpace(UpdateUrl))
+        {
+            BuildContext.CakeContext.Warning($"Skipping delta update generation since base release URL is not specified");            
+        }
+        else
+        {
+            currentReleaseUrl = $"{currentReleaseUrl.ToLower()}";
 
-        BuildContext.CakeContext.CopyDirectory(releasesSourceDirectory, releasesTargetDirectory);
+            BuildContext.CakeContext.Information($"Downloading current release from '{currentReleaseUrl}'");   
+            
+            // Download via Velopack CLI
+            var downloadArgumentBuilder = new ProcessArgumentBuilder()
+                .Append("download")
+                .Append("http")
+                .Append("--verbose")
+                .AppendSwitch("--channel", "win") // default channel since we manage channels ourselves
+                .AppendSwitch("--url", currentReleaseUrl)
+                .AppendSwitch("--outputDir", velopackReleasesRoot);
 
+            BuildContext.CakeContext.StartProcess(vpkToolExe, new ProcessSettings
+            {
+                Arguments = downloadArgumentBuilder
+            });
+        }
+        
         BuildContext.CakeContext.Information("Generating Velopack packages, this can take a while, especially when signing is enabled...");
 
         // Pack using velopack (example command line: vpk pack -u YourAppId -v 1.0.0 -p publish -e yourMainBinary.exe)
@@ -159,8 +186,6 @@ public class VelopackInstaller : IInstaller
             }       
        }
 
-    	var vpkToolExe = BuildContext.CakeContext.Tools.Resolve("vpk.exe");
-
         var vpkToolExitCode = BuildContext.CakeContext.StartProcess(vpkToolExe,
             new ProcessSettings
             {    
@@ -176,186 +201,26 @@ public class VelopackInstaller : IInstaller
         // Copy setup
         BuildContext.CakeContext.CopyFile(System.IO.Path.Combine(velopackReleasesRoot, $"{appId}-win-Setup.exe"), System.IO.Path.Combine(velopackReleasesRoot, "Setup.exe"));
 
-        if (BuildContext.Wpf.UpdateDeploymentsShare)
-        {
-            BuildContext.CakeContext.Information($"Copying updated Velopack files back to deployments share at '{releasesSourceDirectory}'");
+        var deploymentDirectory = BuildContext.Wpf.GetDeploymentDirectoryForProject(BuildContext, projectName);
+        System.IO.Directory.CreateDirectory(deploymentDirectory);
 
-            // Copy the following files:
-            // - [version]-delta.nupkg
-            // - [version]-full.nupkg
-            // - Setup.exe => Setup.exe & WpfApp.exe
-            // - releases.win.json
-            // - RELEASES
+        BuildContext.CakeContext.Information($"Copying updated Velopack files back final deployments directory at '{deploymentDirectory}'");
 
-            // Note to consider in future: this stores (and uploads) the same file 4 times. Maybe we need to stop processing so many files
-            // to save time on uploads (and eventually money on storage)
-            var velopackFiles = BuildContext.CakeContext.GetFiles($"{velopackReleasesRoot}/{appId}-{BuildContext.General.Version.NuGet}*.nupkg");
-            BuildContext.CakeContext.CopyFiles(velopackFiles, releasesSourceDirectory);
-            BuildContext.CakeContext.CopyFile(System.IO.Path.Combine(velopackReleasesRoot, $"{appId}-win-Portable.zip"), System.IO.Path.Combine(releasesSourceDirectory, $"{appId}-win-Portable.zip"));
-            BuildContext.CakeContext.CopyFile(System.IO.Path.Combine(velopackReleasesRoot, $"{appId}-win-Setup.exe"), System.IO.Path.Combine(releasesSourceDirectory, $"{appId}-win-Setup.exe"));
-            BuildContext.CakeContext.CopyFile(System.IO.Path.Combine(velopackReleasesRoot, "Setup.exe"), System.IO.Path.Combine(releasesSourceDirectory, "Setup.exe"));
-            BuildContext.CakeContext.CopyFile(System.IO.Path.Combine(velopackReleasesRoot, "Setup.exe"), System.IO.Path.Combine(releasesSourceDirectory, $"{projectName}.exe"));
-            BuildContext.CakeContext.CopyFile(System.IO.Path.Combine(velopackReleasesRoot, "releases.win.json"), System.IO.Path.Combine(releasesSourceDirectory, "releases.win.json"));
-            
-            // Note: RELEASES is there for backwards compatibility
-            BuildContext.CakeContext.CopyFile(System.IO.Path.Combine(velopackReleasesRoot, "RELEASES"), System.IO.Path.Combine(releasesSourceDirectory, "RELEASES"));
-        }
-    }
+        // Copy the following files:
+        // - [version]-delta.nupkg
+        // - [version]-full.nupkg
+        // - Setup.exe => Setup.exe & WpfApp.exe
+        // - releases.win.json
+        // - RELEASES
 
-    //-------------------------------------------------------------
-
-    public async Task<DeploymentTarget> GenerateDeploymentTargetAsync(string projectName)
-    {
-        var deploymentTarget = new DeploymentTarget
-        {
-            Name = "Velopack"
-        };
-
-        var channels = new [] 
-        {
-            "alpha",
-            "beta",
-            "stable"
-        };
-
-        var deploymentGroupNames = new List<string>();
-        var projectDeploymentShare = BuildContext.Wpf.GetDeploymentShareForProject(projectName);
-
-        if (BuildContext.Wpf.GroupUpdatesByMajorVersion)
-        {
-            // Check every directory that we can parse as number
-            var directories = System.IO.Directory.GetDirectories(projectDeploymentShare);
-            
-            foreach (var directory in directories)
-            {
-                var deploymentGroupName = new System.IO.DirectoryInfo(directory).Name;
-
-                if (int.TryParse(deploymentGroupName, out _))
-                {
-                    deploymentGroupNames.Add(deploymentGroupName);
-                }
-            }
-        }
-        else
-        {
-            // Just a single group
-            deploymentGroupNames.Add("all");
-        }
-
-        foreach (var deploymentGroupName in deploymentGroupNames)
-        {
-            BuildContext.CakeContext.Information($"Searching for releases for deployment group '{deploymentGroupName}'");
-
-            var deploymentGroup = new DeploymentGroup
-            {
-                Name = deploymentGroupName
-            };
-
-            var version = deploymentGroupName;
-            if (version == "all")
-            {
-                version = string.Empty;
-            }
-
-            foreach (var channel in channels)
-            {
-                BuildContext.CakeContext.Information($"Searching for releases for deployment channel '{deploymentGroupName}/{channel}'");
-
-                var deploymentChannel = new DeploymentChannel
-                {
-                    Name = channel
-                };
-
-                var targetDirectory = GetDeploymentsShareRootDirectory(projectName, channel, version);
-
-                BuildContext.CakeContext.Information($"Searching for release files in '{targetDirectory}'");
-
-                var fullNupkgFiles = System.IO.Directory.GetFiles(targetDirectory, "*-full.nupkg");
-
-                foreach (var fullNupkgFile in fullNupkgFiles)
-                {
-                    BuildContext.CakeContext.Information($"Applying release based on '{fullNupkgFile}'");
-
-                    var fullReleaseFileInfo = new System.IO.FileInfo(fullNupkgFile);
-                    var fullRelativeFileName = new DirectoryPath(projectDeploymentShare).GetRelativePath(new FilePath(fullReleaseFileInfo.FullName)).FullPath.Replace("\\", "/");
-                    
-                    var releaseVersion = fullReleaseFileInfo.Name
-                        .Replace($"{projectName}_{channel}-", string.Empty)
-                        .Replace($"-full.nupkg", string.Empty);
-
-                    // Exception for full releases, they don't contain the channel name
-                    if (channel == "stable")
-                    {
-                        releaseVersion = releaseVersion.Replace($"{projectName}-", string.Empty);
-                    }
-
-                    var release = new DeploymentRelease
-                    {
-                        Name = releaseVersion,
-                        Timestamp = fullReleaseFileInfo.CreationTimeUtc
-                    };
-
-                    // Full release
-                    release.Full = new DeploymentReleasePart
-                    {
-                        RelativeFileName = fullRelativeFileName,
-                        Size = (ulong)fullReleaseFileInfo.Length
-                    };
-
-                    // Delta release
-                    var deltaNupkgFile = fullNupkgFile.Replace("-full.nupkg", "-delta.nupkg");
-                    if (System.IO.File.Exists(deltaNupkgFile))
-                    {
-                        var deltaReleaseFileInfo = new System.IO.FileInfo(deltaNupkgFile);
-                        var deltafullRelativeFileName = new DirectoryPath(projectDeploymentShare).GetRelativePath(new FilePath(deltaReleaseFileInfo.FullName)).FullPath.Replace("\\", "/");
-                        
-                        release.Delta = new DeploymentReleasePart
-                        {
-                            RelativeFileName = deltafullRelativeFileName,
-                            Size = (ulong)deltaReleaseFileInfo.Length
-                        };
-                    }
-
-                    deploymentChannel.Releases.Add(release);
-                }
-
-                deploymentGroup.Channels.Add(deploymentChannel);
-            }
-
-            deploymentTarget.Groups.Add(deploymentGroup);
-        }
-
-        return deploymentTarget;
-    }
-
-    //-------------------------------------------------------------
-
-    private string GetDeploymentsShareRootDirectory(string projectName, string channel)
-    {
-        var version = string.Empty;
-
-        if (BuildContext.Wpf.GroupUpdatesByMajorVersion)
-        {
-            version = BuildContext.General.Version.Major;
-        }
-
-        return GetDeploymentsShareRootDirectory(projectName, channel, version);
-    }
-
-    //-------------------------------------------------------------
-        
-    private string GetDeploymentsShareRootDirectory(string projectName, string channel, string version)
-    {
-        var deploymentShare = BuildContext.Wpf.GetDeploymentShareForProject(projectName);
-
-        if (!string.IsNullOrWhiteSpace(version))
-        {
-            deploymentShare = System.IO.Path.Combine(deploymentShare, version);
-        }
-
-        var installersOnDeploymentsShare = System.IO.Path.Combine(deploymentShare, channel);
-        BuildContext.CakeContext.CreateDirectory(installersOnDeploymentsShare);
-
-        return installersOnDeploymentsShare;
+        // Note to consider in future: this stores (and uploads) the same file 4 times. Maybe we need to stop processing so many files
+        // to save time on uploads (and eventually money on storage)
+        var velopackFiles = BuildContext.CakeContext.GetFiles($"{velopackReleasesRoot}/{appId}-{BuildContext.General.Version.NuGet}*.nupkg");
+        BuildContext.CakeContext.CopyFiles(velopackFiles, deploymentDirectory);
+        BuildContext.CakeContext.CopyFile(System.IO.Path.Combine(velopackReleasesRoot, $"{appId}-win-Portable.zip"), System.IO.Path.Combine(deploymentDirectory, $"{appId}-win-Portable.zip"));
+        BuildContext.CakeContext.CopyFile(System.IO.Path.Combine(velopackReleasesRoot, $"{appId}-win-Setup.exe"), System.IO.Path.Combine(deploymentDirectory, $"{appId}-win-Setup.exe"));
+        BuildContext.CakeContext.CopyFile(System.IO.Path.Combine(velopackReleasesRoot, "Setup.exe"), System.IO.Path.Combine(deploymentDirectory, "Setup.exe"));
+        BuildContext.CakeContext.CopyFile(System.IO.Path.Combine(velopackReleasesRoot, "Setup.exe"), System.IO.Path.Combine(deploymentDirectory, $"{projectName}.exe"));
+        BuildContext.CakeContext.CopyFile(System.IO.Path.Combine(velopackReleasesRoot, "releases.win.json"), System.IO.Path.Combine(deploymentDirectory, "releases.win.json"));
     }
 }
