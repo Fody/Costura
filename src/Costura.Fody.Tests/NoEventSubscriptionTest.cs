@@ -1,5 +1,4 @@
 ﻿using Fody;
-using NUnit.Framework;
 using System;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -9,8 +8,6 @@ using System.Runtime.Loader;
 #else
 
 #endif
-
-[TestFixture]
 public class NoEventSubscriptionTest : BaseCosturaTest
 {
     private static readonly TestResult testResult;
@@ -27,8 +24,9 @@ public class NoEventSubscriptionTest : BaseCosturaTest
 
 
 
-    [Test, Explicit("Consider finalizing this test")]
-    public void Does_Not_Subscribe_To_Events()
+    // Consider finalizing this test
+    [Test, Explicit]
+    public async Task Does_Not_Subscribe_To_Events()
     {
         var instance2 = TestResult.GetInstance("ClassToTest");
 
@@ -49,9 +47,9 @@ public class NoEventSubscriptionTest : BaseCosturaTest
 
         //var invocationList = eventInstance.GetInvocationList();
 
-        //Assert.That(invocationList.Count, Is.EqualTo(0));
+        //await Assert.That(invocationList.Count).IsEqualTo(0);
 
-        //Assert.That("Hello", Is.EqualTo(instance2.SimplePreEmbed()));
+        //await Assert.That((string)instance2.SimplePreEmbed()).IsEqualTo("Hello");
     }
 
     [Test]

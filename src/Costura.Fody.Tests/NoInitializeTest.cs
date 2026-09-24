@@ -1,17 +1,17 @@
 ﻿using System;
 using Fody;
-using NUnit.Framework;
 
-[TestFixture]
+// weaving tests write assemblies to shared folders and load them into the same process
+[NotInParallel]
 public class NoInitializeTest
 {
     [Test]
-    public void FailsToWeave()
+    public async Task FailsToWeave()
     {
-        Assert.Throws<WeavingException>(new Action(() =>
+        await Assert.That(new Action(() =>
                 WeavingHelper.CreateIsolatedAssemblyCopy("AssemblyWithoutInitialize.dll",
                 "<Costura LoadAtModuleInit='false' />",
                 new[] { "AssemblyToReference.dll", "AssemblyToReferencePreEmbedded.dll", "ExeToReference.exe" },
-                    "NoInitialize")));
+                    "NoInitialize"))).Throws<WeavingException>();
     }
 }

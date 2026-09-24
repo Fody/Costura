@@ -77,7 +77,7 @@
         <Message Importance="High" Text="Target platform identifier is '$(TargetPlatformIdentifier)', applying pdb fix" />
       </Target>-->
       <ItemGroup>
-        <PackageReference Include="SourceLink.Copy.PdbFiles" Version="2.8.3" PrivateAssets="All" />
+        <PackageReference Include="SourceLink.Copy.PdbFiles" PrivateAssets="All" />
       </ItemGroup>
     </When>
     <Otherwise>

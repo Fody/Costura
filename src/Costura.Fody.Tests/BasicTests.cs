@@ -1,33 +1,32 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using NUnit.Framework;
 
 public abstract class BasicTests : BaseCosturaTest
 {
     [Test]
-    public void Simple()
+    public async Task Simple()
     {
         var instance = TestResult.GetInstance("ClassToTest");
-        Assert.That("Hello", Is.EqualTo(instance.Simple()));
+        await Assert.That((string)instance.Simple()).IsEqualTo("Hello");
     }
 
     [Test]
-    public void SimplePreEmbed()
+    public async Task SimplePreEmbed()
     {
         var instance2 = TestResult.GetInstance("ClassToTest");
-        Assert.That("Hello", Is.EqualTo(instance2.SimplePreEmbed()));
+        await Assert.That((string)instance2.SimplePreEmbed()).IsEqualTo("Hello");
     }
 
     [Test]
-    public void Exe()
+    public async Task Exe()
     {
         var instance2 = TestResult.GetInstance("ClassToTest");
-        Assert.That("Hello", Is.EqualTo(instance2.Exe()));
+        await Assert.That((string)instance2.Exe()).IsEqualTo("Hello");
     }
 
     [Test]
-    public void ThrowException()
+    public async Task ThrowException()
     {
         try
         {
@@ -37,12 +36,12 @@ public abstract class BasicTests : BaseCosturaTest
         catch (Exception exception)
         {
             Debug.WriteLine(exception.StackTrace);
-            Assert.That(exception.StackTrace.Contains("ClassToReference.cs:line"), Is.True);
+            await Assert.That(exception.StackTrace.Contains("ClassToReference.cs:line")).IsTrue();
         }
     }
 
     [Test]
-    public void TypeReferencedWithPartialAssemblyNameIsLoadedFromExistingAssemblyInstance()
+    public async Task TypeReferencedWithPartialAssemblyNameIsLoadedFromExistingAssemblyInstance()
     {
         var instance = TestResult.GetInstance("ClassToTest");
         var assemblyLoadedByCompileTimeReference = instance.GetReferencedAssembly();
@@ -52,9 +51,9 @@ public abstract class BasicTests : BaseCosturaTest
             typeName = typeName + "35";
         }
         var typeLoadedWithPartialAssemblyName = Type.GetType(typeName);
-        Assert.That(typeLoadedWithPartialAssemblyName, Is.Not.Null);
+        await Assert.That(typeLoadedWithPartialAssemblyName).IsNotNull();
 
-        Assert.That(assemblyLoadedByCompileTimeReference, Is.EqualTo(typeLoadedWithPartialAssemblyName.Assembly));
+        await Assert.That((object)assemblyLoadedByCompileTimeReference).IsEqualTo(typeLoadedWithPartialAssemblyName.Assembly);
     }
 
     [Test]

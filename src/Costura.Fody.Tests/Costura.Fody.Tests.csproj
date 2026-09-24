@@ -12,18 +12,25 @@
     <DisableFody>true</DisableFody>
     <NoWarn>$(NoWarn);NU1201;CL0002</NoWarn>
     <NoError>$(NoError);NU1201</NoError>
-    <LangVersion>11.0</LangVersion>
+    <OutputType>Exe</OutputType>
+    <!-- TUnit.Engine forces this on, but assembly info comes from SolutionAssemblyInfo.cs -->
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FodyHelpers" Version="6.9.3" />
-    <PackageReference Include="Fody" Version="6.9.3" PrivateAssets="none" />
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.5.1" />
-    <PackageReference Include="Moq" Version="4.20.72" />
-    <PackageReference Include="NUnit" Version="4.6.0" PrivateAssets="all" />
-    <PackageReference Include="NUnit3TestAdapter" Version="6.2.0" PrivateAssets="all" />
-    <PackageReference Include="Verify.NUnit" Version="31.16.3" />
+    <Using Include="System.Threading.Tasks" />
+    <Using Alias="TestResult" Include="Fody.TestResult" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FodyHelpers" />
+    <PackageReference Include="Fody" PrivateAssets="none" />
+    <PackageReference Include="Microsoft.CSharp" />
+    <PackageReference Include="Moq" />
+    <PackageReference Include="TUnit.Core" />
+    <PackageReference Include="TUnit.Assertions" />
+    <PackageReference Include="TUnit.Engine" />
+    <PackageReference Include="Verify.TUnit" />
   </ItemGroup>
 
   <ItemGroup>

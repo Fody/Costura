@@ -1,6 +1,6 @@
 ﻿using Fody;
-using NUnit.Framework;
 
+[InheritsTests]
 public class TempFileTests : BasicTests
 {
     private static readonly TestResult testResult;
@@ -15,11 +15,12 @@ public class TempFileTests : BasicTests
 
     [Test]
 #if NETCORE
-    [Explicit("Somehow this only succeeds when ran manually for .NET Core")]
+    // Somehow this only succeeds when ran manually for .NET Core
+    [Explicit]
 #endif
-    public void ExecutableRunsSuccessfully()
+    public async Task ExecutableRunsSuccessfully()
     {
         var output = RunHelper.RunExecutable(TestResult.AssemblyPath);
-        Assert.That(output, Is.EqualTo("Run-OK"));
+        await Assert.That(output).IsEqualTo("Run-OK");
     }
 }

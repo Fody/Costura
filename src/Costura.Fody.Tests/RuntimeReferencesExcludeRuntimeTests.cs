@@ -4,7 +4,6 @@
     using System.IO;
     using System.Reflection;
     using global::Fody;
-    using NUnit.Framework;
 
     public class RuntimeReferencesExcludeRuntimeTests : BaseCosturaTest
     {
@@ -51,8 +50,8 @@
 
         public override TestResult TestResult => testResult;
 
-        [Explicit, Test]
-        public void UseRuntimeReferences()
+        [Test, Explicit]
+        public async Task UseRuntimeReferences()
         {
             testResult = InitializeTest();
 
@@ -60,7 +59,7 @@
 
             var runtimeReferencesType = TestResult.Assembly.GetType("RuntimeReferences");
             var staticMethod = runtimeReferencesType.GetMethod("UseAssemblyWithRuntimeAssemblies", BindingFlags.Static | BindingFlags.Public);
-            Assert.That(staticMethod.Invoke(null, null), Is.EqualTo("Hello"));
+            await Assert.That(staticMethod.Invoke(null, null)).IsEqualTo("Hello");
         }
 
         private void DeleteRuntimeReferencesFolder()

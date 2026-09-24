@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Microsoft.Win32.SafeHandles;
-using VerifyNUnit;
+using VerifyTUnit;
 using VerifyTests;
 
 public static class VerifyHelper

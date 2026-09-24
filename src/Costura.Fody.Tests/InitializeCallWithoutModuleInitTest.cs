@@ -1,5 +1,6 @@
 ﻿using Fody;
 
+[InheritsTests]
 public class InitializeCallWithoutModuleInitTest : BasicTests
 {
     private static readonly TestResult testResult;

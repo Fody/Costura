@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Fody;
-using NUnit.Framework;
 
 public class CultureResourceTests : BaseCosturaTest
 {
@@ -25,14 +24,14 @@ public class CultureResourceTests : BaseCosturaTest
     }
 
     [Test]
-    public void Using_Resource_French()
+    public async Task Using_Resource_French()
     {
         var culture = Thread.CurrentThread.CurrentUICulture;
         try
         {
             Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("fr-FR");
             var instance1 = testResult.GetInstance("ClassToTest");
-            Assert.That(instance1.InternationalFoo(), Is.EqualTo("Salut"));
+            await Assert.That((string)instance1.InternationalFoo()).IsEqualTo("Salut");
         }
         finally
         {
@@ -41,7 +40,7 @@ public class CultureResourceTests : BaseCosturaTest
     }
 
     [Test]
-    public void Using_Resource_Chinese()
+    public async Task Using_Resource_Chinese()
     {
         var culture = Thread.CurrentThread.CurrentUICulture;
         try
@@ -49,7 +48,7 @@ public class CultureResourceTests : BaseCosturaTest
             // Yes, this seems correct, when creating the zh-Hans culture, it uses zh-CN
             Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("zh-Hans");
             var instance1 = testResult.GetInstance("ClassToTest");
-            Assert.That(instance1.InternationalFoo(), Is.EqualTo("zh-CN"));
+            await Assert.That((string)instance1.InternationalFoo()).IsEqualTo("zh-CN");
         }
         finally
         {

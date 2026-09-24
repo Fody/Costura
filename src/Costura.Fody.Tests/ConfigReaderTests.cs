@@ -1,143 +1,141 @@
 ﻿using System;
 using System.Xml.Linq;
 using Fody;
-using NUnit.Framework;
 
-[TestFixture]
 public class ConfigReaderTests
 {
     [Test]
-    public void CanReadFalseNode()
+    public async Task CanReadFalseNode()
     {
         var xElement = XElement.Parse("<Node attr='false'/>");
-        Assert.That(Configuration.ReadBool(xElement, "attr", true), Is.False);
+        await Assert.That(Configuration.ReadBool(xElement, "attr", true)).IsFalse();
     }
 
     [Test]
-    public void CanReadTrueNode()
+    public async Task CanReadTrueNode()
     {
         var xElement = XElement.Parse("<Node attr='true'/>");
-        Assert.That(Configuration.ReadBool(xElement, "attr", false), Is.True);
+        await Assert.That(Configuration.ReadBool(xElement, "attr", false)).IsTrue();
     }
 
     // These next 2 tests are because of https://github.com/Fody/Costura/issues/204
 
     [Test]
-    public void TrimWhitespaceFromAttributeList()
+    public async Task TrimWhitespaceFromAttributeList()
     {
         var xElement = XElement.Parse("<Node attr=' Item'/>");
         var list = Configuration.ReadList(xElement, "attr");
-        Assert.That(list.Count, Is.EqualTo(1));
-        Assert.That(list[0], Is.EqualTo("Item"));
+        await Assert.That(list.Count).IsEqualTo(1);
+        await Assert.That(list[0]).IsEqualTo("Item");
     }
 
     [Test]
-    public void TrimWhitespaceFromElementList()
+    public async Task TrimWhitespaceFromElementList()
     {
         var xElement = XElement.Parse("<Node><attr>Item </attr></Node>");
         var list = Configuration.ReadList(xElement, "attr");
-        Assert.That(list.Count, Is.EqualTo(1));
-        Assert.That(list[0], Is.EqualTo("Item"));
+        await Assert.That(list.Count).IsEqualTo(1);
+        await Assert.That(list[0]).IsEqualTo("Item");
     }
 
     [Test]
-    public void DoesNotReadInvalidBoolNode()
+    public async Task DoesNotReadInvalidBoolNode()
     {
         var xElement = XElement.Parse("<Node attr='foo'/>");
-        var exception = Assert.Throws<WeavingException>(new Action(() => Configuration.ReadBool(xElement, "attr", false)));
-        Assert.That(exception.Message, Is.EqualTo("Could not parse 'attr' from 'foo'."));
+        var exception = await Assert.That(() => Configuration.ReadBool(xElement, "attr", false)).Throws<WeavingException>();
+        await Assert.That(exception!.Message).IsEqualTo("Could not parse 'attr' from 'foo'.");
     }
 
     [Test]
-    public void FalseIncludeDebugSymbols()
+    public async Task FalseIncludeDebugSymbols()
     {
         var xElement = XElement.Parse("<Costura IncludeDebugSymbols='false'/>");
         var config = new Configuration(xElement);
-        Assert.That(config.IncludeDebugSymbols, Is.False);
+        await Assert.That(config.IncludeDebugSymbols).IsFalse();
     }
 
     [Test]
-    public void False0IncludeDebugSymbols()
+    public async Task False0IncludeDebugSymbols()
     {
         var xElement = XElement.Parse("<Costura IncludeDebugSymbols='0'/>");
         var config = new Configuration(xElement);
-        Assert.That(config.IncludeDebugSymbols, Is.False);
+        await Assert.That(config.IncludeDebugSymbols).IsFalse();
     }
 
     [Test]
-    public void TrueDisableCompression()
+    public async Task TrueDisableCompression()
     {
         var xElement = XElement.Parse("<Costura DisableCompression='true'/>");
         var config = new Configuration(xElement);
-        Assert.That(config.DisableCompression, Is.True);
+        await Assert.That(config.DisableCompression).IsTrue();
     }
 
     [Test]
-    public void True1DisableCompression()
+    public async Task True1DisableCompression()
     {
         var xElement = XElement.Parse("<Costura DisableCompression='1'/>");
         var config = new Configuration(xElement);
-        Assert.That(config.DisableCompression, Is.True);
+        await Assert.That(config.DisableCompression).IsTrue();
     }
 
     [Test]
-    public void TrueDisableCleanup()
+    public async Task TrueDisableCleanup()
     {
         var xElement = XElement.Parse("<Costura DisableCleanup='true'/>");
         var config = new Configuration(xElement);
-        Assert.That(config.DisableCleanup, Is.True);
+        await Assert.That(config.DisableCleanup).IsTrue();
     }
 
     [Test]
-    public void True1DisableCleanup()
+    public async Task True1DisableCleanup()
     {
         var xElement = XElement.Parse("<Costura DisableCleanup='1'/>");
         var config = new Configuration(xElement);
-        Assert.That(config.DisableCleanup, Is.True);
+        await Assert.That(config.DisableCleanup).IsTrue();
     }
 
     [Test]
-    public void TrueDisableEventSubscription()
+    public async Task TrueDisableEventSubscription()
     {
         var xElement = XElement.Parse("<Costura DisableEventSubscription='true'/>");
         var config = new Configuration(xElement);
-        Assert.That(config.DisableEventSubscription, Is.True);
+        await Assert.That(config.DisableEventSubscription).IsTrue();
     }
 
     [Test]
-    public void True1DisableEventSubscription()
+    public async Task True1DisableEventSubscription()
     {
         var xElement = XElement.Parse("<Costura DisableEventSubscription='1'/>");
         var config = new Configuration(xElement);
-        Assert.That(config.DisableEventSubscription, Is.True);
+        await Assert.That(config.DisableEventSubscription).IsTrue();
     }
 
     [Test]
-    public void FalseLoadAtModuleInit()
+    public async Task FalseLoadAtModuleInit()
     {
         var xElement = XElement.Parse("<Costura LoadAtModuleInit='false'/>");
         var config = new Configuration(xElement);
-        Assert.That(config.LoadAtModuleInit, Is.False);
+        await Assert.That(config.LoadAtModuleInit).IsFalse();
     }
 
     [Test]
-    public void TrueCreateTemporaryAssemblies()
+    public async Task TrueCreateTemporaryAssemblies()
     {
         var xElement = XElement.Parse("<Costura CreateTemporaryAssemblies='true'/>");
         var config = new Configuration(xElement);
-        Assert.That(config.CreateTemporaryAssemblies, Is.True);
+        await Assert.That(config.CreateTemporaryAssemblies).IsTrue();
     }
 
     [Test]
-    public void True1CreateTemporaryAssemblies()
+    public async Task True1CreateTemporaryAssemblies()
     {
         var xElement = XElement.Parse("<Costura CreateTemporaryAssemblies='1'/>");
         var config = new Configuration(xElement);
-        Assert.That(config.CreateTemporaryAssemblies, Is.True);
+        await Assert.That(config.CreateTemporaryAssemblies).IsTrue();
     }
 
     [Test]
-    public void ExcludeAssembliesNode()
+    public async Task ExcludeAssembliesNode()
     {
         var xElement = XElement.Parse(@"
 <Costura>
@@ -147,22 +145,22 @@ Bar
     </ExcludeAssemblies>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.That(config.ExcludeAssemblies[0], Is.EqualTo("Foo"));
-        Assert.That(config.ExcludeAssemblies[1], Is.EqualTo("Bar"));
+        await Assert.That(config.ExcludeAssemblies[0]).IsEqualTo("Foo");
+        await Assert.That(config.ExcludeAssemblies[1]).IsEqualTo("Bar");
     }
 
     [Test]
-    public void ExcludeAssembliesAttribute()
+    public async Task ExcludeAssembliesAttribute()
     {
         var xElement = XElement.Parse(@"
 <Costura ExcludeAssemblies='Foo|Bar'/>");
         var config = new Configuration(xElement);
-        Assert.That(config.ExcludeAssemblies[0], Is.EqualTo("Foo"));
-        Assert.That(config.ExcludeAssemblies[1], Is.EqualTo("Bar"));
+        await Assert.That(config.ExcludeAssemblies[0]).IsEqualTo("Foo");
+        await Assert.That(config.ExcludeAssemblies[1]).IsEqualTo("Bar");
     }
 
     [Test]
-    public void ExcludeAssembliesCombined()
+    public async Task ExcludeAssembliesCombined()
     {
         var xElement = XElement.Parse(@"
 <Costura  ExcludeAssemblies='Foo'>
@@ -171,12 +169,12 @@ Bar
     </ExcludeAssemblies>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.That(config.ExcludeAssemblies[0], Is.EqualTo("Foo"));
-        Assert.That(config.ExcludeAssemblies[1], Is.EqualTo("Bar"));
+        await Assert.That(config.ExcludeAssemblies[0]).IsEqualTo("Foo");
+        await Assert.That(config.ExcludeAssemblies[1]).IsEqualTo("Bar");
     }
 
     [Test]
-    public void IncludeAssembliesNode()
+    public async Task IncludeAssembliesNode()
     {
         var xElement = XElement.Parse(@"
 <Costura>
@@ -186,31 +184,31 @@ Bar
     </IncludeAssemblies>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.That(config.IncludeAssemblies[0], Is.EqualTo("Foo"));
-        Assert.That(config.IncludeAssemblies[1], Is.EqualTo("Bar"));
+        await Assert.That(config.IncludeAssemblies[0]).IsEqualTo("Foo");
+        await Assert.That(config.IncludeAssemblies[1]).IsEqualTo("Bar");
     }
 
     [Test]
-    public void IncludeAssembliesAttribute()
+    public async Task IncludeAssembliesAttribute()
     {
         var xElement = XElement.Parse(@"
 <Costura IncludeAssemblies='Foo|Bar'/>");
         var config = new Configuration(xElement);
-        Assert.That(config.IncludeAssemblies[0], Is.EqualTo("Foo"));
-        Assert.That(config.IncludeAssemblies[1], Is.EqualTo("Bar"));
+        await Assert.That(config.IncludeAssemblies[0]).IsEqualTo("Foo");
+        await Assert.That(config.IncludeAssemblies[1]).IsEqualTo("Bar");
     }
 
     [Test]
-    public void IncludeAndExcludeAssembliesAttribute()
+    public async Task IncludeAndExcludeAssembliesAttribute()
     {
         var xElement = XElement.Parse(@"
 <Costura IncludeAssemblies='Bar' ExcludeAssemblies='Foo'/>");
-        var exception = Assert.Throws<WeavingException>(new Action(() => new Configuration(xElement)));
-        Assert.That(exception.Message, Is.EqualTo("Either configure IncludeAssemblies OR ExcludeAssemblies, not both."));
+        var exception = await Assert.That(() => new Configuration(xElement)).Throws<WeavingException>();
+        await Assert.That(exception!.Message).IsEqualTo("Either configure IncludeAssemblies OR ExcludeAssemblies, not both.");
     }
 
     [Test]
-    public void IncludeAssembliesCombined()
+    public async Task IncludeAssembliesCombined()
     {
         var xElement = XElement.Parse(@"
 <Costura  IncludeAssemblies='Foo'>
@@ -219,12 +217,12 @@ Bar
     </IncludeAssemblies>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.That(config.IncludeAssemblies[0], Is.EqualTo("Foo"));
-        Assert.That(config.IncludeAssemblies[1], Is.EqualTo("Bar"));
+        await Assert.That(config.IncludeAssemblies[0]).IsEqualTo("Foo");
+        await Assert.That(config.IncludeAssemblies[1]).IsEqualTo("Bar");
     }
 
     [Test]
-    public void Unmanaged32AssembliesNode()
+    public async Task Unmanaged32AssembliesNode()
     {
         var xElement = XElement.Parse(@"
 <Costura>
@@ -234,22 +232,22 @@ Bar
     </Unmanaged32Assemblies>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.That(config.UnmanagedWinX86Assemblies[0], Is.EqualTo("Foo"));
-        Assert.That(config.UnmanagedWinX86Assemblies[1], Is.EqualTo("Bar"));
+        await Assert.That(config.UnmanagedWinX86Assemblies[0]).IsEqualTo("Foo");
+        await Assert.That(config.UnmanagedWinX86Assemblies[1]).IsEqualTo("Bar");
     }
 
     [Test]
-    public void Unmanaged32AssembliesAttribute()
+    public async Task Unmanaged32AssembliesAttribute()
     {
         var xElement = XElement.Parse(@"
 <Costura Unmanaged32Assemblies='Foo|Bar'/>");
         var config = new Configuration(xElement);
-        Assert.That(config.UnmanagedWinX86Assemblies[0], Is.EqualTo("Foo"));
-        Assert.That(config.UnmanagedWinX86Assemblies[1], Is.EqualTo("Bar"));
+        await Assert.That(config.UnmanagedWinX86Assemblies[0]).IsEqualTo("Foo");
+        await Assert.That(config.UnmanagedWinX86Assemblies[1]).IsEqualTo("Bar");
     }
 
     [Test]
-    public void Unmanaged32AssembliesCombined()
+    public async Task Unmanaged32AssembliesCombined()
     {
         var xElement = XElement.Parse(@"
 <Costura Unmanaged32Assemblies='Foo'>
@@ -258,12 +256,12 @@ Bar
     </Unmanaged32Assemblies>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.That(config.UnmanagedWinX86Assemblies[0], Is.EqualTo("Foo"));
-        Assert.That(config.UnmanagedWinX86Assemblies[1], Is.EqualTo("Bar"));
+        await Assert.That(config.UnmanagedWinX86Assemblies[0]).IsEqualTo("Foo");
+        await Assert.That(config.UnmanagedWinX86Assemblies[1]).IsEqualTo("Bar");
     }
 
     [Test]
-    public void UnmanagedX86AssembliesNode()
+    public async Task UnmanagedX86AssembliesNode()
     {
         var xElement = XElement.Parse(@"
 <Costura>
@@ -273,22 +271,22 @@ Bar
     </UnmanagedWinX86Assemblies>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.That(config.UnmanagedWinX86Assemblies[0], Is.EqualTo("Foo"));
-        Assert.That(config.UnmanagedWinX86Assemblies[1], Is.EqualTo("Bar"));
+        await Assert.That(config.UnmanagedWinX86Assemblies[0]).IsEqualTo("Foo");
+        await Assert.That(config.UnmanagedWinX86Assemblies[1]).IsEqualTo("Bar");
     }
 
     [Test]
-    public void UnmanagedX86AssembliesAttribute()
+    public async Task UnmanagedX86AssembliesAttribute()
     {
         var xElement = XElement.Parse(@"
 <Costura UnmanagedWinX86Assemblies='Foo|Bar'/>");
         var config = new Configuration(xElement);
-        Assert.That(config.UnmanagedWinX86Assemblies[0], Is.EqualTo("Foo"));
-        Assert.That(config.UnmanagedWinX86Assemblies[1], Is.EqualTo("Bar"));
+        await Assert.That(config.UnmanagedWinX86Assemblies[0]).IsEqualTo("Foo");
+        await Assert.That(config.UnmanagedWinX86Assemblies[1]).IsEqualTo("Bar");
     }
 
     [Test]
-    public void UnmanagedX86AssembliesCombined()
+    public async Task UnmanagedX86AssembliesCombined()
     {
         var xElement = XElement.Parse(@"
 <Costura UnmanagedWinX86Assemblies='Foo'>
@@ -297,12 +295,12 @@ Bar
     </UnmanagedWinX86Assemblies>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.That(config.UnmanagedWinX86Assemblies[0], Is.EqualTo("Foo"));
-        Assert.That(config.UnmanagedWinX86Assemblies[1], Is.EqualTo("Bar"));
+        await Assert.That(config.UnmanagedWinX86Assemblies[0]).IsEqualTo("Foo");
+        await Assert.That(config.UnmanagedWinX86Assemblies[1]).IsEqualTo("Bar");
     }
 
     [Test]
-    public void Unmanaged64AssembliesNode()
+    public async Task Unmanaged64AssembliesNode()
     {
         var xElement = XElement.Parse(@"
 <Costura>
@@ -312,22 +310,22 @@ Bar
     </Unmanaged64Assemblies>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.That(config.UnmanagedWinX64Assemblies[0], Is.EqualTo("Foo"));
-        Assert.That(config.UnmanagedWinX64Assemblies[1], Is.EqualTo("Bar"));
+        await Assert.That(config.UnmanagedWinX64Assemblies[0]).IsEqualTo("Foo");
+        await Assert.That(config.UnmanagedWinX64Assemblies[1]).IsEqualTo("Bar");
     }
 
     [Test]
-    public void Unmanaged64AssembliesAttribute()
+    public async Task Unmanaged64AssembliesAttribute()
     {
         var xElement = XElement.Parse(@"
 <Costura Unmanaged64Assemblies='Foo|Bar'/>");
         var config = new Configuration(xElement);
-        Assert.That(config.UnmanagedWinX64Assemblies[0], Is.EqualTo("Foo"));
-        Assert.That(config.UnmanagedWinX64Assemblies[1], Is.EqualTo("Bar"));
+        await Assert.That(config.UnmanagedWinX64Assemblies[0]).IsEqualTo("Foo");
+        await Assert.That(config.UnmanagedWinX64Assemblies[1]).IsEqualTo("Bar");
     }
 
     [Test]
-    public void Unmanaged64AssembliesCombined()
+    public async Task Unmanaged64AssembliesCombined()
     {
         var xElement = XElement.Parse(@"
 <Costura Unmanaged64Assemblies='Foo'>
@@ -336,12 +334,12 @@ Bar
     </Unmanaged64Assemblies>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.That(config.UnmanagedWinX64Assemblies[0], Is.EqualTo("Foo"));
-        Assert.That(config.UnmanagedWinX64Assemblies[1], Is.EqualTo("Bar"));
+        await Assert.That(config.UnmanagedWinX64Assemblies[0]).IsEqualTo("Foo");
+        await Assert.That(config.UnmanagedWinX64Assemblies[1]).IsEqualTo("Bar");
     }
 
     [Test]
-    public void UnmanagedX64AssembliesNode()
+    public async Task UnmanagedX64AssembliesNode()
     {
         var xElement = XElement.Parse(@"
 <Costura>
@@ -351,22 +349,22 @@ Bar
     </UnmanagedWinX64Assemblies>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.That(config.UnmanagedWinX64Assemblies[0], Is.EqualTo("Foo"));
-        Assert.That(config.UnmanagedWinX64Assemblies[1], Is.EqualTo("Bar"));
+        await Assert.That(config.UnmanagedWinX64Assemblies[0]).IsEqualTo("Foo");
+        await Assert.That(config.UnmanagedWinX64Assemblies[1]).IsEqualTo("Bar");
     }
 
     [Test]
-    public void UnmanagedX64AssembliesAttribute()
+    public async Task UnmanagedX64AssembliesAttribute()
     {
         var xElement = XElement.Parse(@"
 <Costura UnmanagedWinX64Assemblies='Foo|Bar'/>");
         var config = new Configuration(xElement);
-        Assert.That(config.UnmanagedWinX64Assemblies[0], Is.EqualTo("Foo"));
-        Assert.That(config.UnmanagedWinX64Assemblies[1], Is.EqualTo("Bar"));
+        await Assert.That(config.UnmanagedWinX64Assemblies[0]).IsEqualTo("Foo");
+        await Assert.That(config.UnmanagedWinX64Assemblies[1]).IsEqualTo("Bar");
     }
 
     [Test]
-    public void UnmanagedX64AssembliesCombined()
+    public async Task UnmanagedX64AssembliesCombined()
     {
         var xElement = XElement.Parse(@"
 <Costura UnmanagedWinX64Assemblies='Foo'>
@@ -375,12 +373,12 @@ Bar
     </UnmanagedWinX64Assemblies>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.That(config.UnmanagedWinX64Assemblies[0], Is.EqualTo("Foo"));
-        Assert.That(config.UnmanagedWinX64Assemblies[1], Is.EqualTo("Bar"));
+        await Assert.That(config.UnmanagedWinX64Assemblies[0]).IsEqualTo("Foo");
+        await Assert.That(config.UnmanagedWinX64Assemblies[1]).IsEqualTo("Bar");
     }
 
     [Test]
-    public void UnmanagedArm64AssembliesNode()
+    public async Task UnmanagedArm64AssembliesNode()
     {
         var xElement = XElement.Parse(@"
 <Costura>
@@ -390,22 +388,22 @@ Bar
     </UnmanagedWinArm64Assemblies>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.That(config.UnmanagedWinArm64Assemblies[0], Is.EqualTo("Foo"));
-        Assert.That(config.UnmanagedWinArm64Assemblies[1], Is.EqualTo("Bar"));
+        await Assert.That(config.UnmanagedWinArm64Assemblies[0]).IsEqualTo("Foo");
+        await Assert.That(config.UnmanagedWinArm64Assemblies[1]).IsEqualTo("Bar");
     }
 
     [Test]
-    public void UnmanagedArm64AssembliesAttribute()
+    public async Task UnmanagedArm64AssembliesAttribute()
     {
         var xElement = XElement.Parse(@"
 <Costura UnmanagedWinArm64Assemblies='Foo|Bar'/>");
         var config = new Configuration(xElement);
-        Assert.That(config.UnmanagedWinArm64Assemblies[0], Is.EqualTo("Foo"));
-        Assert.That(config.UnmanagedWinArm64Assemblies[1], Is.EqualTo("Bar"));
+        await Assert.That(config.UnmanagedWinArm64Assemblies[0]).IsEqualTo("Foo");
+        await Assert.That(config.UnmanagedWinArm64Assemblies[1]).IsEqualTo("Bar");
     }
 
     [Test]
-    public void UnmanagedArm64AssembliesCombined()
+    public async Task UnmanagedArm64AssembliesCombined()
     {
         var xElement = XElement.Parse(@"
 <Costura UnmanagedWinArm64Assemblies='Foo'>
@@ -414,12 +412,12 @@ Bar
     </UnmanagedWinArm64Assemblies>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.That(config.UnmanagedWinArm64Assemblies[0], Is.EqualTo("Foo"));
-        Assert.That(config.UnmanagedWinArm64Assemblies[1], Is.EqualTo("Bar"));
+        await Assert.That(config.UnmanagedWinArm64Assemblies[0]).IsEqualTo("Foo");
+        await Assert.That(config.UnmanagedWinArm64Assemblies[1]).IsEqualTo("Bar");
     }
 
     [Test]
-    public void PreloadOrderNode()
+    public async Task PreloadOrderNode()
     {
         var xElement = XElement.Parse(@"
 <Costura>
@@ -429,22 +427,22 @@ Bar
     </PreloadOrder>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.That(config.PreloadOrder[0], Is.EqualTo("Foo"));
-        Assert.That(config.PreloadOrder[1], Is.EqualTo("Bar"));
+        await Assert.That(config.PreloadOrder[0]).IsEqualTo("Foo");
+        await Assert.That(config.PreloadOrder[1]).IsEqualTo("Bar");
     }
 
     [Test]
-    public void PreloadOrderAttribute()
+    public async Task PreloadOrderAttribute()
     {
         var xElement = XElement.Parse(@"
 <Costura PreloadOrder='Foo|Bar'/>");
         var config = new Configuration(xElement);
-        Assert.That(config.PreloadOrder[0], Is.EqualTo("Foo"));
-        Assert.That(config.PreloadOrder[1], Is.EqualTo("Bar"));
+        await Assert.That(config.PreloadOrder[0]).IsEqualTo("Foo");
+        await Assert.That(config.PreloadOrder[1]).IsEqualTo("Bar");
     }
 
     [Test]
-    public void PreloadOrderCombined()
+    public async Task PreloadOrderCombined()
     {
         var xElement = XElement.Parse(@"
 <Costura  PreloadOrder='Foo'>
@@ -453,17 +451,17 @@ Bar
     </PreloadOrder>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.That(config.PreloadOrder[0], Is.EqualTo("Foo"));
-        Assert.That(config.PreloadOrder[1], Is.EqualTo("Bar"));
+        await Assert.That(config.PreloadOrder[0]).IsEqualTo("Foo");
+        await Assert.That(config.PreloadOrder[1]).IsEqualTo("Bar");
     }
 
     [Test]
-    public void IgnoreSatelliteAssembliesAttribute()
+    public async Task IgnoreSatelliteAssembliesAttribute()
     {
         var xElement = XElement.Parse(@"
 <Costura IgnoreSatelliteAssemblies='True'>
 </Costura>");
         var config = new Configuration(xElement);
-        Assert.That(config.IgnoreSatelliteAssemblies, Is.True);
+        await Assert.That(config.IgnoreSatelliteAssemblies).IsTrue();
     }
 }

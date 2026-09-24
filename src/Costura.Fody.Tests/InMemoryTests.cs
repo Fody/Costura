@@ -1,6 +1,6 @@
 ﻿using Fody;
-using NUnit.Framework;
 
+[InheritsTests]
 public class InMemoryTests : BasicTests
 {
     private static readonly TestResult testResult;
@@ -13,10 +13,10 @@ public class InMemoryTests : BasicTests
     }
 
     [Test]
-    public void ExecutableRunsSuccessfully()
+    public async Task ExecutableRunsSuccessfully()
     {
         var output = RunHelper.RunExecutable(TestResult.AssemblyPath);
-        Assert.That(output, Is.EqualTo("Run-OK"));
+        await Assert.That(output).IsEqualTo("Run-OK");
     }
 
     public override TestResult TestResult => testResult;

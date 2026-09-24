@@ -1,6 +1,5 @@
 ﻿using System;
 using Fody;
-using NUnit.Framework;
 
 public class MultipleNativeTestsWithPreloadOrder : BaseCosturaTest
 {
@@ -15,9 +14,9 @@ public class MultipleNativeTestsWithPreloadOrder : BaseCosturaTest
     public override TestResult TestResult => testResult;
 
     [Test]
-    public void Native()
+    public async Task Native()
     {
         var instance1 = TestResult.GetInstance("ExeToProcessWithMultipleNative.Program");
-        Assert.That(42, Is.EqualTo(instance1.Test()));
+        await Assert.That((int)instance1.Test()).IsEqualTo(42);
     }
 }

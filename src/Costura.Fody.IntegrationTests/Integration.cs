@@ -1,9 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using NUnit.Framework;
+using System.Threading.Tasks;
 
-[TestFixture]
 public class Integration
 {
     static Integration()
@@ -12,11 +11,11 @@ public class Integration
     }
 
     [Test, Explicit]
-    public void Test()
+    public async Task Test()
     {
         // just use some code from Newtonsoft.Json to ensure it's referenced.
         var json = Newtonsoft.Json.JsonConvert.SerializeObject(this);
-        Assert.That(json, Is.EqualTo("{\"SomeProperty\":\"Test\"}"));
+        await Assert.That(json).IsEqualTo("{\"SomeProperty\":\"Test\"}");
 
         // just use some code to ensure assemblies are properly embedded.
         var now = Catel.FastDateTime.Now;
@@ -26,7 +25,7 @@ public class Integration
         var embeddedAssembly = typeof(Catel.FastDateTime).Assembly;
         var thisAssembly = GetType().Assembly;
 
-        Assert.That(embeddedAssembly.Location,Is.Empty);
+        await Assert.That(embeddedAssembly.Location).IsEmpty();
         // does not work on build server: Assert.Equal(embeddedAssembly.CodeBase, thisAssembly.CodeBase, StringComparer.OrdinalIgnoreCase);
 
         var targetDir = Path.GetDirectoryName(new Uri(thisAssembly.Location).LocalPath);
@@ -35,8 +34,8 @@ public class Integration
             .Select(Path.GetFileName)
             .ToArray();
 
-        Assert.That(localCopyFiles.Any(file => file.StartsWith("Newtonsoft", StringComparison.OrdinalIgnoreCase)), Is.True);
-        Assert.That(localCopyFiles.Any(file => file.StartsWith("Catel.Core", StringComparison.OrdinalIgnoreCase)), Is.False);
+        await Assert.That(localCopyFiles.Any(file => file.StartsWith("Newtonsoft", StringComparison.OrdinalIgnoreCase))).IsTrue();
+        await Assert.That(localCopyFiles.Any(file => file.StartsWith("Catel.Core", StringComparison.OrdinalIgnoreCase))).IsFalse();
     }
 
     public string SomeProperty { get; set; } = "Test";

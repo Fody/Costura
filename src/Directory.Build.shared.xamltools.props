@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="RepositoryTemplate.XamlTools.Packages">
-    <PackageReference Include="XAMLTools.MSBuild" Version="1.0.0-alpha0085" PrivateAssets="all" />
+    <PackageReference Include="XAMLTools.MSBuild" PrivateAssets="all" />
   </ItemGroup>
 
   <!-- Note: to disable XAML tools during debug and development, use the following csproj:

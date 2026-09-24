@@ -1,28 +1,27 @@
 ﻿using System.Threading.Tasks;
 using Costura.Fody.Tests;
-using NUnit.Framework;
 
 public abstract class NativeTests : BaseCosturaTest
 {
     [Test]
-    public void Native()
+    public async Task Native()
     {
         var instance1 = TestResult.GetInstance("ClassToTest");
-        Assert.That("Hello", Is.EqualTo(instance1.NativeFoo()));
+        await Assert.That((string)instance1.NativeFoo()).IsEqualTo("Hello");
     }
 
     [Test]
-    public void Mixed()
+    public async Task Mixed()
     {
         var instance1 = TestResult.GetInstance("ClassToTest");
-        Assert.That("Hello", Is.EqualTo(instance1.MixedFoo()));
+        await Assert.That((string)instance1.MixedFoo()).IsEqualTo("Hello");
     }
 
     [Test]
-    public void MixedPInvoke()
+    public async Task MixedPInvoke()
     {
         var instance1 = TestResult.GetInstance("ClassToTest");
-        Assert.That("Hello", Is.EqualTo(instance1.MixedFooPInvoke()));
+        await Assert.That((string)instance1.MixedFooPInvoke()).IsEqualTo("Hello");
     }
 
     [Test]

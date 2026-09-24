@@ -1,5 +1,6 @@
 ﻿using Fody;
 
+[InheritsTests]
 public class ReferenceCasingTests : BasicTests 
 {
     private static readonly TestResult testResult;

@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Fody;
-using NUnit.Framework;
 
 public class MixedAndNativeTests : BaseCosturaTest
 {
@@ -11,24 +10,24 @@ public class MixedAndNativeTests : BaseCosturaTest
         new[] { "AssemblyToReferenceMixed.dll" }, "MixedAndNative");
 
     [Test]
-    public void Native()
+    public async Task Native()
     {
         var instance1 = TestResult.GetInstance("ClassToTest");
-        Assert.That("Hello", Is.EqualTo(instance1.NativeFoo()));
+        await Assert.That((string)instance1.NativeFoo()).IsEqualTo("Hello");
     }
 
     [Test]
-    public void Mixed()
+    public async Task Mixed()
     {
         var instance1 = TestResult.GetInstance("ClassToTest");
-        Assert.That("Hello", Is.EqualTo(instance1.MixedFoo()));
+        await Assert.That((string)instance1.MixedFoo()).IsEqualTo("Hello");
     }
 
     [Test]
-    public void MixedPInvoke()
+    public async Task MixedPInvoke()
     {
         var instance1 = TestResult.GetInstance("ClassToTest");
-        Assert.That("Hello", Is.EqualTo(instance1.MixedFooPInvoke()));
+        await Assert.That((string)instance1.MixedFooPInvoke()).IsEqualTo("Hello");
     }
 
     [Test]
@@ -38,9 +37,9 @@ public class MixedAndNativeTests : BaseCosturaTest
     }
 
     [Test]
-    public void ExecutableRunsSuccessfully()
+    public async Task ExecutableRunsSuccessfully()
     {
         var output = RunHelper.RunExecutable(TestResult.AssemblyPath);
-        Assert.That(output, Is.EqualTo("Run-OK"));
+        await Assert.That(output).IsEqualTo("Run-OK");
     }
 }
