@@ -13,14 +13,14 @@
     <PackageVersion Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageVersion Include="Microsoft.Data.SqlClient" Version="7.1.0" />
     <PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies.net48" Version="1.0.3" />
-    <PackageVersion Include="Moq" Version="4.20.72" />
+    <PackageVersion Include="Moq" Version="4.21.0" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageVersion Include="NUnit.Analyzers" Version="4.15.0" />
     <PackageVersion Include="SourceLink.Copy.PdbFiles" Version="2.8.3" />
     <!-- the TUnit metapackage is not used since it brings in a Mono.Cecil that conflicts with the Cecil used by Fody -->
-    <PackageVersion Include="TUnit.Core" Version="1.69.0" />
-    <PackageVersion Include="TUnit.Assertions" Version="1.69.0" />
-    <PackageVersion Include="TUnit.Engine" Version="1.69.0" />
+    <PackageVersion Include="TUnit.Core" Version="1.69.16" />
+    <PackageVersion Include="TUnit.Assertions" Version="1.69.21" />
+    <PackageVersion Include="TUnit.Engine" Version="1.69.21" />
     <PackageVersion Include="Verify.TUnit" Version="33.1.4" />
     <PackageVersion Include="WpfAnalyzers" Version="4.1.1" />
     <PackageVersion Include="XAMLTools.MSBuild" Version="1.0.0-alpha0085" />
