@@ -4,7 +4,7 @@
 
 #tool "nuget:?package=NuGet.CommandLine&version=7.3.0"
 
-#addin "nuget:?package=LibGit2Sharp&version=0.31.0"
+#addin "nuget:?package=LibGit2Sharp&version=0.32.0"
 
 //-------------------------------------------------------------
 
@@ -80,7 +80,7 @@ public class VersionContext : BuildContextBase
             {
                 UpdateAssemblyInfo = false,
                 Verbosity = GitVersionVerbosity.Verbose,
-                NoFetch = true
+                NoFetch = true,
             };
 
             var mutexName = $"Global\\Cake_GitVersion_Clone_{generalContext.Solution.Name}";
@@ -759,7 +759,9 @@ private GeneralContext InitializeGeneralContext(BuildContext buildContext, IBuil
         versionContext.CommitsSinceVersionSource = (gitVersion.CommitsSinceVersionSource ?? 0).ToString();
     }    
 
-    parentBuildContext.CakeContext.Information("Defined version: '{0}', commits since version source: '{1}'", versionContext.FullSemVer, versionContext.CommitsSinceVersionSource);
+    parentBuildContext.CakeContext.Information("Full sem ver: '{0}'", versionContext.FullSemVer);
+    parentBuildContext.CakeContext.Information("Commits since version source: '{0}'", versionContext.CommitsSinceVersionSource);
+    parentBuildContext.CakeContext.Information("NuGet version: '{0}'", versionContext.NuGet);
 
     if (string.IsNullOrWhiteSpace(data.Repository.CommitId))
     {
