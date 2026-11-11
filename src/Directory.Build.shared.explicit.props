@@ -279,6 +279,34 @@
     <Page Include="Platforms\net\**\*.xaml" SubType="Designer" Generator="MSBuild:Compile" />
     <Compile Update="Platforms\net\**\*.xaml.cs" SubType="Code" DependentUpon="%(Filename)" />
   </ItemGroup>
+  
+  <!-- .NET 11.0 -->
+  <PropertyGroup Label="RepositoryTemplate.Explicit.Configuration.NET11_0"
+                 Condition=" $(TargetFramework.StartsWith('net11.0')) ">
+    <DefineConstants>$(DefineConstants);NETCORE;NETCORE11;NETCORE11_0;NET11;NET11_0</DefineConstants>
+  </PropertyGroup>
+  
+  <ItemGroup Label="RepositoryTemplate.Explicit.Items.NET11_0"
+             Condition=" $(TargetFramework.StartsWith('net11.0')) ">
+    <None Remove="Platforms\net\**\*.cs;Platforms\net\**\*.xaml;Platforms\net\**\*.xaml.cs" />
+    <Compile Include="Platforms\net\**\*.cs" DependentUpon="%(Filename)" />
+    <Page Include="Platforms\net\**\*.xaml" SubType="Designer" Generator="MSBuild:Compile" />
+    <Compile Update="Platforms\net\**\*.xaml.cs" SubType="Code" DependentUpon="%(Filename)" />
+  </ItemGroup>
+
+  <!-- .NET 12.0 -->
+  <PropertyGroup Label="RepositoryTemplate.Explicit.Configuration.NET12_0"
+                 Condition=" $(TargetFramework.StartsWith('net112.0')) ">
+    <DefineConstants>$(DefineConstants);NETCORE;NETCORE12;NETCORE12_0;NET12;NET12_0</DefineConstants>
+  </PropertyGroup>
+  
+  <ItemGroup Label="RepositoryTemplate.Explicit.Items.NET12_0"
+             Condition=" $(TargetFramework.StartsWith('net12.0')) ">
+    <None Remove="Platforms\net\**\*.cs;Platforms\net\**\*.xaml;Platforms\net\**\*.xaml.cs" />
+    <Compile Include="Platforms\net\**\*.cs" DependentUpon="%(Filename)" />
+    <Page Include="Platforms\net\**\*.xaml" SubType="Designer" Generator="MSBuild:Compile" />
+    <Compile Update="Platforms\net\**\*.xaml.cs" SubType="Code" DependentUpon="%(Filename)" />
+  </ItemGroup>
 
   <!-- .NET Standard 2.0 -->
   <PropertyGroup Label="RepositoryTemplate.Explicit.Configuration.NETSTANDARD2_0"
