@@ -1,5 +1,3 @@
-#tool "nuget:?package=NUnit.ConsoleRunner&version=3.22.0"
-
 //-------------------------------------------------------------
 
 private static void RunTestsUsingNUnit(BuildContext buildContext, string projectName, string testTargetFramework, string testResultsDirectory)
@@ -26,6 +24,8 @@ private static void RunTestsUsingNUnit(BuildContext buildContext, string project
         Workers = 1
         //Work = testResultsDirectory
     };
+
+    buildContext.CakeContext.InstallTool(BuildDependencies.NUnitConsoleRunnerTool);
 
     // Note: although the docs say you can use without array initialization, you can't
     buildContext.CakeContext.NUnit3(new string[] { testFile }, nunitSettings);

@@ -624,7 +624,13 @@ private static bool IsDotNetCoreTargetFramework(BuildContext buildContext, strin
         lowerCase.Contains("net7") ||
         lowerCase.Contains("net8") ||
         lowerCase.Contains("net9") ||
-        lowerCase.Contains("net10"))
+        lowerCase.Contains("net10") ||
+        lowerCase.Contains("net11") ||
+        lowerCase.Contains("net12") ||
+        lowerCase.Contains("net13") ||
+        lowerCase.Contains("net14") ||
+        lowerCase.Contains("net15") ||
+        lowerCase.Contains("net16"))
     {
         return true;
     }

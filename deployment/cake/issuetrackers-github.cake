@@ -1,5 +1,3 @@
-#tool "nuget:?package=gitreleasemanager&version=0.20.0"
-
 //-------------------------------------------------------------
 
 public class GitHubIssueTracker : IIssueTracker
@@ -40,6 +38,8 @@ public class GitHubIssueTracker : IIssueTracker
             BuildContext.CakeContext.Information("GitHub is not available, skipping GitHub integration");
             return;
         }
+
+        BuildContext.CakeContext.InstallTool(BuildDependencies.GitReleaseManagerTool);
 
         var version = BuildContext.General.Version.FullSemVer;
 

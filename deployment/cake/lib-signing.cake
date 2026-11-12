@@ -1,6 +1,3 @@
-#tool "dotnet:?package=AzureSignTool&version=7.0.1"
-#tool "dotnet:?package=NuGetKeyVaultSignTool&version=3.2.3"
-
 private static string _signToolFileName;
 private static string _azureSignToolFileName;
 
@@ -149,7 +146,8 @@ public static void SignFile(BuildContext buildContext, string signToolCommand, s
         _signToolFileName = FindWindowsSignToolFileName(buildContext);   
     }
 
-    if (string.IsNullOrWhiteSpace(_azureSignToolFileName))
+    if (azureCodeSignContext.IsAvailable &&
+        string.IsNullOrWhiteSpace(_azureSignToolFileName))
     {
         _azureSignToolFileName = FindAzureSignToolFileName(buildContext);
     }
@@ -276,6 +274,8 @@ public static void SignNuGetPackage(BuildContext buildContext, string fileName)
 
     if (azureCodeSignContext.IsAvailable)
     {
+        buildContext.CakeContext.InstallTool(BuildDependencies.NuGetKeyVaultSignTool);
+        
         var signToolFileName = FindNuGetAzureSignToolFileName(buildContext);
         var signToolCommandLine = string.Format("sign -kvu {0} -kvt {1} -kvi {2} -kvs {3} -kvc {4} -tr {5} -fd {6}", 
             azureCodeSignContext.VaultUrl,
@@ -327,6 +327,8 @@ public static string FindWindowsSignToolFileName(BuildContext buildContext)
 
 public static string FindAzureSignToolFileName(BuildContext buildContext)
 {
+    buildContext.CakeContext.InstallTool(BuildDependencies.AzureSignTool);
+
     var path = buildContext.CakeContext.Tools.Resolve("AzureSignTool.exe");
 
     buildContext.CakeContext.Information("Found path '{0}'", path);

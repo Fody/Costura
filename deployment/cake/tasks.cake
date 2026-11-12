@@ -1,5 +1,7 @@
 #pragma warning disable CS1998
 
+#l "_dependencies.cake"
+
 #l "lib-generic.cake"
 #l "lib-logging.cake"
 #l "lib-msbuild.cake"
@@ -23,20 +25,7 @@
 #l "tests.cake"
 #l "templates-tasks.cake"
 
-#addin "nuget:?package=Cake.FileHelpers&version=7.0.0"
-#addin "nuget:?package=Cake.Sonar&version=5.0.0"
-#addin "nuget:?package=MagicChunks&version=2.0.0.119"
-#addin "nuget:?package=Newtonsoft.Json&version=13.0.4"
-
-// Note: the SonarQube tool must be installed as a global .NET tool. If you are getting issues like this:
-//
-// The SonarScanner for MSBuild integration failed: [...] was unable to collect the required information about your projects.
-// 
-// It probably means the tool is not correctly installed.
-// `dotnet tool install --global dotnet-sonarscanner --ignore-failed-sources`
 //#tool "nuget:?package=MSBuild.SonarQube.Runner.Tool&version=4.8.0"
-#tool "nuget:?package=dotnet-sonarscanner&version=12.0.0"
-
 //-------------------------------------------------------------
 // BACKWARDS COMPATIBILITY CODE - START
 //-------------------------------------------------------------
@@ -360,6 +349,8 @@ Task("Build")
                       !string.IsNullOrWhiteSpace(sonarUrl);
     if (enableSonar)
     {
+        buildContext.CakeContext.InstallTool(BuildDependencies.DotNetSonarScannerTool);
+
         var sonarSettings = new SonarBeginSettings 
         {
             // SonarQube info

@@ -1,11 +1,5 @@
 #l "buildserver.cake"
 
-#tool "dotnet:?package=GitVersion.Tool&version=6.8.2"
-
-#tool "nuget:?package=NuGet.CommandLine&version=7.3.0"
-
-#addin "nuget:?package=LibGit2Sharp&version=0.32.0"
-
 //-------------------------------------------------------------
 
 public class GeneralContext : BuildContextWithItemsBase
