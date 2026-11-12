@@ -1,5 +1,3 @@
-#addin "nuget:?package=Cake.MicrosoftTeams&version=6.0.0"
-
 //-------------------------------------------------------------
 
 public class MsTeamsNotifier : INotifier

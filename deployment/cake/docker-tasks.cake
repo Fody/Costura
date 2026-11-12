@@ -1,7 +1,5 @@
 #l "docker-variables.cake"
 
-#addin "nuget:?package=Cake.Docker&version=1.3.0"
-
 //-------------------------------------------------------------
 
 public class DockerImagesProcessor : ProcessorBase

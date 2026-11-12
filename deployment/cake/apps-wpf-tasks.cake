@@ -1,7 +1,5 @@
 #l "apps-wpf-variables.cake"
 
-#tool "nuget:?package=AzureStorageSync&version=2.0.0-alpha0039&prerelease"
-
 //-------------------------------------------------------------
 
 public class WpfProcessor : ProcessorBase
@@ -94,6 +92,8 @@ public class WpfProcessor : ProcessorBase
         {
             return;
         }
+
+        CakeContext.InstallTool(BuildDependencies.VpkTool);
         
         var channels = new List<string>();
 
@@ -175,6 +175,8 @@ public class WpfProcessor : ProcessorBase
             CakeContext.Warning("Skipping deployments of WPF apps because not Azure deployments storage connection string was specified");
             return;
         }
+
+        CakeContext.InstallTool(BuildDependencies.AzureStorageSyncTool);
         
         var azureStorageSyncExes = CakeContext.GetFiles("./tools/AzureStorageSync*/**/AzureStorageSync.exe");
         var azureStorageSyncExe = azureStorageSyncExes.LastOrDefault();

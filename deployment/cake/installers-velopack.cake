@@ -1,5 +1,3 @@
-#tool "dotnet:?package=vpk&version=1.2.0"
-
 //-------------------------------------------------------------
 
 public class VelopackInstaller : IInstaller

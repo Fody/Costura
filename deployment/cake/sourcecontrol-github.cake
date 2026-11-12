@@ -1,6 +1,3 @@
-#addin "nuget:?package=Cake.GitHub&version=1.0.0"
-#addin "nuget:?package=Octokit&version=14.0.0"
-
 //-------------------------------------------------------------
 
 public class GitHubSourceControl : ISourceControl

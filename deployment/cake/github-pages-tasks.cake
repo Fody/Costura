@@ -1,7 +1,5 @@
 #l "github-pages-variables.cake"
 
-#addin "nuget:?package=Cake.Git&version=5.0.1"
-
 //-------------------------------------------------------------
 
 public class GitHubPagesProcessor : ProcessorBase

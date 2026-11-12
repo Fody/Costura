@@ -1,5 +1,3 @@
-#tool "nuget:?package=JiraCli&version=1.3.0-alpha0338&prerelease"
-
 //-------------------------------------------------------------
 
 public class JiraIssueTracker : IIssueTracker
@@ -39,6 +37,8 @@ public class JiraIssueTracker : IIssueTracker
         var version = BuildContext.General.Version.FullSemVer;
 
         BuildContext.CakeContext.Information("Releasing version '{0}' in JIRA", version);
+
+        BuildContext.CakeContext.InstallTool(BuildDependencies.JiraCliTool);
 
         // Example call:
         // JiraCli.exe -url %JiraUrl% -user %JiraUsername% -pw %JiraPassword% -action createandreleaseversion 
