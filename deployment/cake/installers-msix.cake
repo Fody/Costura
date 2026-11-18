@@ -81,7 +81,7 @@ public class MsixInstaller : IInstaller
         variables["[CHANNEL_SUFFIX]"] = setupSuffix;
         variables["[CHANNEL]"] = BuildContext.Installer.GetDeploymentChannelSuffix(" (", ")");
         variables["[VERSION]"] = BuildContext.General.Version.MajorMinorPatch;
-        variables["[VERSION_WITH_REVISION]"] = $"{BuildContext.General.Version.MajorMinorPatch}.{BuildContext.General.Version.CommitsSinceVersionSource}";
+        variables["[VERSION_WITH_REVISION]"] = $"{BuildContext.General.Version.MajorMinorPatch}.{BuildContext.General.Version.VersionSourceDistance}";
         variables["[VERSION_DISPLAY]"] = BuildContext.General.Version.FullSemVer;
         variables["[WIZARDIMAGEFILE]"] = string.Format("logo_large{0}", setupSuffix);
 

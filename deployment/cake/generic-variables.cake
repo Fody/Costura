@@ -1,5 +1,8 @@
 #l "buildserver.cake"
 
+using System.Globalization;
+using System.Text.Json.Serialization;
+
 //-------------------------------------------------------------
 
 public class GeneralContext : BuildContextWithItemsBase
@@ -57,194 +60,187 @@ public class GeneralContext : BuildContextWithItemsBase
 
 //-------------------------------------------------------------
 
+// Running manually since v7
+
+public class GitVersionContext
+{
+    [JsonPropertyName("AssemblySemFileVer")]
+    public string AssemblySemFileVer { get; set; }
+
+    [JsonPropertyName("AssemblySemVer")]
+    public string AssemblySemVer { get; set; }
+
+    [JsonPropertyName("BranchName")]
+    public string BranchName { get; set; }
+
+    [JsonPropertyName("BuildMetaData")]
+    public int? BuildMetaData { get; set; }
+
+    [JsonPropertyName("CommitCountSourceDistance")]
+    public int? CommitCountSourceDistance { get; set; }
+
+    [JsonPropertyName("CommitCountSourceSha")]
+    public string CommitCountSourceSha { get; set; }
+
+    [JsonPropertyName("CommitDate")]
+    public string CommitDate { get; set; }
+
+    [JsonPropertyName("CommitsSinceVersionSource")]
+    public int? CommitsSinceVersionSource { get; set; }
+
+    [JsonPropertyName("CustomVersion")]
+    public string CustomVersion { get; set; }
+
+    [JsonPropertyName("EscapedBranchName")]
+    public string EscapedBranchName { get; set; }
+
+    [JsonPropertyName("FullBuildMetaData")]
+    public string FullBuildMetaData { get; set; }
+
+    [JsonPropertyName("FullSemVer")]
+    public string FullSemVer { get; set; }
+
+    [JsonPropertyName("InformationalVersion")]
+    public string InformationalVersion { get; set; }
+
+    [JsonPropertyName("Major")]
+    public int Major { get; set; }
+
+    [JsonPropertyName("MajorMinorPatch")]
+    public string MajorMinorPatch { get; set; }
+
+    [JsonPropertyName("Minor")]
+    public int Minor { get; set; }
+
+    [JsonPropertyName("Patch")]
+    public int Patch { get; set; }
+
+    [JsonPropertyName("PreReleaseLabel")]
+    public string PreReleaseLabel { get; set; }
+
+    [JsonPropertyName("PreReleaseLabelName")]
+    public string PreReleaseLabelName { get; set; }
+
+    [JsonPropertyName("PreReleaseLabelNameWithDash")]
+    public string PreReleaseLabelNameWithDash { get; set; }
+
+    [JsonPropertyName("PreReleaseLabelWithDash")]
+    public string PreReleaseLabelWithDash { get; set; }
+
+    [JsonPropertyName("PreReleaseNumber")]
+    public int? PreReleaseNumber { get; set; }
+
+    [JsonPropertyName("SemVer")]
+    public string SemVer { get; set; }
+
+    [JsonPropertyName("SemVerSourceIncrement")]
+    public string SemVerSourceIncrement { get; set; }
+
+    [JsonPropertyName("SemVerSourceSemVer")]
+    public string SemVerSourceSemVer { get; set; }
+
+    [JsonPropertyName("SemVerSourceSha")]
+    public string SemVerSourceSha { get; set; }
+
+    [JsonPropertyName("Sha")]
+    public string Sha { get; set; }
+
+    [JsonPropertyName("ShortSha")]
+    public string ShortSha { get; set; }
+
+    [JsonPropertyName("UncommittedChanges")]
+    public int? UncommittedChanges { get; set; }
+
+    [JsonPropertyName("VersionSourceDistance")]
+    public int? VersionSourceDistance { get; set; }
+
+    [JsonPropertyName("VersionSourceIncrement")]
+    public string VersionSourceIncrement { get; set; }
+
+    [JsonPropertyName("VersionSourceSemVer")]
+    public string VersionSourceSemVer { get; set; }
+
+    [JsonPropertyName("VersionSourceSha")]
+    public string VersionSourceSha { get; set; }
+
+    [JsonPropertyName("WeightedPreReleaseNumber")]
+    public int? WeightedPreReleaseNumber { get; set; }
+
+    // Legacy properties
+    public string? BuildMetaDataPadded { get; set; }
+    public string? LegacySemVerPadded { get; set; }
+    public string? NuGetVersionV2 { get; set; }
+}
+
+//-------------------------------------------------------------
+
 public class VersionContext : BuildContextBase
 {
-    private GitVersion _gitVersionContext;
+    private GitVersionContext _gitVersionContext;
 
     public VersionContext(IBuildContext parentBuildContext)
         : base(parentBuildContext)
     {
     }
 
-    public GitVersion GetGitVersionContext(GeneralContext generalContext)
+    public GitVersionContext GetGitVersionContext(GeneralContext generalContext)
     {
         if (_gitVersionContext is null)
         {
-            var gitVersionSettings = new GitVersionSettings
+            CakeContext.Information("[{0}] Running GitVersion", GetTime());
+
+            // Install GitVersion tool just before running it
+            CakeContext.Information("Installing GitVersion.Tool package");
+
+            CakeContext.InstallTool(BuildDependencies.GitVersionTool);
+        
+            // Running manual since v7                
+            var gitVersion = CakeContext.Tools.Resolve(new [] { "GitVersion.exe", "dotnet-gitversion", "dotnet-gitversion.exe" });
+
+            var gitVersionArgumentsBuilder = new ProcessArgumentBuilder();
+            gitVersionArgumentsBuilder.Append("--output json");
+            gitVersionArgumentsBuilder.Append("--verbosity normal");
+
+            var gitVersionProcessSettings = new ProcessSettings
             {
-                UpdateAssemblyInfo = false,
-                Verbosity = GitVersionVerbosity.Verbose,
-                NoFetch = true,
+                Arguments = gitVersionArgumentsBuilder,
+                Silent = false,
+                RedirectStandardError = true,
+                RedirectStandardOutput = true
             };
 
-            var mutexName = $"Global\\Cake_GitVersion_Clone_{generalContext.Solution.Name}";
-
-            CakeContext.Information("Trying to acquire mutex to determine version");
-
-            using (var mutex = new System.Threading.Mutex(false, mutexName, out var createdNew))
+            using (var checkProcess = CakeContext.StartAndReturnProcess(gitVersion, gitVersionProcessSettings))
             {
-                if (!mutex.WaitOne(TimeSpan.FromMinutes(2)))
+                checkProcess.WaitForExit();
+
+                var output = string.Join('\n', checkProcess.GetStandardOutput());
+
+                CakeContext.Information(output);
+
+                var errors = Regex.Matches(output, @"( *ERROR:? [^\n]*)\n([^\n]*)").Cast<Match>()
+                    .SelectMany(match => new[] { match.Groups[1].Value, match.Groups[2].Value });
+                foreach (var error in errors)
                 {
-                    throw new Exception("Could not acquire mutex to determine version");
+                    CakeContext.Error(error);
                 }
 
-                CakeContext.Information("Mutex acquired");
+                var version = JsonSerializer.Deserialize<GitVersionContext>(output);
 
-                CakeContext.Information("[{0}] Preparing GitVersion", GetTime());
+                // "Legacy" properties
+                version.BuildMetaDataPadded = version.CommitCountSourceDistance.HasValue
+                    ? version.CommitCountSourceDistance.Value.ToString("D4", CultureInfo.InvariantCulture)
+                    : (version.BuildMetaData?.ToString("D4", CultureInfo.InvariantCulture) ?? string.Empty);
 
-                var gitDirectory = ".git";
-                if (!CakeContext.DirectoryExists(gitDirectory))
-                {
-                    CakeContext.Information("No local .git directory found, treating as dynamic repository");
+                version.LegacySemVerPadded = string.IsNullOrEmpty(version.BuildMetaDataPadded) 
+                    ? version.MajorMinorPatch 
+                    : version.MajorMinorPatch + version.PreReleaseLabelNameWithDash + version.BuildMetaDataPadded;
 
-                    // Make a *BIG* assumption that the solution name == repository name
-                    var repositoryName = generalContext.Solution.Name;
-                    var dynamicRepositoryPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), repositoryName);
+                version.NuGetVersionV2 = version.LegacySemVerPadded.ToLower();
 
-                    // Note: for now we fully clear the cache each time until we found a solid way to pull the latest changes
-                    var clearCache = ClearCache || true;
-                    if (clearCache)
-                    {
-                        CakeContext.Warning("Cleaning the cloned temp directory, disable by setting 'GitVersion_ClearCache' to 'false'");
-        
-                        if (CakeContext.DirectoryExists(dynamicRepositoryPath))
-                        {
-                            CakeContext.DeleteDirectory(dynamicRepositoryPath, new DeleteDirectorySettings
-                            {
-                                Force = true,
-                                Recursive = true
-                            });
-                        }
-                    }
-
-                    // Validate first
-                    if (string.IsNullOrWhiteSpace(generalContext.Repository.BranchName))
-                    {
-                        throw new Exception("No local .git directory was found, but repository branch was not specified either. Make sure to specify the branch");
-                    }
-
-                    if (string.IsNullOrWhiteSpace(generalContext.Repository.Url))
-                    {
-                        throw new Exception("No local .git directory was found, but repository url was not specified either. Make sure to specify the branch");
-                    }
-
-                    CakeContext.Information($"Fetching dynamic repository from url '{generalContext.Repository.Url}' => '{dynamicRepositoryPath}'");
-
-                    // Note: starting with GitVersion 6.x, we need to handle dynamic repos ourselves,
-                    // and we will be using Cake.Git and LibGit2Sharp directly to support cloning a specific commit id
-
-                    var existingRepository = false;
-                    if (CakeContext.DirectoryExists(dynamicRepositoryPath))
-                    {
-                        CakeContext.Information("Dynamic repository directory already exists");
-
-                        if (CakeContext.GitIsValidRepository(dynamicRepositoryPath))
-                        {
-                            CakeContext.Information("Dynamic repository already exists, reusing existing clone");
-                            existingRepository = true;
-                        }
-                        else
-                        {
-                            CakeContext.Information("Dynamic repository already exists but is not valid, recloning");
-
-                            CakeContext.DeleteDirectory(dynamicRepositoryPath, new DeleteDirectorySettings
-                            {
-                                Force = true,
-                                Recursive = true
-                            });
-                        }
-                    }
-
-                    // Note: for now always (re)clone a repo
-                    if (existingRepository)
-                    {                            
-                        CakeContext.Information("Dynamic repository already exists, recloning");
-
-                        CakeContext.DeleteDirectory(dynamicRepositoryPath, new DeleteDirectorySettings
-                        {
-                            Force = true,
-                            Recursive = true
-                        });
-
-                        //throw new NotSupportedException("Pulling updates for an existing dynamic repository is not supported.");
-                    }
-
-                    var gitCloneSettings = new GitCloneSettings
-                    {
-                        BranchName = generalContext.Repository.BranchName,
-                        Checkout = true,
-                        IsBare = false,
-                        RecurseSubmodules = false,
-                    };
-
-                    if (!string.IsNullOrWhiteSpace(generalContext.Repository.Username) &&
-                        !string.IsNullOrWhiteSpace(generalContext.Repository.Password))
-                    {
-                        CakeContext.Information("Cloning with authentication");
-
-                        CakeContext.GitClone(generalContext.Repository.Url, 
-                            dynamicRepositoryPath, 
-                            generalContext.Repository.Username, 
-                            generalContext.Repository.Password,
-                            gitCloneSettings);
-                    }
-                    else
-                    {
-                        CakeContext.Information("Cloning without authentication");
-
-                        CakeContext.GitClone(generalContext.Repository.Url, 
-                            dynamicRepositoryPath,
-                            gitCloneSettings);
-                    }
-
-                    //LibGit2Sharp.Repository.Clone(generalContext.Repository.Url, dynamicRepositoryPath, cloneOptions);
-
-                    if (!CakeContext.GitIsValidRepository(dynamicRepositoryPath))
-                    {
-                        throw new Exception($"Cloned repository at '{dynamicRepositoryPath}' is not a valid repository");
-                    }
-
-                    CakeContext.Information("Ensuring correct commit ID");
-
-                    // According to docs, to not get into a detached head state, we need to:
-                    //
-                    // git checkout -B 'branch' 'commit id'
-                    // 
-                    // This seems impossible via Cake.Git (and LibGit2Sharp directly), so we will
-                    // just invoke git directly here
-                    //
-                    //CakeContext.GitCheckout(dynamicRepositoryPath, generalContext.Repository.CommitId);
-
-                    var gitCommit = CakeContext.GitLogTip(dynamicRepositoryPath);
-                    if (!string.Equals(gitCommit.Sha, generalContext.Repository.CommitId, StringComparison.OrdinalIgnoreCase))
-                    {
-                        var gitExe = CakeContext.Tools.Resolve("git").FullPath;
-
-                        using (var process = CakeContext.StartAndReturnProcess(gitExe, 
-                            new ProcessSettings
-                            { 
-                                WorkingDirectory = dynamicRepositoryPath,
-                                Arguments = $"checkout -B {generalContext.Repository.BranchName} {generalContext.Repository.CommitId}", 
-                            }))
-                        {
-                            process.WaitForExit();
-
-                            // This should output 0 as valid arguments supplied
-                            CakeContext.Information("Exit code: {0}", process.GetExitCode());
-                        }
-                    }
-
-                    CakeContext.Information("Preparing GitVersion settings");
-
-                    gitVersionSettings.WorkingDirectory = dynamicRepositoryPath;
-                }
-                
-                CakeContext.Information("[{0}] Running GitVersion", GetTime());
-
-                _gitVersionContext = CakeContext.GitVersion(gitVersionSettings);
-
-                CakeContext.Information("[{0}] Finished GitVersion", GetTime());
+                _gitVersionContext = version;
             }
+
+            CakeContext.Information("[{0}] Finished GitVersion", GetTime());
         }
 
         return _gitVersionContext;
@@ -285,7 +281,7 @@ public class VersionContext : BuildContextBase
     public string MajorMinorPatch { get; set; }
     public string FullSemVer { get; set; }
     public string NuGet { get; set; }
-    public string CommitsSinceVersionSource { get; set; }
+    public string VersionSourceDistance  { get; set; }
 
     private string GetVersion(string version, int breakCount)
     {
@@ -622,7 +618,7 @@ private GeneralContext InitializeGeneralContext(BuildContext buildContext, IBuil
         MajorMinorPatch = buildContext.BuildServer.GetVariable("GitVersion_MajorMinorPatch", "unknown", showValue: true),
         FullSemVer = buildContext.BuildServer.GetVariable("GitVersion_FullSemVer", "unknown", showValue: true),
         NuGet = buildContext.BuildServer.GetVariable("GitVersion_NuGetVersion", "unknown", showValue: true),
-        CommitsSinceVersionSource = buildContext.BuildServer.GetVariable("GitVersion_CommitsSinceVersionSource", "unknown", showValue: true)
+        VersionSourceDistance  = buildContext.BuildServer.GetVariable("GitVersion_VersionSourceDistance", "unknown", showValue: true)
     };
 
     data.Copyright = new CopyrightContext(data)
@@ -750,11 +746,11 @@ private GeneralContext InitializeGeneralContext(BuildContext buildContext, IBuil
         versionContext.MajorMinorPatch = gitVersion.MajorMinorPatch;
         versionContext.FullSemVer = gitVersion.FullSemVer;
         versionContext.NuGet = gitVersion.NuGetVersionV2;
-        versionContext.CommitsSinceVersionSource = (gitVersion.CommitsSinceVersionSource ?? 0).ToString();
+        versionContext.VersionSourceDistance = (gitVersion.VersionSourceDistance ?? 0).ToString();
     }    
 
     parentBuildContext.CakeContext.Information("Full sem ver: '{0}'", versionContext.FullSemVer);
-    parentBuildContext.CakeContext.Information("Commits since version source: '{0}'", versionContext.CommitsSinceVersionSource);
+    parentBuildContext.CakeContext.Information("Version source distance: '{0}'", versionContext.VersionSourceDistance);
     parentBuildContext.CakeContext.Information("NuGet version: '{0}'", versionContext.NuGet);
 
     if (string.IsNullOrWhiteSpace(data.Repository.CommitId))
