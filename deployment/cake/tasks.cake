@@ -208,7 +208,7 @@ Task("Initialize")
     variablesToUpdate["GitVersion_MajorMinorPatch"] = buildContext.General.Version.MajorMinorPatch;
     variablesToUpdate["GitVersion_FullSemVer"] = buildContext.General.Version.FullSemVer;
     variablesToUpdate["GitVersion_NuGetVersion"] = buildContext.General.Version.NuGet;
-    variablesToUpdate["GitVersion_CommitsSinceVersionSource"] = buildContext.General.Version.CommitsSinceVersionSource;
+    variablesToUpdate["GitVersion_VersionSourceDistance"] = buildContext.General.Version.VersionSourceDistance;
 
     foreach (var variableToUpdate in variablesToUpdate)
     {

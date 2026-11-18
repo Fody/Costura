@@ -44,7 +44,7 @@ public class VsExtensionsProcessor : ProcessorBase
 
         // Note: since we can't use prerelease tags in VSIX, we will use the commit count
         // as last part of the version
-        var version = string.Format("{0}.{1}", BuildContext.General.Version.MajorMinorPatch, BuildContext.General.Version.CommitsSinceVersionSource);
+        var version = string.Format("{0}.{1}", BuildContext.General.Version.MajorMinorPatch, BuildContext.General.Version.VersionSourceDistance);
 
         foreach (var vsExtension in BuildContext.VsExtensions.Items)
         {
