@@ -227,7 +227,7 @@ public class VersionContext : BuildContextBase
                 var version = JsonSerializer.Deserialize<GitVersionContext>(output);
 
                 // "Legacy" properties
-                version.BuildMetaDataPadded = version.CommitCountSourceDistance.HasValue
+                version.BuildMetaDataPadded = version.CommitCountSourceDistance.HasValue && version.CommitCountSourceDistance.Value > 0
                     ? version.CommitCountSourceDistance.Value.ToString("D4", CultureInfo.InvariantCulture)
                     : (version.BuildMetaData?.ToString("D4", CultureInfo.InvariantCulture) ?? string.Empty);
 
