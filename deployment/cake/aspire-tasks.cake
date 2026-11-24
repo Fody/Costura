@@ -129,7 +129,22 @@ public class AspireProcessor : ProcessorBase
             {
                 BuildContext.CakeContext.Information("Logging in to Azure");
 
-                RunAzd($"auth login --tenant-id {aspireContext.AzureTenantId} --client-id {aspireContext.AzureClientId} --client-secret {aspireContext.AzureClientSecret} --no-prompt");
+                var loginArguments = new ProcessArgumentBuilder()
+                    .Append("auth login")
+                    .AppendSwitch("--tenant-id", aspireContext.AzureTenantId)
+                    .AppendSwitch("--client-id", aspireContext.AzureClientId);
+
+                if (!string.IsNullOrWhiteSpace(aspireContext.AzureFederatedCredentialProvider))
+                {
+                    loginArguments.AppendSwitch("--federated-credential-provider", aspireContext.AzureFederatedCredentialProvider);
+                }
+                else
+                {
+                    loginArguments.AppendSwitchSecret("--client-secret", aspireContext.AzureClientSecret);
+                }
+
+                loginArguments.Append("--no-prompt");
+                RunAzd(loginArguments);
 
                 // Note: got weird errors when running provision and deploy manually, so using up instead
 
@@ -177,6 +192,11 @@ public class AspireProcessor : ProcessorBase
     }
 
     private void RunAzd(string arguments)
+    {
+        RunAzd(new ProcessArgumentBuilder().Append(arguments));
+    }
+
+    private void RunAzd(ProcessArgumentBuilder arguments)
     {
         if (BuildContext.CakeContext.StartProcess("azd", new ProcessSettings
         {
