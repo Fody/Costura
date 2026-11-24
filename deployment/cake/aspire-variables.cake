@@ -27,6 +27,8 @@ public class AspireContext : BuildContextWithItemsBase
 
     public string AzureClientSecret { get; set; }
 
+    public string AzureFederatedCredentialProvider { get; set; }
+
     protected override void ValidateContext()
     {
         if (Items.Count == 0)
@@ -74,9 +76,17 @@ public class AspireContext : BuildContextWithItemsBase
             throw new InvalidOperationException("Azure client ID is not set. Please set the 'AspireAzureClientId' variable.");
         }
 
-        if (string.IsNullOrWhiteSpace(AzureClientSecret))
+        var hasClientSecret = !string.IsNullOrWhiteSpace(AzureClientSecret);
+        var hasFederatedCredentialProvider = !string.IsNullOrWhiteSpace(AzureFederatedCredentialProvider);
+
+        if (!hasClientSecret && !hasFederatedCredentialProvider)
         {
-            throw new InvalidOperationException("Azure client secret is not set. Please set the 'AspireAzureClientSecret' variable.");
+            throw new InvalidOperationException("Azure credentials are not set. Please set either 'AspireAzureClientSecret' or 'AspireAzureFederatedCredentialProvider'.");
+        }
+
+        if (hasClientSecret && hasFederatedCredentialProvider)
+        {
+            throw new InvalidOperationException("Please set only one of 'AspireAzureClientSecret' and 'AspireAzureFederatedCredentialProvider'.");
         }
     }
     
@@ -101,7 +111,8 @@ private AspireContext InitializeAspireContext(BuildContext buildContext, IBuildC
         AzureSubscriptionId = buildContext.BuildServer.GetVariable("AspireAzureSubscriptionId", showValue: true),
         AzureTenantId = buildContext.BuildServer.GetVariable("AspireAzureTenantId", showValue: true),
         AzureClientId = buildContext.BuildServer.GetVariable("AspireAzureClientId", showValue: true),
-        AzureClientSecret = buildContext.BuildServer.GetVariable("AspireAzureClientSecret", showValue: false)
+        AzureClientSecret = buildContext.BuildServer.GetVariable("AspireAzureClientSecret", showValue: false),
+        AzureFederatedCredentialProvider = buildContext.BuildServer.GetVariable("AspireAzureFederatedCredentialProvider", showValue: true)
     };
 
     return data;
